@@ -59,7 +59,46 @@ const config = {
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans]
-			}
+			},
+			typography: {
+				DEFAULT: {
+					css: {
+            '--tw-prose-body': "theme('colors.foreground')",
+            '--tw-prose-headings': "theme('colors.foreground')",
+            '--tw-prose-lead': "theme('colors.foreground')",
+            '--tw-prose-links': "theme('colors.foreground')",
+            '--tw-prose-bold': "theme('colors.foreground')",
+            '--tw-prose-counters': "theme('colors.muted.foreground')",
+            '--tw-prose-bullets': "theme('colors.foreground')",
+            '--tw-prose-hr': "theme('colors.foreground')",
+            '--tw-prose-quotes': "theme('colors.foreground')",
+            '--tw-prose-quote-borders': "theme('colors.foreground')",
+            '--tw-prose-captions': "theme('colors.foreground')",
+            '--tw-prose-code': "theme('colors.foreground')",
+            '--tw-prose-pre-code': "theme('colors.foreground')",
+            '--tw-prose-pre-bg': "theme('colors.foreground')",
+            '--tw-prose-th-borders': "theme('colors.foreground')",
+						'--tw-prose-td-borders': "theme('colors.foreground')",
+						'--tw-prose-invert-body': "theme('colors.foreground')",
+            '--tw-prose-invert-headings': "theme('colors.foreground')",
+            '--tw-prose-invert-lead': "theme('colors.foreground')",
+            '--tw-prose-invert-links': "theme('colors.foreground')",
+            '--tw-prose-invert-bold': "theme('colors.foreground')",
+            '--tw-prose-invert-counters': "theme('colors.foreground')",
+            '--tw-prose-invert-bullets': "theme('colors.foreground')",
+            '--tw-prose-invert-hr': "theme('colors.foreground')",
+            '--tw-prose-invert-quotes': "theme('colors.foreground')",
+            '--tw-prose-invert-quote-borders': "theme('colors.foreground')",
+            '--tw-prose-invert-captions': "theme('colors.foreground')",
+            '--tw-prose-invert-code': "theme('colors.foreground')",
+            '--tw-prose-invert-pre-code': "theme('colors.foreground')",
+            '--tw-prose-invert-pre-bg': "theme('colors.foreground')",
+            '--tw-prose-invert-th-borders': "theme('colors.foreground')",
+            '--tw-prose-invert-td-borders': "theme('colors.foreground')",
+					},
+				}
+			},
+
 		}
 	},
 };
