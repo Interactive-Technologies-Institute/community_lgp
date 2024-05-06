@@ -20,8 +20,8 @@ export const load = async (event) => {
 
 export const actions = {
 	default: async (event) => {
-		const { session } = await event.locals.safeGetSession();
-		if (!session) {
+		const { session, user } = await event.locals.safeGetSession();
+		if (!session || !user) {
 			const errorMessage = 'Unauthorized.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(401, errorMessage);
@@ -35,7 +35,31 @@ export const actions = {
 			return fail(400, { message: errorMessage, form });
 		}
 
-		const { error: supabaseError } = await event.locals.supabase.from('events').insert(form.data);
+		let imagePath = '';
+		if (form.data.image) {
+			const imageFile = form.data.image;
+			const fileExt = imageFile.name.split('.').pop();
+			const filePath = `${Math.random()}.${fileExt}`;
+
+			const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
+				.from('events')
+				.upload(filePath, imageFile);
+
+			if (imageFileError) {
+				setFlash({ type: 'error', message: imageFileError.message }, event.cookies);
+				return fail(500, { message: imageFileError.message, form });
+			}
+
+			imagePath = imageFileData.path;
+		} else if (form.data.imageUrl) {
+			imagePath = form.data.imageUrl.split('/').pop() ?? '';
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { imageUrl, ...data } = form.data;
+		const { error: supabaseError } = await event.locals.supabase
+			.from('events')
+			.insert({ ...data, user_id: user.id, image: imagePath });
 
 		if (supabaseError) {
 			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);

@@ -22,7 +22,7 @@ export type HowToDifficulty = 'easy' | 'medium' | 'hard';
 export type HowToDuration = 'short' | 'medium' | 'long';
 
 export type HowTo = {
-	id: string;
+	id: number;
 	user_id: string;
 	title: string;
 	description: string;
@@ -51,7 +51,7 @@ export type DocGroup = {
 };
 
 export type Event = {
-	id: string;
+	id: number;
 	user_id: string;
 	title: string;
 	description: string;

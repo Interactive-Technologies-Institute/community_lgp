@@ -7,6 +7,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { createHowToSchema, type CreateHowToSchema } from '$lib/schemas/how-to';
 	import type { HowToDifficulty, HowToDuration } from '$lib/types.ts';
+	import { TagInput } from '@/components/ui/tag-input';
 	import type { Selected } from 'bits-ui';
 	import { ArrowDown, ArrowUp, Loader2, Trash } from 'lucide-svelte';
 	import SuperDebug, { superForm, type SuperValidated } from 'sveltekit-superforms';
@@ -111,6 +112,13 @@
 				<Form.Control let:attrs>
 					<Form.Label>Description*</Form.Label>
 					<Textarea {...attrs} bind:value={$formData.description} />
+					<Form.FieldErrors />
+				</Form.Control>
+			</Form.Field>
+			<Form.Field {form} name="tags">
+				<Form.Control let:attrs>
+					<Form.Label>Tags*</Form.Label>
+					<TagInput {...attrs} bind:value={$formData.tags} />
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>

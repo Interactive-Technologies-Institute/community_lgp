@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '@/utils';
 	import { X } from 'lucide-svelte';
 	import { type TagInputProps } from '.';
 	import { Badge } from '../badge';
@@ -47,7 +47,7 @@
 
 <div
 	class={cn(
-		'flex h-9 w-full flex-wrap gap-2 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+		'flex h-10 w-full flex-wrap gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
 		className
 	)}
 >
@@ -72,6 +72,7 @@
 			>
 				<X class="h-3 w-3 text-muted-foreground hover:text-foreground" />
 			</button>
+			<input type="hidden" name={$$props.name} value={tag} />
 		</Badge>
 	{/each}
 	<input
@@ -83,6 +84,5 @@
 			: placeholder}
 		on:keydown={handleKeyDown}
 		disabled={maxTags !== undefined && value.length >= maxTags}
-		{...$$restProps}
 	/>
 </div>

@@ -45,6 +45,6 @@ export const createHowToSchema = z.object({
 export type CreateHowToSchema = typeof createHowToSchema;
 
 export const deleteHowToSchema = z.object({
-	id: z.string(),
+	id: z.number(),
 });
 export type DeleteHowToSchema = typeof deleteHowToSchema;

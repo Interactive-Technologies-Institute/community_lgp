@@ -34,7 +34,7 @@
 		</Select.Root>
 		<Input placeholder="Search..." class="w-64"></Input>
 	</div>
-	<Button href="/event/create"><PlusCircle class="mr-2 h-4 w-4" />Create an Event</Button>
+	<Button href="/events/create"><PlusCircle class="mr-2 h-4 w-4" />Create an Event</Button>
 </div>
 <div class="container mx-auto grid grid-cols-2 gap-6 py-10">
 	{#each data.events as event}

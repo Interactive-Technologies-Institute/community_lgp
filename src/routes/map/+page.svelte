@@ -28,7 +28,7 @@
 							<div class="flex flex-col items-start gap-y-2 px-4 py-3">
 								<Button variant="secondary" size="sm" href="/user/0">
 									<CircleUser class="mr-2 h-4 w-4" />
-									João Nogueira
+									User Lorem Ipsum
 								</Button>
 								<p>This is just a description</p>
 							</div>

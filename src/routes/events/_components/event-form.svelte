@@ -1,12 +1,22 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { createEventSchema, type CreateEventSchema } from '$lib/schemas/event';
-	import { Loader2 } from 'lucide-svelte';
-	import SuperDebug, { superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { Calendar } from '@/components/ui/calendar';
+	import * as Popover from '@/components/ui/popover';
+	import { TagInput } from '@/components/ui/tag-input';
+	import { cn } from '@/utils';
+	import {
+		DateFormatter,
+		getLocalTimeZone,
+		parseDate,
+		type DateValue,
+	} from '@internationalized/date';
+	import { CalendarIcon, Loader2 } from 'lucide-svelte';
+	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 
 	export let data: SuperValidated<Infer<CreateEventSchema>>;
@@ -16,9 +26,29 @@
 	});
 
 	const { form: formData, enhance, submitting } = form;
+
+	const df = new DateFormatter('en-US', {
+		dateStyle: 'long',
+	});
+
+	let birthDate: DateValue | undefined;
+	$: birthDate = $formData.date ? parseDate($formData.date) : undefined;
+
+	const image = fileProxy(form, 'image');
+	let imageUrl: string | null | undefined = $formData.imageUrl;
+	$: {
+		if ($image.length > 0) {
+			const img = $image.item(0);
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imageUrl = e.target?.result as string | null | undefined;
+			};
+			reader.readAsDataURL(img!);
+		}
+	}
 </script>
 
-<form method="POST" use:enhance class="flex flex-col gap-y-10">
+<form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Introduction</Card.Title>
@@ -42,13 +72,76 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-			<Form.Field {form} name="image">
+			<Form.Field {form} name="tags">
 				<Form.Control let:attrs>
-					<Form.Label>Cover Image*</Form.Label>
-					<Card.Root class="aspect-video h-60"></Card.Root>
+					<Form.Label>Tags*</Form.Label>
+					<TagInput {...attrs} bind:value={$formData.tags} />
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
+			<div class="grid grid-cols-2 gap-x-4">
+				<Form.Field {form} name="date">
+					<Form.Control id="date" let:attrs>
+						<Form.Label for="date">Date*</Form.Label>
+						<Popover.Root>
+							<Popover.Trigger
+								{...attrs}
+								class={cn(
+									buttonVariants({ variant: 'outline' }),
+									'w-full justify-start pl-4 text-left font-normal',
+									!birthDate && 'text-muted-foreground'
+								)}
+							>
+								{birthDate ? df.format(birthDate.toDate(getLocalTimeZone())) : 'Pick a date'}
+								<CalendarIcon class="ml-auto h-4 w-4 opacity-50" />
+							</Popover.Trigger>
+							<Popover.Content class="w-auto p-0" side="top">
+								<Calendar
+									initialFocus
+									value={birthDate}
+									onValueChange={(v) => {
+										if (v) {
+											$formData.date = v.toString();
+										} else {
+											$formData.date = '';
+										}
+									}}
+								/>
+							</Popover.Content>
+						</Popover.Root>
+						<input hidden value={$formData.date} name={attrs.name} />
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field {form} name="location">
+					<Form.Control let:attrs>
+						<Form.Label>Location*</Form.Label>
+						<Input {...attrs} bind:value={$formData.location} />
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+			</div>
+			<div class="grid grid-cols-2 gap-x-4">
+				<Form.Field {form} name="image">
+					<Form.Control let:attrs>
+						<Form.Label>Cover Image*</Form.Label>
+						<Card.Root class="aspect-video overflow-hidden">
+							{#if imageUrl}
+								<img src={imageUrl} alt="Event Cover" class="h-full w-full object-cover" />
+							{/if}
+						</Card.Root>
+						<input
+							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+							{...attrs}
+							type="file"
+							accept="image/png, image/jpeg"
+							bind:files={$image}
+						/>
+						<input hidden value={$formData.imageUrl} name="imageUrl" />
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+			</div>
 		</Card.Content>
 	</Card.Root>
 	<SuperDebug data={$formData} />

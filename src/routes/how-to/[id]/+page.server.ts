@@ -6,6 +6,8 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
+	const { user } = await event.locals.safeGetSession();
+
 	async function getHowTo(id: string): Promise<HowTo> {
 		const { data: howTo, error: howToError } = await event.locals.supabase
 			.from('howtos')
@@ -21,8 +23,25 @@ export const load = async (event) => {
 		return howTo;
 	}
 
+	async function getUsefulCount(id: string): Promise<{ count: number; userUseful: boolean }> {
+		const { data: usefuls, error: usefulsError } = await event.locals.supabase
+			.rpc('get_howto_useful_count', {
+				howto_id: parseInt(id),
+				user_id: user?.id ?? 'visitor',
+			})
+			.single();
+
+		if (usefulsError) {
+			const errorMessage = 'Error fetching useful count, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+		return { count: usefuls.count, userUseful: usefuls.has_useful };
+	}
+
 	return {
 		howTo: await getHowTo(event.params.id),
+		usefulCount: await getUsefulCount(event.params.id),
 		deleteForm: await superValidate(zod(deleteHowToSchema), {
 			id: 'delete',
 		}),

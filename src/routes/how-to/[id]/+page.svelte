@@ -2,7 +2,17 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
-	import { BarChart2, Bookmark, CircleUser, Clock, Footprints, Pen, Trash } from 'lucide-svelte';
+	import { cn } from '@/utils';
+	import {
+		BarChart2,
+		Bookmark,
+		CircleUser,
+		Clock,
+		Footprints,
+		Pen,
+		Tag,
+		Trash,
+	} from 'lucide-svelte';
 	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
 
 	export let data;
@@ -13,32 +23,40 @@
 <PageHeader title={data.howTo.title} subtitle={data.howTo.description} />
 <div class="container mx-auto pb-10">
 	<div class="mb-10 flex flex-col items-center gap-y-4">
-		<span class="text-sm text-muted-foreground">Updated on 01/01/2001</span>
-		<Button variant="secondary" size="sm" href="/user/0">
-			<CircleUser class="mr-2 h-4 w-4" />
-			João Nogueira
-		</Button>
-		<div class="flex flex-row items-center justify-center gap-x-4">
-			<div class="flex flex-row gap-x-2">
-				<Footprints />
-				steps
-			</div>
-			<div class="flex flex-row gap-x-2">
-				<Clock />
-				duration
-			</div>
-			<div class="flex flex-row gap-x-2">
-				<BarChart2 />
-				difficulty
+		<div class=" flex flex-row gap-x-2">
+			{#each data.howTo.tags as tag}
+				<Button variant="secondary" size="sm" href="/user/0">
+					<Tag class="mr-2 h-4 w-4" />
+					{tag}
+				</Button>
+			{/each}
+		</div>
+		<div class="flex flex-col items-center gap-y-2">
+			<div class="flex flex-row items-center justify-center gap-x-4">
+				<div class="flex flex-row items-center gap-x-2">
+					<Footprints class="text-muted-foreground" />
+					{data.howTo.steps.length}
+				</div>
+				<div class="flex flex-row items-center gap-x-2">
+					<Clock class="text-muted-foreground" />
+					{data.howTo.duration}
+				</div>
+				<div class="flex flex-row items-center gap-x-2">
+					<BarChart2 class="text-muted-foreground" />
+					{data.howTo.difficulty}
+				</div>
 			</div>
 		</div>
 		<Button variant="outline" size="sm" href="/how-to/create">
-			<Bookmark class="mr-2 h-4 w-4" />
-			Mark as useful
-			<span class="ml-4 font-mono text-xs">24</span>
+			<Bookmark class={cn('mr-2 h-4 w-4', { 'fill-foreground': data.usefulCount.userUseful })} />
+			{#if data.usefulCount.userUseful}
+				Marked as useful
+			{:else}
+				Mark as useful
+			{/if}
+			<span class="ml-4 font-mono text-xs">{data.usefulCount.count}</span>
 		</Button>
 	</div>
-
 	<div class="flex flex-col gap-y-10">
 		{#each data.howTo.steps as step, i}
 			<div class="flex flex-row gap-x-6">
@@ -65,13 +83,19 @@
 				<Pen class="mr-2 h-4 w-4" />
 				Edit
 			</Button>
-			<form></form>
 			<Button variant="destructive" on:click={() => (openDeleteDialog = true)}>
 				<Trash class="mr-2 h-4 w-4" />
 				Delete
 			</Button>
 		</div>
 	{/if}
+	<div class="flex flex-col items-center gap-y-2">
+		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
+		<Button variant="secondary" size="sm" href="/user/0">
+			<CircleUser class="mr-2 h-4 w-4" />
+			User Lorem Ipsum
+		</Button>
+	</div>
 </div>
 
 <HowToDeleteDialog howToId={data.howTo.id} data={data.deleteForm} bind:open={openDeleteDialog} />

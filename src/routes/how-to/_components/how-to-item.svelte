@@ -11,7 +11,7 @@
 		<AspectRatio ratio={4 / 3}>
 			<img
 				src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png"
-				class="h-full w-full object-cover"
+				class="object-cover"
 			/>
 		</AspectRatio>
 		<div class=" flex flex-col px-4 py-2">

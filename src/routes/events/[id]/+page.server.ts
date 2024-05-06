@@ -6,6 +6,8 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
+	const { user } = await event.locals.safeGetSession();
+
 	async function getEvent(id: string): Promise<Event> {
 		const { data: eventData, error: eventError } = await event.locals.supabase
 			.from('events')
@@ -18,11 +20,29 @@ export const load = async (event) => {
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		return eventData;
+		const image = event.locals.supabase.storage.from('events').getPublicUrl(eventData.image);
+		return { ...eventData, image: image.data.publicUrl };
+	}
+
+	async function getInterestCount(id: string): Promise<{ count: number; userInterested: boolean }> {
+		const { data: interested, error: interestedError } = await event.locals.supabase
+			.rpc('get_event_interest_count', {
+				event_id: parseInt(id),
+				user_id: user?.id ?? 'visitor',
+			})
+			.single();
+
+		if (interestedError) {
+			const errorMessage = 'Error fetching interest count, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+		return { count: interested.count, userInterested: interested.has_interest };
 	}
 
 	return {
 		event: await getEvent(event.params.id),
+		interestCount: await getInterestCount(event.params.id),
 		deleteForm: await superValidate(zod(deleteEventSchema), {
 			id: 'delete',
 		}),
