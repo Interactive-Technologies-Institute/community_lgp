@@ -31,8 +31,8 @@
 		dateStyle: 'long',
 	});
 
-	let birthDate: DateValue | undefined;
-	$: birthDate = $formData.date ? parseDate($formData.date) : undefined;
+	let date: DateValue | undefined;
+	$: date = $formData.date ? parseDate($formData.date) : undefined;
 
 	const image = fileProxy(form, 'image');
 	let imageUrl: string | null | undefined = $formData.imageUrl;
@@ -89,16 +89,16 @@
 								class={cn(
 									buttonVariants({ variant: 'outline' }),
 									'w-full justify-start pl-4 text-left font-normal',
-									!birthDate && 'text-muted-foreground'
+									!date && 'text-muted-foreground'
 								)}
 							>
-								{birthDate ? df.format(birthDate.toDate(getLocalTimeZone())) : 'Pick a date'}
+								{date ? df.format(date.toDate(getLocalTimeZone())) : 'Pick a date'}
 								<CalendarIcon class="ml-auto h-4 w-4 opacity-50" />
 							</Popover.Trigger>
 							<Popover.Content class="w-auto p-0" side="top">
 								<Calendar
 									initialFocus
-									value={birthDate}
+									value={date}
 									onValueChange={(v) => {
 										if (v) {
 											$formData.date = v.toString();
