@@ -1,5 +1,5 @@
-import { createEventSchema } from '$lib/schemas/event';
-import { handleSignInRedirect } from '$lib/utils';
+import { createEventSchema } from '@/schemas/event';
+import { handleSignInRedirect } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';

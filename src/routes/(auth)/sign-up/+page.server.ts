@@ -1,4 +1,4 @@
-import { signUpSchema } from '$lib/schemas/sign-up';
+import { signUpSchema } from '@/schemas/sign-up';
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';

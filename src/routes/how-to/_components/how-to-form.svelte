@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import * as Select from '$lib/components/ui/select';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { createHowToSchema, type CreateHowToSchema } from '$lib/schemas/how-to';
-	import type { HowToDifficulty, HowToDuration } from '$lib/types.ts';
+	import { Button } from '@/components/ui/button';
+	import * as Card from '@/components/ui/card';
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
+	import * as Select from '@/components/ui/select';
 	import { TagInput } from '@/components/ui/tag-input';
+	import { Textarea } from '@/components/ui/textarea';
+	import { createHowToSchema, type CreateHowToSchema } from '@/schemas/how-to';
+	import type { HowToDifficulty, HowToDuration } from '@/types.ts';
 	import type { Selected } from 'bits-ui';
 	import { ArrowDown, ArrowUp, Loader2, Trash } from 'lucide-svelte';
 	import SuperDebug, { superForm, type SuperValidated } from 'sveltekit-superforms';

@@ -1,5 +1,5 @@
-import { createHowToSchema } from '$lib/schemas/how-to';
-import { handleSignInRedirect } from '$lib/utils';
+import { createHowToSchema } from '@/schemas/how-to';
+import { handleSignInRedirect } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';

@@ -1,5 +1,5 @@
-import { mapPinSchema } from '$lib/schemas/map-pin';
-import type { UserProfileWithPin } from '$lib/types/types';
+import { mapPinSchema } from '@/schemas/map-pin';
+import type { UserProfileWithPin } from '@/types/types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 

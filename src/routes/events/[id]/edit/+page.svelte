@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/page-header.svelte';
+	import PageHeader from '@/components/page-header.svelte';
 	import EventForm from '../../_components/event-form.svelte';
 
 	export let data;

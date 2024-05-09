@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DocGroup } from '$lib/types';
+	import type { DocGroup } from '@/types';
 	import DocTab from './doc-tab.svelte';
 
 	export let index: number;

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { AspectRatio } from '$lib/components/ui/aspect-ratio';
-	import { Card } from '$lib/components/ui/card';
-	import type { HowTo } from '$lib/types';
+	import { AspectRatio } from '@/components/ui/aspect-ratio';
+	import { Card } from '@/components/ui/card';
+	import type { HowTo } from '@/types';
 
 	export let howTo: HowTo;
 </script>

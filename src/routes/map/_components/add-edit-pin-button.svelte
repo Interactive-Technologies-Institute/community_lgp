@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { mapPinSchema, type MapPinSchema } from '$lib/schemas/map-pin';
+	import { Button } from '@/components/ui/button';
+	import { mapPinSchema, type MapPinSchema } from '@/schemas/map-pin';
 	import { Check, MapPin, XCircle } from 'lucide-svelte';
 	import { getContext, onDestroy } from 'svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';

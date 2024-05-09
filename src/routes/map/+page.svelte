@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import Card from '$lib/components/ui/card/card.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import * as Select from '$lib/components/ui/select';
+	import { Button } from '@/components/ui/button';
+	import Card from '@/components/ui/card/card.svelte';
+	import { Input } from '@/components/ui/input';
+	import * as Select from '@/components/ui/select';
 	import { CircleUser } from 'lucide-svelte';
 	import AddEditPinButton from './_components/add-edit-pin-button.svelte';
 	import Map from './_components/map.svelte';

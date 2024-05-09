@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { createEventSchema, type CreateEventSchema } from '$lib/schemas/event';
+	import { Button, buttonVariants } from '@/components/ui/button';
 	import { Calendar } from '@/components/ui/calendar';
+	import * as Card from '@/components/ui/card';
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
 	import * as Popover from '@/components/ui/popover';
 	import { TagInput } from '@/components/ui/tag-input';
+	import { Textarea } from '@/components/ui/textarea';
+	import { createEventSchema, type CreateEventSchema } from '@/schemas/event';
 	import { cn } from '@/utils';
 	import {
 		DateFormatter,

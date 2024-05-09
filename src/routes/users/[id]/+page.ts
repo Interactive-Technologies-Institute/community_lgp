@@ -1,4 +1,4 @@
-import { handleSignInRedirect } from '$lib/utils';
+import { handleSignInRedirect } from '@/utils';
 import { error, redirect } from '@sveltejs/kit';
 
 export const load = async (event) => {

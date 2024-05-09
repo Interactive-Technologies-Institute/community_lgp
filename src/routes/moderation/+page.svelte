@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/page-header.svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import PageHeader from '@/components/page-header.svelte';
+	import * as Tabs from '@/components/ui/tabs';
 	import EventsModeration from './_components/events-moderation.svelte';
 	import HowToModeration from './_components/how-to-moderation.svelte';
 	import MapModeration from './_components/map-moderation.svelte';

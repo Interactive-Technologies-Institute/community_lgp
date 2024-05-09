@@ -1,8 +1,8 @@
 <script lang="ts">
-	import ModeToggle from '$lib/components/mode-toggle.svelte';
-	import MainNav from '$lib/components/nav/main-nav.svelte';
-	import MobileNav from '$lib/components/nav/mobile-nav.svelte';
-	import UserNav from '$lib/components/nav/user-nav.svelte';
+	import ModeToggle from '@/components/mode-toggle.svelte';
+	import MainNav from '@/components/nav/main-nav.svelte';
+	import MobileNav from '@/components/nav/mobile-nav.svelte';
+	import UserNav from '@/components/nav/user-nav.svelte';
 	import type { UserProfile, UserRole } from '@/types/types';
 	import { Button } from './ui/button';
 

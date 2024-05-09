@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/page-header.svelte';
+	import PageHeader from '@/components/page-header.svelte';
 	import HowToForm from '../_components/how-to-form.svelte';
 
 	export let data;

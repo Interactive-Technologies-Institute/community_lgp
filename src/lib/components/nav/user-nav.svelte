@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import * as Avatar from '$lib/components/ui/avatar';
-	import { Button } from '$lib/components/ui/button';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as Avatar from '@/components/ui/avatar';
+	import { Button } from '@/components/ui/button';
+	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 	import type { UserProfile, UserRole } from '@/types/types';
 
 	export let role: UserRole;

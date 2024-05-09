@@ -1,4 +1,4 @@
-import { signInSchema } from '$lib/schemas/sign-in';
+import { signInSchema } from '@/schemas/sign-in';
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';

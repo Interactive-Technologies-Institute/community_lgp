@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { cn } from '$lib/utils';
+	import { cn } from '@/utils';
 </script>
 
 <div class="mr-4 hidden md:flex">

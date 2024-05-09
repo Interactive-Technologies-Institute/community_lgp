@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/page-header.svelte';
+	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import { cn } from '@/utils';
 	import dayjs from 'dayjs';

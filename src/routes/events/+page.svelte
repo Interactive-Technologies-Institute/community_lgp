@@ -1,8 +1,8 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/page-header.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import * as Select from '$lib/components/ui/select';
+	import PageHeader from '@/components/page-header.svelte';
+	import { Button } from '@/components/ui/button';
+	import { Input } from '@/components/ui/input';
+	import * as Select from '@/components/ui/select';
 	import { PlusCircle } from 'lucide-svelte';
 	import EventItem from './_components/event-item.svelte';
 

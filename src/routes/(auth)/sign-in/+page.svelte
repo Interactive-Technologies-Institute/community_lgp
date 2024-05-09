@@ -1,9 +1,9 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/page-header.svelte';
-	import { Card } from '$lib/components/ui/card';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { signInSchema } from '$lib/schemas/sign-in';
+	import PageHeader from '@/components/page-header.svelte';
+	import { Card } from '@/components/ui/card';
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
+	import { signInSchema } from '@/schemas/sign-in';
 	import { Loader2 } from 'lucide-svelte';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';

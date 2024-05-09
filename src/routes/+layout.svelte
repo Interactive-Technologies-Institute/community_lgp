@@ -2,10 +2,10 @@
 	import { dev } from '$app/environment';
 	import { invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import Footer from '$lib/components/footer.svelte';
-	import Header from '$lib/components/header.svelte';
-	import TailwindIndicator from '$lib/components/tailwind-indicator.svelte';
-	import { Toaster } from '$lib/components/ui/sonner';
+	import Footer from '@/components/footer.svelte';
+	import Header from '@/components/header.svelte';
+	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
+	import { Toaster } from '@/components/ui/sonner';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';

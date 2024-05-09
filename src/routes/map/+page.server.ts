@@ -1,4 +1,4 @@
-import { mapPinSchema } from '$lib/schemas/map-pin';
+import { mapPinSchema } from '@/schemas/map-pin';
 import { fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
