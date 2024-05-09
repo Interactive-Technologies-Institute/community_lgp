@@ -7,7 +7,7 @@
 	import { TagInput } from '@/components/ui/tag-input';
 	import { Textarea } from '@/components/ui/textarea';
 	import { createHowToSchema, type CreateHowToSchema } from '@/schemas/how-to';
-	import type { HowToDifficulty, HowToDuration } from '@/types.ts';
+	import type { HowToDifficulty, HowToDuration } from '@/types/types';
 	import type { Selected } from 'bits-ui';
 	import { ArrowDown, ArrowUp, Loader2, Trash } from 'lucide-svelte';
 	import SuperDebug, { superForm, type SuperValidated } from 'sveltekit-superforms';

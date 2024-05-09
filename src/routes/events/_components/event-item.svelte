@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Card } from '@/components/ui/card';
-	import type { Event } from '@/types';
+	import type { Event } from '@/types/types';
 	import dayjs from 'dayjs';
 
 	export let event: Event;

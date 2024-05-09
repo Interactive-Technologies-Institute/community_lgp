@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
-	import type { MapPin } from '@/types';
+	import type { MapPin } from '@/types/types';
 	import { LocateFixed } from 'lucide-svelte';
 	import { getContext } from 'svelte';
 	import { key, type MBMapContext } from './mapbox';

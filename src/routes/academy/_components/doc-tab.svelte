@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { Doc } from '@/types';
+	import type { Doc } from '@/types/types';
 	import { cn } from '@/utils';
 
 	export let groupSlug: string;
