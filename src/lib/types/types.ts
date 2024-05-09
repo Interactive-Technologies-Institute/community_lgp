@@ -1,9 +1,12 @@
-export type UserRole = 'admin' | 'user';
+import type { User } from '@supabase/supabase-js';
 
-export type User = {
+export type UserRole = 'user' | 'moderator' | 'admin';
+
+export type UserWithRole = User & { role: UserRole };
+
+export type UserProfile = {
 	id: string;
 	email: string;
-	role: UserRole;
 	type: string;
 	display_name: string;
 	description: string;
@@ -15,7 +18,7 @@ export type MapPin = {
 	lat: number;
 };
 
-export type UserWithPin = User & { pin: MapPin | null };
+export type UserProfileWithPin = UserProfile & { pin: MapPin | null };
 
 export type HowToDifficulty = 'easy' | 'medium' | 'hard';
 

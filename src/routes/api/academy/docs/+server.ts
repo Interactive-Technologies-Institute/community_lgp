@@ -1,6 +1,6 @@
 export const prerender = true;
 
-import type { Doc, DocGroup } from '$lib/types';
+import type { Doc, DocGroup } from '@/index';
 import { json } from '@sveltejs/kit';
 
 async function getDocs() {

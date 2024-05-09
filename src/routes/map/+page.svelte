@@ -54,8 +54,8 @@
 				</Select.Root>
 			</div>
 			<div class="flex flex-row gap-x-6">
-				{#if data.user?.pin}
-					<MyPinButton pin={data.user.pin} />
+				{#if data.profile?.pin}
+					<MyPinButton pin={data.profile.pin} />
 				{/if}
 				<AddEditPinButton data={data.form} />
 			</div>

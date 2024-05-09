@@ -1,7 +1,9 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-import type { Database } from '@/database-types';
+import type { Database } from '@/types/database-types';
+import type { UserRole } from '@/types/types';
 import { createServerClient } from '@supabase/ssr';
 import type { Handle } from '@sveltejs/kit';
+import { jwtDecode } from 'jwt-decode';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createServerClient<Database>(
@@ -33,6 +35,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	 */
 	event.locals.safeGetSession = async () => {
 		const {
+			data: { session },
+		} = await event.locals.supabase.auth.getSession();
+		if (!session) {
+			return { session: null, user: null };
+		}
+
+		const {
 			data: { user },
 			error,
 		} = await event.locals.supabase.auth.getUser();
@@ -40,15 +49,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 			return { session: null, user: null };
 		}
 
-		const {
-			data: { session },
-		} = await event.locals.supabase.auth.getSession();
-		return { session, user };
+		const jwt = jwtDecode<{ user_role: UserRole | undefined }>(session.access_token);
+		const userRole = jwt.user_role ?? 'user';
+		return { session, user: user !== null ? { ...user, role: userRole } : null };
 	};
 
 	return resolve(event, {
 		filterSerializedResponseHeaders(name) {
-			return name === 'content-range';
+			return name === 'content-range' || name === 'x-supabase-api-version';
 		},
 	});
 };

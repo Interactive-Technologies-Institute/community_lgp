@@ -1,4 +1,4 @@
-import type { Event } from '@/types';
+import type { Event } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 

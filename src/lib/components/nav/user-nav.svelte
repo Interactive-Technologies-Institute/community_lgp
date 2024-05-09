@@ -3,11 +3,12 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import type { User } from '$lib/types';
+	import type { UserProfile, UserRole } from '@/types/types';
 
-	export let user: User;
+	export let role: UserRole;
+	export let profile: UserProfile;
 
-	$: initials = user.display_name
+	$: initials = profile.display_name
 		.split(' ')
 		.map((name) => name[0])
 		.join('');
@@ -17,7 +18,7 @@
 	<DropdownMenu.Trigger asChild let:builder>
 		<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
 			<Avatar.Root class="h-8 w-8">
-				<Avatar.Image src="/avatars/user.png" alt={user.display_name} />
+				<Avatar.Image src="/avatars/user.png" alt={profile.display_name} />
 				<Avatar.Fallback>{initials}</Avatar.Fallback>
 			</Avatar.Root>
 		</Button>
@@ -25,8 +26,8 @@
 	<DropdownMenu.Content class="w-56" align="end">
 		<DropdownMenu.Label class="font-normal">
 			<div class="flex flex-col space-y-1">
-				<p class="text-sm font-medium leading-none">{user.display_name}</p>
-				<p class="text-xs leading-none text-muted-foreground">{user.email}</p>
+				<p class="text-sm font-medium leading-none">{profile.display_name}</p>
+				<p class="text-xs leading-none text-muted-foreground">{profile.email}</p>
 			</div>
 		</DropdownMenu.Label>
 		<DropdownMenu.Separator />
@@ -39,10 +40,18 @@
 				Settings
 				<DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
-			<DropdownMenu.Item href="/admin">
-				Admin
-				<DropdownMenu.Shortcut>⌘A</DropdownMenu.Shortcut>
-			</DropdownMenu.Item>
+			{#if role === 'moderator' || role === 'admin'}
+				<DropdownMenu.Item href="/moderation">
+					Moderation
+					<DropdownMenu.Shortcut>⌘A</DropdownMenu.Shortcut>
+				</DropdownMenu.Item>
+			{/if}
+			{#if role === 'admin'}
+				<DropdownMenu.Item href="/admin">
+					Admin
+					<DropdownMenu.Shortcut>⌘A</DropdownMenu.Shortcut>
+				</DropdownMenu.Item>
+			{/if}
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<form method="post" action="/?/signout" use:enhance>

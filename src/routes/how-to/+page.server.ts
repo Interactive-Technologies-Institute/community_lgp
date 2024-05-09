@@ -1,4 +1,4 @@
-import type { HowTo } from '@/types';
+import type { HowTo } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 

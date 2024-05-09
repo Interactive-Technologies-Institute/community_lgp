@@ -3,10 +3,11 @@
 	import MainNav from '$lib/components/nav/main-nav.svelte';
 	import MobileNav from '$lib/components/nav/mobile-nav.svelte';
 	import UserNav from '$lib/components/nav/user-nav.svelte';
-	import type { User } from '$lib/types';
+	import type { UserProfile, UserRole } from '@/types/types';
 	import { Button } from './ui/button';
 
-	export let user: User | undefined;
+	export let role: UserRole | null;
+	export let profile: UserProfile | null;
 </script>
 
 <header
@@ -17,8 +18,8 @@
 		<MobileNav />
 		<div class="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
 			<ModeToggle />
-			{#if user}
-				<UserNav {user} />
+			{#if profile && role}
+				<UserNav {role} {profile} />
 			{:else}
 				<Button variant="outline" size="sm" href="/sign-in">Login</Button>
 				<Button size="sm" href="/sign-up">Join</Button>

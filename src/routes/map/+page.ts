@@ -1,20 +1,20 @@
 import { mapPinSchema } from '$lib/schemas/map-pin';
-import type { UserWithPin } from '$lib/types.js';
+import type { UserProfileWithPin } from '$lib/types/types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ parent }) => {
-	const { supabase, session, user } = await parent();
+	const { supabase, session, user, profile } = await parent();
 
-	let userWithPin: UserWithPin | undefined;
-	if (session && user) {
+	let profileWithPin: UserProfileWithPin | undefined;
+	if (session && user && profile) {
 		const { data: pinData } = await supabase
 			.from('map_pins')
 			.select('lng, lat')
 			.eq('id', user.id)
 			.single();
-		userWithPin = {
-			...user,
+		profileWithPin = {
+			...profile,
 			pin: pinData,
 		};
 	}
@@ -23,14 +23,14 @@ export const load = async ({ parent }) => {
 
 	const form = await superValidate(
 		{
-			lng: userWithPin?.pin?.lng ?? 0,
-			lat: userWithPin?.pin?.lat ?? 0,
+			lng: profileWithPin?.pin?.lng ?? 0,
+			lat: profileWithPin?.pin?.lat ?? 0,
 		},
 		zod(mapPinSchema)
 	);
 
 	return {
-		user: userWithPin,
+		profile: profileWithPin,
 		users: usersData ?? [],
 		form,
 	};
