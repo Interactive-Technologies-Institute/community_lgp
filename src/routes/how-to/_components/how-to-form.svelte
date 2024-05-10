@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
+	import { FileInput } from '@/components/ui/file-input';
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
 	import * as Select from '@/components/ui/select';
@@ -65,7 +66,7 @@
 	}
 
 	async function addStep() {
-		$formData.steps = [...$formData.steps, { title: '', description: '', image: '' }];
+		$formData.steps = [...$formData.steps, { title: '', description: '' }];
 	}
 
 	async function removeStep(index: number) {
@@ -255,8 +256,10 @@
 							</Form.ElementField>
 							<Form.ElementField {form} name="steps[{i}].image">
 								<Form.Control let:attrs>
-									<Form.Label>Image*</Form.Label>
-									<Card.Root class="aspect-video h-40"></Card.Root>
+									<Form.Label>Cover Image*</Form.Label>
+									<FileInput {...attrs} {form} name="steps[{i}].image" />
+									<input hidden value={$formData.steps[i].imageUrl} name="imageUrl" />
+									<Form.FieldErrors />
 								</Form.Control>
 								<Form.FieldErrors />
 							</Form.ElementField>

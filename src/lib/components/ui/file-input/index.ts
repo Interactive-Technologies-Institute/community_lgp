@@ -1,23 +1,15 @@
-import type { HTMLInputAttributes } from 'svelte/elements';
-import Root from './tag-input.svelte';
+import Root from './file-input.svelte';
 
-export type TagInputProps = HTMLInputAttributes & {
-	value?: string[];
-	maxTags?: number;
-	placeholder?: string;
-	placeholderWhenFull?: string;
-	minLength?: number;
-	maxLength?: number;
-};
-
-type FormInputEvent<T extends Event = Event> = T & {
+export type FormInputEvent<T extends Event = Event> = T & {
 	currentTarget: EventTarget & HTMLInputElement;
 };
-export type TagInputEvents = {
+export type InputEvents = {
 	blur: FormInputEvent<FocusEvent>;
 	change: FormInputEvent<Event>;
 	click: FormInputEvent<MouseEvent>;
 	focus: FormInputEvent<FocusEvent>;
+	focusin: FormInputEvent<FocusEvent>;
+	focusout: FormInputEvent<FocusEvent>;
 	keydown: FormInputEvent<KeyboardEvent>;
 	keypress: FormInputEvent<KeyboardEvent>;
 	keyup: FormInputEvent<KeyboardEvent>;
@@ -26,10 +18,11 @@ export type TagInputEvents = {
 	mouseleave: FormInputEvent<MouseEvent>;
 	paste: FormInputEvent<ClipboardEvent>;
 	input: FormInputEvent<InputEvent>;
+	wheel: FormInputEvent<WheelEvent>;
 };
 
 export {
-	Root,
 	//
-	Root as TagInput,
+	Root as FileInput,
+	Root,
 };
