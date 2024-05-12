@@ -1,4 +1,4 @@
-import type { UserProfile } from '@/types/types';
+import type { Feature, UserProfile } from '@/types/types';
 import { loadFlash } from 'sveltekit-flash-message/server';
 import type { LayoutServerLoad } from './$types';
 
@@ -12,7 +12,12 @@ export const load: LayoutServerLoad = loadFlash(
 			profile = data;
 		}
 
+		let features: Feature[] = [];
+		const { data } = await supabase.from('feature_flags').select('id').eq('enabled', true);
+		if (data) features = data.map((f: { id: Feature }) => f.id);
+
 		return {
+			features,
 			session,
 			user,
 			profile,

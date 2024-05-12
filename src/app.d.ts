@@ -15,6 +15,7 @@ declare global {
 			session: Session | null;
 			user: UserWithRole | null;
 			profile: UserProfile | null;
+			features: Feature[];
 			flash?: { type: 'success' | 'error'; message: string };
 		}
 		// interface Error {}

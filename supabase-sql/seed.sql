@@ -37,7 +37,8 @@ values ('user', 'howtos.create'),
 insert into public.feature_flags (id, enabled)
 values ('howtos'::public.feature, true),
 	('events'::public.feature, true),
-	('map'::public.feature, true);
+	('map'::public.feature, true),
+('academy'::public.feature, true);
 insert into public.user_types (id)
 values ('default'),
 	('morador'),
