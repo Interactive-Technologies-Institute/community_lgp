@@ -1,4 +1,4 @@
-import Root from './file-input.svelte';
+import Root from './image-input.svelte';
 
 export type FormInputEvent<T extends Event = Event> = T & {
 	currentTarget: EventTarget & HTMLInputElement;
@@ -23,6 +23,7 @@ export type InputEvents = {
 
 export {
 	//
-	Root as FileInput,
-	Root,
+	Root as ImageInput,
+	Root
 };
+

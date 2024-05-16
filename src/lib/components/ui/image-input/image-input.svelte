@@ -23,7 +23,8 @@
 	import { fileProxy } from 'sveltekit-superforms';
 	import type { InputEvents } from './index.js';
 
-	type $$Props = Omit<HTMLInputAttributes, 'form' | 'type'> & FileFieldProps<T, U>;
+	type $$Props = Omit<HTMLInputAttributes, 'form' | 'type'> &
+		FileFieldProps<T, U> & { imageUrl?: string | null | undefined };
 	type $$Events = InputEvents;
 
 	export let form: SuperForm<T>;
@@ -36,14 +37,14 @@
 	// Fixed in Svelte 5, but not backported to 4.x.
 	export let readonly: $$Props['readonly'] = undefined;
 
-	let file = fileProxy(form, name);
-	let fileUrl: string | null | undefined = undefined;
+	let image = fileProxy(form, name);
+	export let imageUrl: $$Props['imageUrl'] = undefined;
 	$: {
-		if ($file.length > 0) {
-			const img = $file.item(0);
+		if ($image.length > 0) {
+			const img = $image.item(0);
 			const reader = new FileReader();
 			reader.onload = (e) => {
-				fileUrl = e.target?.result as string | null | undefined;
+				imageUrl = e.target?.result as string | null | undefined;
 			};
 			reader.readAsDataURL(img!);
 		}
@@ -52,8 +53,8 @@
 
 <div class="flex flex-col gap-y-2">
 	<Card.Root class="aspect-video overflow-hidden">
-		{#if fileUrl}
-			<img src={fileUrl} class="h-full w-full object-cover" />
+		{#if imageUrl}
+			<img src={imageUrl} class="h-full w-full object-cover" />
 		{/if}
 	</Card.Root>
 	<input
@@ -62,7 +63,8 @@
 			className
 		)}
 		type="file"
-		bind:files={$file}
+		accept="image/png, image/jpeg"
+		bind:files={$image}
 		{readonly}
 		on:blur
 		on:change
