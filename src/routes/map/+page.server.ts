@@ -1,8 +1,8 @@
 import { mapPinSchema } from '@/schemas/map-pin';
 import { fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions = {
 	default: async ({ request, cookies, locals: { supabase, safeGetSession } }) => {
@@ -13,7 +13,7 @@ export const actions = {
 			return fail(401, { message: 'Unauthorized' });
 		}
 
-		const form = await superValidate(request, zod(mapPinSchema));
+		const form = await superValidate(request, zod(mapPinSchema), { id: 'map-pin' });
 
 		if (!form.valid) {
 			const errorMessage = 'Invalid form.';

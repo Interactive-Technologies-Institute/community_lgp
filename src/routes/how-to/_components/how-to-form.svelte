@@ -11,7 +11,7 @@
 	import type { HowToDifficulty, HowToDuration } from '@/types/types';
 	import type { Selected } from 'bits-ui';
 	import { ArrowDown, ArrowUp, Loader2, Trash } from 'lucide-svelte';
-	import SuperDebug, { superForm, type SuperValidated } from 'sveltekit-superforms';
+	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 
 	export let data: SuperValidated<Infer<CreateHowToSchema>>;
@@ -90,9 +90,22 @@
 		steps[index + 1] = step;
 		$formData.steps = steps;
 	}
+
+	const image = fileProxy(form, 'image');
+	let imageUrl: string | null | undefined = $formData.imageUrl;
+	$: {
+		if ($image.length > 0) {
+			const img = $image.item(0);
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imageUrl = e.target?.result as string | null | undefined;
+			};
+			reader.readAsDataURL(img!);
+		}
+	}
 </script>
 
-<form method="POST" use:enhance class="flex flex-col gap-y-10">
+<form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Introduction</Card.Title>
@@ -173,13 +186,27 @@
 					</Form.Control>
 				</Form.Field>
 			</div>
-			<Form.Field {form} name="image">
-				<Form.Control let:attrs>
-					<Form.Label>Cover Image*</Form.Label>
-					<Card.Root class="aspect-video h-60"></Card.Root>
-					<Form.FieldErrors />
-				</Form.Control>
-			</Form.Field>
+			<div class="grid grid-cols-2 gap-x-4">
+				<Form.Field {form} name="image">
+					<Form.Control let:attrs>
+						<Form.Label>Cover Image*</Form.Label>
+						<Card.Root class="aspect-video overflow-hidden">
+							{#if imageUrl}
+								<img src={imageUrl} alt="How To Cover" class="h-full w-full object-cover" />
+							{/if}
+						</Card.Root>
+						<input
+							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+							{...attrs}
+							type="file"
+							accept="image/png, image/jpeg"
+							bind:files={$image}
+						/>
+						<input hidden value={$formData.imageUrl} name="imageUrl" />
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+			</div>
 		</Card.Content>
 	</Card.Root>
 	<Form.Fieldset {form} name="steps">
@@ -254,15 +281,16 @@
 								</Form.Control>
 								<Form.FieldErrors />
 							</Form.ElementField>
-							<Form.ElementField {form} name="steps[{i}].image">
-								<Form.Control let:attrs>
-									<Form.Label>Cover Image*</Form.Label>
-									<FileInput {...attrs} {form} name="steps[{i}].image" />
-									<input hidden value={$formData.steps[i].imageUrl} name="imageUrl" />
+							<div class="grid grid-cols-2 gap-x-4">
+								<Form.ElementField {form} name="steps[{i}].image">
+									<Form.Control let:attrs>
+										<Form.Label>Cover Image*</Form.Label>
+										<FileInput {...attrs} {form} name="steps[{i}].image" />
+										<input hidden value={$formData.steps[i].imageUrl} name="imageUrl" />
+									</Form.Control>
 									<Form.FieldErrors />
-								</Form.Control>
-								<Form.FieldErrors />
-							</Form.ElementField>
+								</Form.ElementField>
+							</div>
 						</Card.Content>
 					</Card.Root>
 				{/each}

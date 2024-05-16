@@ -26,7 +26,10 @@ export const load = async ({ parent }) => {
 			lng: profileWithPin?.pin?.lng ?? 0,
 			lat: profileWithPin?.pin?.lat ?? 0,
 		},
-		zod(mapPinSchema)
+		zod(mapPinSchema),
+		{
+			id: 'map-pin',
+		}
 	);
 
 	return {

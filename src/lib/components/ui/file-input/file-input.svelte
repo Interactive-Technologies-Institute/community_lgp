@@ -50,7 +50,7 @@
 	}
 </script>
 
-<div>
+<div class="flex flex-col gap-y-2">
 	<Card.Root class="aspect-video overflow-hidden">
 		{#if fileUrl}
 			<img src={fileUrl} class="h-full w-full object-cover" />

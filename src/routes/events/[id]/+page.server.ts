@@ -44,7 +44,7 @@ export const load = async (event) => {
 		event: await getEvent(event.params.id),
 		interestCount: await getInterestCount(event.params.id),
 		deleteForm: await superValidate(zod(deleteEventSchema), {
-			id: 'delete',
+			id: 'delete-event',
 		}),
 	};
 };
@@ -58,7 +58,7 @@ export const actions = {
 			return error(401, errorMessage);
 		}
 
-		const form = await superValidate(event.request, zod(deleteEventSchema), { id: 'delete' });
+		const form = await superValidate(event.request, zod(deleteEventSchema), { id: 'delete-event' });
 
 		if (!form.valid) {
 			const errorMessage = 'Invalid form.';

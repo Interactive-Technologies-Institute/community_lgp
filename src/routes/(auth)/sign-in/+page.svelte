@@ -5,8 +5,8 @@
 	import { Input } from '@/components/ui/input';
 	import { signInSchema } from '@/schemas/sign-in';
 	import { Loader2 } from 'lucide-svelte';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { superForm } from 'sveltekit-superforms/client';
 
 	export let data;
 

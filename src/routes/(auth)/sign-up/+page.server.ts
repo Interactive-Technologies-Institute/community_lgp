@@ -1,8 +1,8 @@
 import { signUpSchema } from '@/schemas/sign-up';
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { superValidate } from 'sveltekit-superforms/server';
 
 export const load = async (event) => {
 	const { session } = await event.locals.safeGetSession();
@@ -11,13 +11,13 @@ export const load = async (event) => {
 	}
 
 	return {
-		form: await superValidate(zod(signUpSchema)),
+		form: await superValidate(zod(signUpSchema), { id: 'sign-up' }),
 	};
 };
 
 export const actions = {
 	default: async ({ request, cookies, url, locals: { supabase } }) => {
-		const form = await superValidate(request, zod(signUpSchema));
+		const form = await superValidate(request, zod(signUpSchema), { id: 'sign-up' });
 
 		if (!form.valid) {
 			const errorMessage = 'Invalid form.';

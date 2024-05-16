@@ -3,8 +3,8 @@ import type { Feature } from '@/types/types';
 import { handleSignInRedirect } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { superValidate } from 'sveltekit-superforms/server';
 
 export const load = async (event) => {
 	const { session } = await event.locals.safeGetSession();
@@ -29,7 +29,7 @@ export const load = async (event) => {
 			},
 			zod(updateFeaturesSchema),
 			{
-				id: 'update',
+				id: 'update-features',
 			}
 		),
 	};
@@ -44,7 +44,9 @@ export const actions = {
 			return error(401, errorMessage);
 		}
 
-		const form = await superValidate(event.request, zod(updateFeaturesSchema), { id: 'update' });
+		const form = await superValidate(event.request, zod(updateFeaturesSchema), {
+			id: 'update-features',
+		});
 
 		if (!form.valid) {
 			const errorMessage = 'Invalid form.';

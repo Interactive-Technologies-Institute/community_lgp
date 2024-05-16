@@ -20,7 +20,12 @@ export const load = async (event) => {
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		return howTo;
+		const image = event.locals.supabase.storage.from('howtos').getPublicUrl(howTo.image);
+		const stepsWithImageUrl = howTo.steps.map((step) => {
+			const stepImage = event.locals.supabase.storage.from('howtos').getPublicUrl(step.image);
+			return { ...step, image: stepImage.data.publicUrl };
+		});
+		return { ...howTo, image: image.data.publicUrl, steps: stepsWithImageUrl };
 	}
 
 	async function getUsefulCount(id: string): Promise<{ count: number; userUseful: boolean }> {
@@ -43,7 +48,7 @@ export const load = async (event) => {
 		howTo: await getHowTo(event.params.id),
 		usefulCount: await getUsefulCount(event.params.id),
 		deleteForm: await superValidate(zod(deleteHowToSchema), {
-			id: 'delete',
+			id: 'delete-howto',
 		}),
 	};
 };
@@ -57,7 +62,7 @@ export const actions = {
 			return error(401, errorMessage);
 		}
 
-		const form = await superValidate(event.request, zod(deleteHowToSchema), { id: 'delete' });
+		const form = await superValidate(event.request, zod(deleteHowToSchema), { id: 'delete-howto' });
 
 		if (!form.valid) {
 			const errorMessage = 'Invalid form.';
