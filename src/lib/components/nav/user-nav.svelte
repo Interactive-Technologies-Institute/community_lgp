@@ -12,6 +12,8 @@
 		.split(' ')
 		.map((name) => name[0])
 		.join('');
+
+	let signOutForm: HTMLFormElement;
 </script>
 
 <DropdownMenu.Root>
@@ -43,7 +45,7 @@
 			{#if role === 'moderator' || role === 'admin'}
 				<DropdownMenu.Item href="/moderation">
 					Moderation
-					<DropdownMenu.Shortcut>⌘A</DropdownMenu.Shortcut>
+					<DropdownMenu.Shortcut>⌘M</DropdownMenu.Shortcut>
 				</DropdownMenu.Item>
 			{/if}
 			{#if role === 'admin'}
@@ -54,8 +56,8 @@
 			{/if}
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<form method="post" action="/?/signout" use:enhance>
-			<button><DropdownMenu.Item>Log out</DropdownMenu.Item></button>
+		<form method="post" action="/?/signout" use:enhance bind:this={signOutForm}>
+			<DropdownMenu.Item on:click={() => signOutForm.requestSubmit()}>Log out</DropdownMenu.Item>
 		</form>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
