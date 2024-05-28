@@ -2,7 +2,7 @@
 // for information about these interfaces
 
 import type { Database } from '@/types/database-types';
-import type { UserWithRole } from '@/types/types';
+import type { Branding, UserWithRole } from '@/types/types';
 import { Session, SupabaseClient } from '@supabase/supabase-js';
 
 declare global {
@@ -16,6 +16,7 @@ declare global {
 			user: UserWithRole | null;
 			profile: UserProfile | null;
 			features: Feature[];
+			branding: Branding;
 			flash?: { type: 'success' | 'error'; message: string };
 		}
 		// interface Error {}

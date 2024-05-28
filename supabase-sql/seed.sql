@@ -38,10 +38,16 @@ insert into public.feature_flags (id, enabled)
 values ('howtos'::public.feature, true),
 	('events'::public.feature, true),
 	('map'::public.feature, true),
-('academy'::public.feature, true);
-insert into public.user_types (id)
-values ('default'),
-	('morador'),
-	('tecnico'),
-	('multiplicador'),
-	('parceiro');
+	('academy'::public.feature, true);
+insert into public.user_types (slug, label, is_default)
+values ('morador', 'Morador', true),
+	('tecnico', 'Técnico', false),
+	('multiplicador', 'Multiplicador', false),
+	('parceiro', 'Parceiro', false);
+insert into public.branding (name, slogan, color_theme, radius)
+values (
+		'Community',
+		'A community for everyone',
+		'neutral',
+		0.5
+	);

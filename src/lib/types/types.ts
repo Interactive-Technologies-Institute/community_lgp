@@ -15,6 +15,19 @@ export type UserProfile = {
 	image: string | null;
 };
 
+export type UserType = {
+	slug: string;
+	label: string;
+	is_default: boolean;
+};
+
+export type Branding = {
+	name: string;
+	slogan: string;
+	color_theme: string;
+	radius: number;
+};
+
 export type MapPin = {
 	lng: number;
 	lat: number;

@@ -6,8 +6,8 @@
 
 <div class="mr-4 hidden md:flex">
 	<a href="/" class="mr-6 flex items-center gap-x-2">
-		<div class="h-4 w-4 rounded-full bg-foreground"></div>
-		<span class="font-bold"> community </span>
+		<div class="h-4 w-4 rounded-full bg-primary"></div>
+		<span class="font-bold"> {$page.data.branding.name} </span>
 	</a>
 	<nav class="flex items-center space-x-6 text-sm font-medium">
 		<FeatureWrapper feature="academy">

@@ -1,7 +1,10 @@
+import { updateBrandingSchema } from '@/schemas/branding';
 import { updateFeaturesSchema } from '@/schemas/features';
-import type { Feature } from '@/types/types';
+import { updateUserTypesSchema } from '@/schemas/user-types';
+import type { Branding, Feature, UserType } from '@/types/types';
 import { handleSignInRedirect } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
+import slugify from 'slugify';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -19,6 +22,14 @@ export const load = async (event) => {
 		.eq('enabled', true);
 	if (data) features = data.map((f: { id: Feature }) => f.id);
 
+	let branding: Branding | null = null;
+	const { data: brandingData } = await event.locals.supabase.from('branding').select().single();
+	if (brandingData) branding = brandingData;
+
+	let userTypes: UserType[] = [];
+	const { data: userTypesData } = await event.locals.supabase.from('user_types').select();
+	if (userTypesData) userTypes = userTypesData;
+
 	return {
 		updateFeatures: await superValidate(
 			{
@@ -32,11 +43,24 @@ export const load = async (event) => {
 				id: 'update-features',
 			}
 		),
+		updateBranding: await superValidate(branding, zod(updateBrandingSchema), {
+			id: 'update-branding',
+		}),
+		updateUserTypes: await superValidate(
+			{
+				types: userTypes.map((t) => t.label),
+				default: userTypes.find((t) => t.is_default)?.label,
+			},
+			zod(updateUserTypesSchema),
+			{
+				id: 'update-user-types',
+			}
+		),
 	};
 };
 
 export const actions = {
-	default: async (event) => {
+	updateFeatures: async (event) => {
 		const { session } = await event.locals.safeGetSession();
 		if (!session) {
 			const errorMessage = 'Unauthorized.';
@@ -60,6 +84,68 @@ export const actions = {
 			{ id: 'map', enabled: form.data.map },
 			{ id: 'academy', enabled: form.data.academy },
 		]);
+
+		if (supabaseError) {
+			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+			return fail(500, { message: supabaseError.message, form });
+		}
+
+		return { form };
+	},
+	updateBranding: async (event) => {
+		const { session } = await event.locals.safeGetSession();
+		if (!session) {
+			const errorMessage = 'Unauthorized.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(401, errorMessage);
+		}
+
+		const form = await superValidate(event.request, zod(updateBrandingSchema), {
+			id: 'update-branding',
+		});
+
+		if (!form.valid) {
+			const errorMessage = 'Invalid form.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return fail(400, { message: errorMessage, form });
+		}
+
+		const { error: supabaseError } = await event.locals.supabase
+			.from('branding')
+			.upsert({ id: 1, ...form.data });
+
+		if (supabaseError) {
+			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+			return fail(500, { message: supabaseError.message, form });
+		}
+
+		return { form };
+	},
+	updateUserTypes: async (event) => {
+		const { session } = await event.locals.safeGetSession();
+		if (!session) {
+			const errorMessage = 'Unauthorized.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(401, errorMessage);
+		}
+
+		const form = await superValidate(event.request, zod(updateUserTypesSchema), {
+			id: 'update-user-types',
+		});
+
+		if (!form.valid) {
+			const errorMessage = 'Invalid form.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return fail(400, { message: errorMessage, form });
+		}
+
+		const { error: supabaseError } = await event.locals.supabase.rpc('update_user_types', {
+			types: form.data.types.map((t) => ({
+				slug: slugify(t, { lower: true, trim: true }),
+				label: t,
+				is_default: t === form.data.default,
+			})),
+		});
 
 		if (supabaseError) {
 			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);

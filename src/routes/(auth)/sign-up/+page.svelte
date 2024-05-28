@@ -12,6 +12,7 @@
 
 	const form = superForm(data.form, {
 		validators: zodClient(signUpSchema),
+		taintedMessage: true,
 	});
 
 	const { form: formData, enhance, submitting } = form;

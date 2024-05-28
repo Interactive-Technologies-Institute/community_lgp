@@ -12,13 +12,14 @@
 
 	const form = superForm(data, {
 		validators: zodClient(updateFeaturesSchema),
+		taintedMessage: true,
 		resetForm: false,
 	});
 
 	const { form: formData, enhance, submitting } = form;
 </script>
 
-<form method="POST" use:enhance>
+<form method="POST" action="?/updateFeatures" use:enhance>
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Features</Card.Title>

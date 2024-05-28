@@ -5,16 +5,18 @@
 	import Footer from '@/components/footer.svelte';
 	import Header from '@/components/header.svelte';
 	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
+	import ThemeWrapper from '@/components/theme-wrapper.svelte';
 	import { Toaster } from '@/components/ui/sonner';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { getFlash } from 'sveltekit-flash-message';
 	import '../app.css';
+	import '../themes.css';
 
 	export let data;
 
-	$: ({ supabase, session, user, profile } = data);
+	$: ({ supabase, session, user, profile, branding } = data);
 
 	const flash = getFlash(page);
 	$: if ($flash) {
@@ -43,13 +45,15 @@
 <ModeWatcher />
 <Toaster />
 
-<div class="relative flex min-h-screen flex-col">
-	<Header role={user?.role ?? null} {profile} />
-	<div class="flex-1">
-		<slot />
+<ThemeWrapper theme={branding.color_theme} radius={branding.radius}>
+	<div class="relative flex min-h-screen flex-col">
+		<Header role={user?.role ?? null} {profile} />
+		<div class="flex-1">
+			<slot />
+		</div>
+		<Footer />
+		{#if dev}
+			<TailwindIndicator />
+		{/if}
 	</div>
-	<Footer />
-	{#if dev}
-		<TailwindIndicator />
-	{/if}
-</div>
+</ThemeWrapper>

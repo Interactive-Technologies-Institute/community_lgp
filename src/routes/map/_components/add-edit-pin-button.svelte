@@ -12,6 +12,7 @@
 	export let data: SuperValidated<Infer<MapPinSchema>>;
 
 	const form = superForm(data, {
+		taintedMessage: true,
 		validators: zodClient(mapPinSchema),
 	});
 

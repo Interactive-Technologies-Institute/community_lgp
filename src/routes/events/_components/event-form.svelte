@@ -23,6 +23,7 @@
 
 	const form = superForm(data, {
 		validators: zodClient(createEventSchema),
+		taintedMessage: true,
 	});
 
 	const { form: formData, enhance, submitting } = form;

@@ -18,6 +18,7 @@
 
 	const form = superForm(data, {
 		validators: zodClient(createHowToSchema),
+		taintedMessage: true,
 		dataType: 'json',
 	});
 

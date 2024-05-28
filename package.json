@@ -58,6 +58,7 @@
 		"lucide-svelte": "^0.371.0",
 		"mapbox-gl": "^3.3.0",
 		"mode-watcher": "^0.3.0",
+		"slugify": "^1.6.6",
 		"svelte-sonner": "^0.3.22",
 		"sveltekit-superforms": "^2.12.6",
 		"tailwind-merge": "^2.2.2",
