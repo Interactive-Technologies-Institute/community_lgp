@@ -1,19 +1,32 @@
 <script lang="ts">
+	import * as Avatar from '@/components/ui/avatar';
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
 	import { Input } from '@/components/ui/input';
 	import * as Select from '@/components/ui/select';
 	import { CircleUser } from 'lucide-svelte';
+	import type { Writable } from 'svelte/store';
+	import { queryParam, ssp } from 'sveltekit-search-params';
 	import AddEditPinButton from './_components/add-edit-pin-button.svelte';
 	import Map from './_components/map.svelte';
 	import Marker from './_components/marker.svelte';
 	import MyPinButton from './_components/my-pin-button.svelte';
 
 	export let data;
+
+	const lng = queryParam('lng', ssp.number(-9.469218750000001), {
+		debounceHistory: 1000,
+	}) as Writable<number>;
+	const lat = queryParam('lat', ssp.number(38.7376572), {
+		debounceHistory: 1000,
+	}) as Writable<number>;
+	const zoom = queryParam('zoom', ssp.number(6), {
+		debounceHistory: 1000,
+	}) as Writable<number>;
 </script>
 
 <div class="relative h-screen">
-	<Map>
+	<Map bind:lng={$lng} bind:lat={$lat} bind:zoom={$zoom}>
 		{#each data.users as user (user.id)}
 			{#if user?.pin}
 				<Marker lng={user.pin.lng} lat={user.pin.lat}>
@@ -24,13 +37,17 @@
 					</div>
 					<div slot="popup">
 						<Card class="w-52">
-							<div class="aspect-video"></div>
+							<div class="flex aspect-video items-center justify-center">
+								<Avatar.Root class="h-20 w-20">
+									<Avatar.Image src="/avatars/user.png" alt={user.display_name} />
+								</Avatar.Root>
+							</div>
 							<div class="flex flex-col items-start gap-y-2 px-4 py-3">
 								<Button variant="secondary" size="sm" href="/user/0">
 									<CircleUser class="mr-2 h-4 w-4" />
-									User Lorem Ipsum
+									{user.display_name}
 								</Button>
-								<p>This is just a description</p>
+								<p>{user.description}</p>
 							</div>
 						</Card>
 					</div>

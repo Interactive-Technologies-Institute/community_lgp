@@ -3,26 +3,39 @@
 	import { setContext } from 'svelte';
 	import { key, mapboxgl, type MBMapContext } from './mapbox';
 
+	export let lng: number;
+	export let lat: number;
+	export let zoom: number;
+
 	let map: mapboxgl.Map | undefined;
 
 	setContext<MBMapContext>(key, {
 		getMap: () => map,
 	});
 
+	function updateProps() {
+		if (!map) return;
+		zoom = map.getZoom();
+		lng = map.getCenter().lng;
+		lat = map.getCenter().lat;
+	}
+
 	function initialize(node: HTMLElement) {
 		map = new mapboxgl.Map({
 			container: node,
 			style: 'mapbox://styles/mapbox/light-v11',
-			center: [-9.469218750000001, 39.56827914916011],
-			zoom: 6,
+			center: [lng, lat],
+			zoom: zoom,
 			minZoom: 1,
 			maxZoom: 15,
 		});
 		map.dragRotate.disable();
 		map.touchZoomRotate.disableRotation();
+		map.on('move', updateProps);
 
 		return {
 			destroy() {
+				map?.off('move', updateProps);
 				map?.remove();
 				map = undefined;
 			},
