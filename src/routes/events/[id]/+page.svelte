@@ -48,10 +48,12 @@
 			{/if}
 			<span class="ml-4 font-mono text-xs">{data.interestCount.count}</span>
 		</Button>
-		<img src={data.event.image} class="aspect-video max-w-[40rem] rounded-md" />
-		<p class="max-w-[40rem]">
-			{data.event.description}
-		</p>
+		<div class="mt-4 flex flex-col gap-y-4">
+			<img src={data.event.image} class="aspect-video max-w-[40rem] rounded-md" />
+			<p class="max-w-[40rem]">
+				{data.event.description}
+			</p>
+		</div>
 	</div>
 
 	{#if data.event.user_id === data.user?.id}
