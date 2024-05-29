@@ -4,7 +4,7 @@
 	import Card from '@/components/ui/card/card.svelte';
 	import { Input } from '@/components/ui/input';
 	import * as Select from '@/components/ui/select';
-	import { CircleUser } from 'lucide-svelte';
+	import { CircleUser, Store } from 'lucide-svelte';
 	import type { Writable } from 'svelte/store';
 	import { queryParam, ssp } from 'sveltekit-search-params';
 	import AddEditPinButton from './_components/add-edit-pin-button.svelte';
@@ -30,9 +30,7 @@
 		{#each data.users as user (user.id)}
 			{#if user?.pin}
 				<Marker lng={user.pin.lng} lat={user.pin.lat}>
-					<div
-						class="h-10 w-10 overflow-hidden rounded-full border-2 border-foreground bg-foreground"
-					>
+					<div class="h-10 w-10 overflow-hidden rounded-full border-2 border-primary bg-foreground">
 						<img src="/avatars/user.png" alt="user" class="aspect-square h-full w-full" />
 					</div>
 					<div slot="popup">
@@ -54,6 +52,13 @@
 				</Marker>
 			{/if}
 		{/each}
+		<Marker lat={38.7341425} lng={-9.1246718}>
+			<div
+				class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary"
+			>
+				<Store class="h-5 w-5 text-primary-foreground" />
+			</div>
+		</Marker>
 		<div class="absolute left-0 right-0 top-10 flex flex-col items-center gap-y-4">
 			<div class="flex flex-row gap-x-6">
 				<Input placeholder="Search..." class="w-64 bg-background"></Input>
