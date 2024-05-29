@@ -18,7 +18,7 @@
 		</Button>
 	</Sheet.Trigger>
 	<Sheet.Content side="left" class="pr-0">
-		<a href="/" class="mr-6 flex items-center gap-x-4">
+		<a href="/" on:click={() => (open = false)} class="mr-6 flex items-center gap-x-4">
 			<div class="h-8 w-8 rounded-full bg-primary"></div>
 			<span class="text-lg font-bold"> {$page.data.branding.name} </span>
 		</a>
