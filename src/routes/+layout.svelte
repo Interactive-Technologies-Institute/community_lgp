@@ -5,7 +5,6 @@
 	import Footer from '@/components/footer.svelte';
 	import Header from '@/components/header.svelte';
 	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
-	import ThemeWrapper from '@/components/theme-wrapper.svelte';
 	import { Toaster } from '@/components/ui/sonner';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
@@ -42,18 +41,21 @@
 	});
 </script>
 
+<svelte:body
+	class="theme-{$page.data.branding.color_theme}"
+	style="--radius: {$page.data.branding.radius}rem"
+/>
+
 <ModeWatcher />
 <Toaster />
 
-<ThemeWrapper theme={branding.color_theme} radius={branding.radius}>
-	<div class="relative flex min-h-screen flex-col">
-		<Header role={user?.role ?? null} {profile} />
-		<div class="flex-1">
-			<slot />
-		</div>
-		<Footer />
-		{#if dev}
-			<TailwindIndicator />
-		{/if}
+<div class="relative flex min-h-screen flex-col">
+	<Header role={user?.role ?? null} {profile} />
+	<div class="flex-1">
+		<slot />
 	</div>
-</ThemeWrapper>
+	<Footer />
+	{#if dev}
+		<TailwindIndicator />
+	{/if}
+</div>

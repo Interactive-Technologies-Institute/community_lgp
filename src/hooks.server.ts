@@ -3,9 +3,11 @@ import type { Database } from '@/types/database-types';
 import type { UserRole } from '@/types/types';
 import { createServerClient } from '@supabase/ssr';
 import type { Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+import { handle as documentHandle } from '@sveltekit-addons/document/hooks';
 import { jwtDecode } from 'jwt-decode';
 
-export const handle: Handle = async ({ event, resolve }) => {
+const sessionHandle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createServerClient<Database>(
 		PUBLIC_SUPABASE_URL,
 		PUBLIC_SUPABASE_ANON_KEY,
@@ -60,3 +62,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 		},
 	});
 };
+
+export const handle = sequence(sessionHandle, documentHandle);
