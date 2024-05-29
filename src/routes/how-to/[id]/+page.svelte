@@ -68,9 +68,7 @@
 						<h2 class="mb-2 text-2xl font-medium">{step.title}</h2>
 						<p>{step.description}</p>
 					</div>
-					<img
-						src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png"
-					/>
+					<img src={step.image} />
 				</Card>
 			</div>
 		{/each}
