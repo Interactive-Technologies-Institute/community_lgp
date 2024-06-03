@@ -1,10 +1,10 @@
 <script lang="ts">
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
-	import { cn } from '@/utils';
 	import dayjs from 'dayjs';
-	import { Bookmark, Calendar, CircleUser, MapPin, Pen, Tag, Trash } from 'lucide-svelte';
+	import { Calendar, CircleUser, MapPin, Pen, Tag, Trash } from 'lucide-svelte';
 	import EventDeleteDialog from './_components/event-delete-dialog.svelte';
+	import EventInterestButton from './_components/event-interest-button.svelte';
 
 	export let data;
 
@@ -37,17 +37,7 @@
 				</div>
 			</div>
 		</div>
-		<Button variant="outline" size="sm" href="/how-to/create">
-			<Bookmark
-				class={cn('mr-2 h-4 w-4', { 'fill-foreground': data.interestCount.userInterested })}
-			/>
-			{#if data.interestCount.userInterested}
-				Marked as interested
-			{:else}
-				Mark as interested
-			{/if}
-			<span class="ml-4 font-mono text-xs">{data.interestCount.count}</span>
-		</Button>
+		<EventInterestButton count={data.interestCount} data={data.toggleInterestForm} />
 		<div class="mt-4 flex flex-col gap-y-4">
 			<img src={data.event.image} class="aspect-video max-w-[40rem] rounded-md" />
 			<p class="max-w-[40rem]">

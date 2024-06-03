@@ -22,3 +22,9 @@ export const deleteEventSchema = z.object({
 });
 
 export type DeleteEventSchema = typeof deleteEventSchema;
+
+export const toggleEventInterestSchema = z.object({
+	value: z.boolean(),
+});
+
+export type ToggleEventInterestSchema = typeof toggleEventInterestSchema;

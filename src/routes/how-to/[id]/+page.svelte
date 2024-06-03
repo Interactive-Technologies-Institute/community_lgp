@@ -2,18 +2,9 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
-	import { cn } from '@/utils';
-	import {
-		BarChart2,
-		Bookmark,
-		CircleUser,
-		Clock,
-		Footprints,
-		Pen,
-		Tag,
-		Trash,
-	} from 'lucide-svelte';
+	import { BarChart2, CircleUser, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
 	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
+	import UsefulButton from './_components/useful-button.svelte';
 
 	export let data;
 
@@ -47,15 +38,7 @@
 				</div>
 			</div>
 		</div>
-		<Button variant="outline" size="sm" href="/how-to/create">
-			<Bookmark class={cn('mr-2 h-4 w-4', { 'fill-foreground': data.usefulCount.userUseful })} />
-			{#if data.usefulCount.userUseful}
-				Marked as useful
-			{:else}
-				Mark as useful
-			{/if}
-			<span class="ml-4 font-mono text-xs">{data.usefulCount.count}</span>
-		</Button>
+		<UsefulButton count={data.usefulCount} data={data.toggleUsefulForm} />
 	</div>
 	<div class="flex flex-col gap-y-10">
 		{#each data.howTo.steps as step, i}

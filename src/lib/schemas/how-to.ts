@@ -51,3 +51,9 @@ export const deleteHowToSchema = z.object({
 });
 
 export type DeleteHowToSchema = typeof deleteHowToSchema;
+
+export const toggleHowToUsefulSchema = z.object({
+	value: z.boolean(),
+});
+
+export type ToggleHowToUsefulSchema = typeof toggleHowToUsefulSchema;

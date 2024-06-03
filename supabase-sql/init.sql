@@ -142,7 +142,7 @@ $$;
 create trigger on_auth_user_created
 after
 insert on auth.users for each row execute procedure public.handle_new_user();
-create function public.get_howto_useful_count(howto_id bigint, user_id uuid) returns table (count bigint, has_useful boolean) language sql as $$
+create function public.get_howto_useful_count(howto_id bigint, user_id uuid default null) returns table (count bigint, has_useful boolean) language sql as $$
 select count(*) as count,
 	case
 		when exists (
@@ -168,7 +168,7 @@ values (type.slug, type.label, type.is_default);
 end loop;
 end;
 $$;
-create function public.get_event_interest_count(event_id bigint, user_id uuid) returns table (count bigint, has_interest boolean) language sql as $$
+create function public.get_event_interest_count(event_id bigint, user_id uuid default null) returns table (count bigint, has_interest boolean) language sql as $$
 select count(*) as interest_count,
 	case
 		when exists (

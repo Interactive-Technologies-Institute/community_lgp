@@ -1,4 +1,4 @@
-import { deleteEventSchema } from '@/schemas/event';
+import { deleteEventSchema, toggleEventInterestSchema } from '@/schemas/event';
 import type { Event } from '@/types/types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -28,7 +28,7 @@ export const load = async (event) => {
 		const { data: interested, error: interestedError } = await event.locals.supabase
 			.rpc('get_event_interest_count', {
 				event_id: parseInt(id),
-				user_id: user?.id ?? 'visitor',
+				user_id: user?.id,
 			})
 			.single();
 
@@ -40,12 +40,21 @@ export const load = async (event) => {
 		return { count: interested.count, userInterested: interested.has_interest };
 	}
 
+	const interestCount = await getInterestCount(event.params.id);
+
 	return {
 		event: await getEvent(event.params.id),
-		interestCount: await getInterestCount(event.params.id),
+		interestCount: interestCount.count,
 		deleteForm: await superValidate(zod(deleteEventSchema), {
 			id: 'delete-event',
 		}),
+		toggleInterestForm: await superValidate(
+			{ value: interestCount.userInterested },
+			zod(toggleEventInterestSchema),
+			{
+				id: 'toggle-event-interest',
+			}
+		),
 	};
 };
 
@@ -77,5 +86,52 @@ export const actions = {
 		}
 
 		return redirect(303, '/events');
+	},
+	toggleInterest: async (event) => {
+		const { session } = await event.locals.safeGetSession();
+		if (!session) {
+			const errorMessage = 'Unauthorized.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(401, errorMessage);
+		}
+
+		const form = await superValidate(event.request, zod(toggleEventInterestSchema), {
+			id: 'toggle-event-interest',
+		});
+
+		if (!form.valid) {
+			const errorMessage = 'Invalid form.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return fail(400, { message: errorMessage, form });
+		}
+
+		if (form.data.value) {
+			const { error: supabaseError } = await event.locals.supabase
+				.from('events_interested')
+				.insert([
+					{
+						event_id: parseInt(event.params.id),
+						user_id: session.user.id,
+					},
+				]);
+
+			if (supabaseError) {
+				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+				return fail(500, { message: supabaseError.message, form });
+			}
+		} else {
+			const { error: supabaseError } = await event.locals.supabase
+				.from('events_interested')
+				.delete()
+				.eq('event_id', parseInt(event.params.id))
+				.eq('user_id', session.user.id);
+
+			if (supabaseError) {
+				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+				return fail(500, { message: supabaseError.message, form });
+			}
+		}
+
+		return { form };
 	},
 };
