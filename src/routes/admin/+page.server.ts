@@ -2,8 +2,8 @@ import { updateBrandingSchema } from '@/schemas/branding';
 import { updateFeaturesSchema } from '@/schemas/features';
 import { updateUserTypesSchema } from '@/schemas/user-types';
 import type { Branding, Feature, UserType } from '@/types/types';
-import { handleSignInRedirect } from '@/utils';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { handleFormAction, handleSignInRedirect } from '@/utils';
+import { fail, redirect } from '@sveltejs/kit';
 import slugify from 'slugify';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
@@ -60,98 +60,65 @@ export const load = async (event) => {
 };
 
 export const actions = {
-	updateFeatures: async (event) => {
-		const { session } = await event.locals.safeGetSession();
-		if (!session) {
-			const errorMessage = 'Unauthorized.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(401, errorMessage);
-		}
+	updateFeatures: async (event) =>
+		handleFormAction(
+			event,
+			updateFeaturesSchema,
+			'update-features',
+			async (event, userId, form) => {
+				const { error: supabaseError } = await event.locals.supabase.from('feature_flags').upsert([
+					{ id: 'howtos', enabled: form.data.howtos },
+					{ id: 'events', enabled: form.data.events },
+					{ id: 'map', enabled: form.data.map },
+					{ id: 'academy', enabled: form.data.academy },
+				]);
 
-		const form = await superValidate(event.request, zod(updateFeaturesSchema), {
-			id: 'update-features',
-		});
+				if (supabaseError) {
+					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+					return fail(500, { message: supabaseError.message, form });
+				}
 
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return fail(400, { message: errorMessage, form });
-		}
+				return { form };
+			}
+		),
+	updateBranding: async (event) =>
+		handleFormAction(
+			event,
+			updateBrandingSchema,
+			'update-branding',
+			async (event, userId, form) => {
+				const { error: supabaseError } = await event.locals.supabase
+					.from('branding')
+					.upsert({ id: 1, ...form.data });
 
-		const { error: supabaseError } = await event.locals.supabase.from('feature_flags').upsert([
-			{ id: 'howtos', enabled: form.data.howtos },
-			{ id: 'events', enabled: form.data.events },
-			{ id: 'map', enabled: form.data.map },
-			{ id: 'academy', enabled: form.data.academy },
-		]);
+				if (supabaseError) {
+					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+					return fail(500, { message: supabaseError.message, form });
+				}
 
-		if (supabaseError) {
-			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-			return fail(500, { message: supabaseError.message, form });
-		}
+				return { form };
+			}
+		),
+	updateUserTypes: async (event) =>
+		handleFormAction(
+			event,
+			updateUserTypesSchema,
+			'update-user-types',
+			async (event, userId, form) => {
+				const { error: supabaseError } = await event.locals.supabase.rpc('update_user_types', {
+					types: form.data.types.map((t) => ({
+						slug: slugify(t, { lower: true, trim: true }),
+						label: t,
+						is_default: t === form.data.default,
+					})),
+				});
 
-		return { form };
-	},
-	updateBranding: async (event) => {
-		const { session } = await event.locals.safeGetSession();
-		if (!session) {
-			const errorMessage = 'Unauthorized.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(401, errorMessage);
-		}
+				if (supabaseError) {
+					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+					return fail(500, { message: supabaseError.message, form });
+				}
 
-		const form = await superValidate(event.request, zod(updateBrandingSchema), {
-			id: 'update-branding',
-		});
-
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return fail(400, { message: errorMessage, form });
-		}
-
-		const { error: supabaseError } = await event.locals.supabase
-			.from('branding')
-			.upsert({ id: 1, ...form.data });
-
-		if (supabaseError) {
-			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-			return fail(500, { message: supabaseError.message, form });
-		}
-
-		return { form };
-	},
-	updateUserTypes: async (event) => {
-		const { session } = await event.locals.safeGetSession();
-		if (!session) {
-			const errorMessage = 'Unauthorized.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(401, errorMessage);
-		}
-
-		const form = await superValidate(event.request, zod(updateUserTypesSchema), {
-			id: 'update-user-types',
-		});
-
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return fail(400, { message: errorMessage, form });
-		}
-
-		const { error: supabaseError } = await event.locals.supabase.rpc('update_user_types', {
-			types: form.data.types.map((t) => ({
-				slug: slugify(t, { lower: true, trim: true }),
-				label: t,
-				is_default: t === form.data.default,
-			})),
-		});
-
-		if (supabaseError) {
-			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-			return fail(500, { message: supabaseError.message, form });
-		}
-
-		return { form };
-	},
+				return { form };
+			}
+		),
 };

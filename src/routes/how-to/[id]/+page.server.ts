@@ -1,5 +1,6 @@
 import { deleteHowToSchema, toggleHowToUsefulSchema } from '@/schemas/how-to';
 import type { HowTo } from '@/types/types';
+import { handleFormAction } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
@@ -63,77 +64,55 @@ export const load = async (event) => {
 };
 
 export const actions = {
-	delete: async (event) => {
-		const { session } = await event.locals.safeGetSession();
-		if (!session) {
-			const errorMessage = 'Unauthorized.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(401, errorMessage);
-		}
-
-		const form = await superValidate(event.request, zod(deleteHowToSchema), { id: 'delete-howto' });
-
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return fail(400, { message: errorMessage, form });
-		}
-
-		const { error: supabaseError } = await event.locals.supabase
-			.from('howtos')
-			.delete()
-			.eq('id', form.data.id);
-
-		if (supabaseError) {
-			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-			return fail(500, { message: supabaseError.message, form });
-		}
-
-		return redirect(303, '/how-to');
-	},
-	toggleUseful: async (event) => {
-		const { session } = await event.locals.safeGetSession();
-		if (!session) {
-			const errorMessage = 'Unauthorized.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(401, errorMessage);
-		}
-
-		const form = await superValidate(event.request, zod(toggleHowToUsefulSchema), {
-			id: 'toggle-howto-useful',
-		});
-
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return fail(400, { message: errorMessage, form });
-		}
-
-		if (form.data.value) {
-			const { error: supabaseError } = await event.locals.supabase.from('howtos_useful').insert([
-				{
-					howto_id: parseInt(event.params.id),
-					user_id: session.user.id,
-				},
-			]);
-
-			if (supabaseError) {
-				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-				return fail(500, { message: supabaseError.message, form });
-			}
-		} else {
+	delete: async (event) =>
+		handleFormAction(event, deleteHowToSchema, 'delete-howto', async (event, userId, form) => {
 			const { error: supabaseError } = await event.locals.supabase
-				.from('howtos_useful')
+				.from('howtos')
 				.delete()
-				.eq('howto_id', parseInt(event.params.id))
-				.eq('user_id', session.user.id);
+				.eq('id', form.data.id);
 
 			if (supabaseError) {
 				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 				return fail(500, { message: supabaseError.message, form });
 			}
-		}
 
-		return { form };
-	},
+			return redirect(303, '/how-to');
+		}),
+
+	toggleUseful: async (event) =>
+		handleFormAction(
+			event,
+			toggleHowToUsefulSchema,
+			'toggle-howto-useful',
+			async (event, userId, form) => {
+				if (form.data.value) {
+					const { error: supabaseError } = await event.locals.supabase
+						.from('howtos_useful')
+						.insert([
+							{
+								howto_id: parseInt(event.params.id),
+								user_id: userId,
+							},
+						]);
+
+					if (supabaseError) {
+						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+						return fail(500, { message: supabaseError.message, form });
+					}
+				} else {
+					const { error: supabaseError } = await event.locals.supabase
+						.from('howtos_useful')
+						.delete()
+						.eq('howto_id', parseInt(event.params.id))
+						.eq('user_id', userId);
+
+					if (supabaseError) {
+						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+						return fail(500, { message: supabaseError.message, form });
+					}
+				}
+
+				return { form };
+			}
+		),
 };

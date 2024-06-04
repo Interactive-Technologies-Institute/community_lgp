@@ -1,4 +1,5 @@
 import { signInSchema } from '@/schemas/sign-in';
+import { handleFormAction } from '@/utils.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
@@ -16,28 +17,27 @@ export const load = async (event) => {
 };
 
 export const actions = {
-	default: async ({ request, url, cookies, locals: { supabase } }) => {
-		const form = await superValidate(request, zod(signInSchema), { id: 'sign-in' });
+	default: async (event) =>
+		handleFormAction(
+			event,
+			signInSchema,
+			'sign-in',
+			async (event, userId, form) => {
+				const { error } = await event.locals.supabase.auth.signInWithPassword({
+					email: form.data.email,
+					password: form.data.password,
+				});
 
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, cookies);
-			return fail(400, { message: errorMessage, form });
-		}
+				if (error) {
+					setFlash({ type: 'error', message: error.message }, event.cookies);
+					return fail(500, { message: error.message, form });
+				}
 
-		const { error } = await supabase.auth.signInWithPassword({
-			email: form.data.email,
-			password: form.data.password,
-		});
-
-		if (error) {
-			setFlash({ type: 'error', message: error.message }, cookies);
-			return fail(500, { message: error.message, form });
-		}
-
-		if (url.searchParams.has('redirectTo')) {
-			return redirect(303, url.searchParams.get('redirectTo')!);
-		}
-		return redirect(303, '/');
-	},
+				if (event.url.searchParams.has('redirectTo')) {
+					return redirect(303, event.url.searchParams.get('redirectTo')!);
+				}
+				return redirect(303, '/');
+			},
+			{ requireAuth: false }
+		),
 };

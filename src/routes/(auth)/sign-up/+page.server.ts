@@ -1,4 +1,5 @@
 import { signUpSchema } from '@/schemas/sign-up';
+import { handleFormAction } from '@/utils';
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
@@ -16,35 +17,34 @@ export const load = async (event) => {
 };
 
 export const actions = {
-	default: async ({ request, cookies, url, locals: { supabase } }) => {
-		const form = await superValidate(request, zod(signUpSchema), { id: 'sign-up' });
+	default: async (event) =>
+		handleFormAction(
+			event,
+			signUpSchema,
+			'sign-up',
+			async (event, userId, form) => {
+				const { error } = await event.locals.supabase.auth.signUp({
+					email: form.data.email,
+					password: form.data.password,
+					options: {
+						data: {
+							display_name: form.data.displayName,
+						},
+						emailRedirectTo: `${event.url.origin}/auth/callback`,
+					},
+				});
 
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, cookies);
-			return fail(400, { message: errorMessage, form });
-		}
+				if (error) {
+					setFlash({ type: 'error', message: error.message }, event.cookies);
+					return fail(500, { message: error.message, form });
+				}
 
-		const { error } = await supabase.auth.signUp({
-			email: form.data.email,
-			password: form.data.password,
-			options: {
-				data: {
-					display_name: form.data.displayName,
-				},
-				emailRedirectTo: `${url.origin}/auth/callback`,
+				setFlash(
+					{ type: 'success', message: 'Please check your email for a confirmation link.' },
+					event.cookies
+				);
+				return { form };
 			},
-		});
-
-		if (error) {
-			setFlash({ type: 'error', message: error.message }, cookies);
-			return fail(500, { message: error.message, form });
-		}
-
-		setFlash(
-			{ type: 'success', message: 'Please check your email for a confirmation link.' },
-			cookies
-		);
-		return { form };
-	},
+			{ requireAuth: false }
+		),
 };

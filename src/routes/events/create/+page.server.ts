@@ -1,7 +1,7 @@
 import { createEventSchema } from '@/schemas/event';
-import { handleSignInRedirect } from '@/utils';
+import { handleFormAction, handleSignInRedirect } from '@/utils';
 import type { StorageError } from '@supabase/storage-js';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate, withFiles } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -21,60 +21,48 @@ export const load = async (event) => {
 };
 
 export const actions = {
-	default: async (event) => {
-		const { session, user } = await event.locals.safeGetSession();
-		if (!session || !user) {
-			const errorMessage = 'Unauthorized.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(401, errorMessage);
-		}
+	default: async (event) =>
+		handleFormAction(event, createEventSchema, 'create-event', async (event, userId, form) => {
+			async function uploadImage(
+				image: File
+			): Promise<{ path: string; error: StorageError | null }> {
+				const fileExt = image.name.split('.').pop();
+				const filePath = `${userId}_${uuidv4()}.${fileExt}`;
 
-		const form = await superValidate(event.request, zod(createEventSchema), { id: 'create-event' });
+				const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
+					.from('events')
+					.upload(filePath, image);
 
-		if (!form.valid) {
-			const errorMessage = 'Invalid form.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return fail(400, withFiles({ message: errorMessage, form }));
-		}
+				if (imageFileError) {
+					setFlash({ type: 'error', message: imageFileError.message }, event.cookies);
+					return { path: '', error: imageFileError };
+				}
 
-		async function uploadImage(image: File): Promise<{ path: string; error: StorageError | null }> {
-			const fileExt = image.name.split('.').pop();
-			const filePath = `${user?.id}_${uuidv4()}.${fileExt}`;
+				return { path: imageFileData.path, error: null };
+			}
 
-			const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
+			let imagePath = '';
+			if (form.data.image) {
+				const { path, error } = await uploadImage(form.data.image);
+				if (error) {
+					return fail(500, withFiles({ message: error.message, form }));
+				}
+				imagePath = path;
+			} else if (form.data.imageUrl) {
+				imagePath = form.data.imageUrl.split('/').pop() ?? '';
+			}
+
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { imageUrl, ...data } = form.data;
+			const { error: supabaseError } = await event.locals.supabase
 				.from('events')
-				.upload(filePath, image);
+				.insert({ ...data, user_id: userId, image: imagePath });
 
-			if (imageFileError) {
-				setFlash({ type: 'error', message: imageFileError.message }, event.cookies);
-				return { path: '', error: imageFileError };
+			if (supabaseError) {
+				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+				return fail(500, withFiles({ message: supabaseError.message, form }));
 			}
 
-			return { path: imageFileData.path, error: null };
-		}
-
-		let imagePath = '';
-		if (form.data.image) {
-			const { path, error } = await uploadImage(form.data.image);
-			if (error) {
-				return fail(500, withFiles({ message: error.message, form }));
-			}
-			imagePath = path;
-		} else if (form.data.imageUrl) {
-			imagePath = form.data.imageUrl.split('/').pop() ?? '';
-		}
-
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { imageUrl, ...data } = form.data;
-		const { error: supabaseError } = await event.locals.supabase
-			.from('events')
-			.insert({ ...data, user_id: user.id, image: imagePath });
-
-		if (supabaseError) {
-			setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-			return fail(500, withFiles({ message: supabaseError.message, form }));
-		}
-
-		return redirect(303, '/events');
-	},
+			return redirect(303, '/events');
+		}),
 };
