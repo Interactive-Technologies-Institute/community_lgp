@@ -1,0 +1,21 @@
+name: Build
+
+on: [push, pull_request]
+
+env:
+  PUBLIC_SUPABASE_URL: 'https://fake_test_url.supabase.co'
+  PUBLIC_SUPABASE_ANON_KEY: 'fake_anon_key'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
