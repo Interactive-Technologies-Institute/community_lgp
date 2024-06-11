@@ -51,7 +51,7 @@
 						<h2 class="mb-2 text-2xl font-medium">{step.title}</h2>
 						<p>{step.description}</p>
 					</div>
-					<img src={step.image} />
+					<img src={step.image} alt="Step {i + 1}" />
 				</Card>
 			</div>
 		{/each}

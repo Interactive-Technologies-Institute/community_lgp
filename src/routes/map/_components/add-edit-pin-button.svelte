@@ -73,7 +73,7 @@
 		<div
 			class="mb-8 h-10 w-10 overflow-hidden rounded-full border-2 border-foreground bg-foreground"
 		>
-			<img src="/avatars/user.png" alt="user" class="aspect-square h-full w-full" />
+			<img src="/avatars/user.png" alt="User avatar" class="aspect-square h-full w-full" />
 		</div>
 	{/if}
 </div>

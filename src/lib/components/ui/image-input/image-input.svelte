@@ -54,7 +54,7 @@
 <div class="flex flex-col gap-y-2">
 	<Card.Root class="aspect-video overflow-hidden">
 		{#if imageUrl}
-			<img src={imageUrl} class="h-full w-full object-cover" />
+			<img src={imageUrl} alt="Preview of the selected file" class="h-full w-full object-cover" />
 		{/if}
 	</Card.Root>
 	<input

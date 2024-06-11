@@ -39,7 +39,7 @@
 		</div>
 		<EventInterestButton count={data.interestCount} data={data.toggleInterestForm} />
 		<div class="mt-4 flex flex-col gap-y-4">
-			<img src={data.event.image} class="aspect-video max-w-[40rem] rounded-md" />
+			<img src={data.event.image} alt="Event Cover" class="aspect-video max-w-[40rem] rounded-md" />
 			<p class="max-w-[40rem]">
 				{data.event.description}
 			</p>

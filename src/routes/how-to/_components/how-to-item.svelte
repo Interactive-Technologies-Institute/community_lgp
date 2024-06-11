@@ -13,7 +13,7 @@
 	<Card class="overflow-hidden">
 		<AspectRatio ratio={4 / 3}>
 			{#if imageUrl}
-				<img src={imageUrl} class="object-cover" />
+				<img src={imageUrl} alt="How To Cover" class="object-cover" />
 			{/if}
 		</AspectRatio>
 		<div class=" flex flex-col px-4 py-2">

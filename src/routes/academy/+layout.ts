@@ -1,4 +1,4 @@
-import type { DocGroup } from '@/index';
+import type { DocGroup } from '@/types/types';
 
 export async function load({ fetch }) {
 	const response = await fetch('/api/academy/docs');

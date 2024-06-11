@@ -13,7 +13,7 @@ import { setFlash } from 'sveltekit-flash-message/server';
 import { fail, superValidate, type Infer, type SuperValidated } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { twMerge } from 'tailwind-merge';
-import type { AnyZodObject, ZodTypeAny } from 'zod';
+import type { ZodTypeAny } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -99,7 +99,7 @@ function assertUserId<RequireAuth extends boolean>(
 }
 
 export async function handleFormAction<
-	Schema extends AnyZodObject,
+	Schema extends ZodTypeAny,
 	Params extends Partial<Record<string, string>>,
 	OutputData extends Record<string, any> | void,
 	RouteId extends string | null,
