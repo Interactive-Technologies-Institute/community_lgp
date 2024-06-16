@@ -47,7 +47,7 @@
 						</Form.Control>
 					</Form.Field>
 					<Form.Field {form} name="logo">
-						<Form.Control let:attrs>
+						<Form.Control>
 							<Form.Label>Logo*</Form.Label>
 							<div class="h-20 w-20 rounded-full bg-primary"></div>
 							<Form.FieldErrors />

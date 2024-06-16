@@ -24,6 +24,5 @@ export type InputEvents = {
 export {
 	//
 	Root as ImageInput,
-	Root
+	Root,
 };
-

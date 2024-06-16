@@ -18,9 +18,6 @@
 
 	const { form: formData, enhance } = form;
 
-	$: lng = data.data.lng;
-	$: lat = data.data.lat;
-
 	let markerElement: HTMLElement;
 	let marker: mapboxgl.Marker | undefined;
 

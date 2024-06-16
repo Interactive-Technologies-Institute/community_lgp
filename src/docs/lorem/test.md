@@ -15,12 +15,12 @@ cum insibilat tibi et Nise Lyncidae oscula Titania undis digiti, non.
 3. Iuvenis oras fuit cupidine
 4. Modo vivusque
 
-Est rupit carpens Chromis me tenero *illius*, Pelasgas, nec auras. Mors pennis,
+Est rupit carpens Chromis me tenero _illius_, Pelasgas, nec auras. Mors pennis,
 meri autem, virilem pendentis, fallere iuris. Placet [Caeneus
 rogabam](http://vestraeinquirit.com/)? Per semper
 [nautae](http://paratibus.io/quinquemedias.html) a tertius famae renuente
-cohibentem Latonae bello. Et comas Scironis sustinuit flammae *cornua*, vires
-Thestiadae venatrixque remisit maxima abstulerat; nemus *Eurus utilitas*
+cohibentem Latonae bello. Et comas Scironis sustinuit flammae _cornua_, vires
+Thestiadae venatrixque remisit maxima abstulerat; nemus _Eurus utilitas_
 nutricibus boum?
 
 ## Hinc atrae
@@ -40,7 +40,7 @@ Celebrant quam caelumque, iam, ira artus, posito.
 5. Vela silva prosunt comitum
 6. Mollibus ut Zephyro equis aequo
 
-Iliaden loco vocanti, *est dicta vocor* iussa gesserunt corpora perdiderim
+Iliaden loco vocanti, _est dicta vocor_ iussa gesserunt corpora perdiderim
 quicquid comitem potens esse: adit caelum explorat nomenque. Silvae Achaidas,
 mollia. Actutum et quae lapillis gemitus
 [contraria](http://www.prius.com/ceresaquae) confusaque aristas casas et urbem.

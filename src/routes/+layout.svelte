@@ -48,10 +48,7 @@
 	});
 </script>
 
-<svelte:body
-	class="theme-{$page.data.branding.color_theme}"
-	style="--radius: {$page.data.branding.radius}rem"
-/>
+<svelte:body class="theme-{branding.color_theme}" style="--radius: {branding.radius}rem" />
 
 <ModeWatcher />
 <Toaster />

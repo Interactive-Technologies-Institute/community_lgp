@@ -5,8 +5,8 @@ import { mdsvex } from 'mdsvex';
 
 /** @type {import('mdsvex').MdsvexOptions} */
 const mdsvexOptions = {
-	extensions: ['.md', '.svx',],
-}
+	extensions: ['.md', '.svx'],
+};
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -15,9 +15,9 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-      "@/*": "./src/lib/*"
-    }
-	}
+			'@/*': './src/lib/*',
+		},
+	},
 };
 
 export default config;

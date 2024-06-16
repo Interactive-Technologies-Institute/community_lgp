@@ -1,12 +1,19 @@
 {
 	"useTabs": true,
+	"tabWidth": 2,
 	"singleQuote": true,
 	"trailingComma": "es5",
 	"printWidth": 100,
 	"endOfLine": "lf",
-	"plugins": [
-		"prettier-plugin-svelte",
-		"prettier-plugin-tailwindcss"],
-	"pluginSearchDirs": ["."],
-	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		}
+	],
+	"tailwindConfig": "./tailwind.config.js",
+	"tailwindFunctions": ["clsx", "cn", "tv"]
 }
