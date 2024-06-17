@@ -1,5 +1,5 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-import type { Database } from '@/types/database-types';
+import type { Database } from '@/types/supabase-types';
 import { createBrowserClient, isBrowser, parse } from '@supabase/ssr';
 
 export const load = async ({ fetch, data, depends }) => {

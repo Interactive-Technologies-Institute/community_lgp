@@ -1,5 +1,5 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-import type { Database } from '@/types/database-types';
+import type { Database } from '@/types/supabase-types';
 import type { UserRole } from '@/types/types';
 import { createServerClient } from '@supabase/ssr';
 import type { Handle } from '@sveltejs/kit';

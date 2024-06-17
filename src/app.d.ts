@@ -1,7 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 
-import type { Database } from '@/types/database-types';
+import type { Database } from '@/types/supabase-types';
 import type { Branding, UserWithRole } from '@/types/types';
 import { Session, SupabaseClient } from '@supabase/supabase-js';
 
