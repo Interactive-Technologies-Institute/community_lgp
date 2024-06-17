@@ -13,4 +13,4 @@ package-lock.json
 yarn.lock
 
 # Ignore supabase-types.gen.ts
-src/lib/types/supabase-types.gen.ts
+/src/lib/types/supabase-types.gen.ts
