@@ -1,5 +1,5 @@
 import type { MergeDeep } from 'type-fest';
-import type { Database as DatabaseGenerated } from './supabase-types.gen.ts';
+import type { Database as DatabaseGenerated } from './supabase-types-gen.js';
 
 type Step = { title: string; description: string; image: string };
 
