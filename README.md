@@ -1,38 +1,88 @@
-# create-svelte
+# Community
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Format Check](https://img.shields.io/badge/format-check-brightgreen)
+![Linting](https://img.shields.io/badge/linting-passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-## Creating a project
+A platform to enhance and connect communities. This platform has a set of features that were designed to solve problems that many different communities face. This work is a part of the [DCitizens](https://dcitizens.eu) project that focuses on **empowering citizens with and through digital technologies**.
 
-If you're seeing this, you've probably already done this step. Congrats!
+![Demo GIF](https://placehold.co/600x400?text=Hello\nWorld)
 
+## Features
+Our mains features include:
+- **Authentication/Users:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Academy:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **How Tos:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Events:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Map:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Moderation:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Admin:**
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+## Tech Stack
+- **Web Framework**: SvelteKit
+- **CSS / Styling**:
+  - Framework: TailwindCSS
+  - Component library: shadcn/ui
+- **Suggested Hosting Stack**:
+  - Host + CDN: Cloudflare Pages
+  - Serverless compute: Cloudflare Workers
+  - Authentication: Supabase Auth
+  - Database: Supabase Postgres
+
+## How to Run
+### Setup Local Supabase
+1. [Install Supabase CLI](https://supabase.com/docs/guides/cli/getting-started)
+2. [Install Docker](https://docs.docker.com/engine/install)
+3. Run the following command to start your Supabase instance
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
+supabase start
+```
+4. Copy the contents from .env.example to .env.local and replace the variables with your own
 
-# create a new project in my-app
-npm create svelte@latest my-app
+### Install Dependencies
+```bash
+npm install
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
+### Run Project
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+npm run dev --open
 ```
 
-## Building
+## Deployment
+[Add placeholder text for deployment instructions]
 
-To create a production version of your app:
+## Contributing Guidelines
+We welcome contributions! Please follow these steps:
 
-```bash
-npm run build
-```
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add new feature'`).
+5. Push to the branch (`git push origin feature-branch`).
+6. Open a pull request.
 
-You can preview the production build with `npm run preview`.
+Please ensure your code adheres to our coding standards and passes all our CI checks.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Roadmap
+| Feature       | Description         | Estimated Date |
+|---------------|---------------------|----------------|
+| Lorem         | Ipsum	              | mm/YY          |
+| Lorem         | Ipsum	              | mm/YY          |
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+[Add placeholder text for acknowledgments]
+
+## Support
+If you have any questions, suggestions, or need assistance, please open an issue, create a discussion, or contact us at [community@dcitizens.eu](mailto:community@dcitizens.eu).
