@@ -1,4 +1,4 @@
-# Community
+# Community 🌍
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![Format Check](https://img.shields.io/badge/format-check-brightgreen)
@@ -9,23 +9,23 @@ A platform to enhance and connect communities. This platform has a set of featur
 
 ![Demo GIF](https://placehold.co/600x400?text=Hello\nWorld)
 
-## Features
+## Features ✨
 
 Our mains features include:
 
-- **Authentication/Users:**
+- **Authentication/Users 🔑:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **Academy:**
+- **Academy 🎓:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **How Tos:**
+- **How Tos 📚:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **Events:**
+- **Events 📅:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **Map:**
+- **Map 🗺️:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **Moderation:**
+- **Moderation 🛡️:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **Admin:**
+- **Admin 🛠️:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
 ## Tech Stack
@@ -40,13 +40,13 @@ Our mains features include:
   - Authentication: Supabase Auth
   - Database: Supabase Postgres
 
-## How to Run
+## How to Run 🚀
 
 ### Setup Local Supabase
 
 1. [Install Supabase CLI](https://supabase.com/docs/guides/cli/getting-started)
 2. [Install Docker](https://docs.docker.com/engine/install)
-3. Run the following command to start your Supabase instance
+3. Start your Supabase instance
 
 ```bash
 supabase start
@@ -66,11 +66,11 @@ npm install
 npm run dev --open
 ```
 
-## Deployment
+## Deployment 📦
 
 [Add placeholder text for deployment instructions]
 
-## Contributing Guidelines
+## Contributing 🤝
 
 We welcome contributions! Please follow these steps:
 
@@ -83,21 +83,21 @@ We welcome contributions! Please follow these steps:
 
 Please ensure your code adheres to our coding standards and passes all our CI checks.
 
-## Roadmap
+## Roadmap 🛣️
 
 | Feature | Description | Estimated Date |
 | ------- | ----------- | -------------- |
 | Lorem   | Ipsum       | mm/YY          |
 | Lorem   | Ipsum       | mm/YY          |
 
-## License
+## License 📄
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## Contributors ⭐
 
-[Add placeholder text for acknowledgments]
+<a href="https://github.com/Sockitos"><img src="https://github.com/Sockitos.png" width="50" height="50" style="border-radius: 50%;" alt="Sockitos"/></a>
 
-## Support
+## Support 📧
 
 If you have any questions, suggestions, or need assistance, please open an issue, create a discussion, or contact us at [community@dcitizens.eu](mailto:community@dcitizens.eu).
