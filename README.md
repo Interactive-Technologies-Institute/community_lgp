@@ -96,7 +96,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contributors ⭐
 
-<a href="https://github.com/Sockitos"><img src="https://github.com/Sockitos.png" width="50" height="50" style="border-radius: 50%;" alt="Sockitos"/></a>
+<a href="https://github.com/Sockitos"><img src="https://github.com/Sockitos.png" width="50" height="50" alt="Sockitos"/></a>
 
 ## Support 📧
 
