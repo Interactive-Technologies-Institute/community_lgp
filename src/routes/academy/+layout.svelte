@@ -7,7 +7,7 @@
 
 <PageHeader title="Academy" subtitle="Learn how to community" />
 <div class="container mx-auto mb-20 flex flex-row">
-	<div class="flex w-44 flex-col gap-y-3">
+	<div class="hidden w-44 flex-col gap-y-3 md:flex">
 		{#each data.docs as docGroup, index}
 			<DocGroupTab {index} {docGroup}></DocGroupTab>
 		{/each}
