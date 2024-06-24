@@ -76,24 +76,26 @@
 </div>
 
 {#if marker}
-	<form method="POST" use:enhance action="/map" on:submit={confirmPin}>
-		<input type="hidden" name="lng" bind:value={$formData.lng} />
-		<input type="hidden" name="lat" bind:value={$formData.lat} />
-		<div class="flex flex-row gap-x-2">
-			<Button on:click={cancelPin}>
-				<XCircle class="mr-2 h-4 w-4" />
-				Cancel
-			</Button>
-			<Button type="submit">
-				<Check class="mr-2 h-4 w-4" />
-				Confirm
-			</Button>
-		</div>
-	</form>
-	<Button variant="destructive">
-		<XCircle class="mr-2 h-4 w-4" />
-		Remove Pin
-	</Button>
+	<div class="flex flex-col gap-x-6 gap-y-3 md:flex-row">
+		<form method="POST" use:enhance action="/map" on:submit={confirmPin}>
+			<input type="hidden" name="lng" bind:value={$formData.lng} />
+			<input type="hidden" name="lat" bind:value={$formData.lat} />
+			<div class="flex flex-row gap-x-2">
+				<Button on:click={cancelPin}>
+					<XCircle class="mr-2 h-4 w-4" />
+					Cancel
+				</Button>
+				<Button type="submit">
+					<Check class="mr-2 h-4 w-4" />
+					Confirm
+				</Button>
+			</div>
+		</form>
+		<Button variant="destructive">
+			<XCircle class="mr-2 h-4 w-4" />
+			Remove Pin
+		</Button>
+	</div>
 {:else}
 	<Button on:click={initializePin}>
 		<MapPin class="mr-2 h-4 w-4" />

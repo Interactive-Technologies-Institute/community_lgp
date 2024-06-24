@@ -19,8 +19,8 @@
 </script>
 
 <PageHeader title="Sign up" subtitle="Sign up to our community" />
-<div class="container mx-auto my-20 flex flex-col items-center justify-center">
-	<Card class="card w-[32rem] px-12 py-10">
+<div class="container mb-20 mt-10 flex flex-col items-center justify-center md:mt-20">
+	<Card class="w-full max-w-[32rem] px-6 py-5 sm:px-8 sm:py-6 md:px-12 md:py-10">
 		<form method="POST" use:enhance>
 			<Form.Field {form} name="displayName">
 				<Form.Control let:attrs>

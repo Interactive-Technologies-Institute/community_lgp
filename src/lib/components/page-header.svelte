@@ -3,7 +3,7 @@
 	export let subtitle: string;
 </script>
 
-<div class="container mx-auto py-20">
+<div class="container py-12 md:py-20">
 	<h1 class="mb-2 text-center text-4xl font-bold">{title}</h1>
 	<p class="text-center text-lg text-muted-foreground">{subtitle}</p>
 </div>

@@ -19,7 +19,7 @@
 	title="User Profile"
 	subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
 />
-<div class="container mx-auto mb-20 flex max-w-3xl flex-col gap-y-10">
+<div class="container mx-auto mb-20 flex max-w-3xl flex-col gap-y-8 md:gap-y-10">
 	<Card.Root>
 		<Card.Header>
 			<div class="flex flex-row items-center gap-x-4">

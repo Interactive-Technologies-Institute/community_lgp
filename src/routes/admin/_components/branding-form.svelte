@@ -56,7 +56,7 @@
 					<Form.Field {form} name="color_theme">
 						<Form.Control let:attrs>
 							<Form.Label>Color Theme*</Form.Label>
-							<div class="grid grid-cols-3 gap-2">
+							<div class="grid grid-cols-2 gap-2 md:grid-cols-3">
 								{#each themes as theme (theme.name)}
 									{@const isActive = $formData.color_theme === theme.name}
 									<Button

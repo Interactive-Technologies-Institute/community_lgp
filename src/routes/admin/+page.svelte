@@ -8,7 +8,7 @@
 </script>
 
 <PageHeader title="Admin" subtitle="Configure the platform" />
-<div class="container mx-auto mb-20 flex flex-col gap-y-10">
+<div class="container mb-20 flex flex-col gap-y-8 md:gap-y-10">
 	<FeaturesForm data={data.updateFeatures} />
 	<BrandingForm data={data.updateBranding} />
 	<UserTypesForm data={data.updateUserTypes} />

@@ -59,11 +59,13 @@
 				<Store class="h-5 w-5 text-primary-foreground" />
 			</div>
 		</Marker>
-		<div class="absolute left-0 right-0 top-10 flex flex-col items-center gap-y-4">
-			<div class="flex flex-row gap-x-6">
-				<Input placeholder="Search..." class="w-64 bg-background"></Input>
+		<div
+			class="container absolute left-0 right-0 top-6 flex max-w-xs flex-col items-center gap-y-4 md:top-10 md:max-w-full"
+		>
+			<div class="flex w-full flex-col items-center justify-center gap-x-6 gap-y-4 md:flex-row">
+				<Input placeholder="Search..." class="bg-background md:w-64"></Input>
 				<Select.Root>
-					<Select.Trigger class="w-52 bg-background">
+					<Select.Trigger class="bg-background md:w-52">
 						<Select.Value placeholder="Filter by type" />
 					</Select.Trigger>
 					<Select.Content>
