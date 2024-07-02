@@ -12,7 +12,6 @@ export type UserProfile = {
 	type: string;
 	display_name: string;
 	description: string;
-	image: string | null;
 };
 
 export type UserType = {
@@ -77,4 +76,12 @@ export type Event = {
 	image: string;
 	date: string;
 	location: string;
+};
+
+export type ModerationStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
+
+export type ModerationInfo = {
+	status: ModerationStatus;
+	updated_at: string;
+	comment: string;
 };
