@@ -12,7 +12,12 @@
 
 	const form = superForm(data, {
 		validators: zodClient(toggleEventInterestSchema),
-		invalidateAll: 'force',
+		onUpdate: ({ form, result }) => {
+			if (result.type === 'failure') {
+				form.data.value = !form.data.value;
+				count += form.data.value ? 1 : -1;
+			}
+		},
 	});
 
 	const { form: formData, enhance } = form;
