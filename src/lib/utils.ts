@@ -114,20 +114,20 @@ export async function handleFormAction<
 	const { requireAuth = true as RequireAuth } = options ?? {};
 	let userId: string | undefined = undefined;
 
+	const form = await superValidate(event.request, zod(schema), { id: formId });
+
 	if (requireAuth) {
 		const { session, user } = await event.locals.safeGetSession();
 
 		if (!session || !user) {
 			setFlash({ type: 'error', message: 'Unauthorized' }, event.cookies);
-			return fail(401, { message: 'Unauthorized' });
+			return fail(401, { message: 'Unauthorized', form });
 		}
 
 		userId = user.id;
 	}
 
 	assertUserId(userId, requireAuth);
-
-	const form = await superValidate(event.request, zod(schema), { id: formId });
 
 	if (!form.valid) {
 		const errorMessage = 'Invalid form.';
