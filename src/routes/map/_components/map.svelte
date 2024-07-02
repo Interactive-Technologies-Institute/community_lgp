@@ -1,6 +1,7 @@
 <script lang="ts">
 	import 'mapbox-gl/dist/mapbox-gl.css';
 	import { setContext } from 'svelte';
+	import '../../../app.css';
 	import { key, mapboxgl, type MBMapContext } from './mapbox';
 
 	export let lng: number;
@@ -48,3 +49,9 @@
 		<slot />
 	{/if}
 </div>
+
+<style>
+	:global(.mapboxgl-map) {
+		font: inherit;
+	}
+</style>
