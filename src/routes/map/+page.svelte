@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ModerationBanner from '@/components/moderation-banner.svelte';
 	import * as Avatar from '@/components/ui/avatar';
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
@@ -77,6 +78,9 @@
 					</Select.Content>
 				</Select.Root>
 			</div>
+			{#if data.moderation?.status && data.moderation.status !== 'approved'}
+				<ModerationBanner moderation={data.moderation} />
+			{/if}
 			<div class="flex flex-row gap-x-6">
 				{#if data.profile?.pin}
 					<MyPinButton pin={data.profile.pin} />

@@ -1,5 +1,5 @@
 import { deleteHowToSchema, toggleHowToUsefulSchema } from '@/schemas/how-to';
-import type { HowTo } from '@/types/types';
+import type { HowTo, ModerationInfo } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -11,7 +11,7 @@ export const load = async (event) => {
 
 	async function getHowTo(id: string): Promise<HowTo> {
 		const { data: howTo, error: howToError } = await event.locals.supabase
-			.from('howtos')
+			.from('howtos_view')
 			.select('*')
 			.eq('id', id)
 			.single();
@@ -21,12 +21,29 @@ export const load = async (event) => {
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
+
 		const image = event.locals.supabase.storage.from('howtos').getPublicUrl(howTo.image);
 		const stepsWithImageUrl = howTo.steps.map((step) => {
 			const stepImage = event.locals.supabase.storage.from('howtos').getPublicUrl(step.image);
 			return { ...step, image: stepImage.data.publicUrl };
 		});
 		return { ...howTo, image: image.data.publicUrl, steps: stepsWithImageUrl };
+	}
+
+	async function getHowToModeration(id: string): Promise<ModerationInfo> {
+		const { data: moderation, error: moderationError } = await event.locals.supabase
+			.from('howtos_moderation')
+			.select('*')
+			.eq('howto_id', id)
+			.single();
+
+		if (moderationError) {
+			const errorMessage = 'Error fetching moderation, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return moderation;
 	}
 
 	async function getUsefulCount(id: string): Promise<{ count: number; userUseful: boolean }> {
@@ -49,6 +66,7 @@ export const load = async (event) => {
 
 	return {
 		howTo: await getHowTo(event.params.id),
+		moderation: await getHowToModeration(event.params.id),
 		usefulCount: usefulCount.count,
 		deleteForm: await superValidate(zod(deleteHowToSchema), {
 			id: 'delete-howto',
@@ -96,6 +114,7 @@ export const actions = {
 						]);
 
 					if (supabaseError) {
+						console.error(supabaseError);
 						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 						return fail(500, { message: supabaseError.message, form });
 					}
@@ -112,6 +131,7 @@ export const actions = {
 					}
 				}
 
+				console.log('done');
 				return { form };
 			}
 		),

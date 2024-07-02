@@ -1,7 +1,7 @@
 import { mapPinSchema } from '@/schemas/map-pin';
-import type { UserProfileWithPin } from '@/types/types';
+import type { ModerationInfo, UserProfileWithPin } from '@/types/types';
 import { handleFormAction } from '@/utils';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -22,6 +22,22 @@ export const load = async (event) => {
 		};
 	}
 
+	async function getMapPinModeration(id: string): Promise<ModerationInfo> {
+		const { data: moderation, error: moderationError } = await event.locals.supabase
+			.from('map_pins_moderation')
+			.select('*')
+			.eq('map_pin_id', id)
+			.single();
+
+		if (moderationError) {
+			const errorMessage = 'Error fetching moderation, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return moderation;
+	}
+
 	const { data: usersData } = await event.locals.supabase
 		.from('profiles')
 		.select('*, pin:map_pins( lng, lat )');
@@ -39,6 +55,7 @@ export const load = async (event) => {
 
 	return {
 		profile: profileWithPin,
+		moderation: profileWithPin ? await getMapPinModeration(profileWithPin.id) : undefined,
 		users: usersData ?? [],
 		form,
 	};

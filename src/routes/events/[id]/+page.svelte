@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ModerationBanner from '@/components/moderation-banner.svelte';
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import dayjs from 'dayjs';
@@ -15,7 +16,10 @@
 	title={data.event.title}
 	subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
 />
-<div class="container mx-auto pb-10">
+<div class="container mx-auto space-y-10 pb-10">
+	{#if data.moderation.status !== 'approved'}
+		<ModerationBanner moderation={data.moderation} />
+	{/if}
 	<div class="mb-10 flex flex-col items-center gap-y-4">
 		<div class=" flex flex-row gap-x-2">
 			{#each data.event.tags as tag}
@@ -45,7 +49,13 @@
 			</p>
 		</div>
 	</div>
-
+	<div class="flex flex-col items-center gap-y-2">
+		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
+		<Button variant="secondary" size="sm" href="/user/0">
+			<CircleUser class="mr-2 h-4 w-4" />
+			User Lorem Ipsum
+		</Button>
+	</div>
 	{#if data.event.user_id === data.user?.id}
 		<div
 			class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -60,13 +70,6 @@
 			</Button>
 		</div>
 	{/if}
-	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
-		<Button variant="secondary" size="sm" href="/user/0">
-			<CircleUser class="mr-2 h-4 w-4" />
-			User Lorem Ipsum
-		</Button>
-	</div>
 </div>
 
 <EventDeleteDialog eventId={data.event.id} data={data.deleteForm} bind:open={openDeleteDialog} />

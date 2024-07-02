@@ -1,5 +1,5 @@
 import { deleteEventSchema, toggleEventInterestSchema } from '@/schemas/event';
-import type { Event } from '@/types/types';
+import type { Event, ModerationInfo } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -11,7 +11,7 @@ export const load = async (event) => {
 
 	async function getEvent(id: string): Promise<Event> {
 		const { data: eventData, error: eventError } = await event.locals.supabase
-			.from('events')
+			.from('events_view')
 			.select('*')
 			.eq('id', id)
 			.single();
@@ -41,10 +41,27 @@ export const load = async (event) => {
 		return { count: interested.count, userInterested: interested.has_interest };
 	}
 
+	async function getEventModeration(id: string): Promise<ModerationInfo> {
+		const { data: moderation, error: moderationError } = await event.locals.supabase
+			.from('events_moderation')
+			.select('*')
+			.eq('event_id', id)
+			.single();
+
+		if (moderationError) {
+			const errorMessage = 'Error fetching moderation, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return moderation;
+	}
+
 	const interestCount = await getInterestCount(event.params.id);
 
 	return {
 		event: await getEvent(event.params.id),
+		moderation: await getEventModeration(event.params.id),
 		interestCount: interestCount.count,
 		deleteForm: await superValidate(zod(deleteEventSchema), {
 			id: 'delete-event',

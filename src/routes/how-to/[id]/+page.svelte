@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ModerationBanner from '@/components/moderation-banner.svelte';
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
@@ -12,7 +13,10 @@
 </script>
 
 <PageHeader title={data.howTo.title} subtitle={data.howTo.description} />
-<div class="container mx-auto pb-10">
+<div class="container mx-auto space-y-10 pb-10">
+	{#if data.moderation.status !== 'approved'}
+		<ModerationBanner moderation={data.moderation} />
+	{/if}
 	<div class="mb-10 flex flex-col items-center gap-y-4">
 		<div class=" flex flex-row gap-x-2">
 			{#each data.howTo.tags as tag}
@@ -56,6 +60,13 @@
 			</div>
 		{/each}
 	</div>
+	<div class="flex flex-col items-center gap-y-2">
+		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
+		<Button variant="secondary" size="sm" href="/user/0">
+			<CircleUser class="mr-2 h-4 w-4" />
+			User Lorem Ipsum
+		</Button>
+	</div>
 	{#if data.howTo.user_id === data.user?.id}
 		<div
 			class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -70,13 +81,6 @@
 			</Button>
 		</div>
 	{/if}
-	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
-		<Button variant="secondary" size="sm" href="/user/0">
-			<CircleUser class="mr-2 h-4 w-4" />
-			User Lorem Ipsum
-		</Button>
-	</div>
 </div>
 
 <HowToDeleteDialog howToId={data.howTo.id} data={data.deleteForm} bind:open={openDeleteDialog} />
