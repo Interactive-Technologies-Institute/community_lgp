@@ -61,9 +61,11 @@
 			</div>
 		</Marker>
 		<div
-			class="container absolute left-0 right-0 top-6 flex max-w-xs flex-col items-center gap-y-4 md:top-10 md:max-w-full"
+			class="container absolute left-0 right-0 top-6 flex flex-col items-center gap-y-4 md:top-10"
 		>
-			<div class="flex w-full flex-col items-center justify-center gap-x-6 gap-y-4 md:flex-row">
+			<div
+				class="flex w-full max-w-xs flex-col items-center justify-center gap-x-6 gap-y-4 md:max-w-full md:flex-row"
+			>
 				<Input placeholder="Search..." class="bg-background md:w-64"></Input>
 				<Select.Root>
 					<Select.Trigger class="bg-background md:w-52">
