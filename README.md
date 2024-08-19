@@ -49,7 +49,7 @@ Our mains features include:
 3. Start your Supabase instance
 
 ```bash
-supabase start
+npx supabase start
 ```
 
 4. Copy the contents from .env.example to .env.local and replace the variables with your own

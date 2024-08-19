@@ -84,8 +84,8 @@ select unnest(tags) as tag,
 from public.howtos
 group by tag;
 -- Storage Buckets
-insert into storage.buckets (id, name, public, allowed_mime_types)
-values ('howtos', 'How Tos', true, '{"image/*"}');
+-- insert into storage.buckets (id, name, public, allowed_mime_types)
+-- values ('howtos', 'How Tos', true, '{"image/*"}');
 -- RLS policies
 alter table public.howtos enable row level security;
 alter table public.howtos_moderation enable row level security;

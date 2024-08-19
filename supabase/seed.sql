@@ -73,11 +73,11 @@ values (
 			select id
 			from auth.users
 			limit 1
-		), 'How to make a sandwich', 'Learn how to make a delicious sandwich', 'https://example.com/sandwich.jpg', array ['food', 'sandwich'], 'easy', 'short', array [
-			'{ "step": 1, "title": "Get the ingredients", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "https://example.com/sandwich/step1.jpg" }',
-			'{ "step": 2, "title": "Prepare the ingredients", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "https://example.com/sandwich/step2.jpg" }',
-			'{ "step": 3, "title": "Assemble the sandwich", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "https://example.com/sandwich/step3.jpg" }',
-			'{ "step": 4, "title": "Enjoy your sandwich", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "https://example.com/sandwich/step4.jpg" }']::jsonb []
+		), 'How to make a sandwich', 'Learn how to make a delicious sandwich', 'placeholder.webp', array ['food', 'sandwich'], 'easy', 'short', array [
+			'{ "step": 1, "title": "Get the ingredients", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "placeholder.webp" }',
+			'{ "step": 2, "title": "Prepare the ingredients", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "placeholder.webp" }',
+			'{ "step": 3, "title": "Assemble the sandwich", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "placeholder.webp" }',
+			'{ "step": 4, "title": "Enjoy your sandwich", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.","image": "placeholder.webp" }']::jsonb []
 	);
 -- Event
 insert into public.events (
@@ -94,7 +94,7 @@ values (
 			select id
 			from auth.users
 			limit 1
-		), 'Community BBQ', 'Join us for a community BBQ. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', '', array ['community', 'bbq'], current_timestamp,
+		), 'Community BBQ', 'Join us for a community BBQ. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 'placeholder.webp', array ['community', 'bbq'], current_timestamp,
 		'Community Park'
 	);
 -- Map Pin

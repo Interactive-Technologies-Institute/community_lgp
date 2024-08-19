@@ -70,6 +70,20 @@ file_size_limit = "50MiB"
 [storage.image_transformation]
 enabled = true
 
+[storage.buckets.users]
+public = true
+allowed_mime_types = ["image/*"]
+
+[storage.buckets.howtos]
+public = true
+allowed_mime_types = ["image/*"]
+objects_path = "./placeholders"
+
+[storage.buckets.events]
+public = true
+allowed_mime_types = ["image/*"]
+objects_path = "./placeholders"
+
 [auth]
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
