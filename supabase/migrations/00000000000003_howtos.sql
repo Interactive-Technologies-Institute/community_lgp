@@ -14,6 +14,11 @@ create table public.howtos (
 	duration public.how_to_duration not null,
 	steps jsonb [] not null
 );
+alter table public.howtos
+add column fts tsvector generated always as (
+		to_tsvector('simple', title || ' ' || description)
+	) stored;
+create index howtos_fts on public.howtos using gin (fts);
 create trigger handle_updated_at before
 update on public.howtos for each row execute procedure moddatetime (updated_at);
 create table public.howtos_moderation(

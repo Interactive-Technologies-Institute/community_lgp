@@ -131,7 +131,6 @@ export const actions = {
 					}
 				}
 
-				console.log('done');
 				return { form };
 			}
 		),

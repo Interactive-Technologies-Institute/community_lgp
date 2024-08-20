@@ -11,6 +11,11 @@ create table public.events (
 	date timestamp with time zone not null,
 	location text not null
 );
+alter table public.events
+add column fts tsvector generated always as (
+		to_tsvector('simple', title || ' ' || description)
+	) stored;
+create index events_fts on public.events using gin (fts);
 create trigger handle_updated_at before
 update on public.events for each row execute procedure moddatetime (updated_at);
 create table public.events_moderation(
@@ -135,6 +140,10 @@ create policy "Allow moderators delete all events" on public.events for delete u
 		select authorize('events.moderate')
 	)
 );
+create policy "Allow users to read approved events moderation" on public.events_moderation for
+select using (
+		status = 'approved'::public.moderation_status
+	);
 create policy "Allow users to read their own events moderation" on public.events_moderation for
 select using (auth.uid() = user_id);
 create policy "Allow moderators to read all events moderation" on public.events_moderation for

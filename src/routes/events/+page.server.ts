@@ -1,18 +1,32 @@
 import type { Event } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { ssp } from 'sveltekit-search-params';
 
 export const load = async (event) => {
+	const search = event.url.searchParams.get('s');
+	const tagsRaw = event.url.searchParams.get('tags');
+	const tags = ssp.array<string>().decode(tagsRaw);
+
 	async function getEvents(): Promise<Event[]> {
-		const { data: events, error: eventsError } = await event.locals.supabase
-			.from('events_view')
-			.select('*');
+		let query = event.locals.supabase.from('events_view').select('*');
+
+		if (search) {
+			query = query.textSearch('fts', search, { config: 'simple', type: 'websearch' });
+		}
+
+		if (tags && tags.length) {
+			query = query.overlaps('tags', tags);
+		}
+
+		const { data: events, error: eventsError } = await query;
 
 		if (eventsError) {
 			const errorMessage = 'Error fetching events, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
+
 		return events;
 	}
 

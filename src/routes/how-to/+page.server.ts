@@ -1,12 +1,25 @@
 import type { HowTo } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { ssp } from 'sveltekit-search-params';
 
 export const load = async (event) => {
+	const search = event.url.searchParams.get('s');
+	const tagsRaw = event.url.searchParams.get('tags');
+	const tags = ssp.array<string>().decode(tagsRaw);
+
 	async function getHowTos(): Promise<HowTo[]> {
-		const { data: howTos, error: howTosError } = await event.locals.supabase
-			.from('howtos_view')
-			.select('*');
+		let query = event.locals.supabase.from('howtos_view').select('*');
+
+		if (search) {
+			query = query.textSearch('fts', search, { config: 'simple', type: 'websearch' });
+		}
+
+		if (tags && tags.length) {
+			query = query.overlaps('tags', tags);
+		}
+
+		const { data: howTos, error: howTosError } = await query;
 
 		if (howTosError) {
 			const errorMessage = 'Error fetching how tos, please try again later.';

@@ -5,7 +5,7 @@
 	import * as Popover from '@/components//ui/popover';
 	import { Check, Filter } from 'lucide-svelte';
 
-	export let filterValues: string[] = [];
+	export let filterValues: string[] | null = [];
 	export let tags: Map<string, number> = new Map();
 
 	let open = false;
@@ -22,7 +22,12 @@
 <Popover.Root bind:open>
 	<Popover.Trigger asChild let:builder>
 		<Button builders={[builder]} variant="outline" class="w-10 p-0 md:w-auto md:px-4 md:py-2">
-			<Filter class="h-4 w-4 md:mr-2" />
+			<div class="relative">
+				<Filter class="h-4 w-4 md:mr-2"></Filter>
+				{#if filterValues && filterValues.length > 0}
+					<div class="absolute -right-1 -top-1 flex h-2 w-2 rounded-full bg-primary md:mr-2"></div>
+				{/if}
+			</div>
 			<span class="sr-only md:not-sr-only">Filter by Tag</span>
 		</Button>
 	</Popover.Trigger>
@@ -42,7 +47,7 @@
 							<div
 								class={cn(
 									'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-									filterValues.includes(tag[0])
+									filterValues?.includes(tag[0])
 										? 'bg-primary text-primary-foreground'
 										: 'opacity-50 [&_svg]:invisible'
 								)}
@@ -58,7 +63,7 @@
 						</Command.Item>
 					{/each}
 				</Command.Group>
-				{#if filterValues.length > 0}
+				{#if filterValues && filterValues.length > 0}
 					<Command.Separator />
 					<Command.Item
 						class="justify-center text-center"

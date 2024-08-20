@@ -10,6 +10,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 import { setFlash } from 'sveltekit-flash-message/server';
+import type { EncodeAndDecodeOptions } from 'sveltekit-search-params/sveltekit-search-params';
 import { fail, superValidate, type Infer, type SuperValidated } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { twMerge } from 'tailwind-merge';
@@ -138,4 +139,16 @@ export async function handleFormAction<
 	const result = await action(event, userId, form);
 
 	return result;
+}
+
+export function nullableQueryParam<T>({ encode, ...codec }: EncodeAndDecodeOptions<T>) {
+	return {
+		...codec,
+		encode(value) {
+			if (value === '') return undefined;
+			if (Array.isArray(value) && value.length === 0) return undefined;
+
+			return encode(value);
+		},
+	} as EncodeAndDecodeOptions<T>;
 }
