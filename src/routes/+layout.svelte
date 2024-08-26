@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import Footer from '@/components/footer.svelte';
 	import Header from '@/components/header.svelte';
+	import NavigatingIndicator from '@/components/navigating-indicator.svelte';
 	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
 	import { Toaster } from '@/components/ui/sonner';
 	import { ModeWatcher } from 'mode-watcher';
@@ -61,5 +62,6 @@
 	<Footer />
 	{#if dev}
 		<TailwindIndicator />
+		<NavigatingIndicator />
 	{/if}
 </div>

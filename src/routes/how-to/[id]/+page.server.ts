@@ -114,7 +114,6 @@ export const actions = {
 						]);
 
 					if (supabaseError) {
-						console.error(supabaseError);
 						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 						return fail(500, { message: supabaseError.message, form });
 					}

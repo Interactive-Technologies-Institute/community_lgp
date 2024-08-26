@@ -112,6 +112,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       events_interested: {
@@ -155,6 +162,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "events_interested_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       events_moderation: {
@@ -189,14 +203,14 @@ export type Database = {
           {
             foreignKeyName: "events_moderation_event_id_fkey"
             columns: ["event_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "events_moderation_event_id_fkey"
             columns: ["event_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "events_view"
             referencedColumns: ["id"]
           },
@@ -205,6 +219,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
             referencedColumns: ["id"]
           },
         ]
@@ -275,6 +296,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "howtos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       howtos_moderation: {
@@ -309,14 +337,14 @@ export type Database = {
           {
             foreignKeyName: "howtos_moderation_howto_id_fkey"
             columns: ["howto_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "howtos"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "howtos_moderation_howto_id_fkey"
             columns: ["howto_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "howtos_view"
             referencedColumns: ["id"]
           },
@@ -325,6 +353,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "howtos_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
             referencedColumns: ["id"]
           },
         ]
@@ -370,36 +405,53 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "howtos_useful_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       map_pins: {
         Row: {
-          id: string
+          id: number
           inserted_at: string
           lat: number
           lng: number
           updated_at: string
+          user_id: string
         }
         Insert: {
-          id: string
+          id?: number
           inserted_at?: string
           lat: number
           lng: number
           updated_at?: string
+          user_id: string
         }
         Update: {
-          id?: string
+          id?: number
           inserted_at?: string
           lat?: number
           lng?: number
           updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "map_pins_id_fkey"
-            columns: ["id"]
+            foreignKeyName: "map_pins_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "map_pins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles_view"
             referencedColumns: ["id"]
           },
         ]
@@ -409,7 +461,7 @@ export type Database = {
           comment: string
           id: number
           inserted_at: string
-          map_pin_id: string
+          map_pin_id: number
           status: Database["public"]["Enums"]["moderation_status"]
           updated_at: string
           user_id: string
@@ -418,7 +470,7 @@ export type Database = {
           comment: string
           id?: number
           inserted_at?: string
-          map_pin_id: string
+          map_pin_id: number
           status: Database["public"]["Enums"]["moderation_status"]
           updated_at?: string
           user_id: string
@@ -427,7 +479,7 @@ export type Database = {
           comment?: string
           id?: number
           inserted_at?: string
-          map_pin_id?: string
+          map_pin_id?: number
           status?: Database["public"]["Enums"]["moderation_status"]
           updated_at?: string
           user_id?: string
@@ -436,14 +488,14 @@ export type Database = {
           {
             foreignKeyName: "map_pins_moderation_map_pin_id_fkey"
             columns: ["map_pin_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "map_pins"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "map_pins_moderation_map_pin_id_fkey"
             columns: ["map_pin_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "map_pins_view"
             referencedColumns: ["id"]
           },
@@ -452,6 +504,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "map_pins_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
             referencedColumns: ["id"]
           },
         ]
@@ -587,6 +646,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       howtos_tags: {
@@ -622,11 +688,18 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "howtos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       map_pins_view: {
         Row: {
-          id: string | null
+          id: number | null
           inserted_at: string | null
           lat: number | null
           lng: number | null
@@ -634,13 +707,42 @@ export type Database = {
             | Database["public"]["Enums"]["moderation_status"]
             | null
           updated_at: string | null
+          user_id: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "map_pins_id_fkey"
-            columns: ["id"]
+            foreignKeyName: "map_pins_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "map_pins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles_view: {
+        Row: {
+          description: string | null
+          display_name: string | null
+          email: string | null
+          id: string | null
+          inserted_at: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          type: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -696,6 +798,7 @@ export type Database = {
         | "approved"
         | "rejected"
       user_permission:
+        | "users.moderate"
         | "howtos.create"
         | "howtos.update"
         | "howtos.delete"

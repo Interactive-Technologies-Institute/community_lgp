@@ -13,7 +13,7 @@ export const load = async (event) => {
 	}
 
 	const { data: userProfile } = await event.locals.supabase
-		.from('profiles')
+		.from('profiles_view')
 		.select('*')
 		.eq('id', id)
 		.single();
@@ -33,7 +33,7 @@ export const load = async (event) => {
 	const { data: mapPin } = await event.locals.supabase
 		.from('map_pins')
 		.select('lng, lat')
-		.eq('id', id)
+		.eq('user_id', id)
 		.single();
 
 	return {

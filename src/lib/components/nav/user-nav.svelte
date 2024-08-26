@@ -43,7 +43,7 @@
 				<DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			{#if role === 'moderator' || role === 'admin'}
-				<DropdownMenu.Item href="/moderation">
+				<DropdownMenu.Item href="/moderation/users">
 					Moderation
 					<DropdownMenu.Shortcut>⌘M</DropdownMenu.Shortcut>
 				</DropdownMenu.Item>

@@ -12,6 +12,7 @@ export type UserProfile = {
 	type: string;
 	display_name: string;
 	description: string;
+	role: UserRole;
 };
 
 export type UserType = {
@@ -28,6 +29,8 @@ export type Branding = {
 };
 
 export type MapPin = {
+	id: number;
+	user_id: string;
 	lng: number;
 	lat: number;
 };
@@ -85,3 +88,9 @@ export type ModerationInfo = {
 	updated_at: string;
 	comment: string;
 };
+
+export type HowToWithModeration = HowTo & { moderation: ModerationInfo };
+
+export type EventWithModeration = Event & { moderation: ModerationInfo };
+
+export type MapPinWithModeration = MapPin & { moderation: ModerationInfo };

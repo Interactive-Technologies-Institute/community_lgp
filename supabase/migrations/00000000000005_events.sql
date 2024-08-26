@@ -25,7 +25,8 @@ create table public.events_moderation(
 	event_id bigint references public.events not null,
 	user_id uuid references public.profiles not null,
 	status public.moderation_status not null,
-	comment text not null
+	comment text not null,
+	unique (event_id)
 );
 create trigger handle_updated_at before
 update on public.events_moderation for each row execute procedure moddatetime (updated_at);

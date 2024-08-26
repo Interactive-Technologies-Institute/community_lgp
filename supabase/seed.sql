@@ -98,7 +98,7 @@ values (
 		'Community Park'
 	);
 -- Map Pin
-insert into public.map_pins (id, lng, lat)
+insert into public.map_pins (user_id, lng, lat)
 values (
 		(
 			select id

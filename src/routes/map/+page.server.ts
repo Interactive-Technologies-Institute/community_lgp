@@ -13,8 +13,8 @@ export const load = async (event) => {
 	if (session && user && profile) {
 		const { data: pinData } = await event.locals.supabase
 			.from('map_pins')
-			.select('lng, lat')
-			.eq('id', user.id)
+			.select('*')
+			.eq('user_id', user.id)
 			.single();
 		profileWithPin = {
 			...profile,
@@ -39,7 +39,7 @@ export const load = async (event) => {
 	}
 
 	const { data: usersData } = await event.locals.supabase
-		.from('profiles')
+		.from('profiles_view')
 		.select('*, pin:map_pins( lng, lat )');
 
 	const form = await superValidate(
@@ -64,10 +64,10 @@ export const load = async (event) => {
 export const actions = {
 	default: async (event) =>
 		handleFormAction(event, mapPinSchema, 'map-pin', async (event, userId, form) => {
-			const { error } = await event.locals.supabase.from('map_pins').upsert({
-				id: userId,
-				...form.data,
-			});
+			const { error } = await event.locals.supabase
+				.from('map_pins')
+				.update(form.data)
+				.eq('user_id', userId);
 
 			if (error) {
 				setFlash({ type: 'error', message: error.message }, event.cookies);
