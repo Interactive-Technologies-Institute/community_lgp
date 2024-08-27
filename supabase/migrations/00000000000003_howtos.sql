@@ -120,7 +120,7 @@ update using (
 			select authorize('howtos.update')
 		)
 		and auth.uid() = user_id
-	);
+	) with check (auth.uid() = user_id);
 create policy "Allow users to delete their own howtos" on public.howtos for delete using (
 	(
 		select authorize('howtos.delete')

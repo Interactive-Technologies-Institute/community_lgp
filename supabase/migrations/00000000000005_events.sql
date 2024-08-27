@@ -117,7 +117,7 @@ update using (
 			select authorize('events.update')
 		)
 		and auth.uid() = user_id
-	);
+	) with check (auth.uid() = user_id);
 create policy "Allow users to delete their own events" on public.events for delete using (
 	(
 		select authorize('events.delete')

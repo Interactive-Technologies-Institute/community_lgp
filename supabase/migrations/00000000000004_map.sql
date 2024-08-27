@@ -79,7 +79,7 @@ update using (
 			select authorize('map.update')
 		)
 		and auth.uid() = user_id
-	);
+	) with check (auth.uid() = user_id);
 create policy "Allow users to delete their own map pins" on public.map_pins for delete using (
 	(
 		select authorize('map.delete')
