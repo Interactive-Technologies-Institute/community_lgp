@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = loadFlash(
 
 		let profile: UserProfile | null = null;
 		if (user) {
-			const { data } = await supabase.from('profiles').select().eq('id', user.id).single();
+			const { data } = await supabase.from('profiles_view').select().eq('id', user.id).single();
 			profile = data;
 		}
 
