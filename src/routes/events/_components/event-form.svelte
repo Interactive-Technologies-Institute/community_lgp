@@ -12,7 +12,7 @@
 	import {
 		DateFormatter,
 		getLocalTimeZone,
-		parseDate,
+		parseAbsolute,
 		type DateValue,
 	} from '@internationalized/date';
 	import { CalendarIcon, Loader2 } from 'lucide-svelte';
@@ -33,7 +33,7 @@
 	});
 
 	let date: DateValue | undefined;
-	$: date = $formData.date ? parseDate($formData.date) : undefined;
+	$: date = $formData.date ? parseAbsolute($formData.date, getLocalTimeZone()) : undefined;
 
 	const image = fileProxy(form, 'image');
 	let imageUrl: string | null | undefined = $formData.imageUrl;
@@ -93,7 +93,7 @@
 									!date && 'text-muted-foreground'
 								)}
 							>
-								{date ? df.format(date.toDate(getLocalTimeZone())) : 'Pick a date'}
+								{date ? df.format(date.toDate()) : 'Pick a date'}
 								<CalendarIcon class="ml-auto h-4 w-4 opacity-50" />
 							</Popover.Trigger>
 							<Popover.Content class="w-auto p-0" side="top">
