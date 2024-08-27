@@ -22,7 +22,7 @@ export const load = async (event) => {
 		};
 	}
 
-	async function getMapPinModeration(id: string): Promise<ModerationInfo> {
+	async function getMapPinModeration(id: number): Promise<ModerationInfo> {
 		const { data: moderation, error: moderationError } = await event.locals.supabase
 			.from('map_pins_moderation')
 			.select('*')
@@ -55,7 +55,7 @@ export const load = async (event) => {
 
 	return {
 		profile: profileWithPin,
-		moderation: profileWithPin ? await getMapPinModeration(profileWithPin.id) : undefined,
+		moderation: profileWithPin?.pin ? await getMapPinModeration(profileWithPin.pin.id) : undefined,
 		users: usersData ?? [],
 		form,
 	};

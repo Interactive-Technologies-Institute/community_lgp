@@ -3,7 +3,7 @@ import { loadFlash } from 'sveltekit-flash-message/server';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = loadFlash(
-	async ({ locals: { supabase, safeGetSession } }) => {
+	async ({ locals: { supabase, safeGetSession }, cookies }) => {
 		const { session, user } = await safeGetSession();
 
 		let profile: UserProfile | null = null;
@@ -32,6 +32,7 @@ export const load: LayoutServerLoad = loadFlash(
 		return {
 			features,
 			branding,
+			cookies: cookies.getAll(),
 			session,
 			user,
 			profile,
