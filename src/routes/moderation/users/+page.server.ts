@@ -1,6 +1,10 @@
+import { updateUserRoleSchema } from '@/schemas/user-role';
 import type { UserProfile } from '@/types/types';
-import { error } from '@sveltejs/kit';
+import { handleFormAction } from '@/utils';
+import { error, fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load = async (event) => {
 	async function getUsers(): Promise<UserProfile[]> {
@@ -19,5 +23,32 @@ export const load = async (event) => {
 
 	return {
 		users: await getUsers(),
+		updateUserRoleForm: await superValidate(zod(updateUserRoleSchema), {
+			id: 'update-user-role',
+		}),
 	};
+};
+
+export const actions = {
+	default: async (event) =>
+		handleFormAction(
+			event,
+			updateUserRoleSchema,
+			'update-user-role',
+			async (event, userId, form) => {
+				console.log(form.data);
+				const { error: supabaseError } = await event.locals.supabase
+					.from('user_roles')
+					.update({ role: form.data.role })
+					.eq('id', userId);
+
+				if (supabaseError) {
+					console.log(supabaseError);
+					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+					return fail(500, { message: supabaseError.message, form });
+				}
+
+				return { form };
+			}
+		),
 };

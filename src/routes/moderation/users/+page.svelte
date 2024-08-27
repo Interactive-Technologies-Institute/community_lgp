@@ -10,5 +10,5 @@
 	<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
 		<Input placeholder="Search..." class="flex-1 sm:max-w-64"></Input>
 	</div>
-	<UsersModerationTable users={data.users} />
+	<UsersModerationTable users={data.users} updateUserRoleForm={data.updateUserRoleForm} />
 </Tabs.Content>

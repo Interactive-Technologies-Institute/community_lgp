@@ -1,7 +1,10 @@
 /* AUTH & USERS */
 -- User roles & permissions
 create type public.user_permission as enum (
-	'users.moderate',
+	'user_roles.update',
+	'user_types.update',
+	'features.update',
+	'branding.update',
 	'howtos.create',
 	'howtos.update',
 	'howtos.delete',
@@ -13,10 +16,7 @@ create type public.user_permission as enum (
 	'map.create',
 	'map.update',
 	'map.delete',
-	'map.moderate',
-	'features.update',
-	'branding.update',
-	'user_types.update'
+	'map.moderate'
 );
 create type public.user_role as enum ('user', 'moderator', 'admin');
 create table public.user_roles (
@@ -117,15 +117,16 @@ alter table public.role_permissions enable row level security;
 alter table public.profiles enable row level security;
 create policy "Allow all users to read all user roles" on public.user_roles for
 select using (true);
-create policy "Allow moderators to update user roles" on public.user_roles for
+create policy "Allow admins to update user roles" on public.user_roles for
 update using (
-		auth.uid() = id
-		and role = 'moderator'
+		(
+			select authorize('user_roles.update')
+		)
 	);
 create policy "Allow all users to read all profiles" on public.profiles for
 select using (true);
 create policy "Allow users to update their own profiles" on public.profiles for
-update using (auth.uid() = id);
+update using (auth.uid() = id) with check (auth.uid() = id);
 create policy "Allow users to upload their image" on storage.objects for
 insert to authenticated with check (
 		bucket_id = 'users'
@@ -156,6 +157,10 @@ values ('user', 'howtos.create'),
 	('moderator', 'map.update'),
 	('moderator', 'map.delete'),
 	('moderator', 'map.moderate'),
+	('admin', 'user_roles.update'),
+	('admin', 'user_types.update'),
+	('admin', 'features.update'),
+	('admin', 'branding.update'),
 	('admin', 'howtos.create'),
 	('admin', 'howtos.update'),
 	('admin', 'howtos.delete'),
@@ -167,6 +172,4 @@ values ('user', 'howtos.create'),
 	('admin', 'map.create'),
 	('admin', 'map.update'),
 	('admin', 'map.delete'),
-	('admin', 'map.moderate'),
-	('admin', 'features.update'),
-	('admin', 'branding.update');
+	('admin', 'map.moderate');

@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
 	import * as Table from '@/components/ui/table';
+	import type { UpdateUserRoleSchema } from '@/schemas/user-role';
 	import type { UserProfile } from '@/types/types';
 	import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
 	import { addPagination } from 'svelte-headless-table/plugins';
 	import { writable } from 'svelte/store';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import UsersModerationActions from './users-moderation-actions.svelte';
 	import UsersModerationRoleCell from './users-moderation-role-cell.svelte';
 
 	export let users: UserProfile[];
+	export let updateUserRoleForm: SuperValidated<Infer<UpdateUserRoleSchema>>;
 	let data = writable(users);
 	$: data.set(users);
 
@@ -37,10 +40,14 @@
 		}),
 
 		table.column({
-			accessor: ({ id }) => id,
+			accessor: ({ id, role }) => ({ id, role }),
 			header: '',
 			cell: ({ value }) => {
-				return createRender(UsersModerationActions, { id: value });
+				return createRender(UsersModerationActions, {
+					id: value.id,
+					currentRole: value.role,
+					data: updateUserRoleForm,
+				});
 			},
 		}),
 	]);
