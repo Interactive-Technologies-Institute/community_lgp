@@ -1,3 +1,4 @@
+import plugin from '@tailwindcss/typography';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
@@ -5,7 +6,7 @@ const config = {
 	darkMode: ['class'],
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	safelist: ['dark'],
-	plugins: [require('@tailwindcss/typography')],
+	plugins: [plugin],
 	theme: {
 		container: {
 			center: true,

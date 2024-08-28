@@ -25,7 +25,7 @@
 		},
 	});
 
-	const { form: formData, enhance, submitting } = form;
+	const { enhance } = form;
 
 	function handleRoleChange(role: string | undefined) {
 		if (!role) return;

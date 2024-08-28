@@ -26,7 +26,7 @@
 		},
 	});
 
-	const { form: formData, enhance, submitting } = form;
+	const { form: formData, enhance } = form;
 
 	let openApproveDialog = false;
 	let openRejectDialog = false;

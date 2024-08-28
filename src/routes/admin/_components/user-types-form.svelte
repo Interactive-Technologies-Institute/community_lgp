@@ -35,7 +35,7 @@
 				document.querySelectorAll<HTMLElement>("#user-types-form input[name='types']")
 			);
 			const lastInput = urlInputs[urlInputs.length - 1];
-			lastInput && lastInput.focus();
+			lastInput?.focus();
 		});
 	}
 
