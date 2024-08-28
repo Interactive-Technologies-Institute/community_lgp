@@ -1,12 +1,11 @@
 import type { Event } from '@/types/types';
+import { arrayQueryParam, stringQueryParam } from '@/utils';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
-import { ssp } from 'sveltekit-search-params';
 
 export const load = async (event) => {
-	const search = event.url.searchParams.get('s');
-	const tagsRaw = event.url.searchParams.get('tags');
-	const tags = ssp.array<string>().decode(tagsRaw);
+	const search = stringQueryParam().decode(event.url.searchParams.get('s'));
+	const tags = arrayQueryParam().decode(event.url.searchParams.get('tags'));
 
 	async function getEvents(): Promise<Event[]> {
 		let query = event.locals.supabase.from('events_view').select('*');

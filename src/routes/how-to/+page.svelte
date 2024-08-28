@@ -3,19 +3,18 @@
 	import TagFilterButton from '@/components/tag-filter-button.svelte';
 	import { Button } from '@/components/ui/button';
 	import { Input } from '@/components/ui/input';
-	import { nullableQueryParam } from '@/utils';
+	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { PlusCircle } from 'lucide-svelte';
-	import { queryParam, ssp } from 'sveltekit-search-params';
+	import { queryParam } from 'sveltekit-search-params';
 	import SortButton from './../../lib/components/sort-button.svelte';
 	import HowToItem from './_components/how-to-item.svelte';
 
 	export let data;
 
-	const search = queryParam('s', nullableQueryParam(ssp.string()), {
-		debounceHistory: 1000,
+	const search = queryParam('s', stringQueryParam(), {
+		debounceHistory: 500,
 	});
-
-	const tags = queryParam('tags', nullableQueryParam(ssp.array<string>()));
+	const tags = queryParam('tags', arrayQueryParam());
 </script>
 
 <PageHeader title="How to" subtitle="Learn & share how to solve your problems" />

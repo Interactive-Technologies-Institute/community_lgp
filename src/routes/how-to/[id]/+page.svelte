@@ -20,7 +20,7 @@
 	<div class="mb-10 flex flex-col items-center gap-y-4">
 		<div class=" flex flex-row gap-x-2">
 			{#each data.howTo.tags as tag}
-				<Button variant="secondary" size="sm" href="/user/0">
+				<Button variant="secondary" size="sm" href="/how-to?tags={tag}">
 					<Tag class="mr-2 h-4 w-4" />
 					{tag}
 				</Button>

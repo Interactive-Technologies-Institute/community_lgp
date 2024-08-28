@@ -141,14 +141,24 @@ export async function handleFormAction<
 	return result;
 }
 
-export function nullableQueryParam<T>({ encode, ...codec }: EncodeAndDecodeOptions<T>) {
+export function stringQueryParam(defaultValue?: string): EncodeAndDecodeOptions<string> {
 	return {
-		...codec,
-		encode(value) {
-			if (value === '') return undefined;
-			if (Array.isArray(value) && value.length === 0) return undefined;
+		encode: (value) => (value === '' ? undefined : (value ?? undefined)),
+		decode: (value) => value ?? null,
+		defaultValue,
+	};
+}
 
-			return encode(value);
+export function arrayQueryParam(defaultValue?: string[]): EncodeAndDecodeOptions<string[]> {
+	return {
+		encode: (value) => {
+			if (!value || value.length === 0) return undefined;
+			return value.join(',');
 		},
-	} as EncodeAndDecodeOptions<T>;
+		decode: (value) => {
+			if (!value) return null;
+			return value.split(',');
+		},
+		defaultValue,
+	};
 }
