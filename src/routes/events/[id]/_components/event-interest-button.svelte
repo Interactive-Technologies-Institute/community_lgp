@@ -12,30 +12,28 @@
 
 	const form = superForm(data, {
 		validators: zodClient(toggleEventInterestSchema),
-		onUpdate: ({ form, result }) => {
+		invalidateAll: 'force',
+		onUpdate: ({ result }) => {
 			if (result.type === 'failure') {
-				form.data.value = !form.data.value;
-				count += form.data.value ? 1 : -1;
+				$formData.value = !$formData.value;
+				count += $formData.value ? 1 : -1;
 			}
 		},
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submit } = form;
+
+	async function toggleInterest() {
+		$formData.value = !$formData.value;
+		count += $formData.value ? 1 : -1;
+		await tick();
+		submit();
+	}
 </script>
 
 <form method="POST" action="?/toggleInterest" use:enhance>
 	<input type="hidden" name="value" value={$formData.value} />
-	<Button
-		type="button"
-		on:click={async () => {
-			$formData.value = !$formData.value;
-			count += $formData.value ? 1 : -1;
-			await tick();
-			form.submit();
-		}}
-		variant="outline"
-		size="sm"
-	>
+	<Button type="button" on:click={toggleInterest} variant="outline" size="sm">
 		<Bookmark class={cn('mr-2 h-4 w-4', { 'fill-foreground': $formData.value })} />
 		{#if $formData.value}
 			Marked as interested
