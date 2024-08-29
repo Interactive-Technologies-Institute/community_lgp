@@ -2,7 +2,6 @@
 import {
 	type ActionFailure,
 	type LoadEvent,
-	type MaybePromise,
 	type RequestEvent,
 	type ServerLoadEvent,
 } from '@sveltejs/kit';
@@ -73,10 +72,11 @@ export function handleSignInRedirect(event: LoadEvent | ServerLoadEvent) {
 	return `/sign-in?redirectTo=${redirectTo}`;
 }
 
+type MaybePromise<T> = T | Promise<T>;
+
 export type FormAction<
 	Schema extends ZodTypeAny,
 	Params extends Partial<Record<string, string>> = Partial<Record<string, string>>,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	OutputData extends Record<string, any> | void = Record<string, any> | void,
 	RouteId extends string | null = string | null,
 	RequireAuth extends boolean = true,

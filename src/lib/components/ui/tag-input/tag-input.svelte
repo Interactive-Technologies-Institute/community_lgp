@@ -56,8 +56,7 @@
 			{tag}
 			<button
 				class={cn(
-					'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
-					false && 'hidden'
+					'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2'
 				)}
 				on:keydown={(e) => {
 					if (e.key === 'Enter') {
