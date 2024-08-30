@@ -16,7 +16,7 @@
 		resetForm: false,
 	});
 
-	const { form: formData, enhance, submitting } = form;
+	const { form: formData, enhance, isTainted, tainted, submitting } = form;
 </script>
 
 <form method="POST" action="?/updateFeatures" use:enhance>
@@ -90,7 +90,7 @@
 			</div>
 		</Card.Content>
 		<Card.Footer>
-			<Button type="submit" disabled={$submitting}>
+			<Button type="submit" disabled={$submitting || !isTainted($tainted)}>
 				{#if $submitting}
 					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 				{/if}
