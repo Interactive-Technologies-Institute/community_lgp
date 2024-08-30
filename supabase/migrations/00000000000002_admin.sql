@@ -47,10 +47,22 @@ create policy "Allow all users to read branding" on public.branding for
 select using (true);
 create policy "Allow all users to read user types" on public.user_types for
 select using (true);
+create policy "Allow admins to insert features" on public.feature_flags for
+insert with check (
+		(
+			select authorize('features.update')
+		)
+	);
 create policy "Allow admins to update features" on public.feature_flags for
 update using (
 		(
 			select authorize('features.update')
+		)
+	);
+create policy "Allow admins to insert branding" on public.branding for
+insert with check (
+		(
+			select authorize('branding.update')
 		)
 	);
 create policy "Allow admins to update branding" on public.branding for
