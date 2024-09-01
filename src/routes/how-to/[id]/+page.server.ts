@@ -1,5 +1,5 @@
 import { deleteHowToSchema, toggleHowToUsefulSchema } from '@/schemas/how-to';
-import type { HowTo, ModerationInfo } from '@/types/types';
+import type { HowToWithAuthor, ModerationInfo } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -9,10 +9,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async (event) => {
 	const { user } = await event.locals.safeGetSession();
 
-	async function getHowTo(id: string): Promise<HowTo> {
+	async function getHowTo(id: string): Promise<HowToWithAuthor> {
 		const { data: howTo, error: howToError } = await event.locals.supabase
 			.from('howtos_view')
-			.select('*')
+			.select('*, author:profiles_view!inner(*)')
 			.eq('id', id)
 			.single();
 

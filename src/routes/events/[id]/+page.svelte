@@ -50,10 +50,12 @@
 		</div>
 	</div>
 	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
-		<Button variant="secondary" size="sm" href="/user/0">
+		<span class="text-sm text-muted-foreground"
+			>Updated on {dayjs(data.event.updated_at).format('YYYY-MM-DD HH:mm:ss')}</span
+		>
+		<Button variant="secondary" size="sm" href="/users/{data.event.author.id}">
 			<CircleUser class="mr-2 h-4 w-4" />
-			User Lorem Ipsum
+			{data.event.author.display_name}
 		</Button>
 	</div>
 	{#if data.event.user_id === data.user?.id}

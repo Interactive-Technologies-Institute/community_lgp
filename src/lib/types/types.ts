@@ -43,6 +43,7 @@ export type HowToDuration = 'short' | 'medium' | 'long';
 
 export type HowTo = {
 	id: number;
+	updated_at: string;
 	user_id: string;
 	title: string;
 	description: string;
@@ -52,6 +53,8 @@ export type HowTo = {
 	duration: HowToDuration;
 	steps: HowToStep[];
 };
+
+export type HowToWithAuthor = HowTo & { author: UserProfile };
 
 type HowToStep = {
 	title: string;
@@ -72,6 +75,7 @@ export type DocGroup = {
 
 export type Event = {
 	id: number;
+	updated_at: string;
 	user_id: string;
 	title: string;
 	description: string;
@@ -80,6 +84,8 @@ export type Event = {
 	date: string;
 	location: string;
 };
+
+export type EventWithAuthor = Event & { author: UserProfile };
 
 export type ModerationStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
 

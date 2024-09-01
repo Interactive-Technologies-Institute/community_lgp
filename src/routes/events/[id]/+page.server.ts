@@ -1,5 +1,5 @@
 import { deleteEventSchema, toggleEventInterestSchema } from '@/schemas/event';
-import type { Event, ModerationInfo } from '@/types/types';
+import type { EventWithAuthor, ModerationInfo } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -9,10 +9,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async (event) => {
 	const { user } = await event.locals.safeGetSession();
 
-	async function getEvent(id: string): Promise<Event> {
+	async function getEvent(id: string): Promise<EventWithAuthor> {
 		const { data: eventData, error: eventError } = await event.locals.supabase
 			.from('events_view')
-			.select('*')
+			.select('*, author:profiles_view!inner(*)')
 			.eq('id', id)
 			.single();
 

@@ -3,6 +3,7 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
+	import dayjs from 'dayjs';
 	import { BarChart2, CircleUser, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
 	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
 	import UsefulButton from './_components/useful-button.svelte';
@@ -61,10 +62,12 @@
 		{/each}
 	</div>
 	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground">Updated on dd/mm/yyyy</span>
-		<Button variant="secondary" size="sm" href="/user/0">
+		<span class="text-sm text-muted-foreground">
+			Updated on {dayjs(data.howTo.updated_at).format('YYYY-MM-DD HH:mm:ss')}
+		</span>
+		<Button variant="secondary" size="sm" href="/users/{data.howTo.author.id}">
 			<CircleUser class="mr-2 h-4 w-4" />
-			User Lorem Ipsum
+			{data.howTo.author.display_name}
 		</Button>
 	</div>
 	{#if data.howTo.user_id === data.user?.id}
