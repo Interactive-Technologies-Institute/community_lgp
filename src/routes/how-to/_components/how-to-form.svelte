@@ -70,6 +70,7 @@
 		$formData.steps = [...$formData.steps, { title: '', description: '' }];
 	}
 
+	// TODO: Fix this
 	async function removeStep(index: number) {
 		$formData.steps = $formData.steps.filter((_, i) => i !== index);
 	}
@@ -220,7 +221,7 @@
 				</Card.Description>
 			</Card.Header>
 			<Card.Content class="space-y-4">
-				{#each $formData.steps as _, i}
+				{#each $formData.steps as step, i (step.title)}
 					<Card.Root>
 						<Card.Header>
 							<div class="flex flex-row">
