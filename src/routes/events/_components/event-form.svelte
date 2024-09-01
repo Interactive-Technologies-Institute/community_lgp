@@ -102,7 +102,7 @@
 									value={date}
 									onValueChange={(v) => {
 										if (v) {
-											$formData.date = v.toString();
+											$formData.date = v.toDate(getLocalTimeZone()).toISOString();
 										} else {
 											$formData.date = '';
 										}
