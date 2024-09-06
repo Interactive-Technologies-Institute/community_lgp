@@ -4,8 +4,8 @@ export const createHowToSchema = z
 	.object({
 		title: z.string().min(5, { message: 'Title is required' }).max(100),
 		description: z.string().min(5, { message: 'Description is required' }).max(500),
-		imageUrl: z.string().optional(),
-		image: z.instanceof(File, { message: 'Image is required.' }).optional(),
+		imageUrl: z.string().nullish(),
+		image: z.instanceof(File).nullish(),
 		tags: z.array(z.string()).min(1, { message: 'At least one tag is required' }),
 		difficulty: z.enum(['easy', 'medium', 'hard']),
 		duration: z.enum(['short', 'medium', 'long']),
@@ -15,8 +15,8 @@ export const createHowToSchema = z
 					.object({
 						title: z.string().min(5, { message: 'Title is required' }).max(100),
 						description: z.string().min(5, { message: 'Description is required' }).max(500),
-						imageUrl: z.string().optional(),
-						image: z.instanceof(File, { message: 'Image is required.' }).optional(),
+						imageUrl: z.string().nullish(),
+						image: z.instanceof(File).nullish(),
 					})
 					.refine((data) => data.image || data.imageUrl, {
 						message: 'Image is required.',

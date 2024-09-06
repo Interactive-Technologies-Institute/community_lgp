@@ -4,8 +4,8 @@ export const createEventSchema = z
 	.object({
 		title: z.string().min(5, { message: 'Title is required' }).max(100),
 		description: z.string().min(5, { message: 'Description is required' }).max(500),
-		imageUrl: z.string().optional(),
-		image: z.instanceof(File, { message: 'Image is required.' }).optional(),
+		imageUrl: z.string().nullish(),
+		image: z.instanceof(File).nullish(),
 		tags: z.array(z.string()).min(1, { message: 'At least one tag is required' }),
 		date: z.string().refine((date) => date, { message: 'Please select a valid date.' }),
 		location: z.string().min(1, { message: 'Location is required' }),
