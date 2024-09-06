@@ -2,6 +2,7 @@
 	import { Button, buttonVariants } from '@/components/ui/button';
 	import { Calendar } from '@/components/ui/calendar';
 	import * as Card from '@/components/ui/card';
+	import { FileInput } from '@/components/ui/file-input';
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
 	import * as Popover from '@/components/ui/popover';
@@ -45,6 +46,8 @@
 				imageUrl = e.target?.result as string | null | undefined;
 			};
 			reader.readAsDataURL(img!);
+		} else {
+			imageUrl = $formData.imageUrl;
 		}
 	}
 </script>
@@ -131,13 +134,7 @@
 								<img src={imageUrl} alt="Event Cover" class="h-full w-full object-cover" />
 							{/if}
 						</Card.Root>
-						<input
-							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-							{...attrs}
-							type="file"
-							accept="image/png, image/jpeg"
-							bind:files={$image}
-						/>
+						<FileInput {...attrs} bind:files={$image} accept="image/*" />
 						<input hidden value={$formData.imageUrl} name="imageUrl" />
 						<Form.FieldErrors />
 					</Form.Control>
