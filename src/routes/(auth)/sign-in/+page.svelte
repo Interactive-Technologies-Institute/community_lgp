@@ -3,6 +3,7 @@
 	import { Card } from '@/components/ui/card';
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
+	import { PasswordInput } from '@/components/ui/password-input';
 	import { signInSchema } from '@/schemas/sign-in';
 	import { Loader2 } from 'lucide-svelte';
 	import { superForm } from 'sveltekit-superforms';
@@ -32,7 +33,7 @@
 			<Form.Field {form} name="password">
 				<Form.Control let:attrs>
 					<Form.Label>Password</Form.Label>
-					<Input type="password" {...attrs} bind:value={$formData.password} />
+					<PasswordInput {...attrs} bind:value={$formData.password} />
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
