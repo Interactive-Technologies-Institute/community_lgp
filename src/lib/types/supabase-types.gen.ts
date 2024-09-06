@@ -517,7 +517,8 @@ export type Database = {
       }
       profiles: {
         Row: {
-          description: string
+          avatar: string | null
+          description: string | null
           display_name: string
           email: string
           id: string
@@ -526,8 +527,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          description?: string
-          display_name?: string
+          avatar?: string | null
+          description?: string | null
+          display_name: string
           email: string
           id: string
           inserted_at?: string
@@ -535,7 +537,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          description?: string
+          avatar?: string | null
+          description?: string | null
           display_name?: string
           email?: string
           id?: string
@@ -728,6 +731,7 @@ export type Database = {
       }
       profiles_view: {
         Row: {
+          avatar: string | null
           description: string | null
           display_name: string | null
           email: string | null
@@ -786,6 +790,12 @@ export type Database = {
           types: Database["public"]["CompositeTypes"]["user_type"][]
         }
         Returns: undefined
+      }
+      verify_user_password: {
+        Args: {
+          password: string
+        }
+        Returns: boolean
       }
     }
     Enums: {

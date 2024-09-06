@@ -36,7 +36,7 @@
 			</div>
 		</Card.Header>
 		<Card.Content class="space-y-4">
-			<p>{data.userProfile.description}</p>
+			<p>{data.userProfile.description ?? 'No description provided'}</p>
 			<div class="flex flex-row gap-x-4">
 				<Button href="mailto:{data.userProfile.email}" variant="outline">
 					<Mail class="mr-2 h-4 w-4" />
@@ -50,7 +50,7 @@
 				{/if}
 			</div>
 			{#if $page.url.pathname === '/users/me'}
-				<Button href="/user/me/edit">Edit Profile</Button>
+				<Button href="/users/me/edit">Edit Profile</Button>
 			{/if}
 		</Card.Content>
 	</Card.Root>

@@ -69,6 +69,17 @@ return bind_permissions > 0;
 end;
 $$ language plpgsql stable security definer
 set search_path = '';
+create or replace function public.verify_user_password(password text) returns boolean security definer as $$ begin return exists (
+		select id
+		from auth.users
+		where id = auth.uid()
+			and encrypted_password = crypt(password::text, auth.users.encrypted_password)
+	);
+end;
+$$ language plpgsql;
+set search_path = extensions,
+	public,
+	auth;
 -- User profiles
 create table public.profiles (
 	id uuid primary key references auth.users on delete cascade not null,
@@ -76,8 +87,9 @@ create table public.profiles (
 	updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
 	email text not null,
 	type text not null,
-	display_name text not null default 'Display Name',
-	description text not null default '',
+	display_name text not null,
+	description text,
+	avatar text,
 	unique (id)
 );
 create view public.profiles_view with (security_invoker = on) as
@@ -127,13 +139,13 @@ create policy "Allow all users to read all profiles" on public.profiles for
 select using (true);
 create policy "Allow users to update their own profiles" on public.profiles for
 update using (auth.uid() = id) with check (auth.uid() = id);
-create policy "Allow users to upload their image" on storage.objects for
-insert to authenticated with check (
-		bucket_id = 'users'
-		and storage.filename(name) = (
-			select auth.uid()::text
-		)
-	);
+create policy "Allow users to manage their own files" on storage.objects for all using (
+	bucket_id = 'users'
+	AND (storage.foldername(name)) [1] = auth.uid()::text
+) with check (
+	bucket_id = 'users'
+	AND (storage.foldername(name)) [1] = auth.uid()::text
+);
 -- Seed data
 insert into public.role_permissions (role, permission)
 values ('user', 'howtos.create'),

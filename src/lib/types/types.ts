@@ -8,11 +8,12 @@ export type UserWithRole = User & { role: UserRole };
 
 export type UserProfile = {
 	id: string;
-	email: string;
-	type: string;
-	display_name: string;
-	description: string;
 	role: UserRole;
+	type: string;
+	email: string;
+	display_name: string;
+	description: string | null;
+	avatar: string | null;
 };
 
 export type UserType = {

@@ -9,7 +9,14 @@ export const load: LayoutServerLoad = loadFlash(
 		let profile: UserProfile | null = null;
 		if (user) {
 			const { data } = await supabase.from('profiles_view').select().eq('id', user.id).single();
-			profile = data;
+			if (data) {
+				profile = {
+					...data,
+					avatar: data.avatar
+						? supabase.storage.from('users').getPublicUrl(data.avatar).data.publicUrl
+						: null,
+				};
+			}
 		}
 
 		let features: Feature[] = [];
