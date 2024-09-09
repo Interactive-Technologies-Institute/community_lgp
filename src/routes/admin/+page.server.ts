@@ -25,13 +25,14 @@ export const load = async (event) => {
 
 	let branding: Infer<UpdateBrandingSchema> | null = null;
 	const { data: brandingData } = await event.locals.supabase.from('branding').select().single();
-	if (brandingData)
-		branding = {
-			...brandingData,
-			logo: undefined,
-			logoUrl: event.locals.supabase.storage.from('branding').getPublicUrl(brandingData.logo).data
-				.publicUrl,
-		};
+	if (brandingData) {
+		branding = { ...brandingData, logo: undefined };
+		if (brandingData.logo) {
+			branding.logoUrl = await event.locals.supabase.storage
+				.from('branding')
+				.getPublicUrl(brandingData.logo).data.publicUrl;
+		}
+	}
 
 	let userTypes: UserType[] = [];
 	const { data: userTypesData } = await event.locals.supabase.from('user_types').select();
