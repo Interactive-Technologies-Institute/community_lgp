@@ -5,7 +5,8 @@ export const updateBrandingSchema = z.object({
 	slogan: z.string(),
 	color_theme: z.string(),
 	radius: z.number(),
-	logo: z.string().optional(),
+	logoUrl: z.string().nullish(),
+	logo: z.instanceof(File).nullish(),
 });
 
 export type UpdateBrandingSchema = typeof updateBrandingSchema;

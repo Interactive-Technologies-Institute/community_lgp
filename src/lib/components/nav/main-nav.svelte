@@ -2,11 +2,14 @@
 	import { page } from '$app/stores';
 	import { cn } from '@/utils';
 	import FeatureWrapper from '../feature-wrapper.svelte';
+	import Logo from '../logo.svelte';
 </script>
 
 <div class="mr-4 hidden md:flex">
 	<a href="/" class="mr-6 flex items-center gap-x-2">
-		<div class="h-4 w-4 rounded-full bg-primary"></div>
+		{#if $page.data.branding.logo}
+			<Logo class="h-4 w-4" logoUrl={$page.data.branding.logo} />
+		{/if}
 		<span class="font-bold"> {$page.data.branding.name} </span>
 	</a>
 	<nav class="flex items-center space-x-6 text-sm font-medium">

@@ -10,12 +10,12 @@ export const load: LayoutServerLoad = loadFlash(
 		if (user) {
 			const { data } = await supabase.from('profiles_view').select().eq('id', user.id).single();
 			if (data) {
-				profile = {
-					...data,
-					avatar: data.avatar
-						? supabase.storage.from('users').getPublicUrl(data.avatar).data.publicUrl
-						: null,
-				};
+				profile = data;
+				if (profile.avatar) {
+					profile.avatar = supabase.storage
+						.from('avatars')
+						.getPublicUrl(profile.avatar).data.publicUrl;
+				}
 			}
 		}
 
@@ -35,6 +35,9 @@ export const load: LayoutServerLoad = loadFlash(
 
 		const { data: brandingData } = await supabase.from('branding').select().single();
 		if (brandingData) branding = brandingData;
+		if (branding.logo) {
+			branding.logo = supabase.storage.from('branding').getPublicUrl(branding.logo).data.publicUrl;
+		}
 
 		return {
 			features,

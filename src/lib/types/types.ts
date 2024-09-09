@@ -25,6 +25,7 @@ export type UserType = {
 export type Branding = {
 	name: string;
 	slogan: string;
+	logo?: string | null;
 	color_theme: string;
 	radius: number;
 };

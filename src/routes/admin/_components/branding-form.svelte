@@ -1,7 +1,9 @@
 <script lang="ts">
+	import Logo from '@/components/logo.svelte';
 	import ThemeWrapper from '@/components/theme-wrapper.svelte';
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
+	import { FileInput } from '@/components/ui/file-input';
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
 	import { updateBrandingSchema, type UpdateBrandingSchema } from '@/schemas/branding';
@@ -9,7 +11,7 @@
 	import { cn } from '@/utils';
 	import { Check, Loader2 } from 'lucide-svelte';
 	import { mode } from 'mode-watcher';
-	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { fileProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data: SuperValidated<Infer<UpdateBrandingSchema>>;
@@ -21,10 +23,25 @@
 	});
 
 	const { form: formData, enhance, submitting, isTainted, tainted } = form;
+
+	const logo = fileProxy(form, 'logo');
+	let logoUrl: string | null | undefined = $formData.logoUrl;
+	$: {
+		if ($logo.length > 0) {
+			const img = $logo.item(0);
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				logoUrl = e.target?.result as string | null | undefined;
+			};
+			reader.readAsDataURL(img!);
+		} else {
+			logoUrl = $formData.logoUrl;
+		}
+	}
 </script>
 
 <ThemeWrapper theme={$formData.color_theme} radius={$formData.radius}>
-	<form method="POST" action="?/updateBranding" use:enhance>
+	<form method="POST" enctype="multipart/form-data" action="?/updateBranding" use:enhance>
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Branding</Card.Title>
@@ -47,9 +64,15 @@
 						</Form.Control>
 					</Form.Field>
 					<Form.Field {form} name="logo">
-						<Form.Control>
+						<Form.Control let:attrs>
 							<Form.Label>Logo*</Form.Label>
-							<div class="h-20 w-20 rounded-full bg-primary"></div>
+							<Card.Root class="flex aspect-video items-center justify-center">
+								{#if logoUrl}
+									<Logo {logoUrl} class="h-20 w-20" />
+								{/if}
+							</Card.Root>
+							<FileInput {...attrs} bind:files={$logo} accept="image/*" />
+							<input hidden value={$formData.logoUrl} name="logoUrl" />
 							<Form.FieldErrors />
 						</Form.Control>
 					</Form.Field>

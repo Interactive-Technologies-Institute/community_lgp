@@ -12,6 +12,7 @@ create table public.branding (
 	updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
 	name text not null,
 	slogan text not null,
+	logo text,
 	color_theme text not null,
 	radius double precision not null
 );
@@ -37,6 +38,9 @@ values (type.slug, type.label, type.is_default);
 end loop;
 end;
 $$;
+-- Storage Buckets
+-- insert into storage.buckets (id, name, public, allowed_mime_types)
+-- values ('branding', 'Branding', true, '{"image/*"}');
 -- RLS policies
 alter table public.feature_flags enable row level security;
 alter table public.user_types enable row level security;
@@ -80,6 +84,17 @@ insert with check (
 create policy "Allow admins to delete user types" on public.user_types for delete using (
 	(
 		select authorize('user_types.update')
+	)
+);
+create policy "Allow users to manage branding files" on storage.objects for all using (
+	bucket_id = 'branding'
+	AND (
+		select authorize('branding.update')
+	)
+) with check (
+	bucket_id = 'branding'
+	AND (
+		select authorize('branding.update')
 	)
 );
 -- Seed data

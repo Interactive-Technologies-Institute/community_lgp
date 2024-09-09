@@ -39,6 +39,7 @@ export type Database = {
           color_theme: string
           id: number
           inserted_at: string
+          logo: string | null
           name: string
           radius: number
           slogan: string
@@ -48,6 +49,7 @@ export type Database = {
           color_theme: string
           id?: number
           inserted_at?: string
+          logo?: string | null
           name: string
           radius: number
           slogan: string
@@ -57,6 +59,7 @@ export type Database = {
           color_theme?: string
           id?: number
           inserted_at?: string
+          logo?: string | null
           name?: string
           radius?: number
           slogan?: string

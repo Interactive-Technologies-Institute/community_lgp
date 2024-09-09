@@ -74,15 +74,20 @@ enabled = true
 public = true
 allowed_mime_types = ["image/*"]
 
+[storage.buckets.branding]
+public = true
+allowed_mime_types = ["image/*"]
+# objects_path = "./seed/branding"
+
 [storage.buckets.howtos]
 public = true
 allowed_mime_types = ["image/*"]
-objects_path = "./placeholders"
+objects_path = "./seed/placeholders"
 
 [storage.buckets.events]
 public = true
 allowed_mime_types = ["image/*"]
-objects_path = "./placeholders"
+objects_path = "./seed/placeholders"
 
 [auth]
 enabled = true

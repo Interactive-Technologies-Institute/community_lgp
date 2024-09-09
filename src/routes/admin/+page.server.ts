@@ -1,12 +1,13 @@
-import { updateBrandingSchema } from '@/schemas/branding';
+import { updateBrandingSchema, type UpdateBrandingSchema } from '@/schemas/branding';
 import { updateFeaturesSchema } from '@/schemas/features';
 import { updateUserTypesSchema } from '@/schemas/user-types';
-import type { Branding, Feature, UserType } from '@/types/types';
+import type { Feature, UserType } from '@/types/types';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
+import type { StorageError } from '@supabase/storage-js';
 import { fail, redirect } from '@sveltejs/kit';
 import slugify from 'slugify';
 import { setFlash } from 'sveltekit-flash-message/server';
-import { superValidate } from 'sveltekit-superforms';
+import { superValidate, withFiles, type Infer } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
@@ -22,9 +23,15 @@ export const load = async (event) => {
 		.eq('enabled', true);
 	if (data) features = data.map((f: { id: Feature }) => f.id);
 
-	let branding: Branding | null = null;
+	let branding: Infer<UpdateBrandingSchema> | null = null;
 	const { data: brandingData } = await event.locals.supabase.from('branding').select().single();
-	if (brandingData) branding = brandingData;
+	if (brandingData)
+		branding = {
+			...brandingData,
+			logo: undefined,
+			logoUrl: event.locals.supabase.storage.from('branding').getPublicUrl(brandingData.logo).data
+				.publicUrl,
+		};
 
 	let userTypes: UserType[] = [];
 	const { data: userTypesData } = await event.locals.supabase.from('user_types').select();
@@ -87,16 +94,50 @@ export const actions = {
 			updateBrandingSchema,
 			'update-branding',
 			async (event, userId, form) => {
-				const { error: supabaseError } = await event.locals.supabase
-					.from('branding')
-					.upsert({ id: 1, ...form.data });
+				async function uploadImage(
+					image: File
+				): Promise<{ path: string; error: StorageError | null }> {
+					const fileExt = image.name.split('.').pop();
+					const filePath = `logo.${fileExt}`;
+
+					const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
+						.from('branding')
+						.upload(filePath, image, { upsert: true });
+
+					if (imageFileError) {
+						setFlash({ type: 'error', message: imageFileError.message }, event.cookies);
+						return { path: '', error: imageFileError };
+					}
+
+					return { path: imageFileData.path, error: null };
+				}
+
+				let logoPath = '';
+				if (form.data.logo) {
+					const { path, error } = await uploadImage(form.data.logo);
+					if (error) {
+						return fail(500, withFiles({ message: error.message, form }));
+					}
+					logoPath = path;
+				} else if (form.data.logoUrl) {
+					logoPath = form.data.logoUrl.split('/').pop() ?? '';
+				}
+
+				const { error: supabaseError } = await event.locals.supabase.from('branding').upsert({
+					id: 1,
+					name: form.data.name,
+					slogan: form.data.slogan,
+					logo: logoPath,
+					color_theme: form.data.color_theme,
+					radius: form.data.radius,
+				});
 
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-					return fail(500, { message: supabaseError.message, form });
+					return fail(500, withFiles({ message: supabaseError.message, form }));
 				}
 
-				return { form };
+				return withFiles({ form });
 			}
 		),
 	updateUserTypes: async (event) =>
