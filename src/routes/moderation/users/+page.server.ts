@@ -36,14 +36,12 @@ export const actions = {
 			updateUserRoleSchema,
 			'update-user-role',
 			async (event, userId, form) => {
-				console.log(form.data);
 				const { error: supabaseError } = await event.locals.supabase
 					.from('user_roles')
 					.update({ role: form.data.role })
 					.eq('id', userId);
 
 				if (supabaseError) {
-					console.log(supabaseError);
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 					return fail(500, { message: supabaseError.message, form });
 				}
