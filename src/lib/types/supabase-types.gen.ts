@@ -181,7 +181,6 @@ export type Database = {
           id: number
           inserted_at: string
           status: Database["public"]["Enums"]["moderation_status"]
-          updated_at: string
           user_id: string
         }
         Insert: {
@@ -190,7 +189,6 @@ export type Database = {
           id?: number
           inserted_at?: string
           status: Database["public"]["Enums"]["moderation_status"]
-          updated_at?: string
           user_id: string
         }
         Update: {
@@ -199,21 +197,20 @@ export type Database = {
           id?: number
           inserted_at?: string
           status?: Database["public"]["Enums"]["moderation_status"]
-          updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "events_moderation_event_id_fkey"
             columns: ["event_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "events_moderation_event_id_fkey"
             columns: ["event_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "events_view"
             referencedColumns: ["id"]
           },
@@ -315,7 +312,6 @@ export type Database = {
           id: number
           inserted_at: string
           status: Database["public"]["Enums"]["moderation_status"]
-          updated_at: string
           user_id: string
         }
         Insert: {
@@ -324,7 +320,6 @@ export type Database = {
           id?: number
           inserted_at?: string
           status: Database["public"]["Enums"]["moderation_status"]
-          updated_at?: string
           user_id: string
         }
         Update: {
@@ -333,21 +328,20 @@ export type Database = {
           id?: number
           inserted_at?: string
           status?: Database["public"]["Enums"]["moderation_status"]
-          updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "howtos_moderation_howto_id_fkey"
             columns: ["howto_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "howtos"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "howtos_moderation_howto_id_fkey"
             columns: ["howto_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "howtos_view"
             referencedColumns: ["id"]
           },
@@ -466,7 +460,6 @@ export type Database = {
           inserted_at: string
           map_pin_id: number
           status: Database["public"]["Enums"]["moderation_status"]
-          updated_at: string
           user_id: string
         }
         Insert: {
@@ -475,7 +468,6 @@ export type Database = {
           inserted_at?: string
           map_pin_id: number
           status: Database["public"]["Enums"]["moderation_status"]
-          updated_at?: string
           user_id: string
         }
         Update: {
@@ -484,21 +476,20 @@ export type Database = {
           inserted_at?: string
           map_pin_id?: number
           status?: Database["public"]["Enums"]["moderation_status"]
-          updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "map_pins_moderation_map_pin_id_fkey"
             columns: ["map_pin_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "map_pins"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "map_pins_moderation_map_pin_id_fkey"
             columns: ["map_pin_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "map_pins_view"
             referencedColumns: ["id"]
           },
@@ -696,6 +687,126 @@ export type Database = {
           },
           {
             foreignKeyName: "howtos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      latest_events_moderation: {
+        Row: {
+          comment: string | null
+          event_id: number | null
+          id: number | null
+          inserted_at: string | null
+          status: Database["public"]["Enums"]["moderation_status"] | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_moderation_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_moderation_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      latest_howtos_moderation: {
+        Row: {
+          comment: string | null
+          howto_id: number | null
+          id: number | null
+          inserted_at: string | null
+          status: Database["public"]["Enums"]["moderation_status"] | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "howtos_moderation_howto_id_fkey"
+            columns: ["howto_id"]
+            isOneToOne: false
+            referencedRelation: "howtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "howtos_moderation_howto_id_fkey"
+            columns: ["howto_id"]
+            isOneToOne: false
+            referencedRelation: "howtos_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "howtos_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "howtos_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      latest_map_pins_moderation: {
+        Row: {
+          comment: string | null
+          id: number | null
+          inserted_at: string | null
+          map_pin_id: number | null
+          status: Database["public"]["Enums"]["moderation_status"] | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "map_pins_moderation_map_pin_id_fkey"
+            columns: ["map_pin_id"]
+            isOneToOne: false
+            referencedRelation: "map_pins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "map_pins_moderation_map_pin_id_fkey"
+            columns: ["map_pin_id"]
+            isOneToOne: false
+            referencedRelation: "map_pins_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "map_pins_moderation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "map_pins_moderation_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_view"

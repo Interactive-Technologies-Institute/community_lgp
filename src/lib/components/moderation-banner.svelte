@@ -1,25 +1,67 @@
 <script lang="ts">
 	import type { ModerationInfo } from '@/types/types';
-
+	import dayjs from 'dayjs';
 	import { Info } from 'lucide-svelte';
 	import * as Alert from './ui/alert';
+	import { Button } from './ui/button';
+	import * as Sheet from './ui/sheet';
 
-	export let moderation: ModerationInfo;
+	export let moderation: ModerationInfo[];
 
+	$: latestModeration = moderation[0];
 	let variant: Alert.Variant = 'default';
-	$: variant = moderation.status === 'rejected' ? 'destructive' : 'default';
+	$: variant = latestModeration.status === 'rejected' ? 'destructive' : 'default';
+	let openSheet = false;
 </script>
 
 <Alert.Root {variant} class="mx-auto max-w-xl">
 	<Info class="mr-2 h-4 w-4" />
 	<Alert.Title>
-		{#if moderation.status === 'rejected'}
+		{#if latestModeration.status === 'rejected'}
 			Rejected (marked for deletetion)
-		{:else if moderation.status === 'pending'}
+		{:else if latestModeration.status === 'pending'}
 			Pending Moderation
-		{:else if moderation.status === 'changes_requested'}
+		{:else if latestModeration.status === 'changes_requested'}
 			Changes Requested
 		{/if}
 	</Alert.Title>
-	<Alert.Description>{moderation.comment}</Alert.Description>
+	<Alert.Description>{latestModeration.comment}</Alert.Description>
+	<Button size="sm" variant="outline" class="mt-2" on:click={() => (openSheet = true)}>
+		More Details
+	</Button>
 </Alert.Root>
+
+<Sheet.Root bind:open={openSheet}>
+	<Sheet.Content>
+		<Sheet.Header>
+			<Sheet.Title>Moderation Details</Sheet.Title>
+			<Sheet.Description>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+				labore et dolore magna aliqua.
+			</Sheet.Description>
+		</Sheet.Header>
+		<div class="flex flex-col gap-y-4 py-6">
+			{#each moderation as item}
+				{@const variant = item.status === 'rejected' ? 'destructive' : 'default'}
+				<div>
+					<p class="mb-1 text-xs text-muted-foreground">
+						{dayjs(item.inserted_at).format('YYYY-MM-DD HH:mm:ss')}
+					</p>
+					<Alert.Root {variant} class="mx-auto max-w-xl">
+						<Info class="mr-2 h-4 w-4" />
+						<Alert.Title>
+							{#if item.status === 'rejected'}
+								Rejected (marked for deletetion)
+							{:else if item.status === 'pending'}
+								Pending Moderation
+							{:else if item.status === 'changes_requested'}
+								Changes Requested
+							{/if}
+						</Alert.Title>
+						<Alert.Description>{item.comment}</Alert.Description>
+					</Alert.Root>
+				</div>
+			{/each}
+		</div>
+	</Sheet.Content>
+</Sheet.Root>

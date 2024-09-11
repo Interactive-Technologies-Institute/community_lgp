@@ -62,6 +62,36 @@ export type Database = MergeDeep<
 						tag: string;
 					};
 				};
+				latest_events_moderation: {
+					Row: {
+						comment: string;
+						event_id: number;
+						id: number;
+						inserted_at: string;
+						status: Database['public']['Enums']['moderation_status'];
+						user_id: string;
+					};
+				};
+				latest_howtos_moderation: {
+					Row: {
+						comment: string;
+						howto_id: number;
+						id: number;
+						inserted_at: string;
+						status: Database['public']['Enums']['moderation_status'];
+						user_id: string;
+					};
+				};
+				latest_map_pins_moderation: {
+					Row: {
+						comment: string;
+						id: number;
+						inserted_at: string;
+						map_pin_id: number;
+						status: Database['public']['Enums']['moderation_status'];
+						user_id: string;
+					};
+				};
 				map_pins_view: {
 					Row: {
 						id: number;

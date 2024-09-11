@@ -80,7 +80,7 @@
 					</Select.Content>
 				</Select.Root>
 			</div>
-			{#if data.moderation?.status && data.moderation.status !== 'approved'}
+			{#if data.moderation && data.moderation[0].status !== 'approved'}
 				<ModerationBanner moderation={data.moderation} />
 			{/if}
 			<div class="flex flex-row gap-x-6">

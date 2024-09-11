@@ -17,7 +17,7 @@
 	subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
 />
 <div class="container mx-auto space-y-10 pb-10">
-	{#if data.moderation.status !== 'approved'}
+	{#if data.moderation[0].status !== 'approved'}
 		<ModerationBanner moderation={data.moderation} />
 	{/if}
 	<div class="mb-10 flex flex-col items-center gap-y-4">

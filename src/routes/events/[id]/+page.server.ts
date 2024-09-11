@@ -25,6 +25,22 @@ export const load = async (event) => {
 		return { ...eventData, image: image.data.publicUrl };
 	}
 
+	async function getEventModeration(id: string): Promise<ModerationInfo[]> {
+		const { data: moderation, error: moderationError } = await event.locals.supabase
+			.from('events_moderation')
+			.select('*')
+			.eq('event_id', id)
+			.order('inserted_at', { ascending: false });
+
+		if (moderationError) {
+			const errorMessage = 'Error fetching moderation, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return moderation;
+	}
+
 	async function getInterestCount(id: string): Promise<{ count: number; userInterested: boolean }> {
 		const { data: interested, error: interestedError } = await event.locals.supabase
 			.rpc('get_event_interest_count', {
@@ -39,22 +55,6 @@ export const load = async (event) => {
 			return error(500, errorMessage);
 		}
 		return { count: interested.count, userInterested: interested.has_interest };
-	}
-
-	async function getEventModeration(id: string): Promise<ModerationInfo> {
-		const { data: moderation, error: moderationError } = await event.locals.supabase
-			.from('events_moderation')
-			.select('*')
-			.eq('event_id', id)
-			.single();
-
-		if (moderationError) {
-			const errorMessage = 'Error fetching moderation, please try again later.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(500, errorMessage);
-		}
-
-		return moderation;
 	}
 
 	const interestCount = await getInterestCount(event.params.id);

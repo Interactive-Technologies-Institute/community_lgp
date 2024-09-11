@@ -10,7 +10,7 @@ export const load = async (event) => {
 	async function getHowTos(): Promise<HowToWithModeration[]> {
 		const query = event.locals.supabase
 			.from('howtos')
-			.select('*, moderation:howtos_moderation(status, updated_at, comment)')
+			.select('*, moderation:latest_howtos_moderation!inner(status, inserted_at, comment)')
 			.order('updated_at', { ascending: false });
 
 		const { data: howTos, error: howTosError } = await query;
@@ -21,7 +21,7 @@ export const load = async (event) => {
 			return error(500, errorMessage);
 		}
 
-		return howTos as HowToWithModeration[];
+		return howTos;
 	}
 
 	return {
@@ -41,11 +41,12 @@ export const actions = {
 			async (event, userId, form) => {
 				const { error: supabaseError } = await event.locals.supabase
 					.from('howtos_moderation')
-					.update({
+					.insert({
+						howto_id: form.data.ref_id,
+						user_id: form.data.user_id,
 						status: form.data.status,
 						comment: form.data.comment,
-					})
-					.eq('howto_id', form.data.refId);
+					});
 
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);

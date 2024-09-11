@@ -93,12 +93,12 @@ export type ModerationStatus = 'pending' | 'approved' | 'changes_requested' | 'r
 
 export type ModerationInfo = {
 	status: ModerationStatus;
-	updated_at: string;
+	inserted_at: string;
 	comment: string;
 };
 
-export type HowToWithModeration = HowTo & { moderation: ModerationInfo };
+export type HowToWithModeration = HowTo & { moderation: ModerationInfo[] };
 
-export type EventWithModeration = Event & { moderation: ModerationInfo };
+export type EventWithModeration = Event & { moderation: ModerationInfo[] };
 
-export type MapPinWithModeration = MapPin & { moderation: ModerationInfo };
+export type MapPinWithModeration = MapPin & { moderation: ModerationInfo[] };

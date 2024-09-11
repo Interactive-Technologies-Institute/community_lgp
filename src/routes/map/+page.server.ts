@@ -22,12 +22,12 @@ export const load = async (event) => {
 		};
 	}
 
-	async function getMapPinModeration(id: number): Promise<ModerationInfo> {
+	async function getMapPinModeration(id: number): Promise<ModerationInfo[]> {
 		const { data: moderation, error: moderationError } = await event.locals.supabase
 			.from('map_pins_moderation')
 			.select('*')
 			.eq('map_pin_id', id)
-			.single();
+			.order('inserted_at', { ascending: false });
 
 		if (moderationError) {
 			const errorMessage = 'Error fetching moderation, please try again later.';

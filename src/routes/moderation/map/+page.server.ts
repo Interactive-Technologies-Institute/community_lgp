@@ -10,18 +10,18 @@ export const load = async (event) => {
 	async function getMapPins(): Promise<MapPinWithModeration[]> {
 		const query = event.locals.supabase
 			.from('map_pins')
-			.select('*, moderation:map_pins_moderation(status, updated_at, comment)')
+			.select('*, moderation:map_pins_moderation(status, inserted_at, comment)')
 			.order('updated_at', { ascending: false });
 
 		const { data: mapPins, error: mapPinsError } = await query;
 
 		if (mapPinsError) {
-			const errorMessage = 'Error fetching how tos, please try again later.';
+			const errorMessage = 'Error fetching map pins, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
 
-		return mapPins as MapPinWithModeration[];
+		return mapPins;
 	}
 
 	return {
@@ -41,11 +41,12 @@ export const actions = {
 			async (event, userId, form) => {
 				const { error: supabaseError } = await event.locals.supabase
 					.from('map_pins_moderation')
-					.update({
+					.insert({
+						map_pin_id: form.data.ref_id,
+						user_id: form.data.user_id,
 						status: form.data.status,
 						comment: form.data.comment,
-					})
-					.eq('map_pin_id', form.data.refId);
+					});
 
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);

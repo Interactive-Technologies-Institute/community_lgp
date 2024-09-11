@@ -24,12 +24,12 @@
 			header: 'Title',
 		}),
 		table.column({
-			accessor: ({ moderation }) => moderation.updated_at,
+			accessor: ({ moderation }) => moderation[0].inserted_at,
 			header: 'Updated At',
 			cell: ({ value }) => dayjs(value).format('YYYY-MM-DD HH:mm:ss'),
 		}),
 		table.column({
-			accessor: ({ moderation }) => moderation.status,
+			accessor: ({ moderation }) => moderation[0].status,
 			header: 'Status',
 			cell: ({ value, row }) => {
 				if (row.isData()) {
@@ -41,14 +41,18 @@
 			},
 		}),
 		table.column({
-			accessor: ({ moderation }) => moderation.comment,
+			accessor: ({ moderation }) => moderation[0].comment,
 			header: 'Comment',
 		}),
 		table.column({
-			accessor: ({ id }) => id,
+			accessor: ({ id, user_id }) => ({ id, user_id }),
 			header: '',
 			cell: ({ value }) => {
-				return createRender(EventsModerationActions, { id: value, data: updateModerationForm });
+				return createRender(EventsModerationActions, {
+					id: value.id,
+					userId: value.user_id,
+					data: updateModerationForm,
+				});
 			},
 		}),
 	]);

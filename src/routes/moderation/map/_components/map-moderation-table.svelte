@@ -8,8 +8,8 @@
 	import { addPagination } from 'svelte-headless-table/plugins';
 	import { writable } from 'svelte/store';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
-	import HowToModerationStatusCell from './map-moderation-status-cell.svelte';
 	import MapModerationActions from './map-moderation-actions.svelte';
+	import HowToModerationStatusCell from './map-moderation-status-cell.svelte';
 
 	export let mapPins: MapPinWithModeration[];
 	export let updateModerationForm: SuperValidated<Infer<UpdateModerationInfoSchema>>;
@@ -28,12 +28,12 @@
 			header: 'Longitude',
 		}),
 		table.column({
-			accessor: ({ moderation }) => moderation.updated_at,
+			accessor: ({ moderation }) => moderation[0].inserted_at,
 			header: 'Updated At',
 			cell: ({ value }) => dayjs(value).format('YYYY-MM-DD HH:mm:ss'),
 		}),
 		table.column({
-			accessor: ({ moderation }) => moderation.status,
+			accessor: ({ moderation }) => moderation[0].status,
 			header: 'Status',
 			cell: ({ value, row }) => {
 				if (row.isData()) {
@@ -45,14 +45,18 @@
 			},
 		}),
 		table.column({
-			accessor: ({ moderation }) => moderation.comment,
+			accessor: ({ moderation }) => moderation[0].comment,
 			header: 'Comment',
 		}),
 		table.column({
-			accessor: ({ id }) => id,
+			accessor: ({ id, user_id }) => ({ id, user_id }),
 			header: '',
 			cell: ({ value }) => {
-				return createRender(MapModerationActions, { id: value, data: updateModerationForm });
+				return createRender(MapModerationActions, {
+					id: value.id,
+					userId: value.user_id,
+					data: updateModerationForm,
+				});
 			},
 		}),
 	]);

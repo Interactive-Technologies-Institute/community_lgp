@@ -13,6 +13,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let id: number;
+	export let userId: string;
 	export let data: SuperValidated<Infer<UpdateModerationInfoSchema>>;
 
 	const form = superForm(data, {
@@ -61,7 +62,8 @@
 			<Dialog.Description>Are you sure you want to approve this How To?</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" use:enhance>
-			<input type="hidden" name="refId" value={id} />
+			<input type="hidden" name="ref_id" value={id} />
+			<input type="hidden" name="user_id" value={userId} />
 			<input type="hidden" name="status" value="approved" />
 			<Form.Field {form} name="comment">
 				<Form.Control let:attrs>
@@ -86,7 +88,8 @@
 			<Dialog.Description>Are you sure you want to reject this How To?</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" use:enhance>
-			<input type="hidden" name="refId" value={id} />
+			<input type="hidden" name="ref_id" value={id} />
+			<input type="hidden" name="user_id" value={userId} />
 			<input type="hidden" name="status" value="rejected" />
 			<Form.Field {form} name="comment">
 				<Form.Control let:attrs>
@@ -113,7 +116,8 @@
 			>
 		</Dialog.Header>
 		<form method="POST" use:enhance>
-			<input type="hidden" name="refId" value={id} />
+			<input type="hidden" name="ref_id" value={id} />
+			<input type="hidden" name="user_id" value={userId} />
 			<input type="hidden" name="status" value="changes_requested" />
 			<Form.Field {form} name="comment">
 				<Form.Control let:attrs>

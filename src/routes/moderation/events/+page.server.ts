@@ -10,7 +10,7 @@ export const load = async (event) => {
 	async function getEvents(): Promise<EventWithModeration[]> {
 		const query = event.locals.supabase
 			.from('events')
-			.select('*, moderation:events_moderation(status, updated_at, comment)')
+			.select('*, moderation:latest_events_moderation(status, inserted_at, comment)')
 			.order('updated_at', { ascending: false });
 
 		const { data: events, error: eventsError } = await query;
@@ -21,7 +21,7 @@ export const load = async (event) => {
 			return error(500, errorMessage);
 		}
 
-		return events as EventWithModeration[];
+		return events;
 	}
 
 	return {
@@ -41,11 +41,12 @@ export const actions = {
 			async (event, userId, form) => {
 				const { error: supabaseError } = await event.locals.supabase
 					.from('events_moderation')
-					.update({
+					.insert({
+						event_id: form.data.ref_id,
+						user_id: form.data.user_id,
 						status: form.data.status,
 						comment: form.data.comment,
-					})
-					.eq('event_id', form.data.refId);
+					});
 
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);

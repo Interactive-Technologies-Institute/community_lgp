@@ -30,12 +30,12 @@ export const load = async (event) => {
 		return { ...howTo, image: image.data.publicUrl, steps: stepsWithImageUrl };
 	}
 
-	async function getHowToModeration(id: string): Promise<ModerationInfo> {
+	async function getHowToModeration(id: string): Promise<ModerationInfo[]> {
 		const { data: moderation, error: moderationError } = await event.locals.supabase
 			.from('howtos_moderation')
 			.select('*')
 			.eq('howto_id', id)
-			.single();
+			.order('inserted_at', { ascending: false });
 
 		if (moderationError) {
 			const errorMessage = 'Error fetching moderation, please try again later.';

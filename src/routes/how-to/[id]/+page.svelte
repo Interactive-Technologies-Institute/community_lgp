@@ -15,7 +15,7 @@
 
 <PageHeader title={data.howTo.title} subtitle={data.howTo.description} />
 <div class="container mx-auto space-y-10 pb-10">
-	{#if data.moderation.status !== 'approved'}
+	{#if data.moderation[0].status !== 'approved'}
 		<ModerationBanner moderation={data.moderation} />
 	{/if}
 	<div class="mb-10 flex flex-col items-center gap-y-4">
