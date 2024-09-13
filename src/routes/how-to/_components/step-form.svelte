@@ -10,7 +10,7 @@
 	import { fileProxy, type SuperForm } from 'sveltekit-superforms';
 	import { type Infer } from 'sveltekit-superforms/adapters';
 
-	export let form: SuperForm<Infer<CreateHowToSchema>, any>;
+	export let form: SuperForm<Infer<CreateHowToSchema>>;
 	export let index: number;
 
 	const { form: formData } = form;
