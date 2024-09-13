@@ -11,7 +11,7 @@
 	import type { HowToDifficulty, HowToDuration } from '@/types/types';
 	import type { Selected } from 'bits-ui';
 	import { Loader2 } from 'lucide-svelte';
-	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import StepForm from './step-form.svelte';
 
@@ -204,7 +204,6 @@
 	<Button type="button" variant="outline" size="sm" class="mr-auto mt-2" on:click={addStep}>
 		Add Step
 	</Button>
-	<SuperDebug data={$formData} />
 	<div
 		class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>

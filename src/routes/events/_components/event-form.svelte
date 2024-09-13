@@ -17,7 +17,7 @@
 		type DateValue,
 	} from '@internationalized/date';
 	import { CalendarIcon, Loader2 } from 'lucide-svelte';
-	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 
 	export let data: SuperValidated<Infer<CreateEventSchema>>;
@@ -142,7 +142,6 @@
 			</div>
 		</Card.Content>
 	</Card.Root>
-	<SuperDebug data={$formData} />
 	<div
 		class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>
