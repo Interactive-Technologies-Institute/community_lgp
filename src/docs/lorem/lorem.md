@@ -1,8 +1,8 @@
 ---
-title: Test
+title: Lorem
 ---
 
-# Detractare Pyrrhamo
+# Detractare Pyrrham
 
 ## Vult viro
 
