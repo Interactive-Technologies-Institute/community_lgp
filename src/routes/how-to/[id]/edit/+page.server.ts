@@ -63,6 +63,25 @@ export const actions = {
 				return { path: imageFileData.path, error: null };
 			}
 
+			async function uploadStepImage(
+				index: number,
+				image: File
+			): Promise<{ path: string; error: StorageError | null }> {
+				const fileExt = image.name.split('.').pop();
+				const filePath = `step-${index}_${uuidv4()}.${fileExt}`;
+
+				const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
+					.from('howtos')
+					.upload(filePath, image);
+
+				if (imageFileError) {
+					setFlash({ type: 'error', message: imageFileError.message }, event.cookies);
+					return { path: '', error: imageFileError };
+				}
+
+				return { path: imageFileData.path, error: null };
+			}
+
 			let imagePath = '';
 			if (form.data.image) {
 				const { path, error } = await uploadImage(form.data.image);
@@ -75,10 +94,10 @@ export const actions = {
 			}
 
 			const stepsWithImages = await Promise.all(
-				form.data.steps.map(async (s) => {
+				form.data.steps.map(async (s, i) => {
 					let imagePath = '';
 					if (s.image) {
-						const { path } = await uploadImage(s.image);
+						const { path } = await uploadStepImage(i + 1, s.image);
 						// TOOD: handle error
 						imagePath = path;
 					} else if (s.imageUrl) {

@@ -27,7 +27,7 @@ export const actions = {
 				image: File
 			): Promise<{ path: string; error: StorageError | null }> {
 				const fileExt = image.name.split('.').pop();
-				const filePath = `${userId}_${uuidv4()}.${fileExt}`;
+				const filePath = `${uuidv4()}.${fileExt}`;
 
 				const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
 					.from('events')
