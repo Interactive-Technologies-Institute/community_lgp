@@ -11,15 +11,15 @@
 
 <a href="/how-to/{howTo.id}">
 	<Card class="overflow-hidden">
-		<AspectRatio ratio={4 / 3}>
+		<AspectRatio ratio={3 / 2}>
 			{#if imageUrl}
-				<img src={imageUrl} alt="How To Cover" class="object-cover" />
+				<img src={imageUrl} alt="How To Cover" class="aspect-[3/2] object-cover" />
 			{/if}
 		</AspectRatio>
-		<div class=" flex flex-col px-4 py-2">
+		<div class=" flex flex-col px-4 py-3">
 			<div class="mb-5">
 				<h2 class="text-lg font-medium">{howTo.title}</h2>
-				<p class="text-muted-foreground">{howTo.description}</p>
+				<p class="line-clamp-2 text-muted-foreground">{howTo.description}</p>
 			</div>
 			<div class="flex gap-x-1">
 				{#each howTo.tags as tag}
