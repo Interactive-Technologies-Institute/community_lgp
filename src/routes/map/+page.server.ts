@@ -1,5 +1,5 @@
 import { mapPinSchema } from '@/schemas/map-pin';
-import type { ModerationInfo, UserProfileWithPin } from '@/types/types';
+import type { ModerationInfo, UserProfileWithPin, UserType } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -12,7 +12,7 @@ export const load = async (event) => {
 	let profileWithPin: UserProfileWithPin | undefined;
 	if (session && user && profile) {
 		const { data: pinData } = await event.locals.supabase
-			.from('map_pins')
+			.from('map_pins_view')
 			.select('*')
 			.eq('user_id', user.id)
 			.single();
@@ -20,6 +20,20 @@ export const load = async (event) => {
 			...profile,
 			pin: pinData,
 		};
+	}
+
+	async function getUserTypes(): Promise<UserType[]> {
+		const { data: userTypes, error: userTypesError } = await event.locals.supabase
+			.from('user_types')
+			.select('*');
+
+		if (userTypesError) {
+			const errorMessage = 'Error fetching user types, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return userTypes;
 	}
 
 	async function getMapPinModeration(id: number): Promise<ModerationInfo[]> {
@@ -38,9 +52,19 @@ export const load = async (event) => {
 		return moderation;
 	}
 
-	const { data: usersData } = await event.locals.supabase
-		.from('profiles_view')
-		.select('*, pin:map_pins( lng, lat )');
+	async function getUsersWithMapPins(): Promise<UserProfileWithPin[]> {
+		const { data: mapPins, error: mapPinsError } = await event.locals.supabase
+			.from('profiles_view')
+			.select('*, pin:map_pins_view(*)');
+
+		if (mapPinsError) {
+			const errorMessage = 'Error fetching map pins, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return mapPins;
+	}
 
 	const form = await superValidate(
 		{
@@ -56,7 +80,8 @@ export const load = async (event) => {
 	return {
 		profile: profileWithPin,
 		moderation: profileWithPin?.pin ? await getMapPinModeration(profileWithPin.pin.id) : undefined,
-		users: usersData ?? [],
+		userTypes: await getUserTypes(),
+		users: await getUsersWithMapPins(),
 		form,
 	};
 };
