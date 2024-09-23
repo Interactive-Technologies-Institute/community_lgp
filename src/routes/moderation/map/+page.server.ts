@@ -9,7 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async (event) => {
 	async function getMapPins(): Promise<MapPinWithModeration[]> {
 		const query = event.locals.supabase
-			.from('map_pins')
+			.from('map_pins_view')
 			.select('*, moderation:map_pins_moderation(status, inserted_at, comment)')
 			.order('updated_at', { ascending: false });
 

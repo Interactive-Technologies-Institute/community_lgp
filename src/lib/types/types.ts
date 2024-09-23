@@ -35,6 +35,7 @@ export type MapPin = {
 	user_id: string;
 	lng: number;
 	lat: number;
+	moderation_status: ModerationStatus;
 };
 
 export type UserProfileWithPin = UserProfile & { pin: MapPin | null };
@@ -54,6 +55,7 @@ export type HowTo = {
 	difficulty: HowToDifficulty;
 	duration: HowToDuration;
 	steps: HowToStep[];
+	moderation_status: ModerationStatus;
 };
 
 export type HowToWithAuthor = HowTo & { author: UserProfile };
@@ -85,6 +87,7 @@ export type Event = {
 	image: string;
 	date: string;
 	location: string;
+	moderation_status: ModerationStatus;
 };
 
 export type EventWithAuthor = Event & { author: UserProfile };

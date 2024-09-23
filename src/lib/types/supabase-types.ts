@@ -25,10 +25,12 @@ export type Database = MergeDeep<
 					Row: {
 						date: string;
 						description: string;
+						fts: unknown;
 						id: number;
 						image: string;
 						inserted_at: string;
 						location: string;
+						moderation_status: Database['public']['Enums']['moderation_status'];
 						tags: string[];
 						title: string;
 						updated_at: string;
@@ -46,9 +48,11 @@ export type Database = MergeDeep<
 						description: string;
 						difficulty: Database['public']['Enums']['how_to_difficulty'];
 						duration: Database['public']['Enums']['how_to_duration'];
+						fts: unknown;
 						id: number;
 						image: string;
 						inserted_at: string;
+						moderation_status: Database['public']['Enums']['moderation_status'];
 						steps: Step[];
 						tags: string[];
 						title: string;

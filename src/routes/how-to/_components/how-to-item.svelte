@@ -1,22 +1,38 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { AspectRatio } from '@/components/ui/aspect-ratio';
+	import { Badge } from '@/components/ui/badge';
 	import { Card } from '@/components/ui/card';
 	import type { HowTo } from '@/types/types';
 
 	export let howTo: HowTo;
 
+	const moderationStatusLabels = {
+		pending: 'Pending',
+		approved: 'Approved',
+		changes_requested: 'Changes Requested',
+		rejected: 'Rejected',
+	};
+
 	$: imageUrl = $page.data.supabase.storage.from('howtos').getPublicUrl(howTo.image).data.publicUrl;
 </script>
 
 <a href="/how-to/{howTo.id}">
-	<Card class="overflow-hidden">
+	<Card class="relative overflow-hidden">
 		<AspectRatio ratio={3 / 2}>
 			{#if imageUrl}
 				<img src={imageUrl} alt="How To Cover" class="aspect-[3/2] object-cover" />
+				{#if howTo.moderation_status !== 'approved'}
+					<Badge
+						class="absolute right-2 top-2"
+						variant={howTo.moderation_status === 'rejected' ? 'destructive' : 'secondary'}
+					>
+						{moderationStatusLabels[howTo.moderation_status]}
+					</Badge>
+				{/if}
 			{/if}
 		</AspectRatio>
-		<div class=" flex flex-col px-4 py-3">
+		<div class="flex flex-col px-4 py-3">
 			<div class="mb-5">
 				<h2 class="text-lg font-medium">{howTo.title}</h2>
 				<p class="line-clamp-2 text-muted-foreground">{howTo.description}</p>

@@ -12,7 +12,7 @@ export const load = async (event) => {
 
 	async function getEvents(): Promise<EventWithModeration[]> {
 		let query = event.locals.supabase
-			.from('events')
+			.from('events_view')
 			.select('*, moderation:latest_events_moderation(status, inserted_at, comment)')
 			.order('updated_at', { ascending: false });
 

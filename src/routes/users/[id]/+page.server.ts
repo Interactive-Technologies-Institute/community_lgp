@@ -23,15 +23,19 @@ export const load = async (event) => {
 	}
 
 	const { data: howTos } = await event.locals.supabase
-		.from('howtos')
+		.from('howtos_view')
 		.select('id, label:title')
+		.order('moderation_status', { ascending: true })
+		.order('inserted_at', { ascending: false })
 		.eq('user_id', id);
 	const { data: events } = await event.locals.supabase
-		.from('events')
+		.from('events_view')
 		.select('id, label:title')
+		.order('moderation_status', { ascending: true })
+		.order('inserted_at', { ascending: false })
 		.eq('user_id', id);
 	const { data: mapPin } = await event.locals.supabase
-		.from('map_pins')
+		.from('map_pins_view')
 		.select('lng, lat')
 		.eq('user_id', id)
 		.single();

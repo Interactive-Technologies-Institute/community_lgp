@@ -8,7 +8,11 @@ export const load = async (event) => {
 	const tags = arrayQueryParam().decode(event.url.searchParams.get('tags'));
 
 	async function getHowTos(): Promise<HowTo[]> {
-		let query = event.locals.supabase.from('howtos_view').select('*');
+		let query = event.locals.supabase
+			.from('howtos_view')
+			.select('*')
+			.order('moderation_status', { ascending: true })
+			.order('inserted_at', { ascending: false });
 
 		if (search) {
 			query = query.textSearch('fts', search, { config: 'simple', type: 'websearch' });
