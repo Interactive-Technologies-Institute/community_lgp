@@ -30,6 +30,14 @@ export type Branding = {
 	radius: number;
 };
 
+export type ModerationStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
+
+export type ModerationInfo = {
+	status: ModerationStatus;
+	inserted_at: string;
+	comment: string;
+};
+
 export type MapPin = {
 	id: number;
 	user_id: string;
@@ -37,6 +45,8 @@ export type MapPin = {
 	lat: number;
 	moderation_status: ModerationStatus;
 };
+
+export type MapPinWithModeration = MapPin & { moderation: ModerationInfo[] };
 
 export type UserProfileWithPin = UserProfile & { pin: MapPin | null };
 
@@ -59,6 +69,8 @@ export type HowTo = {
 };
 
 export type HowToWithAuthor = HowTo & { author: UserProfile };
+
+export type HowToWithModeration = HowTo & { moderation: ModerationInfo[] };
 
 type HowToStep = {
 	title: string;
@@ -92,16 +104,4 @@ export type Event = {
 
 export type EventWithAuthor = Event & { author: UserProfile };
 
-export type ModerationStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
-
-export type ModerationInfo = {
-	status: ModerationStatus;
-	inserted_at: string;
-	comment: string;
-};
-
-export type HowToWithModeration = HowTo & { moderation: ModerationInfo[] };
-
 export type EventWithModeration = Event & { moderation: ModerationInfo[] };
-
-export type MapPinWithModeration = MapPin & { moderation: ModerationInfo[] };
