@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
-	import { mapPinSchema, type MapPinSchema } from '@/schemas/map-pin';
-	import { Check, MapPin, XCircle } from 'lucide-svelte';
+	import { createMapPinSchema, type CreateMapPinSchema } from '@/schemas/map-pin';
+	import { Check, Edit, XCircle } from 'lucide-svelte';
 	import { getContext, onDestroy } from 'svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -9,11 +9,10 @@
 
 	const { getMap } = getContext<MBMapContext>(key);
 
-	export let data: SuperValidated<Infer<MapPinSchema>>;
+	export let data: SuperValidated<Infer<CreateMapPinSchema>>;
 
 	const form = superForm(data, {
-		taintedMessage: true,
-		validators: zodClient(mapPinSchema),
+		validators: zodClient(createMapPinSchema),
 	});
 
 	const { form: formData, enhance } = form;
@@ -62,43 +61,31 @@
 	});
 </script>
 
-<div bind:this={markerElement} class="flex flex-col items-center">
+<div bind:this={markerElement} class="flex flex-col items-center gap-y-2">
 	{#if marker}
-		<div class="mb-2 rounded-sm bg-primary px-2 py-1 text-primary-foreground">
+		<form method="POST" use:enhance action="?/update" on:submit={confirmPin}>
+			<input type="hidden" name="lng" bind:value={$formData.lng} />
+			<input type="hidden" name="lat" bind:value={$formData.lat} />
+			<div class="flex flex-row gap-x-2">
+				<Button variant="outline" size="icon" on:click={cancelPin}>
+					<XCircle class="h-4 w-4" />
+				</Button>
+				<Button type="submit" size="icon">
+					<Check class="h-4 w-4" />
+				</Button>
+			</div>
+		</form>
+		<div class="rounded-sm bg-primary px-2 py-1 text-primary-foreground">
 			Drag the pin to your location
 		</div>
 		<div
-			class="mb-8 h-10 w-10 overflow-hidden rounded-full border-2 border-foreground bg-foreground"
+			class="mb-[5.5rem] h-10 w-10 overflow-hidden rounded-full border-2 border-foreground bg-foreground"
 		>
 			<img src="/avatars/user.png" alt="User avatar" class="aspect-square h-full w-full" />
 		</div>
 	{/if}
 </div>
 
-{#if marker}
-	<div class="flex flex-col gap-x-6 gap-y-3 md:flex-row">
-		<form method="POST" use:enhance action="/map" on:submit={confirmPin}>
-			<input type="hidden" name="lng" bind:value={$formData.lng} />
-			<input type="hidden" name="lat" bind:value={$formData.lat} />
-			<div class="flex flex-row gap-x-2">
-				<Button on:click={cancelPin}>
-					<XCircle class="mr-2 h-4 w-4" />
-					Cancel
-				</Button>
-				<Button type="submit">
-					<Check class="mr-2 h-4 w-4" />
-					Confirm
-				</Button>
-			</div>
-		</form>
-		<Button variant="destructive">
-			<XCircle class="mr-2 h-4 w-4" />
-			Remove Pin
-		</Button>
-	</div>
-{:else}
-	<Button on:click={initializePin}>
-		<MapPin class="mr-2 h-4 w-4" />
-		Edit my pin
-	</Button>
-{/if}
+<Button variant="outline" size="icon" on:click={initializePin}>
+	<Edit class="h-4 w-4" />
+</Button>

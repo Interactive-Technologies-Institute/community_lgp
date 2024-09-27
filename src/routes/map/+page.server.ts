@@ -1,4 +1,4 @@
-import { mapPinSchema } from '@/schemas/map-pin';
+import { createMapPinSchema, deleteMapPinSchema } from '@/schemas/map-pin';
 import type { ModerationInfo, UserProfileWithPin, UserType } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail } from '@sveltejs/kit';
@@ -66,29 +66,47 @@ export const load = async (event) => {
 		return mapPins;
 	}
 
-	const form = await superValidate(
-		{
-			lng: profileWithPin?.pin?.lng ?? 0,
-			lat: profileWithPin?.pin?.lat ?? 0,
-		},
-		zod(mapPinSchema),
-		{
-			id: 'map-pin',
-		}
-	);
-
 	return {
 		profile: profileWithPin,
 		moderation: profileWithPin?.pin ? await getMapPinModeration(profileWithPin.pin.id) : undefined,
 		userTypes: await getUserTypes(),
 		users: await getUsersWithMapPins(),
-		form,
+		createForm: await superValidate(zod(createMapPinSchema), {
+			id: 'create-map-pin',
+		}),
+		updateForm: await superValidate(
+			{
+				lng: profileWithPin?.pin?.lng ?? 0,
+				lat: profileWithPin?.pin?.lat ?? 0,
+			},
+			zod(createMapPinSchema),
+			{
+				id: 'update-map-pin',
+			}
+		),
+		deleteForm: await superValidate(zod(deleteMapPinSchema), {
+			id: 'delete-map-pin',
+		}),
 	};
 };
 
 export const actions = {
-	default: async (event) =>
-		handleFormAction(event, mapPinSchema, 'map-pin', async (event, userId, form) => {
+	create: async (event) =>
+		handleFormAction(event, createMapPinSchema, 'create-map-pin', async (event, userId, form) => {
+			const { error } = await event.locals.supabase
+				.from('map_pins')
+				.insert({ ...form.data, user_id: userId });
+
+			if (error) {
+				setFlash({ type: 'error', message: error.message }, event.cookies);
+				return fail(500, { message: error.message, form });
+			}
+
+			setFlash({ type: 'success', message: 'Your pin has been updated.' }, event.cookies);
+			return { form };
+		}),
+	update: async (event) =>
+		handleFormAction(event, createMapPinSchema, 'update-map-pin', async (event, userId, form) => {
 			const { error } = await event.locals.supabase
 				.from('map_pins')
 				.update(form.data)
@@ -100,6 +118,21 @@ export const actions = {
 			}
 
 			setFlash({ type: 'success', message: 'Your pin has been updated.' }, event.cookies);
+			return { form };
+		}),
+	delete: async (event) =>
+		handleFormAction(event, deleteMapPinSchema, 'delete-map-pin', async (event, userId, form) => {
+			const { error } = await event.locals.supabase
+				.from('map_pins')
+				.delete()
+				.eq('id', form.data.id);
+
+			if (error) {
+				setFlash({ type: 'error', message: error.message }, event.cookies);
+				return fail(500, { message: error.message, form });
+			}
+
+			setFlash({ type: 'success', message: 'Your pin has been deleted.' }, event.cookies);
 			return { form };
 		}),
 };

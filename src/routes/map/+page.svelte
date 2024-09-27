@@ -8,10 +8,12 @@
 	import { CircleUser, Store } from 'lucide-svelte';
 	import type { Writable } from 'svelte/store';
 	import { queryParam, ssp } from 'sveltekit-search-params';
-	import AddEditPinButton from './_components/add-edit-pin-button.svelte';
+	import AddPinButton from './_components/add-pin-button.svelte';
+	import DeletePinButton from './_components/delete-pin-button.svelte';
 	import Map from './_components/map.svelte';
 	import Marker from './_components/marker.svelte';
 	import MyPinButton from './_components/my-pin-button.svelte';
+	import UpdatePinButton from './_components/update-pin-button.svelte';
 
 	export let data;
 
@@ -29,9 +31,11 @@
 	$: filteredUsers = data.users.filter((user) => {
 		return selectedUserType ? user.type === selectedUserType.value : true;
 	});
+
+	$: userPinIsCentered = $lng === data.profile?.pin?.lng && $lat === data.profile?.pin?.lat;
 </script>
 
-<div class="relative h-screen">
+<div class="relative h-[calc(100vh-3.5rem)] min-h-[32rem]">
 	<Map bind:lng={$lng} bind:lat={$lat} bind:zoom={$zoom}>
 		{#each filteredUsers as user (user.id)}
 			{#if user?.pin}
@@ -68,32 +72,33 @@
 		<div
 			class="container absolute left-0 right-0 top-6 flex flex-col items-center gap-y-4 md:top-10"
 		>
-			<div class="flex justify-center">
-				<Select.Root
-					selected={selectedUserType}
-					onSelectedChange={(s) => {
-						selectedUserType = s;
-					}}
-				>
-					<Select.Trigger class="w-52 bg-background">
-						<Select.Value placeholder="Filter by type" />
-					</Select.Trigger>
-					<Select.Content>
-						{#each data.userTypes as userType}
-							<Select.Item value={userType.slug}>{userType.label}</Select.Item>
-						{/each}
-					</Select.Content>
-				</Select.Root>
-			</div>
+			<Select.Root
+				selected={selectedUserType}
+				onSelectedChange={(s) => {
+					selectedUserType = s;
+				}}
+			>
+				<Select.Trigger class="w-full bg-background sm:max-w-52">
+					<Select.Value placeholder="Filter by type" />
+				</Select.Trigger>
+				<Select.Content>
+					{#each data.userTypes as userType}
+						<Select.Item value={userType.slug}>{userType.label}</Select.Item>
+					{/each}
+				</Select.Content>
+			</Select.Root>
 			{#if data.moderation && data.moderation[0].status !== 'approved'}
 				<ModerationBanner moderation={data.moderation} />
 			{/if}
-			<div class="flex flex-row gap-x-6">
-				{#if data.profile?.pin}
-					<MyPinButton pin={data.profile.pin} />
-				{/if}
-				<AddEditPinButton data={data.form} />
-			</div>
+		</div>
+		<div class="absolute bottom-12 right-4 flex flex-row gap-x-2">
+			{#if data.profile?.pin}
+				<UpdatePinButton data={data.updateForm} />
+				<DeletePinButton data={data.deleteForm} mapPinId={data.profile.pin.id} />
+				<MyPinButton pin={data.profile.pin} />
+			{:else}
+				<AddPinButton data={data.updateForm} />
+			{/if}
 		</div>
 	</Map>
 </div>
