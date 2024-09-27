@@ -24,7 +24,7 @@
 		<Card.Header>
 			<div class="flex flex-row items-center gap-x-4">
 				<Avatar.Root class="h-20 w-20">
-					<Avatar.Image src="/avatars/user.png" alt={data.userProfile.display_name} />
+					<Avatar.Image src={data.userProfile.avatar} alt={data.userProfile.display_name} />
 					<Avatar.Fallback>{initials}</Avatar.Fallback>
 				</Avatar.Root>
 				<div>
