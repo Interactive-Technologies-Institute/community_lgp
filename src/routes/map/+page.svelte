@@ -31,8 +31,6 @@
 	$: filteredUsers = data.users.filter((user) => {
 		return selectedUserType ? user.type === selectedUserType.value : true;
 	});
-
-	$: userPinIsCentered = $lng === data.profile?.pin?.lng && $lat === data.profile?.pin?.lat;
 </script>
 
 <div class="relative h-[calc(100vh-3.5rem)] min-h-[32rem]">
