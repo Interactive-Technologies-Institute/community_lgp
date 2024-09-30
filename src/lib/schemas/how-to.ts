@@ -2,24 +2,36 @@ import { z } from 'zod';
 
 export const createHowToSchema = z
 	.object({
-		title: z.string().min(5, { message: 'Title is required' }).max(100),
-		description: z.string().min(5, { message: 'Description is required' }).max(500),
+		title: z
+			.string()
+			.min(5, { message: 'Title is required' })
+			.max(100, { message: 'Title must be less than 100 characters' }),
+		description: z
+			.string()
+			.min(5, { message: 'Description is required' })
+			.max(500, { message: 'Description must be less than 500 characters' }),
 		imageUrl: z.string().nullish(),
 		image: z.instanceof(File).nullish(),
-		tags: z.array(z.string()).min(1, { message: 'At least one tag is required' }),
+		tags: z.array(z.string()),
 		difficulty: z.enum(['easy', 'medium', 'hard']),
 		duration: z.enum(['short', 'medium', 'long']),
 		steps: z
 			.array(
 				z
 					.object({
-						title: z.string().min(5, { message: 'Title is required' }).max(100),
-						description: z.string().min(5, { message: 'Description is required' }).max(500),
+						title: z
+							.string()
+							.min(5, { message: 'Title is required' })
+							.max(100, { message: 'Title must be less than 100 characters' }),
+						description: z
+							.string()
+							.min(5, { message: 'Description is required' })
+							.max(500, { message: 'Description must be less than 500 characters' }),
 						imageUrl: z.string().nullish(),
 						image: z.instanceof(File).nullish(),
 					})
 					.refine((data) => data.image || data.imageUrl, {
-						message: 'Image is required.',
+						message: 'Image is required',
 						path: ['image'],
 					})
 			)
@@ -40,7 +52,7 @@ export const createHowToSchema = z
 			]),
 	})
 	.refine((data) => data.image || data.imageUrl, {
-		message: 'Image is required.',
+		message: 'Image is required',
 		path: ['image'],
 	});
 
