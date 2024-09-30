@@ -118,7 +118,7 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-			<div class="grid grid-cols-2 gap-x-4">
+			<div class="grid grid-cols-1 gap-x-4 gap-y-4 md:grid-cols-2">
 				<Form.Field {form} name="difficulty">
 					<Form.Control let:attrs>
 						<Form.Label>Difficulty*</Form.Label>
@@ -168,7 +168,7 @@
 					</Form.Control>
 				</Form.Field>
 			</div>
-			<div class="grid grid-cols-2 gap-x-4">
+			<div class="grid grid-cols-1 gap-x-4 gap-y-4 md:grid-cols-2">
 				<Form.Field {form} name="image">
 					<Form.Control let:attrs>
 						<Form.Label>Cover Image*</Form.Label>

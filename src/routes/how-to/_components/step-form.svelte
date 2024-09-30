@@ -56,7 +56,7 @@
 
 <Card.Root>
 	<Card.Header>
-		<div class="flex flex-row">
+		<div class="flex flex-row gap-x-4">
 			<div class="flex flex-1 flex-col space-y-1.5">
 				<Card.Title>
 					Step {index + 1}
@@ -66,19 +66,19 @@
 					ut labore et dolore magna aliqua.
 				</Card.Description>
 			</div>
-			<div>
+			<div class="flex flex-col gap-y-2 md:flex-row md:gap-x-2">
 				{#if index !== 0}
-					<Button variant="outline" size="icon" class="mr-2" on:click={moveStepUp}>
+					<Button variant="outline" size="icon" on:click={moveStepUp}>
 						<ArrowUp class="h-4 w-4" />
 					</Button>
 				{/if}
 				{#if index !== $formData.steps.length - 1}
-					<Button variant="outline" size="icon" class="mr-2" on:click={moveStepDown}>
+					<Button variant="outline" size="icon" on:click={moveStepDown}>
 						<ArrowDown class="h-4 w-4" />
 					</Button>
 				{/if}
 				{#if $formData.steps.length > 3}
-					<Button variant="destructive" size="icon" class="mr-2" on:click={removeStep}>
+					<Button variant="destructive" size="icon" on:click={removeStep}>
 						<Trash class="h-4 w-4" />
 					</Button>
 				{/if}
@@ -100,7 +100,7 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.ElementField>
-		<div class="grid grid-cols-2 gap-x-4">
+		<div class="grid grid-cols-1 gap-x-4 gap-y-4 md:grid-cols-2">
 			<Form.ElementField {form} name="steps[{index}].image">
 				<Form.Control let:attrs>
 					<Form.Label>Cover Image*</Form.Label>

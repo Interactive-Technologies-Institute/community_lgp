@@ -48,15 +48,22 @@
 	<div class="flex flex-col gap-y-10">
 		{#each data.howTo.steps as step, i}
 			<div class="flex flex-row gap-x-6">
-				<Card class="flex h-fit w-32 items-center justify-center py-4">
+				<Card class="hidden h-fit w-32 items-center justify-center py-4 md:flex">
 					<span class="text-2xl font-medium">{i + 1}</span>
 				</Card>
-				<Card class="grid w-full grid-cols-2">
+				<Card class="grid w-full grid-cols-1 lg:grid-cols-2">
 					<div class="px-6 py-5">
-						<h2 class="mb-2 text-2xl font-medium">{step.title}</h2>
+						<h2 class="mb-2 text-2xl font-medium">
+							<span class="md:hidden">{i + 1}. </span>
+							{step.title}
+						</h2>
 						<p>{step.description}</p>
 					</div>
-					<img src={step.image} alt="Step {i + 1}" />
+					<img
+						src={step.image}
+						alt="Step {i + 1}"
+						class="aspect-[3/2] h-auto w-full object-cover"
+					/>
 				</Card>
 			</div>
 		{/each}
