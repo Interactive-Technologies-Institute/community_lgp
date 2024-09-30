@@ -84,7 +84,7 @@
 			</Card.Header>
 			<Card.Content>
 				{#if data.events && data.events.length > 0}
-					<div class="flex flex-wrap gap-y-4">
+					<div class="flex flex-wrap gap-4">
 						{#each data.events as event}
 							<Button href="/events/{event.id}" variant="outline" class="max-w-full">
 								<span class="truncate">{event.label}</span>
