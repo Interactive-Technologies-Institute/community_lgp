@@ -62,11 +62,11 @@
 			</Card.Header>
 			<Card.Content>
 				{#if data.howTos && data.howTos.length > 0}
-					<div class="flex flex-col items-start gap-y-4">
+					<div class="flex flex-wrap gap-4">
 						{#each data.howTos as howTo}
-							<Button href="/how-to/{howTo.id}" variant="outline">
-								{howTo.label}
-								<SquareArrowOutUpRight class="ml-2 h-4 w-4 text-muted-foreground" />
+							<Button href="/how-to/{howTo.id}" variant="outline" class="max-w-full">
+								<span class="truncate">{howTo.label}</span>
+								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
 							</Button>
 						{/each}
 					</div>
@@ -84,11 +84,11 @@
 			</Card.Header>
 			<Card.Content>
 				{#if data.events && data.events.length > 0}
-					<div class="flex flex-col items-start gap-y-4">
+					<div class="flex flex-wrap gap-y-4">
 						{#each data.events as event}
-							<Button href="/events/{event.id}" variant="outline">
-								{event.label}
-								<SquareArrowOutUpRight class="ml-2 h-4 w-4 text-muted-foreground" />
+							<Button href="/events/{event.id}" variant="outline" class="max-w-full">
+								<span class="truncate">{event.label}</span>
+								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
 							</Button>
 						{/each}
 					</div>
