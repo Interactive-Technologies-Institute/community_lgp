@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InteractableImage from '@/components/interactable-image.svelte';
 	import ModerationBanner from '@/components/moderation-banner.svelte';
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
@@ -18,7 +19,30 @@
 	{#if data.moderation[0].status !== 'approved'}
 		<ModerationBanner moderation={data.moderation} />
 	{/if}
-	<div class="mb-10 flex flex-col items-center gap-y-4">
+	<div class="flex flex-col items-center gap-y-4">
+		<div class="flex flex-row items-center justify-center gap-x-4">
+			<div class="flex flex-row items-center gap-x-2">
+				<Footprints class="text-muted-foreground" />
+				{data.howTo.steps.length}
+			</div>
+			<div class="flex flex-row items-center gap-x-2">
+				<Clock class="text-muted-foreground" />
+				{data.howTo.duration}
+			</div>
+			<div class="flex flex-row items-center gap-x-2">
+				<BarChart2 class="text-muted-foreground" />
+				{data.howTo.difficulty}
+			</div>
+		</div>
+		<UsefulButton count={data.usefulCount} data={data.toggleUsefulForm} />
+	</div>
+	<div class="mx-auto flex max-w-2xl flex-col gap-y-4">
+		<InteractableImage
+			src={data.howTo.image}
+			alt="How To Cover"
+			class="aspect-[3/2] h-auto w-full rounded-md object-cover"
+		/>
+		<p>{data.howTo.description}</p>
 		<div class=" flex flex-row gap-x-2">
 			{#each data.howTo.tags as tag}
 				<Button variant="secondary" size="sm" href="/how-to?tags={tag}">
@@ -27,23 +51,6 @@
 				</Button>
 			{/each}
 		</div>
-		<div class="flex flex-col items-center gap-y-2">
-			<div class="flex flex-row items-center justify-center gap-x-4">
-				<div class="flex flex-row items-center gap-x-2">
-					<Footprints class="text-muted-foreground" />
-					{data.howTo.steps.length}
-				</div>
-				<div class="flex flex-row items-center gap-x-2">
-					<Clock class="text-muted-foreground" />
-					{data.howTo.duration}
-				</div>
-				<div class="flex flex-row items-center gap-x-2">
-					<BarChart2 class="text-muted-foreground" />
-					{data.howTo.difficulty}
-				</div>
-			</div>
-		</div>
-		<UsefulButton count={data.usefulCount} data={data.toggleUsefulForm} />
 	</div>
 	<div class="flex flex-col gap-y-10">
 		{#each data.howTo.steps as step, i}
@@ -51,7 +58,7 @@
 				<Card class="hidden h-fit w-32 items-center justify-center py-4 md:flex">
 					<span class="text-2xl font-medium">{i + 1}</span>
 				</Card>
-				<Card class="grid w-full grid-cols-1 lg:grid-cols-2">
+				<Card class="grid w-full grid-cols-1 overflow-hidden lg:grid-cols-2">
 					<div class="px-6 py-5">
 						<h2 class="mb-2 text-2xl font-medium">
 							<span class="md:hidden">{i + 1}. </span>
@@ -59,7 +66,7 @@
 						</h2>
 						<p>{step.description}</p>
 					</div>
-					<img
+					<InteractableImage
 						src={step.image}
 						alt="Step {i + 1}"
 						class="aspect-[3/2] h-auto w-full object-cover"
@@ -70,7 +77,7 @@
 	</div>
 	<div class="flex flex-col items-center gap-y-2">
 		<span class="text-sm text-muted-foreground">
-			Updated on {dayjs(data.howTo.updated_at).format('YYYY-MM-DD HH:mm:ss')}
+			Updated on {dayjs(data.howTo.updated_at).format('YYYY-MM-DD [at] HH:mm')}
 		</span>
 		<Button variant="secondary" size="sm" href="/users/{data.howTo.author.id}">
 			<CircleUser class="mr-2 h-4 w-4" />

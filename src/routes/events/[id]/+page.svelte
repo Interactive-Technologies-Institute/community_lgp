@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InteractableImage from '@/components/interactable-image.svelte';
 	import ModerationBanner from '@/components/moderation-banner.svelte';
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
@@ -12,15 +13,35 @@
 	let openDeleteDialog = false;
 </script>
 
-<PageHeader
-	title={data.event.title}
-	subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-/>
+<PageHeader title={data.event.title} subtitle={data.event.description} />
 <div class="container mx-auto space-y-10 pb-10">
 	{#if data.moderation[0].status !== 'approved'}
 		<ModerationBanner moderation={data.moderation} />
 	{/if}
-	<div class="mb-10 flex flex-col items-center gap-y-4">
+	<div class="flex flex-col items-center gap-y-4">
+		<div class="flex flex-row gap-x-4">
+			<div class="flex flex-row items-center gap-x-2">
+				<Calendar class="text-muted-foreground" />
+				{dayjs(data.event.date).format(
+					dayjs(data.event.date).year() === dayjs().year()
+						? 'ddd, MM/DD [at] HH:mm'
+						: 'ddd, MM/DD/YYYY [at] HH:mm'
+				)}
+			</div>
+			<div class="flex flex-row items-center gap-x-2">
+				<MapPin class="text-muted-foreground" />
+				{data.event.location}
+			</div>
+		</div>
+		<EventInterestButton count={data.interestCount} data={data.toggleInterestForm} />
+	</div>
+	<div class="mx-auto flex max-w-2xl flex-col gap-y-4">
+		<InteractableImage
+			src={data.event.image}
+			alt="Event Cover"
+			class="aspect-[3/2] h-auto w-full rounded-md object-cover"
+		/>
+		<p>{data.event.description}</p>
 		<div class=" flex flex-row gap-x-2">
 			{#each data.event.tags as tag}
 				<Button variant="secondary" size="sm" href="/events?tags={tag}">
@@ -29,30 +50,11 @@
 				</Button>
 			{/each}
 		</div>
-		<div class="flex flex-col items-center gap-y-2">
-			<div class="flex flex-row items-center justify-center gap-x-4">
-				<div class="flex flex-row items-center gap-x-2">
-					<Calendar class="text-muted-foreground" />
-					{dayjs(data.event.date).format('YYYY-MM-DD HH:mm:ss')}
-				</div>
-				<div class="flex flex-row items-center gap-x-2">
-					<MapPin class="text-muted-foreground" />
-					{data.event.location}
-				</div>
-			</div>
-		</div>
-		<EventInterestButton count={data.interestCount} data={data.toggleInterestForm} />
-		<div class="mt-4 flex flex-col gap-y-4">
-			<img src={data.event.image} alt="Event Cover" class="aspect-video max-w-[40rem] rounded-md" />
-			<p class="max-w-[40rem]">
-				{data.event.description}
-			</p>
-		</div>
 	</div>
 	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground"
-			>Updated on {dayjs(data.event.updated_at).format('YYYY-MM-DD HH:mm:ss')}</span
-		>
+		<span class="text-sm text-muted-foreground">
+			Updated on {dayjs(data.event.updated_at).format('YYYY-MM-DD [at] HH:mm')}
+		</span>
 		<Button variant="secondary" size="sm" href="/users/{data.event.author.id}">
 			<CircleUser class="mr-2 h-4 w-4" />
 			{data.event.author.display_name}
