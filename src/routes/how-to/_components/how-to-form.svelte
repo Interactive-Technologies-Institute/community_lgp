@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InteractableImage from '@/components/interactable-image.svelte';
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import { FileInput } from '@/components/ui/file-input';
@@ -172,9 +173,13 @@
 				<Form.Field {form} name="image">
 					<Form.Control let:attrs>
 						<Form.Label>Cover Image*</Form.Label>
-						<Card.Root class="aspect-video overflow-hidden">
+						<Card.Root class="aspect-[3/2] overflow-hidden">
 							{#if imageUrl}
-								<img src={imageUrl} alt="How To Cover" class="h-full w-full object-cover" />
+								<InteractableImage
+									src={imageUrl}
+									alt="How To Cover"
+									class="h-full w-full object-cover"
+								/>
 							{/if}
 						</Card.Root>
 						<FileInput {...attrs} bind:files={$image} accept="image/*" />

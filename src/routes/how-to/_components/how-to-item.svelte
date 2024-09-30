@@ -21,7 +21,7 @@
 	<Card class="relative overflow-hidden">
 		<AspectRatio ratio={3 / 2}>
 			{#if imageUrl}
-				<img src={imageUrl} alt="How To Cover" class="aspect-[3/2] object-cover" />
+				<img src={imageUrl} alt="How To Cover" class="h-full w-full object-cover" />
 				{#if howTo.moderation_status !== 'approved'}
 					<Badge
 						class="absolute right-2 top-2"

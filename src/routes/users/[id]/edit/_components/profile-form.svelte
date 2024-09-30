@@ -66,7 +66,7 @@
 				<Form.Field {form} name="avatar">
 					<Form.Control let:attrs>
 						<Form.Label>Avatar</Form.Label>
-						<Card.Root class="flex aspect-video items-center justify-center p-4">
+						<Card.Root class="flex aspect-[3/2] items-center justify-center p-4">
 							<Avatar.Root class="h-20 w-20 md:h-40 md:w-40">
 								<Avatar.Image src={avatarUrl} alt="User avatar" />
 								<Avatar.Fallback>{initials}</Avatar.Fallback>

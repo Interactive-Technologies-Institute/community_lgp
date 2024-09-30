@@ -66,7 +66,7 @@
 					<Form.Field {form} name="logo">
 						<Form.Control let:attrs>
 							<Form.Label>Logo</Form.Label>
-							<Card.Root class="flex aspect-video items-center justify-center">
+							<Card.Root class="flex aspect-[3/2] items-center justify-center">
 								{#if logoUrl}
 									<Logo {logoUrl} class="h-20 w-20" />
 								{/if}
