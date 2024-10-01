@@ -5,7 +5,7 @@
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
 	import dayjs from 'dayjs';
-	import { BarChart2, CircleUser, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
+	import { ChartNoAxesColumn, CircleUser, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
 	import UsefulButton from './_components/useful-button.svelte';
@@ -33,7 +33,7 @@
 				{data.howTo.duration}
 			</div>
 			<div class="flex flex-row items-center gap-x-2">
-				<BarChart2 class="text-muted-foreground" />
+				<ChartNoAxesColumn class="text-muted-foreground" />
 				{data.howTo.difficulty}
 			</div>
 		</div>
