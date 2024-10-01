@@ -25,7 +25,7 @@
 			</Avatar.Root>
 		</Button>
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content class="w-56" align="end">
+	<DropdownMenu.Content class="w-48" align="end">
 		<DropdownMenu.Label class="font-normal">
 			<div class="flex flex-col space-y-1">
 				<p class="text-sm font-medium leading-none">{profile.display_name}</p>
@@ -34,25 +34,13 @@
 		</DropdownMenu.Label>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Group>
-			<DropdownMenu.Item href="/users/me">
-				Profile
-				<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
-			</DropdownMenu.Item>
-			<DropdownMenu.Item href="/settings">
-				Settings
-				<DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
-			</DropdownMenu.Item>
+			<DropdownMenu.Item href="/users/me">Profile</DropdownMenu.Item>
+			<DropdownMenu.Item href="/settings">Settings</DropdownMenu.Item>
 			{#if role === 'moderator' || role === 'admin'}
-				<DropdownMenu.Item href="/moderation/users">
-					Moderation
-					<DropdownMenu.Shortcut>⌘M</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
+				<DropdownMenu.Item href="/moderation/users">Moderation</DropdownMenu.Item>
 			{/if}
 			{#if role === 'admin'}
-				<DropdownMenu.Item href="/admin">
-					Admin
-					<DropdownMenu.Shortcut>⌘A</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
+				<DropdownMenu.Item href="/admin">Admin</DropdownMenu.Item>
 			{/if}
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />

@@ -17,7 +17,7 @@
 	<div class="container flex h-14 items-center">
 		<MainNav />
 		<MobileNav />
-		<div class="ml-auto flex items-center space-x-2 sm:space-x-4 md:justify-end">
+		<div class="ml-auto flex items-center gap-x-2 sm:gap-x-4 md:justify-end">
 			<ModeToggle />
 			{#if profile && role}
 				<NotificationsButton />
