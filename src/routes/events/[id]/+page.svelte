@@ -14,7 +14,21 @@
 	let openDeleteDialog = false;
 </script>
 
-<MetaTags title={data.event.title} description={data.event.description} />
+<MetaTags
+	title={data.event.title}
+	description={data.event.description}
+	openGraph={{
+		title: data.event.title,
+		description: data.event.description,
+		images: [{ url: data.event.image }],
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: data.event.title,
+		description: data.event.description,
+		image: data.event.image,
+	}}
+/>
 
 <PageHeader title={data.event.title} subtitle={data.event.description} />
 <div class="container mx-auto space-y-10 pb-10">
