@@ -6,6 +6,7 @@
 	import * as Select from '@/components/ui/select';
 	import type { Selected } from 'bits-ui';
 	import { CircleUser, Store } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import type { Writable } from 'svelte/store';
 	import { queryParam, ssp } from 'sveltekit-search-params';
 	import AddPinButton from './_components/add-pin-button.svelte';
@@ -32,6 +33,8 @@
 		return selectedUserType ? user.type === selectedUserType.value : true;
 	});
 </script>
+
+<MetaTags title="Map" description="Find & share places" />
 
 <div class="relative h-[calc(100vh-3.5rem)] min-h-[32rem]">
 	<Map bind:lng={$lng} bind:lat={$lat} bind:zoom={$zoom}>

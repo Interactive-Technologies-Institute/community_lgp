@@ -6,6 +6,7 @@
 	import { Input } from '@/components/ui/input';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { PlusCircle } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import { queryParam } from 'sveltekit-search-params';
 	import EventItem from './_components/event-item.svelte';
 
@@ -16,6 +17,8 @@
 	});
 	const tags = queryParam('tags', arrayQueryParam());
 </script>
+
+<MetaTags title="Events" description="Find & share events" />
 
 <PageHeader title="Events" subtitle="Find & share events" />
 <div class="container mx-auto flex flex-row justify-between gap-x-2">

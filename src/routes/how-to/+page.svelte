@@ -5,6 +5,7 @@
 	import { Input } from '@/components/ui/input';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { PlusCircle } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import { queryParam } from 'sveltekit-search-params';
 	import SortButton from './../../lib/components/sort-button.svelte';
 	import HowToItem from './_components/how-to-item.svelte';
@@ -16,6 +17,8 @@
 	});
 	const tags = queryParam('tags', arrayQueryParam());
 </script>
+
+<MetaTags title="How to" description="Learn & share how to solve your problems" />
 
 <PageHeader title="How to" subtitle="Learn & share how to solve your problems" />
 <div class="container mx-auto flex flex-row justify-between gap-x-2">

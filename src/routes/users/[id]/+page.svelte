@@ -6,7 +6,7 @@
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import { Mail, Map, SquareArrowOutUpRight } from 'lucide-svelte';
-
+	import { MetaTags } from 'svelte-meta-tags';
 	export let data;
 
 	$: initials = data.userProfile.display_name
@@ -14,6 +14,11 @@
 		.map((name) => name[0])
 		.join('');
 </script>
+
+<MetaTags
+	title="User Profile"
+	description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+/>
 
 <PageHeader
 	title="User Profile"

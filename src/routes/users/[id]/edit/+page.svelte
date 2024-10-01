@@ -1,10 +1,16 @@
 <script lang="ts">
 	import PageHeader from '@/components/page-header.svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import PasswordForm from './_components/password-form.svelte';
 	import ProfileForm from './_components/profile-form.svelte';
 
 	export let data;
 </script>
+
+<MetaTags
+	title="Edit User Profile"
+	description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+/>
 
 <PageHeader
 	title="Edit User Profile"

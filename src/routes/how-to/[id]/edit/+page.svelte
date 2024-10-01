@@ -1,11 +1,13 @@
 <script lang="ts">
 	import PageHeader from '@/components/page-header.svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import HowToForm from '../../_components/how-to-form.svelte';
-
 	export let data;
 </script>
 
-<PageHeader title="How to" subtitle="Create a new how to and share it with the community" />
+<MetaTags title="Edit How To" description="Edit a how to" />
+
+<PageHeader title="Edit How To" subtitle="Edit a how to" />
 <div class="container mx-auto mb-20">
 	<HowToForm data={data.updateForm} />
 </div>

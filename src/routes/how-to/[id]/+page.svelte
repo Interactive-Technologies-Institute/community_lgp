@@ -6,6 +6,7 @@
 	import Card from '@/components/ui/card/card.svelte';
 	import dayjs from 'dayjs';
 	import { BarChart2, CircleUser, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
 	import UsefulButton from './_components/useful-button.svelte';
 
@@ -13,6 +14,8 @@
 
 	let openDeleteDialog = false;
 </script>
+
+<MetaTags title={data.howTo.title} description={data.howTo.description} />
 
 <PageHeader title={data.howTo.title} subtitle={data.howTo.description} />
 <div class="container mx-auto space-y-10 pb-10">

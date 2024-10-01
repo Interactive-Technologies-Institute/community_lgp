@@ -1,11 +1,14 @@
 <script lang="ts">
 	import PageHeader from '@/components/page-header.svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import EventForm from '../../_components/event-form.svelte';
 
 	export let data;
 </script>
 
-<PageHeader title="Event" subtitle="Create a new event and share it with the community" />
+<MetaTags title="Edit Event" description="Edit an event" />
+
+<PageHeader title="Edit Event" subtitle="Edit an event" />
 <div class="container mx-auto mb-20">
 	<EventForm data={data.updateForm} />
 </div>

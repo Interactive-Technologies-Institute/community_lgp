@@ -5,6 +5,7 @@
 	import { Button } from '@/components/ui/button';
 	import dayjs from 'dayjs';
 	import { Calendar, CircleUser, MapPin, Pen, Tag, Trash } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import EventDeleteDialog from './_components/event-delete-dialog.svelte';
 	import EventInterestButton from './_components/event-interest-button.svelte';
 
@@ -12,6 +13,8 @@
 
 	let openDeleteDialog = false;
 </script>
+
+<MetaTags title={data.event.title} description={data.event.description} />
 
 <PageHeader title={data.event.title} subtitle={data.event.description} />
 <div class="container mx-auto space-y-10 pb-10">

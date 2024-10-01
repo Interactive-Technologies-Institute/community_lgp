@@ -6,6 +6,7 @@
 	import { PasswordInput } from '@/components/ui/password-input';
 	import { signUpSchema } from '@/schemas/sign-up';
 	import { Loader2 } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
@@ -19,7 +20,9 @@
 	const { form: formData, enhance, submitting } = form;
 </script>
 
-<PageHeader title="Sign up" subtitle="Sign up to our community" />
+<MetaTags title="Sign Up" description="Sign up to our community" />
+
+<PageHeader title="Sign Up" subtitle="Sign up to our community" />
 <div class="container mb-20 mt-10 flex flex-col items-center justify-center md:mt-20">
 	<Card class="w-full max-w-[32rem] px-6 py-5 sm:px-8 sm:py-6 md:px-12 md:py-10">
 		<form method="POST" use:enhance>

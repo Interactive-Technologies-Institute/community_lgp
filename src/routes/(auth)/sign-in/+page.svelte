@@ -6,9 +6,9 @@
 	import { PasswordInput } from '@/components/ui/password-input';
 	import { signInSchema } from '@/schemas/sign-in';
 	import { Loader2 } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-
 	export let data;
 
 	const form = superForm(data.form, {
@@ -18,6 +18,8 @@
 
 	const { form: formData, enhance, submitting } = form;
 </script>
+
+<MetaTags title="Sign In" description="Sign in to your account" />
 
 <PageHeader title="Sign In" subtitle="Sign in to your account" />
 <div class="container mb-20 mt-10 flex flex-col items-center justify-center md:mt-20">

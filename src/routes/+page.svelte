@@ -1,9 +1,12 @@
 <script lang="ts">
 	import Logo from '@/components/logo.svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
 	$: ({ branding } = data);
 </script>
+
+<MetaTags title={branding.name} description={branding.slogan} />
 
 <div class="container mx-auto mb-20 mt-20 flex flex-col items-center justify-center md:mt-40">
 	{#if branding.logo}

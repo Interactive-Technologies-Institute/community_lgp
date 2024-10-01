@@ -2,9 +2,12 @@
 	import { page } from '$app/stores';
 	import PageHeader from '@/components/page-header.svelte';
 	import * as Tabs from '@/components/ui/tabs';
+	import { MetaTags } from 'svelte-meta-tags';
 
 	$: path = $page.url.pathname.split('/').pop();
 </script>
+
+<MetaTags title="Moderation" description="Moderate user content" />
 
 <PageHeader title="Moderation" subtitle="Moderate user content" />
 <div class="container mx-auto mb-20">
