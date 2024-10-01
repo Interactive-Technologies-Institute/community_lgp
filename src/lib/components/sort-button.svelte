@@ -1,5 +1,5 @@
 <script>
-	import { Button } from '@/components//ui/button';
+	import { Button } from '@/components/ui/button';
 	import { ListFilter } from 'lucide-svelte';
 </script>
 

@@ -15,7 +15,21 @@
 	let openDeleteDialog = false;
 </script>
 
-<MetaTags title={data.howTo.title} description={data.howTo.description} />
+<MetaTags
+	title={data.howTo.title}
+	description={data.howTo.description}
+	openGraph={{
+		title: data.howTo.title,
+		description: data.howTo.description,
+		images: [{ url: data.howTo.image }],
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: data.howTo.title,
+		description: data.howTo.description,
+		image: data.howTo.image,
+	}}
+/>
 
 <PageHeader title={data.howTo.title} subtitle={data.howTo.description} />
 <div class="container mx-auto space-y-10 pb-10">
