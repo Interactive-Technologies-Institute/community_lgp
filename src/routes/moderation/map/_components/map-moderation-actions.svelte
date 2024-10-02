@@ -42,7 +42,7 @@
 		</Button>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content>
-		<DropdownMenu.Item href="/map?pin={id}">Open</DropdownMenu.Item>
+		<DropdownMenu.Item href="/map?id={id}">Open</DropdownMenu.Item>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>

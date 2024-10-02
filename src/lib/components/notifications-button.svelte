@@ -51,7 +51,7 @@
 			case 'map_pin_changes_requested':
 			case 'map_pin_approved':
 			case 'map_pin_rejected':
-				return `/map?pin=${notification.data.map_pin_id ?? 'error'}`;
+				return `/map?id=${notification.data.map_pin_id ?? 'error'}`;
 			default:
 				return 'error';
 		}

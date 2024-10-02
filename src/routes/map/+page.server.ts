@@ -1,12 +1,31 @@
 import { createMapPinSchema, deleteMapPinSchema } from '@/schemas/map-pin';
 import type { ModerationInfo, UserProfileWithPin, UserType } from '@/types/types';
-import { handleFormAction } from '@/utils';
-import { error, fail } from '@sveltejs/kit';
+import { handleFormAction, numberQueryParam } from '@/utils';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
+	const id = numberQueryParam().decode(event.url.searchParams.get('id'));
+	let location: { lat: number; lng: number } | undefined;
+
+	if (id) {
+		location = await getLocationById(id);
+	}
+	if (location) {
+		const lat = numberQueryParam().encode(location.lat);
+		const lng = numberQueryParam().encode(location.lng);
+		if (lat && lng) {
+			const url = new URL(event.url);
+			url.searchParams.delete('id');
+			url.searchParams.set('lat', lat);
+			url.searchParams.set('lng', lng);
+			url.searchParams.set('zoom', '10');
+			redirect(302, url.toString());
+		}
+	}
+
 	const { session, user, profile } = await event.parent();
 
 	let profileWithPin: UserProfileWithPin | undefined;
@@ -64,6 +83,22 @@ export const load = async (event) => {
 		}
 
 		return mapPins;
+	}
+
+	async function getLocationById(id: number): Promise<{ lat: number; lng: number }> {
+		const { data: location, error: locationError } = await event.locals.supabase
+			.from('map_pins_view')
+			.select('*')
+			.eq('id', id)
+			.single();
+
+		if (locationError) {
+			const errorMessage = 'Error fetching location, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return { lat: location.lat, lng: location.lng };
 	}
 
 	return {

@@ -48,7 +48,7 @@
 					Email
 				</Button>
 				{#if data.mapPin}
-					<Button href="/map?lng={data.mapPin.lng}&lat={data.mapPin.lat}&zoom=10" variant="outline">
+					<Button href="/map?id={data.mapPin.id}&zoom=10" variant="outline">
 						<Map class="mr-2 h-4 w-4" />
 						View on Map
 					</Button>

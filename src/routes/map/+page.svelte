@@ -2,10 +2,10 @@
 	import ModerationBanner from '@/components/moderation-banner.svelte';
 	import * as Avatar from '@/components/ui/avatar';
 	import { Button } from '@/components/ui/button';
-	import Card from '@/components/ui/card/card.svelte';
+	import { Card } from '@/components/ui/card';
 	import * as Select from '@/components/ui/select';
 	import type { Selected } from 'bits-ui';
-	import { CircleUser, Store } from 'lucide-svelte';
+	import { Store } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import type { Writable } from 'svelte/store';
 	import { queryParam, ssp } from 'sveltekit-search-params';
@@ -41,23 +41,38 @@
 		{#each filteredUsers as user (user.id)}
 			{#if user?.pin}
 				<Marker lng={user.pin.lng} lat={user.pin.lat}>
-					<div class="h-10 w-10 overflow-hidden rounded-full border-2 border-primary bg-foreground">
-						<img src="/avatars/user.png" alt="User avatar" class="aspect-square h-full w-full" />
+					<div class="rounded-full border-2 border-primary bg-foreground">
+						<Avatar.Root class="h-10 w-10">
+							<Avatar.Image src={user.avatar} alt={user.display_name} />
+							<Avatar.Fallback
+								>{user.display_name
+									.split(' ')
+									.map((name) => name[0])
+									.join('')}</Avatar.Fallback
+							>
+						</Avatar.Root>
 					</div>
 					<div slot="popup">
-						<Card class="w-52">
-							<div class="flex aspect-video items-center justify-center">
-								<Avatar.Root class="h-20 w-20">
-									<Avatar.Image src="/avatars/user.png" alt={user.display_name} />
+						<Card class="max-w-80 px-4">
+							<div class="flex flex-row items-center gap-x-2 py-4">
+								<Avatar.Root class="h-12 w-12">
+									<Avatar.Image src={user.avatar} alt={user.display_name} />
+									<Avatar.Fallback>
+										{user.display_name
+											.split(' ')
+											.map((name) => name[0])
+											.join('')}
+									</Avatar.Fallback>
 								</Avatar.Root>
+								<div>
+									<p class="line-clamp-1 font-medium">{user.display_name}</p>
+									<p class="text-sm text-muted-foreground">{user.type}</p>
+								</div>
 							</div>
-							<div class="flex flex-col items-start gap-y-2 px-4 py-3">
-								<Button variant="secondary" size="sm" href="/user/0">
-									<CircleUser class="mr-2 h-4 w-4" />
-									{user.display_name}
-								</Button>
-								<p>{user.description}</p>
-							</div>
+							<p class="text-sm text-muted-foreground">
+								{user.description ?? 'No description provided'}
+							</p>
+							<Button href="/users/{user.id}" variant="link" class="px-0">View Profile</Button>
 						</Card>
 					</div>
 				</Marker>

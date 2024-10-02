@@ -34,6 +34,7 @@
 			closeOnClick: false,
 			anchor: 'bottom',
 			offset: 40,
+			maxWidth: '100%',
 		}).setDOMContent(node);
 		marker?.setPopup(popup);
 	}

@@ -149,6 +149,21 @@ export function stringQueryParam(defaultValue?: string): EncodeAndDecodeOptions<
 	};
 }
 
+export function numberQueryParam(defaultValue?: number): EncodeAndDecodeOptions<number> {
+	return {
+		encode: (value) => {
+			if (value === undefined || value === null) return undefined;
+			return value.toString();
+		},
+		decode: (value) => {
+			if (value === null || value === undefined) return null;
+			const parsed = Number(value);
+			return isNaN(parsed) ? null : parsed;
+		},
+		defaultValue,
+	};
+}
+
 export function arrayQueryParam(defaultValue?: string[]): EncodeAndDecodeOptions<string[]> {
 	return {
 		encode: (value) => {
