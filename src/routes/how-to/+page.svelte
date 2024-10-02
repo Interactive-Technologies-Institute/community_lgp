@@ -32,9 +32,7 @@
 		<span class="sr-only sm:not-sr-only">Create How To</span>
 	</Button>
 </div>
-<div
-	class="container mx-auto grid grid-cols-1 gap-6 py-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
->
+<div class="container mx-auto grid grid-cols-1 gap-6 py-10 md:grid-cols-2 lg:grid-cols-3">
 	{#each data.howTos as howTo}
 		<HowToItem {howTo} />
 	{/each}

@@ -2,8 +2,10 @@
 	import { page } from '$app/stores';
 	import { AspectRatio } from '@/components/ui/aspect-ratio';
 	import { Badge } from '@/components/ui/badge';
+	import { Button } from '@/components/ui/button';
 	import { Card } from '@/components/ui/card';
 	import type { HowTo } from '@/types/types';
+	import { Tag } from 'lucide-svelte';
 
 	export let howTo: HowTo;
 
@@ -34,12 +36,15 @@
 		</AspectRatio>
 		<div class="flex flex-col px-4 py-3">
 			<div class="mb-5">
-				<h2 class="text-lg font-medium">{howTo.title}</h2>
+				<h2 class="line-clamp-2 text-lg font-medium">{howTo.title}</h2>
 				<p class="line-clamp-2 text-muted-foreground">{howTo.description}</p>
 			</div>
-			<div class="flex gap-x-1">
+			<div class="flex flex-wrap gap-2">
 				{#each howTo.tags as tag}
-					<span>#{tag}</span>
+					<Button variant="secondary" size="sm" href="/how-to?tags={tag}">
+						<Tag class="mr-2 h-4 w-4" />
+						{tag}
+					</Button>
 				{/each}
 			</div>
 		</div>
