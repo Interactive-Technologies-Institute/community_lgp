@@ -19,6 +19,17 @@ export type Database = MergeDeep<
 						steps?: Step[];
 					};
 				};
+				notifications: {
+					Row: {
+						data: Record<string, string>;
+					};
+					Insert: {
+						data?: Record<string, string>;
+					};
+					Update: {
+						data?: Record<string, string>;
+					};
+				};
 			};
 			Views: {
 				events_view: {

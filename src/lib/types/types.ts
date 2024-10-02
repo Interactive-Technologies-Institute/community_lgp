@@ -105,3 +105,26 @@ export type Event = {
 export type EventWithAuthor = Event & { author: UserProfile };
 
 export type EventWithModeration = Event & { moderation: ModerationInfo[] };
+
+export type NotificationType =
+	| 'howto_pending'
+	| 'howto_changes_requested'
+	| 'howto_approved'
+	| 'howto_rejected'
+	| 'event_pending'
+	| 'event_changes_requested'
+	| 'event_approved'
+	| 'event_rejected'
+	| 'map_pin_pending'
+	| 'map_pin_changes_requested'
+	| 'map_pin_approved'
+	| 'map_pin_rejected';
+
+export type Notification = {
+	id: number;
+	inserted_at: string;
+	user_id: string;
+	type: NotificationType;
+	data: Record<string, string>;
+	read: boolean;
+};

@@ -16,7 +16,7 @@
 
 	export let data;
 
-	$: ({ supabase, session, user, profile, branding } = data);
+	$: ({ supabase, session, user, profile, notifications, branding } = data);
 
 	const flash = getFlash(page);
 	$: if ($flash) {
@@ -55,7 +55,7 @@
 <Toaster />
 
 <div class="relative flex min-h-screen flex-col">
-	<Header role={user?.role ?? null} {profile} />
+	<Header role={user?.role ?? null} {profile} {notifications} />
 	<div class="flex-1">
 		<slot />
 	</div>

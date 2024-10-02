@@ -3,12 +3,13 @@
 	import MainNav from '@/components/nav/main-nav.svelte';
 	import MobileNav from '@/components/nav/mobile-nav.svelte';
 	import UserNav from '@/components/nav/user-nav.svelte';
-	import type { UserProfile, UserRole } from '@/types/types';
+	import type { Notification, UserProfile, UserRole } from '@/types/types';
 	import NotificationsButton from './notifications-button.svelte';
 	import { Button } from './ui/button';
 
 	export let role: UserRole | null;
 	export let profile: UserProfile | null;
+	export let notifications: Notification[];
 </script>
 
 <header
@@ -20,7 +21,7 @@
 		<div class="ml-auto flex items-center gap-x-2 sm:gap-x-4 md:justify-end">
 			<ModeToggle />
 			{#if profile && role}
-				<NotificationsButton />
+				<NotificationsButton {notifications} />
 				<UserNav {role} {profile} />
 			{:else}
 				<Button variant="outline" size="sm" href="/sign-in">Login</Button>

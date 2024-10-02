@@ -2,7 +2,7 @@
 // for information about these interfaces
 
 import type { Database } from '@/types/supabase-types';
-import type { Branding, UserWithRole } from '@/types/types';
+import type { Branding, Notification, UserWithRole } from '@/types/types';
 import { Session, SupabaseClient } from '@supabase/supabase-js';
 
 declare global {
@@ -16,6 +16,7 @@ declare global {
 			session: Session | null;
 			user: UserWithRole | null;
 			profile: UserProfile | null;
+			notifications: Notification[];
 			features: Feature[];
 			branding: Branding;
 			flash?: { type: 'success' | 'error'; message: string };
