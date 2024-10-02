@@ -59,7 +59,7 @@
 			class="aspect-[3/2] h-auto w-full rounded-md object-cover"
 		/>
 		<p>{data.event.description}</p>
-		<div class=" flex flex-row gap-x-2">
+		<div class=" flex flex-wrap gap-2">
 			{#each data.event.tags as tag}
 				<Button variant="secondary" size="sm" href="/events?tags={tag}">
 					<Tag class="mr-2 h-4 w-4" />

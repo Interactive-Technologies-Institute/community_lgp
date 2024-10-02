@@ -32,7 +32,7 @@
 		<span class="sr-only sm:not-sr-only">Create Event</span>
 	</Button>
 </div>
-<div class="container mx-auto grid grid-cols-1 gap-6 py-10 lg:grid-cols-2">
+<div class="container mx-auto grid grid-cols-1 gap-6 py-10 md:grid-cols-2 lg:grid-cols-3">
 	{#each data.events as event}
 		<EventItem {event}></EventItem>
 	{/each}
