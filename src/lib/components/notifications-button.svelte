@@ -7,7 +7,6 @@
 	import { Separator } from '@/components/ui/separator';
 	import type { Notification, NotificationType } from '@/types/types';
 	import dayjs from 'dayjs';
-	import relativeTime from 'dayjs/plugin/relativeTime';
 	import { Check, Inbox } from 'lucide-svelte';
 
 	export let notifications: Notification[];
@@ -17,8 +16,6 @@
 	beforeNavigate(() => {
 		open = false;
 	});
-
-	dayjs.extend(relativeTime);
 
 	const notificationTypeToLabel: Record<NotificationType, string> = {
 		howto_pending: 'Your how to is pending moderation',

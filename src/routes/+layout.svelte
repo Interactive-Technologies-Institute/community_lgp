@@ -7,12 +7,15 @@
 	import NavigatingIndicator from '@/components/navigating-indicator.svelte';
 	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
 	import { Toaster } from '@/components/ui/sonner';
+	import dayjs from 'dayjs';
+	import relativeTime from 'dayjs/plugin/relativeTime';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { getFlash } from 'sveltekit-flash-message';
 	import '../app.css';
 	import '../themes.css';
+	dayjs.extend(relativeTime);
 
 	export let data;
 
