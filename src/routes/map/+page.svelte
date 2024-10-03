@@ -37,7 +37,7 @@
 
 <MetaTags title="Map" description="Find & share places" />
 
-<div class="relative h-[calc(100vh-3.5rem)] min-h-[32rem]">
+<div class="relative h-[calc(100dvh-3.5rem)] min-h-[32rem]">
 	<Map bind:lng={$lng} bind:lat={$lat} bind:zoom={$zoom}>
 		{#each filteredUsers as user (user.id)}
 			{#if user?.pin}
