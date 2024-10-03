@@ -5,14 +5,11 @@
 	import * as Avatar from '@/components/ui/avatar';
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
+	import { firstAndLastInitials } from '@/utils';
 	import { Mail, Map, SquareArrowOutUpRight } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	export let data;
 
-	$: initials = data.userProfile.display_name
-		.split(' ')
-		.map((name) => name[0])
-		.join('');
+	export let data;
 </script>
 
 <MetaTags
@@ -30,7 +27,7 @@
 			<div class="flex flex-row items-center gap-x-4">
 				<Avatar.Root class="h-20 w-20">
 					<Avatar.Image src={data.userProfile.avatar} alt={data.userProfile.display_name} />
-					<Avatar.Fallback>{initials}</Avatar.Fallback>
+					<Avatar.Fallback>{firstAndLastInitials(data.userProfile.display_name)}</Avatar.Fallback>
 				</Avatar.Root>
 				<div>
 					<Card.Title class="text-xl">{data.userProfile.display_name}</Card.Title>

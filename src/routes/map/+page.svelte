@@ -4,6 +4,7 @@
 	import { Button } from '@/components/ui/button';
 	import { Card } from '@/components/ui/card';
 	import * as Select from '@/components/ui/select';
+	import { firstAndLastInitials } from '@/utils';
 	import type { Selected } from 'bits-ui';
 	import { Store } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
@@ -44,12 +45,7 @@
 					<div class="rounded-full border-2 border-primary bg-foreground">
 						<Avatar.Root class="h-10 w-10">
 							<Avatar.Image src={user.avatar} alt={user.display_name} />
-							<Avatar.Fallback
-								>{user.display_name
-									.split(' ')
-									.map((name) => name[0])
-									.join('')}</Avatar.Fallback
-							>
+							<Avatar.Fallback>{firstAndLastInitials(user.display_name)}</Avatar.Fallback>
 						</Avatar.Root>
 					</div>
 					<div slot="popup">
@@ -57,12 +53,7 @@
 							<div class="flex flex-row items-center gap-x-2 py-4">
 								<Avatar.Root class="h-12 w-12">
 									<Avatar.Image src={user.avatar} alt={user.display_name} />
-									<Avatar.Fallback>
-										{user.display_name
-											.split(' ')
-											.map((name) => name[0])
-											.join('')}
-									</Avatar.Fallback>
+									<Avatar.Fallback>{firstAndLastInitials(user.display_name)}</Avatar.Fallback>
 								</Avatar.Root>
 								<div>
 									<p class="line-clamp-1 font-medium">{user.display_name}</p>

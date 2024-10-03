@@ -177,3 +177,10 @@ export function arrayQueryParam(defaultValue?: string[]): EncodeAndDecodeOptions
 		defaultValue,
 	};
 }
+
+export function firstAndLastInitials(name: string) {
+	if (name.length === 0) return '';
+	const names = name.split(' ');
+	if (names.length === 1) return names[0][0].toUpperCase();
+	return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+}

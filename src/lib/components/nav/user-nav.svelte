@@ -4,14 +4,10 @@
 	import { Button } from '@/components/ui/button';
 	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 	import type { UserProfile, UserRole } from '@/types/types';
+	import { firstAndLastInitials } from '@/utils';
 
 	export let role: UserRole;
 	export let profile: UserProfile;
-
-	$: initials = profile.display_name
-		.split(' ')
-		.map((name) => name[0])
-		.join('');
 
 	let signOutForm: HTMLFormElement;
 </script>
@@ -21,7 +17,7 @@
 		<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
 			<Avatar.Root class="h-8 w-8">
 				<Avatar.Image src={profile.avatar} alt={profile.display_name} />
-				<Avatar.Fallback>{initials}</Avatar.Fallback>
+				<Avatar.Fallback>{firstAndLastInitials(profile.display_name)}</Avatar.Fallback>
 			</Avatar.Root>
 		</Button>
 	</DropdownMenu.Trigger>

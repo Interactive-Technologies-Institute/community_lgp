@@ -6,6 +6,7 @@
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
 	import { updateUserProfileSchema, type UpdateUserProfileSchema } from '@/schemas/user-profile';
+	import { firstAndLastInitials } from '@/utils';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
@@ -34,11 +35,6 @@
 			avatarUrl = $formData.avatarUrl;
 		}
 	}
-
-	$: initials = $formData.display_name
-		.split(' ')
-		.map((name) => name[0])
-		.join('');
 </script>
 
 <form method="POST" enctype="multipart/form-data" action="?/updateProfile" use:enhance>
@@ -69,7 +65,7 @@
 						<Card.Root class="flex aspect-[3/2] items-center justify-center p-4">
 							<Avatar.Root class="h-20 w-20 md:h-40 md:w-40">
 								<Avatar.Image src={avatarUrl} alt="User avatar" />
-								<Avatar.Fallback>{initials}</Avatar.Fallback>
+								<Avatar.Fallback>{firstAndLastInitials($formData.display_name)}</Avatar.Fallback>
 							</Avatar.Root>
 						</Card.Root>
 						<FileInput {...attrs} bind:files={$avatar} accept="image/*" />
