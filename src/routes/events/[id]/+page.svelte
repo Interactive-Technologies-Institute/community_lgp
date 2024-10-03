@@ -4,7 +4,7 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import dayjs from 'dayjs';
-	import { Calendar, CircleUser, MapPin, Pen, Tag, Trash } from 'lucide-svelte';
+	import { Calendar, MapPin, Pen, Tag, Trash } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import EventDeleteDialog from './_components/event-delete-dialog.svelte';
 	import EventInterestButton from './_components/event-interest-button.svelte';
@@ -68,12 +68,15 @@
 			{/each}
 		</div>
 	</div>
-	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground">
-			Updated on {dayjs(data.event.updated_at).format('YYYY-MM-DD [at] HH:mm')}
-		</span>
-		<Button variant="secondary" size="sm" href="/users/{data.event.author.id}">
-			<CircleUser class="mr-2 h-4 w-4" />
+	<div class="flex flex-col items-center">
+		<p class="text-xs text-muted-foreground">
+			Published {dayjs(data.event.inserted_at).fromNow()}
+			{#if data.event.inserted_at !== data.event.updated_at}
+				• Updated {dayjs(data.event.updated_at).fromNow()}
+			{/if}
+		</p>
+		<Button variant="link" size="sm" href="/users/{data.event.author.id}">
+			by
 			{data.event.author.display_name}
 		</Button>
 	</div>

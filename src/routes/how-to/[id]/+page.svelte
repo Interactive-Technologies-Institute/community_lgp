@@ -5,7 +5,7 @@
 	import { Button } from '@/components/ui/button';
 	import Card from '@/components/ui/card/card.svelte';
 	import dayjs from 'dayjs';
-	import { ChartNoAxesColumn, CircleUser, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
+	import { ChartNoAxesColumn, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
 	import UsefulButton from './_components/useful-button.svelte';
@@ -92,12 +92,15 @@
 			</div>
 		{/each}
 	</div>
-	<div class="flex flex-col items-center gap-y-2">
-		<span class="text-sm text-muted-foreground">
-			Updated on {dayjs(data.howTo.updated_at).format('YYYY-MM-DD [at] HH:mm')}
-		</span>
-		<Button variant="secondary" size="sm" href="/users/{data.howTo.author.id}">
-			<CircleUser class="mr-2 h-4 w-4" />
+	<div class="flex flex-col items-center">
+		<p class="text-xs text-muted-foreground">
+			Published {dayjs(data.howTo.inserted_at).fromNow()}
+			{#if data.howTo.inserted_at !== data.howTo.updated_at}
+				• Updated {dayjs(data.howTo.updated_at).fromNow()}
+			{/if}
+		</p>
+		<Button variant="link" size="sm" href="/users/{data.howTo.author.id}">
+			by
 			{data.howTo.author.display_name}
 		</Button>
 	</div>

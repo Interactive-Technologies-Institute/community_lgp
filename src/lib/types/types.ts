@@ -8,6 +8,8 @@ export type UserWithRole = User & { role: UserRole };
 
 export type UserProfile = {
 	id: string;
+	inserted_at: string;
+	updated_at: string;
 	role: UserRole;
 	type: string;
 	email: string;
@@ -40,6 +42,8 @@ export type ModerationInfo = {
 
 export type MapPin = {
 	id: number;
+	inserted_at: string;
+	updated_at: string;
 	user_id: string;
 	lng: number;
 	lat: number;
@@ -56,6 +60,7 @@ export type HowToDuration = 'short' | 'medium' | 'long';
 
 export type HowTo = {
 	id: number;
+	inserted_at: string;
 	updated_at: string;
 	user_id: string;
 	title: string;
@@ -91,6 +96,7 @@ export type DocGroup = {
 
 export type Event = {
 	id: number;
+	inserted_at: string;
 	updated_at: string;
 	user_id: string;
 	title: string;
