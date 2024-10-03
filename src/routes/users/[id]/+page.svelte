@@ -12,15 +12,9 @@
 	export let data;
 </script>
 
-<MetaTags
-	title="User Profile"
-	description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-/>
+<MetaTags title="User Details" description="" />
 
-<PageHeader
-	title="User Profile"
-	subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-/>
+<PageHeader title="User Details" subtitle="View user details and their contributions" />
 <div class="container mx-auto mb-20 flex max-w-3xl flex-col gap-y-8 md:gap-y-10">
 	<Card.Root>
 		<Card.Header>
@@ -59,8 +53,8 @@
 	<FeatureWrapper feature="howtos">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>How Tos</Card.Title>
-				<Card.Description>List of How To guides created by the user</Card.Description>
+				<Card.Title>How Tos ({data.howTos.length})</Card.Title>
+				<Card.Description>List of How To guides created</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				{#if data.howTos && data.howTos.length > 0}
@@ -81,8 +75,8 @@
 	<FeatureWrapper feature="events">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Events</Card.Title>
-				<Card.Description>List of Events created by the user</Card.Description>
+				<Card.Title>Events ({data.events.length})</Card.Title>
+				<Card.Description>List of Events created</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				{#if data.events && data.events.length > 0}

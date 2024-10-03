@@ -91,11 +91,8 @@
 <form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Introduction</Card.Title>
-			<Card.Description
-				>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-				ut labore et dolore magna aliqua.
-			</Card.Description>
+			<Card.Title>Information</Card.Title>
+			<Card.Description>Add details to this how to</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
 			<Form.Field {form} name="title">
@@ -194,21 +191,19 @@
 		<Card.Root>
 			<Card.Header>
 				<Form.Legend><Card.Title>Steps*</Card.Title></Form.Legend>
-				<Card.Description
-					>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-					ut labore et dolore magna aliqua.
-				</Card.Description>
+				<Card.Description>Add steps to your how to</Card.Description>
 			</Card.Header>
 			<Card.Content class="space-y-4">
 				{#each $formData.steps as _, i (i)}
 					<StepForm {form} index={i} />
 				{/each}
+				<Button type="button" variant="outline" size="sm" class="mr-auto mt-2" on:click={addStep}>
+					Add Step
+				</Button>
 			</Card.Content>
 		</Card.Root>
 	</Form.Fieldset>
-	<Button type="button" variant="outline" size="sm" class="mr-auto mt-2" on:click={addStep}>
-		Add Step
-	</Button>
+
 	<div
 		class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>

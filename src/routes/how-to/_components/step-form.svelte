@@ -62,10 +62,7 @@
 				<Card.Title>
 					Step {index + 1}
 				</Card.Title>
-				<Card.Description>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-					ut labore et dolore magna aliqua.
-				</Card.Description>
+				<Card.Description>Add details to this step</Card.Description>
 			</div>
 			<div class="flex flex-col gap-y-2 md:flex-row md:gap-x-2">
 				{#if index !== 0}

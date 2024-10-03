@@ -5,9 +5,9 @@
 	export let data;
 </script>
 
-<MetaTags title="Edit How To" description="Edit a how to" />
+<MetaTags title="Edit How To" description="Edit this how to" />
 
-<PageHeader title="Edit How To" subtitle="Edit a how to" />
+<PageHeader title="Edit How To" subtitle="Edit this how to" />
 <div class="container mx-auto mb-20">
 	<HowToForm data={data.updateForm} />
 </div>

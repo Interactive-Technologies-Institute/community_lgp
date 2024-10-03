@@ -56,11 +56,8 @@
 <form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Introduction</Card.Title>
-			<Card.Description
-				>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-				ut labore et dolore magna aliqua.
-			</Card.Description>
+			<Card.Title>Information</Card.Title>
+			<Card.Description>Add details to this event</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
 			<Form.Field {form} name="title">

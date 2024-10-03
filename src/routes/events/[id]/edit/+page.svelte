@@ -6,9 +6,9 @@
 	export let data;
 </script>
 
-<MetaTags title="Edit Event" description="Edit an event" />
+<MetaTags title="Edit Event" description="Edit this event" />
 
-<PageHeader title="Edit Event" subtitle="Edit an event" />
+<PageHeader title="Edit Event" subtitle="Edit this event" />
 <div class="container mx-auto mb-20">
 	<EventForm data={data.updateForm} />
 </div>

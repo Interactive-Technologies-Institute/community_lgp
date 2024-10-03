@@ -18,9 +18,9 @@
 	const tags = queryParam('tags', arrayQueryParam());
 </script>
 
-<MetaTags title="Events" description="Find & share events" />
+<MetaTags title="Events" description="Find & share community events" />
 
-<PageHeader title="Events" subtitle="Find & share events" />
+<PageHeader title="Events" subtitle="Find & share community events" />
 <div class="container mx-auto flex flex-row justify-between gap-x-2">
 	<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
 		<Input placeholder="Search..." class="flex-1 sm:max-w-64" bind:value={$search}></Input>

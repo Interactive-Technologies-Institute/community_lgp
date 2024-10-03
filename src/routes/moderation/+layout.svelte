@@ -7,9 +7,9 @@
 	$: path = $page.url.pathname.split('/').pop();
 </script>
 
-<MetaTags title="Moderation" description="Moderate user content" />
+<MetaTags title="Moderation" description="Moderate users and content" />
 
-<PageHeader title="Moderation" subtitle="Moderate user content" />
+<PageHeader title="Moderation" subtitle="Moderate users and content" />
 <div class="container mx-auto mb-20">
 	<Tabs.Root value={path}>
 		<Tabs.List>

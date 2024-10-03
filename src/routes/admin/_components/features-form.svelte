@@ -23,7 +23,7 @@
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Features</Card.Title>
-			<Card.Description>Lorem Ipsum</Card.Description>
+			<Card.Description>Enable or disable platform features</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<div class="max-w-2xl space-y-4">

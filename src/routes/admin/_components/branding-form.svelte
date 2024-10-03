@@ -45,7 +45,7 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Branding</Card.Title>
-				<Card.Description>Lorem Ipsum</Card.Description>
+				<Card.Description>Configure the platform branding</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				<div class="max-w-2xl space-y-4">
