@@ -17,7 +17,6 @@
 		rejected: 'Rejected',
 	};
 
-	$: date = dayjs(event.date);
 	$: imageUrl = $page.data.supabase.storage.from('events').getPublicUrl(event.image).data.publicUrl;
 </script>
 
