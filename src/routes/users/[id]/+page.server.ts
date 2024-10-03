@@ -70,12 +70,12 @@ export const load = async (event) => {
 		return events;
 	}
 
-	async function getMapPin(): Promise<{ id: number }> {
+	async function getMapPin(): Promise<{ id: number } | null> {
 		const { data: mapPin, error: mapPinError } = await event.locals.supabase
 			.from('map_pins_view')
 			.select('id')
 			.eq('user_id', id)
-			.single();
+			.maybeSingle();
 
 		if (mapPinError) {
 			const errorMessage = 'Error fetching map pin, please try again later.';
