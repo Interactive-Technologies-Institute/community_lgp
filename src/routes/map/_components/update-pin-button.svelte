@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
 	import { createMapPinSchema, type CreateMapPinSchema } from '@/schemas/map-pin';
-	import { Check, Edit, XCircle } from 'lucide-svelte';
+	import { Check, Edit, MapPin, XCircle } from 'lucide-svelte';
 	import { getContext, onDestroy } from 'svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -79,9 +79,9 @@
 			Drag the pin to your location
 		</div>
 		<div
-			class="mb-[5.5rem] h-10 w-10 overflow-hidden rounded-full border-2 border-foreground bg-foreground"
+			class="mb-[5.5rem] flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary bg-background"
 		>
-			<img src="/avatars/user.png" alt="User avatar" class="aspect-square h-full w-full" />
+			<MapPin class="h-5 w-5" />
 		</div>
 	{/if}
 </div>
