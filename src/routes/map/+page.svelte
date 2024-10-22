@@ -41,7 +41,9 @@
 	<Map bind:lng={$lng} bind:lat={$lat} bind:zoom={$zoom}>
 		{#each filteredUsers as user (user.id)}
 			{#if user?.pin}
-				{@const imageUrl = user.avatar ? data.supabase.storage.from('users').getPublicUrl(user.avatar).data.publicUrl : undefined}
+				{@const imageUrl = user.avatar
+					? data.supabase.storage.from('users').getPublicUrl(user.avatar).data.publicUrl
+					: undefined}
 				<Marker lng={user.pin.lng} lat={user.pin.lat}>
 					<div class="rounded-full border-2 border-primary bg-foreground">
 						<Avatar.Root class="h-10 w-10">
