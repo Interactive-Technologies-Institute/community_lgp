@@ -42,7 +42,7 @@
 		</Button>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content>
-		<DropdownMenu.Item href="/how-to/{id}">Open</DropdownMenu.Item>
+		<DropdownMenu.Item href="/guides/{id}">Open</DropdownMenu.Item>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
@@ -58,8 +58,8 @@
 <Dialog.Root bind:open={openApproveDialog}>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>Approve How To</Dialog.Title>
-			<Dialog.Description>Are you sure you want to approve this How To?</Dialog.Description>
+			<Dialog.Title>Approve Guide</Dialog.Title>
+			<Dialog.Description>Are you sure you want to approve this Guide?</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" use:enhance>
 			<input type="hidden" name="ref_id" value={id} />
@@ -84,8 +84,8 @@
 <Dialog.Root bind:open={openRejectDialog}>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>Reject How To</Dialog.Title>
-			<Dialog.Description>Are you sure you want to reject this How To?</Dialog.Description>
+			<Dialog.Title>Reject Guide</Dialog.Title>
+			<Dialog.Description>Are you sure you want to reject this Guide?</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" use:enhance>
 			<input type="hidden" name="ref_id" value={id} />
@@ -112,7 +112,7 @@
 		<Dialog.Header>
 			<Dialog.Title>Request Changes</Dialog.Title>
 			<Dialog.Description
-				>Are you sure you want to request changes for this How To?</Dialog.Description
+				>Are you sure you want to request changes for this Guide?</Dialog.Description
 			>
 		</Dialog.Header>
 		<form method="POST" use:enhance>

@@ -24,15 +24,15 @@
 				Docs
 			</a>
 		</FeatureWrapper>
-		<FeatureWrapper feature="howtos">
+		<FeatureWrapper feature="guides">
 			<a
-				href="/how-to"
+				href="/guides"
 				class={cn(
 					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/how-to') ? 'text-foreground' : 'text-foreground/60'
+					$page.url.pathname.startsWith('/guides') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
-				How To
+				Guides
 			</a>
 		</FeatureWrapper>
 		<FeatureWrapper feature="events">

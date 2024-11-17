@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
-	import { toggleHowToUsefulSchema, type ToggleHowToUsefulSchema } from '@/schemas/how-to';
+	import { toggleGuideUsefulSchema, type ToggleGuideUsefulSchema } from '@/schemas/guide';
 	import { cn } from '@/utils';
 	import { Bookmark } from 'lucide-svelte';
 	import { tick } from 'svelte';
@@ -8,10 +8,10 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let count: number;
-	export let data: SuperValidated<Infer<ToggleHowToUsefulSchema>>;
+	export let data: SuperValidated<Infer<ToggleGuideUsefulSchema>>;
 
 	const form = superForm(data, {
-		validators: zodClient(toggleHowToUsefulSchema),
+		validators: zodClient(toggleGuideUsefulSchema),
 		invalidateAll: 'force',
 		onUpdate: ({ result }) => {
 			if (result.type === 'failure') {

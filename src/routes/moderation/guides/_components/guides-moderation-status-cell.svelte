@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ModerationStatus } from '@/types/types';
-	import { typeMap } from './how-to-moderation-status-map';
+	import { typeMap } from './guides-moderation-status-map';
 
 	export let status: ModerationStatus;
 

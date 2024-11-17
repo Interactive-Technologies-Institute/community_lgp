@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const updateFeaturesSchema = z.object({
-	howtos: z.boolean(),
+	guides: z.boolean(),
 	events: z.boolean(),
 	map: z.boolean(),
 	docs: z.boolean(),

@@ -1,7 +1,7 @@
-import { createHowToSchema } from '@/schemas/how-to';
+import { createGuideSchema } from '@/schemas/guide';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import type { StorageError } from '@supabase/storage-js';
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate, withFiles } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -13,24 +13,46 @@ export const load = async (event) => {
 		return redirect(302, handleSignInRedirect(event));
 	}
 
+	async function getGuide(id: string) {
+		const { data: guide, error: guideError } = await event.locals.supabase
+			.from('guides')
+			.select('*')
+			.eq('id', id)
+			.single();
+
+		if (guideError) {
+			const errorMessage = 'Error fetching guide, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+		const image = event.locals.supabase.storage.from('guides').getPublicUrl(guide.image);
+		const stepsWithImageUrl = guide.steps.map((step) => {
+			const stepImage = event.locals.supabase.storage.from('guides').getPublicUrl(step.image);
+			return { ...step, image: undefined, imageUrl: stepImage.data.publicUrl };
+		});
+		return { ...guide, image: undefined, imageUrl: image.data.publicUrl, steps: stepsWithImageUrl };
+	}
+
+	const guide = await getGuide(event.params.id);
+
 	return {
-		createForm: await superValidate(zod(createHowToSchema), {
-			id: 'create-howto',
+		updateForm: await superValidate(guide, zod(createGuideSchema), {
+			id: 'update-guide',
 		}),
 	};
 };
 
 export const actions = {
 	default: async (event) =>
-		handleFormAction(event, createHowToSchema, 'create-howto', async (event, userId, form) => {
+		handleFormAction(event, createGuideSchema, 'update-guide', async (event, userId, form) => {
 			async function uploadImage(
 				image: File
 			): Promise<{ path: string; error: StorageError | null }> {
 				const fileExt = image.name.split('.').pop();
-				const filePath = `${uuidv4()}.${fileExt}`;
+				const filePath = `${userId}_${uuidv4()}.${fileExt}`;
 
 				const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
-					.from('howtos')
+					.from('guides')
 					.upload(filePath, image);
 
 				if (imageFileError) {
@@ -49,7 +71,7 @@ export const actions = {
 				const filePath = `step-${index}_${uuidv4()}.${fileExt}`;
 
 				const { data: imageFileData, error: imageFileError } = await event.locals.supabase.storage
-					.from('howtos')
+					.from('guides')
 					.upload(filePath, image);
 
 				if (imageFileError) {
@@ -90,14 +112,15 @@ export const actions = {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { imageUrl, steps, ...data } = form.data;
 			const { error: supabaseError } = await event.locals.supabase
-				.from('howtos')
-				.insert({ ...data, user_id: userId, image: imagePath, steps: stepsWithImages });
+				.from('guides')
+				.update({ ...data, user_id: userId, image: imagePath, steps: stepsWithImages })
+				.eq('id', event.params.id);
 
 			if (supabaseError) {
 				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 				return fail(500, withFiles({ message: supabaseError.message, form }));
 			}
 
-			return redirect(303, '/how-to');
+			return redirect(303, `/guides/${event.params.id}`);
 		}),
 };

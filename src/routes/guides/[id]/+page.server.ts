@@ -1,5 +1,5 @@
-import { deleteHowToSchema, toggleHowToUsefulSchema } from '@/schemas/how-to';
-import type { HowToWithAuthor, ModerationInfo } from '@/types/types';
+import { deleteGuideSchema, toggleGuideUsefulSchema } from '@/schemas/guide';
+import type { GuideWithAuthor, ModerationInfo } from '@/types/types';
 import { handleFormAction } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -9,32 +9,32 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async (event) => {
 	const { user } = await event.locals.safeGetSession();
 
-	async function getHowTo(id: string): Promise<HowToWithAuthor> {
-		const { data: howTo, error: howToError } = await event.locals.supabase
-			.from('howtos_view')
+	async function getGuide(id: string): Promise<GuideWithAuthor> {
+		const { data: guide, error: guideError } = await event.locals.supabase
+			.from('guides_view')
 			.select('*, author:profiles_view!inner(*)')
 			.eq('id', id)
 			.single();
 
-		if (howToError) {
-			const errorMessage = 'Error fetching how to, please try again later.';
+		if (guideError) {
+			const errorMessage = 'Error fetching guide, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
 
-		const image = event.locals.supabase.storage.from('howtos').getPublicUrl(howTo.image);
-		const stepsWithImageUrl = howTo.steps.map((step) => {
-			const stepImage = event.locals.supabase.storage.from('howtos').getPublicUrl(step.image);
+		const image = event.locals.supabase.storage.from('guides').getPublicUrl(guide.image);
+		const stepsWithImageUrl = guide.steps.map((step) => {
+			const stepImage = event.locals.supabase.storage.from('guides').getPublicUrl(step.image);
 			return { ...step, image: stepImage.data.publicUrl };
 		});
-		return { ...howTo, image: image.data.publicUrl, steps: stepsWithImageUrl };
+		return { ...guide, image: image.data.publicUrl, steps: stepsWithImageUrl };
 	}
 
-	async function getHowToModeration(id: string): Promise<ModerationInfo[]> {
+	async function getGuideModeration(id: string): Promise<ModerationInfo[]> {
 		const { data: moderation, error: moderationError } = await event.locals.supabase
-			.from('howtos_moderation')
+			.from('guides_moderation')
 			.select('*')
-			.eq('howto_id', id)
+			.eq('guide_id', id)
 			.order('inserted_at', { ascending: false });
 
 		if (moderationError) {
@@ -48,8 +48,8 @@ export const load = async (event) => {
 
 	async function getUsefulCount(id: string): Promise<{ count: number; userUseful: boolean }> {
 		const { data: usefuls, error: usefulsError } = await event.locals.supabase
-			.rpc('get_howto_useful_count', {
-				howto_id: parseInt(id),
+			.rpc('get_guide_useful_count', {
+				guide_id: parseInt(id),
 				user_id: user?.id,
 			})
 			.single();
@@ -65,17 +65,17 @@ export const load = async (event) => {
 	const usefulCount = await getUsefulCount(event.params.id);
 
 	return {
-		howTo: await getHowTo(event.params.id),
-		moderation: await getHowToModeration(event.params.id),
+		guide: await getGuide(event.params.id),
+		moderation: await getGuideModeration(event.params.id),
 		usefulCount: usefulCount.count,
-		deleteForm: await superValidate(zod(deleteHowToSchema), {
-			id: 'delete-howto',
+		deleteForm: await superValidate(zod(deleteGuideSchema), {
+			id: 'delete-guide',
 		}),
 		toggleUsefulForm: await superValidate(
 			{ value: usefulCount.userUseful },
-			zod(toggleHowToUsefulSchema),
+			zod(toggleGuideUsefulSchema),
 			{
-				id: 'toggle-howto-useful',
+				id: 'toggle-guide-useful',
 			}
 		),
 	};
@@ -83,9 +83,9 @@ export const load = async (event) => {
 
 export const actions = {
 	delete: async (event) =>
-		handleFormAction(event, deleteHowToSchema, 'delete-howto', async (event, userId, form) => {
+		handleFormAction(event, deleteGuideSchema, 'delete-guide', async (event, userId, form) => {
 			const { error: supabaseError } = await event.locals.supabase
-				.from('howtos')
+				.from('guides')
 				.delete()
 				.eq('id', form.data.id);
 
@@ -94,21 +94,21 @@ export const actions = {
 				return fail(500, { message: supabaseError.message, form });
 			}
 
-			return redirect(303, '/how-to');
+			return redirect(303, '/guide');
 		}),
 
 	toggleUseful: async (event) =>
 		handleFormAction(
 			event,
-			toggleHowToUsefulSchema,
-			'toggle-howto-useful',
+			toggleGuideUsefulSchema,
+			'toggle-guide-useful',
 			async (event, userId, form) => {
 				if (form.data.value) {
 					const { error: supabaseError } = await event.locals.supabase
-						.from('howtos_useful')
+						.from('guides_useful')
 						.insert([
 							{
-								howto_id: parseInt(event.params.id),
+								guide_id: parseInt(event.params.id),
 								user_id: userId,
 							},
 						]);
@@ -119,9 +119,9 @@ export const actions = {
 					}
 				} else {
 					const { error: supabaseError } = await event.locals.supabase
-						.from('howtos_useful')
+						.from('guides_useful')
 						.delete()
-						.eq('howto_id', parseInt(event.params.id))
+						.eq('guide_id', parseInt(event.params.id))
 						.eq('user_id', userId);
 
 					if (supabaseError) {

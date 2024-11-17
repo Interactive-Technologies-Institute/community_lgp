@@ -245,11 +245,11 @@ export type Database = {
         }
         Relationships: []
       }
-      howtos: {
+      guides: {
         Row: {
           description: string
-          difficulty: Database["public"]["Enums"]["how_to_difficulty"]
-          duration: Database["public"]["Enums"]["how_to_duration"]
+          difficulty: Database["public"]["Enums"]["guide_difficulty"]
+          duration: Database["public"]["Enums"]["guide_duration"]
           fts: unknown | null
           id: number
           image: string
@@ -262,8 +262,8 @@ export type Database = {
         }
         Insert: {
           description: string
-          difficulty: Database["public"]["Enums"]["how_to_difficulty"]
-          duration: Database["public"]["Enums"]["how_to_duration"]
+          difficulty: Database["public"]["Enums"]["guide_difficulty"]
+          duration: Database["public"]["Enums"]["guide_duration"]
           fts?: unknown | null
           id?: number
           image: string
@@ -276,8 +276,8 @@ export type Database = {
         }
         Update: {
           description?: string
-          difficulty?: Database["public"]["Enums"]["how_to_difficulty"]
-          duration?: Database["public"]["Enums"]["how_to_duration"]
+          difficulty?: Database["public"]["Enums"]["guide_difficulty"]
+          duration?: Database["public"]["Enums"]["guide_duration"]
           fts?: unknown | null
           id?: number
           image?: string
@@ -290,14 +290,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "howtos_user_id_fkey"
+            foreignKeyName: "guides_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_user_id_fkey"
+            foreignKeyName: "guides_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_view"
@@ -305,10 +305,10 @@ export type Database = {
           },
         ]
       }
-      howtos_moderation: {
+      guides_moderation: {
         Row: {
           comment: string
-          howto_id: number
+          guide_id: number
           id: number
           inserted_at: string
           status: Database["public"]["Enums"]["moderation_status"]
@@ -316,7 +316,7 @@ export type Database = {
         }
         Insert: {
           comment: string
-          howto_id: number
+          guide_id: number
           id?: number
           inserted_at?: string
           status: Database["public"]["Enums"]["moderation_status"]
@@ -324,7 +324,7 @@ export type Database = {
         }
         Update: {
           comment?: string
-          howto_id?: number
+          guide_id?: number
           id?: number
           inserted_at?: string
           status?: Database["public"]["Enums"]["moderation_status"]
@@ -332,28 +332,28 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "howtos_moderation_howto_id_fkey"
-            columns: ["howto_id"]
+            foreignKeyName: "guides_moderation_guide_id_fkey"
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "howtos"
+            referencedRelation: "guides"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_moderation_howto_id_fkey"
-            columns: ["howto_id"]
+            foreignKeyName: "guides_moderation_guide_id_fkey"
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "howtos_view"
+            referencedRelation: "guides_view"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_moderation_user_id_fkey"
+            foreignKeyName: "guides_moderation_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_moderation_user_id_fkey"
+            foreignKeyName: "guides_moderation_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_view"
@@ -361,49 +361,49 @@ export type Database = {
           },
         ]
       }
-      howtos_useful: {
+      guides_useful: {
         Row: {
-          howto_id: number
+          guide_id: number
           id: number
           inserted_at: string
           user_id: string
         }
         Insert: {
-          howto_id: number
+          guide_id: number
           id?: number
           inserted_at?: string
           user_id: string
         }
         Update: {
-          howto_id?: number
+          guide_id?: number
           id?: number
           inserted_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "howtos_useful_howto_id_fkey"
-            columns: ["howto_id"]
+            foreignKeyName: "guides_useful_guide_id_fkey"
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "howtos"
+            referencedRelation: "guides"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_useful_howto_id_fkey"
-            columns: ["howto_id"]
+            foreignKeyName: "guides_useful_guide_id_fkey"
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "howtos_view"
+            referencedRelation: "guides_view"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_useful_user_id_fkey"
+            foreignKeyName: "guides_useful_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_useful_user_id_fkey"
+            foreignKeyName: "guides_useful_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_view"
@@ -694,18 +694,18 @@ export type Database = {
           },
         ]
       }
-      howtos_tags: {
+      guides_tags: {
         Row: {
           count: number | null
           tag: string | null
         }
         Relationships: []
       }
-      howtos_view: {
+      guides_view: {
         Row: {
           description: string | null
-          difficulty: Database["public"]["Enums"]["how_to_difficulty"] | null
-          duration: Database["public"]["Enums"]["how_to_duration"] | null
+          difficulty: Database["public"]["Enums"]["guide_difficulty"] | null
+          duration: Database["public"]["Enums"]["guide_duration"] | null
           fts: unknown | null
           id: number | null
           image: string | null
@@ -721,14 +721,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "howtos_user_id_fkey"
+            foreignKeyName: "guides_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_user_id_fkey"
+            foreignKeyName: "guides_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_view"
@@ -776,10 +776,10 @@ export type Database = {
           },
         ]
       }
-      latest_howtos_moderation: {
+      latest_guides_moderation: {
         Row: {
           comment: string | null
-          howto_id: number | null
+          guide_id: number | null
           id: number | null
           inserted_at: string | null
           status: Database["public"]["Enums"]["moderation_status"] | null
@@ -787,28 +787,28 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "howtos_moderation_howto_id_fkey"
-            columns: ["howto_id"]
+            foreignKeyName: "guides_moderation_guide_id_fkey"
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "howtos"
+            referencedRelation: "guides"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_moderation_howto_id_fkey"
-            columns: ["howto_id"]
+            foreignKeyName: "guides_moderation_guide_id_fkey"
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "howtos_view"
+            referencedRelation: "guides_view"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_moderation_user_id_fkey"
+            foreignKeyName: "guides_moderation_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "howtos_moderation_user_id_fkey"
+            foreignKeyName: "guides_moderation_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_view"
@@ -931,9 +931,9 @@ export type Database = {
           has_interest: boolean
         }[]
       }
-      get_howto_useful_count: {
+      get_guide_useful_count: {
         Args: {
-          howto_id: number
+          guide_id: number
           user_id?: string
         }
         Returns: {
@@ -955,19 +955,19 @@ export type Database = {
       }
     }
     Enums: {
-      feature: "howtos" | "events" | "map" | "docs"
-      how_to_difficulty: "easy" | "medium" | "hard"
-      how_to_duration: "short" | "medium" | "long"
+      feature: "guides" | "events" | "map" | "docs"
+      guide_difficulty: "easy" | "medium" | "hard"
+      guide_duration: "short" | "medium" | "long"
       moderation_status:
         | "pending"
         | "changes_requested"
         | "approved"
         | "rejected"
       notification_type:
-        | "howto_pending"
-        | "howto_changes_requested"
-        | "howto_approved"
-        | "howto_rejected"
+        | "guide_pending"
+        | "guide_changes_requested"
+        | "guide_approved"
+        | "guide_rejected"
         | "event_pending"
         | "event_changes_requested"
         | "event_approved"
@@ -981,10 +981,10 @@ export type Database = {
         | "user_types.update"
         | "features.update"
         | "branding.update"
-        | "howtos.create"
-        | "howtos.update"
-        | "howtos.delete"
-        | "howtos.moderate"
+        | "guides.create"
+        | "guides.update"
+        | "guides.delete"
+        | "guides.moderate"
         | "events.create"
         | "events.update"
         | "events.delete"

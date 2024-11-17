@@ -36,21 +36,21 @@ export const load = async (event) => {
 		return userProfile;
 	}
 
-	async function getHowTos(): Promise<{ id: number; label: string }[]> {
-		const { data: howTos, error: howTosError } = await event.locals.supabase
-			.from('howtos_view')
+	async function getGuides(): Promise<{ id: number; label: string }[]> {
+		const { data: guides, error: guidesError } = await event.locals.supabase
+			.from('guides_view')
 			.select('id, label:title')
 			.order('moderation_status', { ascending: true })
 			.order('inserted_at', { ascending: false })
 			.eq('user_id', id);
 
-		if (howTosError) {
-			const errorMessage = 'Error fetching how tos, please try again later.';
+		if (guidesError) {
+			const errorMessage = 'Error fetching guides, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
 
-		return howTos;
+		return guides;
 	}
 
 	async function getEvents(): Promise<{ id: number; label: string }[]> {
@@ -88,7 +88,7 @@ export const load = async (event) => {
 
 	return {
 		userProfile: await getUserProfile(),
-		howTos: await getHowTos(),
+		guides: await getGuides(),
 		events: await getEvents(),
 		mapPin: await getMapPin(),
 	};

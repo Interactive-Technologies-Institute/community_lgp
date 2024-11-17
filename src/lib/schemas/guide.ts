@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createHowToSchema = z
+export const createGuideSchema = z
 	.object({
 		title: z
 			.string()
@@ -66,16 +66,16 @@ export const createHowToSchema = z
 		path: ['image'],
 	});
 
-export type CreateHowToSchema = typeof createHowToSchema;
+export type CreateGuideSchema = typeof createGuideSchema;
 
-export const deleteHowToSchema = z.object({
+export const deleteGuideSchema = z.object({
 	id: z.number(),
 });
 
-export type DeleteHowToSchema = typeof deleteHowToSchema;
+export type DeleteGuideSchema = typeof deleteGuideSchema;
 
-export const toggleHowToUsefulSchema = z.object({
+export const toggleGuideUsefulSchema = z.object({
 	value: z.boolean(),
 });
 
-export type ToggleHowToUsefulSchema = typeof toggleHowToUsefulSchema;
+export type ToggleGuideUsefulSchema = typeof toggleGuideUsefulSchema;

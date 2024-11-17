@@ -1,5 +1,5 @@
 import { updateModerationInfoSchema } from '@/schemas/moderation-info.js';
-import type { HowToWithModeration } from '@/types/types';
+import type { GuideWithModeration } from '@/types/types';
 import { arrayQueryParam, handleFormAction, stringQueryParam } from '@/utils';
 import { error, fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -10,10 +10,10 @@ export const load = async (event) => {
 	const search = stringQueryParam().decode(event.url.searchParams.get('s'));
 	const tags = arrayQueryParam().decode(event.url.searchParams.get('tags'));
 
-	async function getHowTos(): Promise<HowToWithModeration[]> {
+	async function getGuides(): Promise<GuideWithModeration[]> {
 		let query = event.locals.supabase
-			.from('howtos_view')
-			.select('*, moderation:latest_howtos_moderation!inner(status, inserted_at, comment)')
+			.from('guides_view')
+			.select('*, moderation:latest_guides_moderation!inner(status, inserted_at, comment)')
 			.order('updated_at', { ascending: false });
 
 		if (search) {
@@ -24,20 +24,20 @@ export const load = async (event) => {
 			query = query.overlaps('tags', tags);
 		}
 
-		const { data: howTos, error: howTosError } = await query;
+		const { data: guides, error: guidesError } = await query;
 
-		if (howTosError) {
-			const errorMessage = 'Error fetching how tos, please try again later.';
+		if (guidesError) {
+			const errorMessage = 'Error fetching guides, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
 
-		return howTos;
+		return guides;
 	}
 
 	async function getTags(): Promise<Map<string, number>> {
 		const { data: tags, error: tagsError } = await event.locals.supabase
-			.from('howtos_tags')
+			.from('guides_tags')
 			.select();
 
 		if (tagsError) {
@@ -60,7 +60,7 @@ export const load = async (event) => {
 	}
 
 	return {
-		howTos: await getHowTos(),
+		guides: await getGuides(),
 		tags: await getTags(),
 		updateModerationForm: await superValidate(zod(updateModerationInfoSchema), {
 			id: 'update-moderation',
@@ -76,9 +76,9 @@ export const actions = {
 			'update-moderation',
 			async (event, userId, form) => {
 				const { error: supabaseError } = await event.locals.supabase
-					.from('howtos_moderation')
+					.from('guides_moderation')
 					.insert({
-						howto_id: form.data.ref_id,
+						guide_id: form.data.ref_id,
 						user_id: form.data.user_id,
 						status: form.data.status,
 						comment: form.data.comment,

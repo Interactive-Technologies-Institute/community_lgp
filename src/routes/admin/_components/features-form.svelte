@@ -29,17 +29,17 @@
 			<div class="max-w-2xl space-y-4">
 				<Form.Field
 					{form}
-					name="howtos"
+					name="guides"
 					class="flex flex-row items-center justify-between rounded-lg border p-4"
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>How Tos</Form.Label>
+							<Form.Label>Guides</Form.Label>
 							<Form.Description>
-								Enable this feature to allow users to create and share how-to guides.
+								Enable this feature to allow users to create and share guides.
 							</Form.Description>
 						</div>
-						<Switch includeInput {...attrs} bind:checked={$formData.howtos} />
+						<Switch includeInput {...attrs} bind:checked={$formData.guides} />
 					</Form.Control>
 				</Form.Field>
 				<Form.Field

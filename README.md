@@ -17,7 +17,7 @@ Our mains features include:
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - **Docs 📝:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **How Tos 📚:**
+- **Guides 📚:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - **Events 📅:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.

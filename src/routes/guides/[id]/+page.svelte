@@ -7,7 +7,7 @@
 	import dayjs from 'dayjs';
 	import { ChartNoAxesColumn, Clock, Footprints, Pen, Tag, Trash } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	import HowToDeleteDialog from './_components/how-to-delete-dialog.svelte';
+	import GuideDeleteDialog from './_components/guide-delete-dialog.svelte';
 	import UsefulButton from './_components/useful-button.svelte';
 
 	export let data;
@@ -16,22 +16,22 @@
 </script>
 
 <MetaTags
-	title={data.howTo.title}
-	description={data.howTo.description}
+	title={data.guide.title}
+	description={data.guide.description}
 	openGraph={{
-		title: data.howTo.title,
-		description: data.howTo.description,
-		images: [{ url: data.howTo.image }],
+		title: data.guide.title,
+		description: data.guide.description,
+		images: [{ url: data.guide.image }],
 	}}
 	twitter={{
 		cardType: 'summary_large_image',
-		title: data.howTo.title,
-		description: data.howTo.description,
-		image: data.howTo.image,
+		title: data.guide.title,
+		description: data.guide.description,
+		image: data.guide.image,
 	}}
 />
 
-<PageHeader title={data.howTo.title} subtitle={data.howTo.description} />
+<PageHeader title={data.guide.title} subtitle={data.guide.description} />
 <div class="container mx-auto space-y-10 pb-10">
 	{#if data.moderation[0].status !== 'approved'}
 		<ModerationBanner moderation={data.moderation} />
@@ -40,29 +40,29 @@
 		<div class="flex flex-row items-center justify-center gap-x-4">
 			<div class="flex flex-row items-center gap-x-2">
 				<Footprints class="text-muted-foreground" />
-				{data.howTo.steps.length}
+				{data.guide.steps.length}
 			</div>
 			<div class="flex flex-row items-center gap-x-2">
 				<Clock class="text-muted-foreground" />
-				{data.howTo.duration}
+				{data.guide.duration}
 			</div>
 			<div class="flex flex-row items-center gap-x-2">
 				<ChartNoAxesColumn class="text-muted-foreground" />
-				{data.howTo.difficulty}
+				{data.guide.difficulty}
 			</div>
 		</div>
 		<UsefulButton count={data.usefulCount} data={data.toggleUsefulForm} />
 	</div>
 	<div class="mx-auto flex max-w-2xl flex-col gap-y-4">
 		<InteractableImage
-			src={data.howTo.image}
-			alt="How To Cover"
+			src={data.guide.image}
+			alt="Guide Cover"
 			class="aspect-[3/2] h-auto w-full rounded-md object-cover"
 		/>
-		<p>{data.howTo.description}</p>
+		<p>{data.guide.description}</p>
 		<div class=" flex flex-wrap gap-2">
-			{#each data.howTo.tags as tag}
-				<Button variant="secondary" size="sm" href="/how-to?tags={tag}">
+			{#each data.guide.tags as tag}
+				<Button variant="secondary" size="sm" href="/guides?tags={tag}">
 					<Tag class="mr-2 h-4 w-4" />
 					{tag}
 				</Button>
@@ -70,7 +70,7 @@
 		</div>
 	</div>
 	<div class="flex flex-col gap-y-10">
-		{#each data.howTo.steps as step, i}
+		{#each data.guide.steps as step, i}
 			<div class="flex flex-row gap-x-6">
 				<Card class="hidden h-fit w-32 items-center justify-center py-4 md:flex">
 					<span class="text-2xl font-medium">{i + 1}</span>
@@ -94,21 +94,21 @@
 	</div>
 	<div class="flex flex-col items-center">
 		<p class="text-xs text-muted-foreground">
-			Published {dayjs(data.howTo.inserted_at).fromNow()}
-			{#if data.howTo.inserted_at !== data.howTo.updated_at}
-				• Updated {dayjs(data.howTo.updated_at).fromNow()}
+			Published {dayjs(data.guide.inserted_at).fromNow()}
+			{#if data.guide.inserted_at !== data.guide.updated_at}
+				• Updated {dayjs(data.guide.updated_at).fromNow()}
 			{/if}
 		</p>
-		<Button variant="link" size="sm" href="/users/{data.howTo.author.id}">
+		<Button variant="link" size="sm" href="/users/{data.guide.author.id}">
 			by
-			{data.howTo.author.display_name}
+			{data.guide.author.display_name}
 		</Button>
 	</div>
-	{#if data.howTo.user_id === data.user?.id}
+	{#if data.guide.user_id === data.user?.id}
 		<div
 			class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 		>
-			<Button variant="outline" href="/how-to/{data.howTo.id}/edit">
+			<Button variant="outline" href="/guides/{data.guide.id}/edit">
 				<Pen class="mr-2 h-4 w-4" />
 				Edit
 			</Button>
@@ -120,4 +120,4 @@
 	{/if}
 </div>
 
-<HowToDeleteDialog howToId={data.howTo.id} data={data.deleteForm} bind:open={openDeleteDialog} />
+<GuideDeleteDialog guideId={data.guide.id} data={data.deleteForm} bind:open={openDeleteDialog} />

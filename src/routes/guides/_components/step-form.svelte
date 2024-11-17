@@ -6,12 +6,12 @@
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
 	import { Textarea } from '@/components/ui/textarea';
-	import type { CreateHowToSchema } from '@/schemas/how-to';
+	import type { CreateGuideSchema } from '@/schemas/guide';
 	import { ArrowDown, ArrowUp, Trash } from 'lucide-svelte';
 	import { fileProxy, type SuperForm } from 'sveltekit-superforms';
 	import { type Infer } from 'sveltekit-superforms/adapters';
 
-	export let form: SuperForm<Infer<CreateHowToSchema>>;
+	export let form: SuperForm<Infer<CreateGuideSchema>>;
 	export let index: number;
 
 	const { form: formData } = form;

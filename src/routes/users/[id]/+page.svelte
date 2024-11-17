@@ -50,24 +50,24 @@
 			{/if}
 		</Card.Content>
 	</Card.Root>
-	<FeatureWrapper feature="howtos">
+	<FeatureWrapper feature="guides">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>How Tos ({data.howTos.length})</Card.Title>
-				<Card.Description>List of How To guides created</Card.Description>
+				<Card.Title>Guides ({data.guides.length})</Card.Title>
+				<Card.Description>List of Guides created</Card.Description>
 			</Card.Header>
 			<Card.Content>
-				{#if data.howTos && data.howTos.length > 0}
+				{#if data.guides && data.guides.length > 0}
 					<div class="flex flex-wrap gap-4">
-						{#each data.howTos as howTo}
-							<Button href="/how-to/{howTo.id}" variant="outline" class="max-w-full">
-								<span class="truncate">{howTo.label}</span>
+						{#each data.guides as guide}
+							<Button href="/guides/{guide.id}" variant="outline" class="max-w-full">
+								<span class="truncate">{guide.label}</span>
 								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
 							</Button>
 						{/each}
 					</div>
 				{:else}
-					<p class="text-sm text-muted-foreground">User has not created any How Tos</p>
+					<p class="text-sm text-muted-foreground">User has not created any Guides</p>
 				{/if}
 			</Card.Content>
 		</Card.Root>

@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 
-export type Feature = 'map' | 'howtos' | 'events' | 'docs';
+export type Feature = 'map' | 'guides' | 'events' | 'docs';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -54,11 +54,11 @@ export type MapPinWithModeration = MapPin & { moderation: ModerationInfo[] };
 
 export type UserProfileWithPin = UserProfile & { pin: MapPin | null };
 
-export type HowToDifficulty = 'easy' | 'medium' | 'hard';
+export type GuideDifficulty = 'easy' | 'medium' | 'hard';
 
-export type HowToDuration = 'short' | 'medium' | 'long';
+export type GuideDuration = 'short' | 'medium' | 'long';
 
-export type HowTo = {
+export type Guide = {
 	id: number;
 	inserted_at: string;
 	updated_at: string;
@@ -67,17 +67,17 @@ export type HowTo = {
 	description: string;
 	image: string;
 	tags: string[];
-	difficulty: HowToDifficulty;
-	duration: HowToDuration;
-	steps: HowToStep[];
+	difficulty: GuideDifficulty;
+	duration: GuideDuration;
+	steps: GuideStep[];
 	moderation_status: ModerationStatus;
 };
 
-export type HowToWithAuthor = HowTo & { author: UserProfile };
+export type GuideWithAuthor = Guide & { author: UserProfile };
 
-export type HowToWithModeration = HowTo & { moderation: ModerationInfo[] };
+export type GuideWithModeration = Guide & { moderation: ModerationInfo[] };
 
-type HowToStep = {
+type GuideStep = {
 	title: string;
 	description: string;
 	image: string;
@@ -113,10 +113,10 @@ export type EventWithAuthor = Event & { author: UserProfile };
 export type EventWithModeration = Event & { moderation: ModerationInfo[] };
 
 export type NotificationType =
-	| 'howto_pending'
-	| 'howto_changes_requested'
-	| 'howto_approved'
-	| 'howto_rejected'
+	| 'guide_pending'
+	| 'guide_changes_requested'
+	| 'guide_approved'
+	| 'guide_rejected'
 	| 'event_pending'
 	| 'event_changes_requested'
 	| 'event_approved'

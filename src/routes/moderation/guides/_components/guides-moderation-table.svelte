@@ -2,19 +2,19 @@
 	import { Button } from '@/components/ui/button';
 	import * as Table from '@/components/ui/table';
 	import type { UpdateModerationInfoSchema } from '@/schemas/moderation-info';
-	import type { HowToWithModeration } from '@/types/types';
+	import type { GuideWithModeration } from '@/types/types';
 	import dayjs from 'dayjs';
 	import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
 	import { addPagination } from 'svelte-headless-table/plugins';
 	import { writable } from 'svelte/store';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
-	import HowToModerationActions from './how-to-moderation-actions.svelte';
-	import HowToModerationStatusCell from './how-to-moderation-status-cell.svelte';
+	import GuidesModerationActions from './guides-moderation-actions.svelte';
+	import GuidesModerationStatusCell from './guides-moderation-status-cell.svelte';
 
-	export let howTos: HowToWithModeration[];
+	export let guides: GuideWithModeration[];
 	export let updateModerationForm: SuperValidated<Infer<UpdateModerationInfoSchema>>;
-	let data = writable(howTos);
-	$: data.set(howTos);
+	let data = writable(guides);
+	$: data.set(guides);
 
 	const table = createTable(data, { page: addPagination() });
 
@@ -33,7 +33,7 @@
 			header: 'Status',
 			cell: ({ value, row }) => {
 				if (row.isData()) {
-					return createRender(HowToModerationStatusCell, {
+					return createRender(GuidesModerationStatusCell, {
 						status: value,
 					});
 				}
@@ -48,7 +48,7 @@
 			accessor: ({ id, user_id }) => ({ id, user_id }),
 			header: '',
 			cell: ({ value }) => {
-				return createRender(HowToModerationActions, {
+				return createRender(GuidesModerationActions, {
 					id: value.id,
 					userId: value.user_id,
 					data: updateModerationForm,

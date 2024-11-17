@@ -1,4 +1,4 @@
-import type { HowTo } from '@/types/types';
+import type { Guide } from '@/types/types';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -7,9 +7,9 @@ export const load = async (event) => {
 	const search = stringQueryParam().decode(event.url.searchParams.get('s'));
 	const tags = arrayQueryParam().decode(event.url.searchParams.get('tags'));
 
-	async function getHowTos(): Promise<HowTo[]> {
+	async function getGuides(): Promise<Guide[]> {
 		let query = event.locals.supabase
-			.from('howtos_view')
+			.from('guides_view')
 			.select('*')
 			.order('moderation_status', { ascending: true })
 			.order('inserted_at', { ascending: false });
@@ -22,19 +22,19 @@ export const load = async (event) => {
 			query = query.overlaps('tags', tags);
 		}
 
-		const { data: howTos, error: howTosError } = await query;
+		const { data: guides, error: guidesError } = await query;
 
-		if (howTosError) {
-			const errorMessage = 'Error fetching how tos, please try again later.';
+		if (guidesError) {
+			const errorMessage = 'Error fetching guides, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		return howTos;
+		return guides;
 	}
 
 	async function getTags(): Promise<Map<string, number>> {
 		const { data: tags, error: tagsError } = await event.locals.supabase
-			.from('howtos_tags')
+			.from('guides_tags')
 			.select();
 
 		if (tagsError) {
@@ -57,7 +57,7 @@ export const load = async (event) => {
 	}
 
 	return {
-		howTos: await getHowTos(),
+		guides: await getGuides(),
 		tags: await getTags(),
 	};
 };

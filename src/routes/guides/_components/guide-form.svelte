@@ -8,25 +8,25 @@
 	import * as Select from '@/components/ui/select';
 	import { TagInput } from '@/components/ui/tag-input';
 	import { Textarea } from '@/components/ui/textarea';
-	import { createHowToSchema, type CreateHowToSchema } from '@/schemas/how-to';
-	import type { HowToDifficulty, HowToDuration } from '@/types/types';
+	import { createGuideSchema, type CreateGuideSchema } from '@/schemas/guide';
+	import type { GuideDifficulty, GuideDuration } from '@/types/types';
 	import type { Selected } from 'bits-ui';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import StepForm from './step-form.svelte';
 
-	export let data: SuperValidated<Infer<CreateHowToSchema>>;
+	export let data: SuperValidated<Infer<CreateGuideSchema>>;
 
 	const form = superForm(data, {
-		validators: zodClient(createHowToSchema),
+		validators: zodClient(createGuideSchema),
 		taintedMessage: true,
 		dataType: 'json',
 	});
 
 	const { form: formData, enhance, submitting } = form;
 
-	const difficultyOptions: Record<HowToDifficulty, { label: string }> = {
+	const difficultyOptions: Record<GuideDifficulty, { label: string }> = {
 		easy: {
 			label: 'Easy',
 		},
@@ -43,11 +43,11 @@
 				label: difficultyOptions[$formData.difficulty].label,
 			}
 		: undefined;
-	function getDifficultyFromValue(v: Selected<unknown>): HowToDifficulty {
-		return v.value as HowToDifficulty;
+	function getDifficultyFromValue(v: Selected<unknown>): GuideDifficulty {
+		return v.value as GuideDifficulty;
 	}
 
-	const durationOptions: Record<HowToDuration, { label: string }> = {
+	const durationOptions: Record<GuideDuration, { label: string }> = {
 		short: {
 			label: 'Short',
 		},
@@ -64,8 +64,8 @@
 				label: durationOptions[$formData.duration].label,
 			}
 		: undefined;
-	function getDurationFromValue(v: Selected<unknown>): HowToDuration {
-		return v.value as HowToDuration;
+	function getDurationFromValue(v: Selected<unknown>): GuideDuration {
+		return v.value as GuideDuration;
 	}
 
 	async function addStep() {
@@ -92,7 +92,7 @@
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Information</Card.Title>
-			<Card.Description>Add details to this how to</Card.Description>
+			<Card.Description>Add details to this guide</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
 			<Form.Field {form} name="title">
@@ -174,7 +174,7 @@
 							{#if imageUrl}
 								<InteractableImage
 									src={imageUrl}
-									alt="How To Cover"
+									alt="Guide Cover"
 									class="h-full w-full object-cover"
 								/>
 							{/if}
@@ -191,7 +191,7 @@
 		<Card.Root>
 			<Card.Header>
 				<Form.Legend><Card.Title>Steps*</Card.Title></Form.Legend>
-				<Card.Description>Add steps to your how to</Card.Description>
+				<Card.Description>Add steps to your guide</Card.Description>
 			</Card.Header>
 			<Card.Content class="space-y-4">
 				{#each $formData.steps as _, i (i)}
@@ -207,7 +207,7 @@
 	<div
 		class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>
-		<Button variant="outline" href="/how-to">Cancel</Button>
+		<Button variant="outline" href="/guides">Cancel</Button>
 		<Button type="submit" disabled={$submitting}>
 			{#if $submitting}
 				<Loader2 class="mr-2 h-4 w-4 animate-spin" />

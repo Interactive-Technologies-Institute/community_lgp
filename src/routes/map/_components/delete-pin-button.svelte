@@ -1,18 +1,18 @@
 <script lang="ts">
 	import * as AlertDialog from '@/components/ui/alert-dialog';
 	import { Button } from '@/components/ui/button';
-	import { deleteHowToSchema, type DeleteHowToSchema } from '@/schemas/how-to';
+	import { deleteMapPinSchema, type DeleteMapPinSchema } from '@/schemas/map-pin';
 	import { Trash } from 'lucide-svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let mapPinId: number;
-	export let data: SuperValidated<Infer<DeleteHowToSchema>>;
+	export let data: SuperValidated<Infer<DeleteMapPinSchema>>;
 
 	let open = false;
 
 	const form = superForm(data, {
-		validators: zodClient(deleteHowToSchema),
+		validators: zodClient(deleteMapPinSchema),
 	});
 
 	const { enhance } = form;

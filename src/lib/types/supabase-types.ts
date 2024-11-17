@@ -8,7 +8,7 @@ export type Database = MergeDeep<
 	{
 		public: {
 			Tables: {
-				howtos: {
+				guides: {
 					Row: {
 						steps: Step[];
 					};
@@ -54,11 +54,11 @@ export type Database = MergeDeep<
 						tag: string;
 					};
 				};
-				howtos_view: {
+				guides_view: {
 					Row: {
 						description: string;
-						difficulty: Database['public']['Enums']['how_to_difficulty'];
-						duration: Database['public']['Enums']['how_to_duration'];
+						difficulty: Database['public']['Enums']['guide_difficulty'];
+						duration: Database['public']['Enums']['guide_duration'];
 						fts: unknown;
 						id: number;
 						image: string;
@@ -71,7 +71,7 @@ export type Database = MergeDeep<
 						user_id: string;
 					};
 				};
-				howtos_tags: {
+				guides_tags: {
 					Row: {
 						count: number;
 						tag: string;
@@ -87,10 +87,10 @@ export type Database = MergeDeep<
 						user_id: string;
 					};
 				};
-				latest_howtos_moderation: {
+				latest_guides_moderation: {
 					Row: {
 						comment: string;
-						howto_id: number;
+						guide_id: number;
 						id: number;
 						inserted_at: string;
 						status: Database['public']['Enums']['moderation_status'];
