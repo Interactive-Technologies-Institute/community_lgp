@@ -10,6 +10,6 @@ export async function load({ parent, params }) {
 	if (groupDocs?.docs.length === 0) {
 		error(404, 'Not found');
 	} else {
-		redirect(307, '/academy/' + groupSlug + '/' + groupDocs?.docs[0].slug + '/');
+		redirect(307, '/docs/' + groupSlug + '/' + groupDocs?.docs[0].slug + '/');
 	}
 }

@@ -66,7 +66,7 @@
 						<div class="space-y-0.5">
 							<Form.Label>Map</Form.Label>
 							<Form.Description>
-								Enable this feature to allow users to create and share maps.
+								Enable this feature to create a map of your community.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.map} />
@@ -74,17 +74,17 @@
 				</Form.Field>
 				<Form.Field
 					{form}
-					name="academy"
+					name="docs"
 					class="flex flex-row items-center justify-between rounded-lg border p-4"
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Academy</Form.Label>
+							<Form.Label>Docs</Form.Label>
 							<Form.Description>
-								Enable this feature to allow users to create and share courses.
+								Enable this feature to create and share documentation.
 							</Form.Description>
 						</div>
-						<Switch includeInput {...attrs} bind:checked={$formData.academy} />
+						<Switch includeInput {...attrs} bind:checked={$formData.docs} />
 					</Form.Control>
 				</Form.Field>
 			</div>

@@ -15,7 +15,7 @@ Our mains features include:
 
 - **Authentication/Users 🔑:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- **Academy 🎓:**
+- **Docs 📝:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - **How Tos 📚:**
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.

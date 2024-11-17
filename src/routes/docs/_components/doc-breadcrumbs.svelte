@@ -24,7 +24,7 @@
 		<Sheet.Root bind:open>
 			<Sheet.Trigger class="flex items-center gap-1 md:hidden">
 				<Menu class="h-5 w-5" />
-				<span class="sr-only">Toggle academy menu</span>
+				<span class="sr-only">Toggle docs menu</span>
 			</Sheet.Trigger>
 			<Sheet.Content side="left" class="pr-0">
 				<ScrollArea orientation="both" class="my-4 h-screen pb-10">
@@ -38,11 +38,11 @@
 		</Sheet.Root>
 		<Breadcrumb.Separator class="md:hidden" />
 		<Breadcrumb.Item>
-			<Breadcrumb.Link href="/academy/{grougSlug}">{grougSlug}</Breadcrumb.Link>
+			<Breadcrumb.Link href="/docs/{grougSlug}">{grougSlug}</Breadcrumb.Link>
 		</Breadcrumb.Item>
 		<Breadcrumb.Separator />
 		<Breadcrumb.Item>
-			<Breadcrumb.Link href="/academy/{grougSlug}/{slug}">{title}</Breadcrumb.Link>
+			<Breadcrumb.Link href="/docs/{grougSlug}/{slug}">{title}</Breadcrumb.Link>
 		</Breadcrumb.Item>
 	</Breadcrumb.List>
 </Breadcrumb.Root>

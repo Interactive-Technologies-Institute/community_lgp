@@ -27,16 +27,16 @@
 		</a>
 		<ScrollArea orientation="both" class="my-4 h-[calc(100vh-8rem)] pb-10">
 			<nav class="flex flex-col items-start gap-y-4 font-medium">
-				<FeatureWrapper feature="academy">
+				<FeatureWrapper feature="docs">
 					<a
-						href="/academy"
+						href="/docs"
 						on:click={() => (open = false)}
 						class={cn(
 							'transition-colors hover:text-foreground/80',
-							$page.url.pathname.startsWith('/academy') ? 'text-foreground' : 'text-foreground/60'
+							$page.url.pathname.startsWith('/docs') ? 'text-foreground' : 'text-foreground/60'
 						)}
 					>
-						Academy
+						ocs
 					</a>
 				</FeatureWrapper>
 				<FeatureWrapper feature="howtos">

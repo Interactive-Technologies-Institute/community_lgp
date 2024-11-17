@@ -5,7 +5,7 @@
 
 	export let groupSlug: string;
 	export let doc: Doc;
-	$: path = `/academy/${groupSlug}/${doc.slug}`;
+	$: path = `/docs/${groupSlug}/${doc.slug}`;
 	$: isSelected = path === $page.url.pathname;
 </script>
 

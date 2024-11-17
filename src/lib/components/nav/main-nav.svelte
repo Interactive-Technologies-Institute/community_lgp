@@ -13,15 +13,15 @@
 		<span class="font-bold"> {$page.data.branding.name} </span>
 	</a>
 	<nav class="flex items-center space-x-6 text-sm font-medium">
-		<FeatureWrapper feature="academy">
+		<FeatureWrapper feature="docs">
 			<a
-				href="/academy"
+				href="/docs"
 				class={cn(
 					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/academy') ? 'text-foreground' : 'text-foreground/60'
+					$page.url.pathname.startsWith('/docs') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
-				Academy
+				Docs
 			</a>
 		</FeatureWrapper>
 		<FeatureWrapper feature="howtos">
