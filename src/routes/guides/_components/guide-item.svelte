@@ -19,8 +19,8 @@
 	$: imageUrl = $page.data.supabase.storage.from('guides').getPublicUrl(guide.image).data.publicUrl;
 </script>
 
-<a href="/guides/{guide.id}">
-	<Card class="relative overflow-hidden">
+<a href="/guides/{guide.id}" class="h-full">
+	<Card class="relative flex h-full flex-col overflow-hidden">
 		<AspectRatio ratio={3 / 2}>
 			{#if imageUrl}
 				<img src={imageUrl} alt="Guide Cover" class="h-full w-full object-cover" />
@@ -34,7 +34,7 @@
 				{/if}
 			{/if}
 		</AspectRatio>
-		<div class="flex flex-col px-4 py-3">
+		<div class="flex flex-1 flex-col px-4 py-3">
 			<div class="mb-5">
 				<h2 class="line-clamp-2 text-lg font-medium">{guide.title}</h2>
 				<p class="line-clamp-2 text-muted-foreground">{guide.description}</p>
