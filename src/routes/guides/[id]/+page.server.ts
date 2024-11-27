@@ -94,7 +94,7 @@ export const actions = {
 				return fail(500, { message: supabaseError.message, form });
 			}
 
-			return redirect(303, '/guide');
+			return redirect(303, '/guides');
 		}),
 
 	toggleUseful: async (event) =>
