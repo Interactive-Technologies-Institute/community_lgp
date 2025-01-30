@@ -15,7 +15,7 @@ export const load = async (event) => {
 			.order('inserted_at', { ascending: false });
 
 		if (search) {
-			query = query.textSearch('fts', search, { config: 'simple', type: 'websearch' });
+			query = query.ilike('title', `%${search}%`);
 		}
 
 		if (tags && tags.length) {
