@@ -35,12 +35,16 @@ export const actions = {
 			event,
 			updateUserRoleSchema,
 			'update-user-role',
-			async (event, userId, form) => {
+			async (event, _loggedInUserId, form) => {
+				const userId = form.data.userId;
+
+				console.log("Updating user:", userId, "New Role:", form.data.role);
 				const { error: supabaseError } = await event.locals.supabase
 					.from('user_roles')
 					.update({ role: form.data.role })
 					.eq('id', userId);
 
+					console.log('user_name', userId);
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 					return fail(500, { message: supabaseError.message, form });
