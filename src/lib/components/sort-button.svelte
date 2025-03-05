@@ -5,14 +5,16 @@
     import { ArrowUpDown, Check } from 'lucide-svelte';
 	import { cn } from '$lib/utils.js';
 	import * as Command from '@/components//ui/command';
-    export let sortBy : string;
-    export let sortOrder = 'desc';
+    export let sortBy : string | null;
+    export let sortOrder : string | null = 'desc' ;
 
 	let open = false;
 
     const sortOptions = [
         { key: 'date_updated', label: 'Date Updated' },
-        { key: 'difficulty', label: 'Difficulty' }
+        { key: 'difficulty', label: 'Difficulty' },
+        { key: 'duration', label: 'Duration' },
+        { key: 'likes', label: 'Likes' },
     ];
 
     function handleSortSelect(selectedSort : string) {
