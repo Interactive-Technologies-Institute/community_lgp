@@ -1,6 +1,6 @@
 /* ADMIN */
 -- Features
-create type public.feature as enum ('guides', 'events', 'map', 'docs');
+create type public.feature as enum ('dictionary', 'guides', 'events', 'map', 'docs');
 create table public.feature_flags (
 	id public.feature primary key,
 	enabled boolean not null default false
@@ -99,7 +99,8 @@ create policy "Allow users to manage branding files" on storage.objects for all 
 );
 -- Seed data
 insert into public.feature_flags (id, enabled)
-values ('guides'::public.feature, true),
+values ('dictionary'::public.feature, true), 
+	('guides'::public.feature, true),
 	('events'::public.feature, true),
 	('map'::public.feature, true),
 	('docs'::public.feature, true);

@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 
-export type Feature = 'map' | 'guides' | 'events' | 'docs';
+export type Feature = 'dictionary' | 'map' | 'guides' | 'events' | 'docs';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -133,4 +133,43 @@ export type Notification = {
 	type: NotificationType;
 	data: Record<string, string>;
 	read: boolean;
+};
+
+export type Sign = {
+	annotated: boolean;
+	annotation: AnnotationArray;
+	annotation_array: number[];
+	created_at: string;
+	id: number;
+	is_annotated: number;
+	last_changed: string;
+	name: string;
+	selected: boolean;
+	theme: string[];
+	video: string;
+	written_annotation?: {
+		configuration: string;
+		movement: string[];
+		orientation: string[];
+	}| null;
+	user_id: string;
+};
+
+export type AnnotationArray = {
+	configuration: string[];
+	movement: string[];
+	location: string[];
+	orientation: string[];
+	expression: string[];
+} 
+
+export type Parameter = {
+	id: number;
+	type: string;
+	code: string;
+	name: string | null;
+	is_parent: boolean;
+	children: string[] | null;
+	parent: string | null;
+	image: string | null;
 };

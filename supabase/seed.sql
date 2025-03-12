@@ -23,6 +23,7 @@ values (
 		uuid_generate_v4 (),
 		'authenticated',
 		'authenticated',
+		'admin',
 		'test@example.com',
 		crypt ('Password123', gen_salt ('bf')),
 		current_timestamp,
@@ -57,7 +58,7 @@ INSERT INTO auth.identities (
 			current_timestamp
 		from auth.users
 	);
--- Guide
+-- How To
 insert into public.guides (
 		user_id,
 		title,
@@ -106,3 +107,38 @@ values (
 			limit 1
 		), 0, 0
 	);
+insert into public.signs (
+    id,
+    created_at,
+    name,
+    annotated,
+    selected,
+    video,
+    annotation,
+    theme,
+    is_annotated,
+    last_changed,
+    written_annotation,
+    annotation_array,
+	user_id
+) values (
+    10,
+    '2024-04-04T12:23:15.306615+00:00',
+    'Porco',
+    false,
+    false,
+    'https://gncgottiijvjagbqpuph.supabase.co/storage/v1/object/public/Signs/Porco.mp4?t=2024-05-31T12%3A18%3A06.046Z',
+    '{"configuration": [], "movement": [], "location": [], "orientation": [], "expression": []}',
+    array['animais'],
+    0,
+    '2024-06-13T17:30:32.561275+00:00',
+    null,
+    array[
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    ],
+	(
+		select id
+		from auth.users
+		limit 1
+	)
+);
