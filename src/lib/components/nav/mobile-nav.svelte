@@ -3,7 +3,6 @@
 	import { cn } from '@/utils';
 	import { Menu } from 'lucide-svelte';
 	import FeatureWrapper from '../feature-wrapper.svelte';
-	import Logo from '../logo.svelte';
 	import { Button } from '../ui/button';
 	import { ScrollArea } from '../ui/scroll-area';
 	import * as Sheet from '../ui/sheet';
@@ -20,9 +19,7 @@
 	</Sheet.Trigger>
 	<Sheet.Content side="left" class="pr-0">
 		<a href="/" on:click={() => (open = false)} class="mr-6 flex items-center gap-x-4">
-			{#if $page.data.branding.logo}
-				<Logo class="h-8 w-8" logoUrl={$page.data.branding.logo} />
-			{/if}
+			<div class="h-8 w-8 rounded-full bg-primary"></div>
 			<span class="text-lg font-bold"> {$page.data.branding.name} </span>
 		</a>
 		<ScrollArea orientation="both" class="my-4 h-[calc(100vh-8rem)] pb-10">
@@ -33,10 +30,10 @@
 						on:click={() => (open = false)}
 						class={cn(
 							'transition-colors hover:text-foreground/80',
-							$page.url.pathname.startsWith('/docs') ? 'text-foreground' : 'text-foreground/60'
+							$page.url.pathname.startsWith('/academy') ? 'text-foreground' : 'text-foreground/60'
 						)}
 					>
-						ocs
+						Academy
 					</a>
 				</FeatureWrapper>
 				<FeatureWrapper feature="guides">
@@ -45,10 +42,10 @@
 						on:click={() => (open = false)}
 						class={cn(
 							'transition-colors hover:text-foreground/80',
-							$page.url.pathname.startsWith('/guides') ? 'text-foreground' : 'text-foreground/60'
+							$page.url.pathname.startsWith('/how-to') ? 'text-foreground' : 'text-foreground/60'
 						)}
 					>
-						Guides
+						How To
 					</a>
 				</FeatureWrapper>
 				<FeatureWrapper feature="events">
@@ -73,6 +70,20 @@
 						)}
 					>
 						Map
+					</a>
+				</FeatureWrapper>
+				<FeatureWrapper feature="dictionary">
+					<a
+						href="/dictionary"
+						on:click={() => (open = false)}
+						class={cn(
+							'transition-colors hover:text-foreground/80',
+							$page.url.pathname.startsWith('/dictionary')
+								? 'text-foreground'
+								: 'text-foreground/60'
+						)}
+					>
+						Dictionary
 					</a>
 				</FeatureWrapper>
 			</nav>

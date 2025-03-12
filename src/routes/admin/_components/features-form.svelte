@@ -87,6 +87,21 @@
 						<Switch includeInput {...attrs} bind:checked={$formData.docs} />
 					</Form.Control>
 				</Form.Field>
+				<Form.Field
+					{form}
+					name="dictionary"
+					class="flex flex-row items-center justify-between rounded-lg border p-4"
+				>
+					<Form.Control let:attrs>
+						<div class="space-y-0.5">
+							<Form.Label>Dictionary</Form.Label>
+							<Form.Description>
+								Enable this feature to allow users to use the Portuguese Sign Language Dictionary.
+							</Form.Description>
+						</div>
+						<Switch includeInput {...attrs} bind:checked={$formData.dictionary} />
+					</Form.Control>
+				</Form.Field>
 			</div>
 		</Card.Content>
 		<Card.Footer>
