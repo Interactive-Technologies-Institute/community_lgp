@@ -15,7 +15,8 @@ export const load = async (event) => {
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			throw error(500, errorMessage);
 		}
-		return sign;
+
+		return sign as Sign;
 	}
 
 	const signId = event.params.signId;

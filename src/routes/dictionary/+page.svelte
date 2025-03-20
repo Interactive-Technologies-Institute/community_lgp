@@ -66,7 +66,7 @@
 		<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
 			<Input
 				type="text"
-				placeholder="Procurar sinais"
+				placeholder="Procurar gestos"
 				bind:value={searchQuery}
 				on:input={handleSearch}
 				class="w-full max-w-md rounded-md border border-gray-300 px-4 py-2 text-center"

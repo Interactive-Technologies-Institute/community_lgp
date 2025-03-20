@@ -17,7 +17,7 @@ export const load = async (event) => {
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			throw error(500, errorMessage);
 		}
-		return sign;
+		return sign as Sign;
 	}
 
 	const specificSign = await getSignById(signId);
@@ -47,7 +47,7 @@ export const load = async (event) => {
 		const { data: parameters, error: parametersError } = await event.locals.supabase
 			.from('parameters')
 			.select('*');
-
+		
 		if (parametersError) {
 			const errorMessage = 'Error fetching parameters, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);

@@ -81,8 +81,7 @@
 
 		const updateAnnotationArray = (type: keyof AnnotationArray, id: any) => {
 			if (!isSelected) {
-				console.log(id); //keep them for debugging if need be
-				console.log(anotationArray);
+				
 				anotationArray[type].push(id);
 				signsAnotation.set(sign.id, anotationArray);
 				console.log("Updated signs anon ", signsAnotation.get(sign.id));
@@ -130,7 +129,10 @@
 	<div class="grid grid-cols-3 gap-4">
 
 		{#each data.parameters as par}
-			{#if par.is_parent && par.type == currentTab}  
+		
+			{#if par.is_parent && par.tipo == currentTab}  
+			
+    	
 				{#if par.children.length == 0}
 					<!-- Nested card for signs without children -->
 					<button on:click={() => selectParameter(par.id, par.type)}>
@@ -230,7 +232,12 @@
 										<div class="grid grid-cols-3 gap-4">
 											{#each par.children as child}
 												{#if child != null}
-													<button on:click={() => selectParameter(getElementByCode(child)?.id, getElementByCode(child).type)}>
+													<button on:click={() => {
+														const element = getElementByCode(child);
+														if (element) {
+															selectParameter(element.id, element.type);
+														}
+													}}>
 														{#if $isParSelected.get(getElementByCode(child)?.id)}
 															<Card.Root class="flex flex-col items-center justify-center aspect-square w-16" style="border: 2px solid #0096FF;">
 																<Card.Content>
@@ -255,7 +262,12 @@
 										<div class="grid grid-cols-3 gap-4">
 											{#each par.children as child}
 												{#if child != null}
-													<button on:click={() => selectParameter(getElementByCode(child)?.id, getElementByCode(child).type)}>
+													<button on:click={() => {
+														const element = getElementByCode(child);
+														if (element) {
+															selectParameter(element.id, element.type);
+														}
+													}}>
 														{#if $isParSelected.get(getElementByCode(child)?.id)}
 															<Card.Root class="flex flex-col items-center justify-center aspect-square w-28" style="border: 2px solid #0096FF;">
 																<Card.Content>

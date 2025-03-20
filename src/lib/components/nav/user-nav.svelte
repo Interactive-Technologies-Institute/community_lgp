@@ -6,9 +6,11 @@
 	import type { UserProfile, UserRole } from '@/types/types';
 	import { firstAndLastInitials } from '@/utils';
 
-	export let role: UserRole;
+	
 	export let profile: UserProfile;
+	export let role: UserRole;
 
+	
 	let signOutForm: HTMLFormElement;
 </script>
 

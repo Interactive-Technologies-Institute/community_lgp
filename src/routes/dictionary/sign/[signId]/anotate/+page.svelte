@@ -20,8 +20,13 @@
 	let add_theme = false;
 	let open = false;
 	let sheet_open = true;
-	export let anotationArray: AnnotationArray = sign.annotation;
-	console.log(anotationArray)
+	export let anotationArray: AnnotationArray = sign.annotation ?? {
+		configuration: [],
+		movement: [],
+		location: [],
+		orientation: [],
+		expression: [],
+	};
 	let database_annotation = sign.annotation;
 	let database_ann_array: any[] = [];
 
@@ -53,6 +58,7 @@
 	}
 	let signStores = new Map<any, any>();
 	
+	if(database_annotation){
 	// Create and populate the store only for the specific sign
 		database_ann_array = database_ann_array.concat(
 			database_annotation["configuration"],
@@ -63,7 +69,7 @@
 		);
 		
 		signsAnotation.set(sign.id, database_annotation);
-	
+	}
 	
 
 	const store = writable(new Map<any, boolean>());
@@ -88,7 +94,7 @@
 <div>
 	<Tabs.Root value="configuracao" class="flex flex-col items-center gap-y-2">
 		<Tabs.List class="flex items-center w-fit">
-			<Tabs.Trigger value="configuracao">Configuração</Tabs.Trigger>
+			<Tabs.Trigger value={"configuracao"}>Configuração</Tabs.Trigger>
 			<Tabs.Trigger value={"orientacao"}>Orientação</Tabs.Trigger>
 			<Tabs.Trigger value={"localizacao"}>Localização</Tabs.Trigger>
 			<Tabs.Trigger value={"movimento"}>Movimento</Tabs.Trigger>

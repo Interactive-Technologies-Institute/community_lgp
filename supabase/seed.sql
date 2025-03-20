@@ -23,7 +23,6 @@ values (
 		uuid_generate_v4 (),
 		'authenticated',
 		'authenticated',
-		'admin',
 		'test@example.com',
 		crypt ('Password123', gen_salt ('bf')),
 		current_timestamp,

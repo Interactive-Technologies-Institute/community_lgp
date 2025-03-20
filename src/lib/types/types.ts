@@ -137,7 +137,7 @@ export type Notification = {
 
 export type Sign = {
 	annotated: boolean;
-	annotation: AnnotationArray;
+	annotation: AnnotationArray | null;
 	annotation_array: number[];
 	created_at: string;
 	id: number;
