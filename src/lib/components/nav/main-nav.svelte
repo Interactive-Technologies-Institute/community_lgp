@@ -62,7 +62,18 @@
 					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
-				Dictionary
+				Dicionário
+			</a>
+		</FeatureWrapper>
+		<FeatureWrapper feature="annotate">
+			<a
+				href="/annotate"
+				class={cn(
+					'transition-colors hover:text-foreground/80',
+					$page.url.pathname.startsWith('/annotate') ? 'text-foreground' : 'text-foreground/60'
+				)}
+			>
+				Anotação
 			</a>
 		</FeatureWrapper>
 	</nav>

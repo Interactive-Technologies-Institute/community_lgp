@@ -45,13 +45,13 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Branding</Card.Title>
-				<Card.Description>Configure the platform branding</Card.Description>
+				<Card.Description>Configure o branding da plataforma.</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				<div class="max-w-2xl space-y-4">
 					<Form.Field {form} name="name">
 						<Form.Control let:attrs>
-							<Form.Label>Name*</Form.Label>
+							<Form.Label>Nome*</Form.Label>
 							<Input {...attrs} bind:value={$formData.name} />
 							<Form.FieldErrors />
 						</Form.Control>
@@ -78,7 +78,7 @@
 					</Form.Field>
 					<Form.Field {form} name="color_theme">
 						<Form.Control let:attrs>
-							<Form.Label>Color Theme*</Form.Label>
+							<Form.Label>Esquema de cores</Form.Label>
 							<div class="grid grid-cols-2 gap-2 md:grid-cols-3">
 								{#each themes as theme (theme.name)}
 									{@const isActive = $formData.color_theme === theme.name}
@@ -108,7 +108,7 @@
 					</Form.Field>
 					<Form.Field {form} name="radius">
 						<Form.Control let:attrs>
-							<Form.Label>Radius*</Form.Label>
+							<Form.Label>Radius</Form.Label>
 							<div class="grid grid-cols-5 gap-2">
 								{#each ['0', '0.3', '0.5', '0.75', '1.0'] as value, _ (value)}
 									{@const valueFloat = Number.parseFloat(value)}
@@ -135,7 +135,7 @@
 					{#if $submitting}
 						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 					{/if}
-					Save Settings
+					Guardar preferências
 				</Button>
 			</Card.Footer>
 		</Card.Root>

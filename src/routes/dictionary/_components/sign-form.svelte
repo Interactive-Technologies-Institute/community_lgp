@@ -111,22 +111,23 @@ const stopVideoRecording = async () => {
 <form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Introduction</Card.Title>
+			<Card.Title>Introdução</Card.Title>
 			<Card.Description>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				Para criar uma nova entrada de gesto, adicione o nome da entrada, adicione etiquetas e carregue um vídeo do gesto. 
+				Para carregar o vídeo, pode ser via ficheiro, ou pode gravar o vídeo diretamente com a câmara do seu dispositivo.
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
 			<Form.Field {form} name="name">
 				<Form.Control let:attrs>
-					<Form.Label>Title*</Form.Label>
+					<Form.Label>Nome*</Form.Label>
 					<Input {...attrs} bind:value={$formData.name} />
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
 			<Form.Field {form} name="theme">
 				<Form.Control let:attrs>
-					<Form.Label>Tags*</Form.Label>
+					<Form.Label>Etiquetas*</Form.Label>
 					<TagInput {...attrs} bind:value={$formData.theme} />
 					<Form.FieldErrors />
 				</Form.Control>
@@ -138,7 +139,7 @@ const stopVideoRecording = async () => {
 						<Form.Label>Video*</Form.Label>
 						<br>
 						<!-- Button to upload a video -->
-						<Button on:click={handleFileUpload}>Carregar gesto</Button>
+						<Button on:click={handleFileUpload}>Upload ficheiro</Button>
 						<input
 							type="file"
 							accept="video/mp4"
@@ -149,7 +150,7 @@ const stopVideoRecording = async () => {
 						
 						
 						<!-- Button to record a video -->
-						<Button on:click={() => openCamera()}>Gravar gesto</Button>
+						<Button on:click={() => openCamera()}>Gravar vídeo</Button>
 						
 						{#if showCamera}
 						<div>
@@ -181,12 +182,12 @@ const stopVideoRecording = async () => {
 	<SuperDebug data={$formData} />
 
 	<div class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-		<Button variant="outline">Cancel</Button>
+		<Button variant="outline">Cancelar</Button>
 		<Button type="submit" disabled={$submitting}>
 			{#if $submitting}
 				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 			{/if}
-			Submit
+			Submeter
 		</Button>
 	</div>
 </form>

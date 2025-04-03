@@ -107,37 +107,31 @@ values (
 		), 0, 0
 	);
 insert into public.signs (
-    id,
-    created_at,
-    name,
-    annotated,
-    selected,
-    video,
-    annotation,
-    theme,
-    is_annotated,
-    last_changed,
-    written_annotation,
-    annotation_array,
-	user_id
+	id,
+	created_at,
+	name,
+	anotated,
+	selected,
+	video,
+	annotation,
+	theme,
+	is_anotated,
+	last_changed,
+	written_anotation,
+	annotation_array
 ) values (
-    10,
-    '2024-04-04T12:23:15.306615+00:00',
-    'Porco',
-    false,
-    false,
-    'https://gncgottiijvjagbqpuph.supabase.co/storage/v1/object/public/Signs/Porco.mp4?t=2024-05-31T12%3A18%3A06.046Z',
-    '{"configuration": [], "movement": [], "location": [], "orientation": [], "expression": []}',
-    array['animais'],
-    0,
-    '2024-06-13T17:30:32.561275+00:00',
-    null,
-    array[
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    ],
-	(
-		select id
-		from auth.users
-		limit 1
-	)
+	10,
+	'2024-04-04T12:23:15.306615+00:00',
+	'Porco',
+	false,
+	false,
+	'https://gncgottiijvjagbqpuph.supabase.co/storage/v1/object/public/Signs/Porco.mp4?t=2024-05-31T12%3A18%3A06.046Z',
+	'{"configuration": [], "movement": [], "location": [], "orientation": [], "expression": []}',
+	'["animais"]',
+	0,
+	'2024-06-13T17:30:32.561275+00:00',
+	null,
+	array[
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	]
 );

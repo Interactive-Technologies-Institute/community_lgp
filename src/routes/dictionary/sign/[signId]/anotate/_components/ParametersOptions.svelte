@@ -235,7 +235,7 @@
 													<button on:click={() => {
 														const element = getElementByCode(child);
 														if (element) {
-															selectParameter(element.id, element.type);
+															selectParameter(element.id, element.tipo);
 														}
 													}}>
 														{#if $isParSelected.get(getElementByCode(child)?.id)}
@@ -265,7 +265,7 @@
 													<button on:click={() => {
 														const element = getElementByCode(child);
 														if (element) {
-															selectParameter(element.id, element.type);
+															selectParameter(element.id, element.tipo);
 														}
 													}}>
 														{#if $isParSelected.get(getElementByCode(child)?.id)}

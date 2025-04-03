@@ -22,8 +22,8 @@
 <form method="POST" action="?/updateFeatures" use:enhance>
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Features</Card.Title>
-			<Card.Description>Enable or disable platform features</Card.Description>
+			<Card.Title>Módulos</Card.Title>
+			<Card.Description>Ative ou desative os vários módulos da plataforma.</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<div class="max-w-2xl space-y-4">
@@ -34,9 +34,9 @@
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Guides</Form.Label>
+							<Form.Label>Guias</Form.Label>
 							<Form.Description>
-								Enable this feature to allow users to create and share guides.
+								Ative este módulo para permitir que os utilizadores criem e partilhem guias.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.guides} />
@@ -49,9 +49,9 @@
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Events</Form.Label>
+							<Form.Label>Eventos</Form.Label>
 							<Form.Description>
-								Enable this feature to allow users to create and share events.
+								Ative este módulo para permitir que os utilizadores criem e partilhem eventos.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.events} />
@@ -64,9 +64,9 @@
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Map</Form.Label>
+							<Form.Label>Mapa</Form.Label>
 							<Form.Description>
-								Enable this feature to create a map of your community.
+								Ative este módulo para permitir que os utilizadores criem um mapa da sua comunidade.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.map} />
@@ -79,9 +79,9 @@
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Docs</Form.Label>
+							<Form.Label>Documentação</Form.Label>
 							<Form.Description>
-								Enable this feature to create and share documentation.
+								Ative este módulo para permitir que os utilizadores criem e partilhem documentação.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.docs} />
@@ -94,9 +94,9 @@
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Dictionary</Form.Label>
+							<Form.Label>Dicionário LGP</Form.Label>
 							<Form.Description>
-								Enable this feature to allow users to use the Portuguese Sign Language Dictionary.
+								Ative este módulo para permitir que os utilizadores vejam o Dicionário de Língua Gestual Portuguesa
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.dictionary} />

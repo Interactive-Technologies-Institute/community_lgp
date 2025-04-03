@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 
 export const load = async (event) => {
-	async function getSignById(id: string): Promise<Sign | null> {
+	async function getSignById(id: string): Promise<Sign> {
 		const { data: sign, error: signError } = await event.locals.supabase
 			.from('signs')
 			.select('*')

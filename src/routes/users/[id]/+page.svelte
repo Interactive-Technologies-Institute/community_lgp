@@ -12,9 +12,9 @@
 	export let data;
 </script>
 
-<MetaTags title="User Details" description="" />
+<MetaTags title="Detalhes do Utilizador" description="" />
 
-<PageHeader title="User Details" subtitle="View user details and their contributions" />
+<PageHeader title="Detalhes do Utilizador" subtitle="Veja os detalhes do Utilizador e as suas contribuições" />
 <div class="container mx-auto mb-20 flex max-w-3xl flex-col gap-y-8 md:gap-y-10">
 	<Card.Root>
 		<Card.Header>
@@ -32,7 +32,7 @@
 			</div>
 		</Card.Header>
 		<Card.Content class="space-y-4">
-			<p>{data.userProfile.description ?? 'No description provided'}</p>
+			<p>{data.userProfile.description ?? 'Sem descrição dada'}</p>
 			<div class="flex flex-row gap-x-4">
 				<Button href="mailto:{data.userProfile.email}" variant="outline">
 					<Mail class="mr-2 h-4 w-4" />
@@ -41,20 +41,20 @@
 				{#if data.mapPin}
 					<Button href="/map?id={data.mapPin.id}&zoom=10" variant="outline">
 						<Map class="mr-2 h-4 w-4" />
-						View on Map
+						Ver no mapa
 					</Button>
 				{/if}
 			</div>
 			{#if $page.url.pathname === '/users/me'}
-				<Button href="/users/me/edit">Edit Profile</Button>
+				<Button href="/users/me/edit">Editar Perfil</Button>
 			{/if}
 		</Card.Content>
 	</Card.Root>
 	<FeatureWrapper feature="guides">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Guides ({data.guides.length})</Card.Title>
-				<Card.Description>List of Guides created</Card.Description>
+				<Card.Title>Guias ({data.guides.length})</Card.Title>
+				<Card.Description>Lista de guias criados</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				{#if data.guides && data.guides.length > 0}
@@ -67,7 +67,7 @@
 						{/each}
 					</div>
 				{:else}
-					<p class="text-sm text-muted-foreground">User has not created any Guides</p>
+					<p class="text-sm text-muted-foreground">O utilizador não criou nenhum guia.</p>
 				{/if}
 			</Card.Content>
 		</Card.Root>
@@ -75,8 +75,8 @@
 	<FeatureWrapper feature="events">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Events ({data.events.length})</Card.Title>
-				<Card.Description>List of Events created</Card.Description>
+				<Card.Title>Eventos ({data.events.length})</Card.Title>
+				<Card.Description>Lista de Eventos criados</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				{#if data.events && data.events.length > 0}
@@ -89,7 +89,7 @@
 						{/each}
 					</div>
 				{:else}
-					<p class="text-sm text-muted-foreground">User has not created any Events</p>
+					<p class="text-sm text-muted-foreground">O utilizador não criou nenhum evento.</p>
 				{/if}
 			</Card.Content>
 		</Card.Root>

@@ -3,6 +3,6 @@
 	import { MetaTags } from 'svelte-meta-tags';
 </script>
 
-<MetaTags title="Settings" description="Configure your settings" />
+<MetaTags title="Configurações" description="Altere as suas configurações." />
 
-<PageHeader title="Settings" subtitle="Configure your settings" />
+<PageHeader title="Configurações" subtitle="Altere as suas configurações." />

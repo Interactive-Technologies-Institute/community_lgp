@@ -32,8 +32,8 @@
 
 	let written_anotation = { configuration: '', movement: ['', '', ''], orientation: ['', ''] };
 
-	if (sign.written_annotation != null) {
-		written_anotation = sign.written_annotation;
+	if (sign.written_anotation != null) {
+		written_anotation = sign.written_anotation;
 	}
 
 	let written_anotation_placeholder = written_anotation;

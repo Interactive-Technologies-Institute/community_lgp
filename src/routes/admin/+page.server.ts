@@ -46,6 +46,7 @@ export const load = async (event) => {
 				map: features.includes('map'),
 				docs: features.includes('docs'),
 				dictionary: features.includes('dictionary'),
+				annotate: features.includes('annotate'),
 			},
 			zod(updateFeaturesSchema),
 			{
@@ -81,6 +82,7 @@ export const actions = {
 					{ id: 'map', enabled: form.data.map },
 					{ id: 'docs', enabled: form.data.docs },
 					{ id: 'dictionary', enabled: form.data.dictionary },
+					{ id: 'annotate', enabled: form.data.annotate },
 				]);
 
 				if (supabaseError) {

@@ -83,7 +83,21 @@
 								: 'text-foreground/60'
 						)}
 					>
-						Dictionary
+						Dicionário
+					</a>
+				</FeatureWrapper>
+				<FeatureWrapper feature="annotate">
+					<a
+						href="/annotate"
+						on:click={() => (open = false)}
+						class={cn(
+							'transition-colors hover:text-foreground/80',
+							$page.url.pathname.startsWith('/dictionary')
+								? 'text-foreground'
+								: 'text-foreground/60'
+						)}
+					>
+						Dicionário
 					</a>
 				</FeatureWrapper>
 			</nav>

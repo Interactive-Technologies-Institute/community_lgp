@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 
-export type Feature = 'dictionary' | 'map' | 'guides' | 'events' | 'docs';
+export type Feature = 'annotate' |'dictionary' | 'map' | 'guides' | 'events' | 'docs';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -136,23 +136,22 @@ export type Notification = {
 };
 
 export type Sign = {
-	annotated: boolean;
+	anotated: string | "";
 	annotation: AnnotationArray | null;
 	annotation_array: number[];
 	created_at: string;
 	id: number;
-	is_annotated: number;
+	is_anotated: number;
 	last_changed: string;
 	name: string;
-	selected: boolean;
+	selected: string | null;
 	theme: string[];
 	video: string;
-	written_annotation?: {
+	written_anotation?: {
 		configuration: string;
 		movement: string[];
 		orientation: string[];
 	}| null;
-	user_id: string;
 };
 
 export type AnnotationArray = {
@@ -165,10 +164,10 @@ export type AnnotationArray = {
 
 export type Parameter = {
 	id: number;
-	type: string;
-	code: string;
+	tipo: string | null;
+	code: string | null;
 	name: string | null;
-	is_parent: boolean;
+	is_parent: boolean | null;
 	children: string[] | null;
 	parent: string | null;
 	image: string | null;

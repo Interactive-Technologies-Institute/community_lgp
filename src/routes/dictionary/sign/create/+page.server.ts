@@ -52,7 +52,7 @@ export const actions = {
 				videoPath = form.data.videoUrl.split('/').pop() ?? '';
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			
 			const { videoUrl, ...data } = form.data;
 			const { error: supabaseError } = await event.locals.supabase.from('signs').insert({
 				...data,
