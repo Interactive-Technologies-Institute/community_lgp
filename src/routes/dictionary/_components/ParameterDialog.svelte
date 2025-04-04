@@ -83,7 +83,7 @@
   <Dialog.Trigger>
     <Button>Pesquisar por configuração</Button>
   </Dialog.Trigger>
-  <Dialog.Content class="w-[1000px] max-w-[800px] h-[600px] max-h-[600px]">
+  <Dialog.Content class="w-[1000px] max-w-[1000px] h-[600px] max-h-[600px]">
     <Dialog.Header>
       {#if showSearchResults}
         <!-- Render the SearchResults component -->
@@ -108,17 +108,20 @@
             <div class="grid grid-cols-5 gap-4">
               {#each filterByType(selectedTab) as p}
                 {#if p.is_parent}
+                
                   <Card.Root
                     class="bg-white {selectedParameterId.includes(p.id) ? 'border-2 border-blue-500' : ''}"
                   >
                     {#if p.image}
+                      <!-- svelte-ignore a11y-click-events-have-key-events -->
+                      <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                       <Card.Content class="flex items-center justify-center py-3 px-3">
                         <img
                           src={p.image}
                           alt="Parameter drawing"
-                          class="w-full h-full object-cover rounded-t-lg py-2 cursor-pointer"
+                          class="w-full h-full py-2 cursor-pointer"
                           on:click={() => handleParameterIdClick(p)}
-                        />
+                        />  
                       </Card.Content>
                     {:else}
                       <Card.Content
@@ -132,20 +135,31 @@
                         </Button>
                       </Card.Content>
                     {/if}
+                    
                     {#if p.code}
+ 
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <div class="grid grid-cols-5 gap-4 mt-4 max-h-40 overflow-y-auto">
+                      
                       {#each getChildren(p.code) as child}
                         <div
-                          class="mx-4 my-4 border-l-2 border-gray-300 pl-2 text-sm"
+                          class="flex flex-col items-center justify-center w-16 h-16 cursor-pointer rounded-md {selectedParameterId.includes(child.id) ? 'border-2 border-blue-500' : ''}"
+                          on:click={() => handleParameterIdClick(child)}
                         >
-                          <img
-                            src={child.image}
-                            alt="Child Parameter"
-                            class="w-full h-full object-cover rounded-md cursor-pointer {selectedParameterId.includes(child.id) ? 'border-2 border-blue-500' : ''}"
-                            on:click={() => handleParameterIdClick(child)}
-                          />
+                          {#if child.image}
+                            <img
+                              src={child.image}
+                              alt="Child Parameter"
+                              class="w-12 h-12 object-cover rounded-md"
+                            />
+                          {:else}
+                            <span class="text-xs text-center">{child.name ?? child.code}</span>
+                          {/if}
                         </div>
                       {/each}
-                    {/if}
+                    </div>
+                  {/if}
                   </Card.Root>
                 {/if}
               {/each}

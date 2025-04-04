@@ -30,13 +30,14 @@
                             <li class="flex justify-center w-full">
                                 <Card.Root class="w-[350px] lg:w-[400px] h-[375px] shadow-lg rounded-xl p-6"
                                 on:click={() => goToSignPage(result.id)}>
+                                    <!-- svelte-ignore a11y-media-has-caption -->
                                     <Card.Content class="flex flex-col items-center justify-center">
-                                        <!-- Medium-sized video -->
+                                        
                                         <video class="w-full h-[250px] object-cover rounded-lg" controls playsinline on:click|stopPropagation>
                                             <source src={result.video} type="video/mp4" />
                                             Your browser does not support the video tag.
                                         </video>
-                                        <!-- Title underneath the video -->
+                                        
                                         <h3 class="mt-4 text-center font-semibold text-xl "
                                         >
                                         <a href="/dictionary/sign/{result.id}" class="hover:underline">{result.name}</a>
