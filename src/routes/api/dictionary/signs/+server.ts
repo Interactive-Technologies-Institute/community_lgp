@@ -5,7 +5,7 @@ import { json } from '@sveltejs/kit';
 export async function GET({ url, locals }) {
 	const search = url.searchParams.get("search");
 
-	let query = locals.supabase.from("signs").select("*");
+	let query = locals.supabase.from("signs").select("*").eq("is_anotated", "2");
 
 	if (search) {
 		query = query.ilike("name", `%${search}%`);

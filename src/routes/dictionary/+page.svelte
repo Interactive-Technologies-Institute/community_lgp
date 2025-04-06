@@ -19,7 +19,7 @@
 	let searchQuery = '';
 	export let data;
 	let signs: Sign[] = [];
-
+	
 	let parameters: Parameter[] = data.parameters;
 	let isLoading = false;
 	let errorMessage = '';

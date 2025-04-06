@@ -8,7 +8,8 @@ export const load = async (event) => {
     async function getSigns(): Promise<Sign[]> {
         const { data: signs, error: signsError } = await event.locals.supabase
             .from('signs')
-            .select('*');
+            .select('*')
+            .eq('is_anotated', "2");
 
         if (signsError) {
             const errorMessage = 'Error fetching signs, please try again later.';
