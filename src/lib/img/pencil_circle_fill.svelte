@@ -1,5 +1,6 @@
 <script>
-	export let color = '#000000'; // default color is black
+	export let anotation_value;
+	let color = anotation_value === 1 ? '#ffdfba' : '#ffb3ba'; // default color is black
 </script>
 
 <svg

@@ -7,17 +7,14 @@
 	import Button from '@/components/ui/button/button.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Carousel from '$lib/components/ui/carousel';
-	//ICONS//
-	import { ThumbsUp } from 'lucide-svelte';
-	import { ThumbsDown } from 'lucide-svelte';
-	import { MessageSquareText } from 'lucide-svelte';
+	
 	import { page } from '$app/stores';
 	import type { Sign } from '@/types/types';
-	import AnnotationShowcase from '../_components/AnnotationShowcase.svelte';
+	import AnnotationShowcase from './_components/AnnotationShowcase.svelte';
 
 	export let data;
 	export let sign : Sign | null = data.sign;
-	
+	console.log(data.parameters)
 </script>
 
 <div class="py-5 flex gap-8">
@@ -30,8 +27,9 @@
                 Your browser does not support the video tag.
             </video>
             <h2 class="text-xl font-bold text-center mt-10">{sign.name}</h2>
-			<!--<AnnotationShowcase anotationUpdate={sign.annotation} />-->
-			
+			{#if sign.annotation}
+			<AnnotationShowcase data={data.parameters} />
+			{/if}
 		{:else}
 			<p class="text-center text-lg">Loading...</p>
         {/if}
