@@ -152,6 +152,8 @@ export type Sign = {
 		movement: string[];
 		orientation: string[];
 	}| null;
+	description?: string | null;
+	context_video?: string | null;
 };
 
 export type AnnotationArray = {

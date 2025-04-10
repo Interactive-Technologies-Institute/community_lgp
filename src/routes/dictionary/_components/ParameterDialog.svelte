@@ -81,7 +81,7 @@
 
 <Dialog.Root>
   <Dialog.Trigger>
-    <Button>Pesquisar por configuração</Button>
+    <Button>Procura por gesto</Button>
   </Dialog.Trigger>
   <Dialog.Content class="w-[1000px] max-w-[1000px] h-[600px] max-h-[600px]">
     <Dialog.Header>
