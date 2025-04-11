@@ -5,7 +5,6 @@
 
     export let data;
     let sign : Sign | null = data.sign;
-    console.log("Sign", sign);
 </script>
 
 

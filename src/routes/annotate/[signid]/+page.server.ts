@@ -50,11 +50,10 @@ export const load = async (event) => {
     const signId = event.params.signId;
     let specificSign = null;
     let parametersById: Parameter[] = [];
-    console.log('signId', signId);
-    console.log('event.params', event.params);
+
     if (signId) {
         specificSign = await getSignById(signId);
-        console.log('specificSign', specificSign);
+
         if (specificSign.annotation_array && specificSign.annotation_array.length > 0) {
 			if (specificSign.annotation) {
 				const annotationIds: number[] = Object.values(specificSign.annotation)
