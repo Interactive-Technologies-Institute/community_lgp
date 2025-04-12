@@ -6,8 +6,10 @@
 	import { Button } from '../ui/button';
 	import { ScrollArea } from '../ui/scroll-area';
 	import * as Sheet from '../ui/sheet';
+	import type { UserProfile, UserRole } from '@/types/types';
 
 	let open = false;
+	export let role: UserRole;
 </script>
 
 <Sheet.Root bind:open>
@@ -86,6 +88,7 @@
 						Dicionário
 					</a>
 				</FeatureWrapper>
+				{#if role === 'admin' || role === 'moderator'}
 				<FeatureWrapper feature="annotate">
 					<a
 						href="/annotate"
@@ -97,9 +100,10 @@
 								: 'text-foreground/60'
 						)}
 					>
-						Dicionário
+						Anotação
 					</a>
 				</FeatureWrapper>
+				{/if}
 			</nav>
 		</ScrollArea>
 	</Sheet.Content>

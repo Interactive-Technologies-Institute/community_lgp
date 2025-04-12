@@ -16,8 +16,13 @@
 	class="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60"
 >
 	<div class="container flex h-14 items-center">
-		<MainNav />
-		<MobileNav />
+		{#if profile && role}
+			<MainNav {role} />
+			<MobileNav {role} />
+		{:else}
+		<MainNav role={'user'} />
+		<MobileNav role={'user'} />
+		{/if}
 		<div class="ml-auto flex items-center gap-x-2 sm:gap-x-4 md:justify-end">
 			<ModeToggle />
 			{#if profile && role}

@@ -2,6 +2,10 @@
 	import { page } from '$app/stores';
 	import { cn } from '@/utils';
 	import FeatureWrapper from '../feature-wrapper.svelte';
+	import type { UserProfile, UserRole } from '@/types/types';
+
+	
+	export let role: UserRole;
 </script>
 
 <div class="mr-4 hidden md:flex">
@@ -65,6 +69,7 @@
 				Dicionário
 			</a>
 		</FeatureWrapper>
+		{#if role === 'admin' || role === 'moderator'}
 		<FeatureWrapper feature="annotate">
 			<a
 				href="/annotate"
@@ -76,5 +81,6 @@
 				Anotação
 			</a>
 		</FeatureWrapper>
+		{/if}
 	</nav>
 </div>
