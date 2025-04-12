@@ -78,12 +78,8 @@
 					<Table.Cell>{new Date(sign.created_at).toLocaleDateString()}</Table.Cell>
 					<Table.Cell>{new Date(sign.last_changed).toLocaleDateString()}</Table.Cell>
 					<Table.Cell>
-						{#if sign.is_annotated === 2}
-							<PencilCircleFill color={'#c1e1c1'} />
-						{:else if sign.is_annotated === 1}
-							<PencilCircleFill color={'#ffdfba'} />
-						{:else}
-							<PencilCircleFill color={'#ffb3ba'} />
+						{#if sign.is_anotated}
+							<PencilCircleFill anotation_value={sign.is_anotated} />
 						{/if}
 					</Table.Cell>
 				</Table.Row>
