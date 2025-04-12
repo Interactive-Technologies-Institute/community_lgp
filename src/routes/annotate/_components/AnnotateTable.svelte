@@ -67,7 +67,7 @@
           <Table.Row
             class="h-12" 
             {...rowAttrs}
-            on:click={() => console.log(row.original)}
+            on:click={() => goto(`/annotate/${row.original.id}`)}
           >
             {#each row.cells as cell (cell.id)}
               <Subscribe attrs={cell.attrs()} let:attrs>

@@ -47,7 +47,7 @@ export const load = async (event) => {
         return parametersById as Parameter[];
     }
 
-    const signId = event.params.signId;
+    const signId = event.params.id;
     let specificSign = null;
     let parametersById: Parameter[] = [];
 
