@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import FileTable from './_components/FileTable.svelte';
-	import type { Parameter, Sign } from '@/types/types';
+	import type { Parameter, Sign, UserRole } from '@/types/types';
 	import { Input } from '@/components/ui/input';
 	import { Button } from '@/components/ui/button';
 	import { goto } from '$app/navigation';
@@ -19,7 +19,6 @@
 	let searchQuery = '';
 	export let data;
 	let signs: Sign[] = [];
-	
 	let parameters: Parameter[] = data.parameters;
 	let isLoading = false;
 	let errorMessage = '';
@@ -77,11 +76,12 @@
 			/>
 			<ParameterDialog parameter={parameters}/>
 		</div>
-		
+		{#if data?.user?.role == 'moderator' || data?.user?.role == 'admin'}
 		<Button href="/dictionary/sign/create" class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2">
 			<PlusCircle class="h-4 w-4 sm:mr-2" />
 			<span class="sr-only sm:not-sr-only">Adicionar entrada de gesto</span>
 		</Button>
+		{/if}
 	</div>
 
 	{#if isLoading}
