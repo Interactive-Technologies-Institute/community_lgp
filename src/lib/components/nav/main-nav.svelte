@@ -69,6 +69,17 @@
 				Dicionário
 			</a>
 		</FeatureWrapper>
+		<FeatureWrapper feature="fcdictionary">
+			<a
+				href="/fcdictionary"
+				class={cn(
+					'transition-colors hover:text-foreground/80',
+					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
+				)}
+			>
+				Dicionário 1º Ciclo
+			</a>
+		</FeatureWrapper>
 		{#if role === 'admin' || role === 'moderator'}
 		<FeatureWrapper feature="annotate">
 			<a

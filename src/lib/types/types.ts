@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 
-export type Feature = 'annotate' |'dictionary' | 'map' | 'guides' | 'events' | 'docs';
+export type Feature = 'annotate' |'dictionary' | 'fcdictionary' | 'map' | 'guides' | 'events' | 'docs';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -154,6 +154,7 @@ export type Sign = {
 	}| null;
 	description?: string | null;
 	context_video?: string | null;
+	sentence?: string | null;
 };
 
 export type AnnotationArray = {

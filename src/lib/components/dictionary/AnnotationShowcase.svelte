@@ -30,7 +30,7 @@
                 <img
                   src={parameter.image}
                   alt={parameter.name ?? parameter.code}
-                  class="w-18 h-18 object-cover rounded-md "
+                  class="w-18 h-18 object-cover rounded-2xl "
                 />
               {:else}
                 <span class="text-xs text-center text-black">{parameter.name ?? parameter.code}</span>

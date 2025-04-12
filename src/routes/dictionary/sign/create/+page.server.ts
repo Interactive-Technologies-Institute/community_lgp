@@ -56,7 +56,7 @@ export const actions = {
 			const { videoUrl, ...data } = form.data;
 			const { error: supabaseError } = await event.locals.supabase.from('signs').insert({
 				...data,
-				user_id: userId,
+				
 				video: 'http://127.0.0.1:54321/storage/v1/object/public/signs/' + videoPath,
 				annotation_array: data.annotationArray ?? [], // Match field name
 				created_at: new Date().toISOString(), // Set current timestamp
