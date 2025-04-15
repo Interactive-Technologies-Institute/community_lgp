@@ -7,6 +7,10 @@
 	import { goto } from '$app/navigation';
 	import { PlusCircle } from 'lucide-svelte';
 	import ParameterDialog from './_components/ParameterDialog.svelte';
+	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
+	import TagFilterButton from '@/components/tag-filter-button.svelte';
+	import { stringQueryParam, arrayQueryParam } from '@/utils';
+	import { queryParam } from 'sveltekit-search-params';
 
 	export let theme_options: { name: string; show: boolean }[] = [];
 	export let anotation_options = [
@@ -19,9 +23,17 @@
 	let searchQuery = '';
 	export let data;
 	let signs: Sign[] = [];
+	$: signs =  data?.signs ?? [];
 	let parameters: Parameter[] = data.parameters;
 	let isLoading = false;
 	let errorMessage = '';
+
+	const search = queryParam('s', stringQueryParam(), {
+		debounceHistory: 250,
+	});
+
+
+	const theme = queryParam('theme', arrayQueryParam());
 
 	function debounce(func: Function, wait: number) {
 		let timeout: ReturnType<typeof setTimeout>;
@@ -37,44 +49,36 @@
 
 	// Fetch signs based on the search query
 	async function fetchSigns(query: string) {
+		console.log('fetch signs for: ', query)
 		isLoading = true;
 		try {
-			const response = await fetch(`/api/dictionary/signs?search=${encodeURIComponent(query)}`);
+			const response = await fetch(`/api/fcdictionary/signs?search=${encodeURIComponent(query)}`);
 			if (!response.ok) {
 				throw new Error('Network response was not ok');
 			}
 			const data = await response.json();
+			console.log('Fetched signs:', data);
 			signs = data.signs;
 		} catch (error) {
 			errorMessage = 'Error fetching signs, please try again later.';
 		} finally {
 			isLoading = false;
 		}
+
 	}
 
-	const debouncedFetchSigns = debounce(fetchSigns, 400);
-	// Handle search input change
-	function handleSearch() {
-		debouncedFetchSigns(searchQuery);
-	}
-
-	// Initial fetch if searchQuery is not empty
-	onMount(() => {
-		fetchSigns(''); // Fetch all entries initially
-	});
+	
 </script>
 
 <div>
 	<div class="container mx-auto flex flex-row justify-between gap-x-2 py-5">
 		<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
-			<Input
-				type="text"
-				placeholder="Procura por texto..."
-				bind:value={searchQuery}
-				on:input={handleSearch}
-				class="w-full max-w-md rounded-md border border-gray-300 px-4 py-2 text-center"
-			/>
-			<ParameterDialog parameter={parameters}/>
+			<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
+				<Input placeholder="Procura por texto..." class="flex-1 sm:max-w-64" bind:value={$search}></Input>
+				<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
+				<ParameterDialog parameter={parameters}/>
+			</div>
+			
 		</div>
 		{#if data?.user?.role == 'moderator' || data?.user?.role == 'admin'}
 		<Button href="/dictionary/sign/create" class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2">

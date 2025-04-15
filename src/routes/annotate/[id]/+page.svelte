@@ -1,10 +1,15 @@
 <script lang="ts">
-    import type { Sign } from '@/types/types';
+    import type { Parameter, Sign } from '@/types/types';
 	import AnnotationShowcase from '../../../lib/components/dictionary/AnnotationShowcase.svelte';
 	import Badge from '@/components/ui/badge/badge.svelte';
-
+	import AnnotationLayout from '@/components/dictionary/AnnotationLayout.svelte';
+	import { Button } from '@/components/ui/button';
+	import * as Tabs from "$lib/components/ui/tabs";
+	import * as Card from "$lib/components/ui/card";
+	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
     export let data;
     let sign : Sign | null = data.sign;
+	let parameter: Parameter[] = data.parameters;
 </script>
 
 
@@ -61,4 +66,26 @@
 	
 </div>
 
-
+<div class="flex items-center justify-center">
+<Tabs.Root value="annotation" class="w-[1000px]">
+	<div class="flex items-center justify-center">
+	<Tabs.List>
+	  <Tabs.Trigger value="annotation">Anotação Fonológica</Tabs.Trigger>
+	  <Tabs.Trigger value="content">Conteúdo</Tabs.Trigger>
+	</Tabs.List>
+</div>
+	<Tabs.Content value="annotation">
+	<Card.Root>
+		
+		<Card.Content>
+			<div class ="py-5">
+			<AnnotationLayout {parameter} />
+		</div>
+	
+		</Card.Content>
+	
+	</Card.Root>
+	</Tabs.Content>
+	<Tabs.Content value="content"></Tabs.Content>
+  </Tabs.Root>
+</div>

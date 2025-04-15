@@ -3,21 +3,39 @@ import type { Actions } from '@sveltejs/kit';
 import type { AnnotationArray, Parameter, Sign } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { arrayQueryParam, stringQueryParam } from '@/utils';
 
 export const load = async (event) => {
+
+    const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
+    const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+
     async function getSigns(): Promise<Sign[]> {
-        const { data: signs, error: signsError } = await event.locals.supabase
+        let query = event.locals.supabase
             .from('signs')
-            .select('*');
+            .select('*')
+            .eq('is_anotated', 2);
+            
 
-        if (signsError) {
-            const errorMessage = 'Error fetching signs, please try again later.';
-            setFlash({ type: 'error', message: errorMessage }, event.cookies);
-            return error(500, errorMessage);
+            if (search) {
+                query = query.ilike('name', `%${search}%`);
+            }
+
+            if (theme && theme.length) {
+                query = query.overlaps('theme', theme);
+            }
+            
+            const { data: signs, error: signsError } = await query;
+            
+            if (signsError) {
+                const errorMessage = 'Error fetching signs, please try again later.';
+                setFlash({ type: 'error', message: errorMessage }, event.cookies);
+                return error(500, errorMessage);
+            }
+
+            return signs as Sign[];
         }
-
-        return signs as Sign[];
-    }
+    
 
     async function getParameters(): Promise<Parameter[]> {
         const { data: parameters, error: parametersError } = await event.locals.supabase
@@ -32,8 +50,33 @@ export const load = async (event) => {
         return parameters as Parameter[];
     }
 
+    async function getThemes(): Promise<Map<string, number>> {
+        const { data: themes, error: themesError } = await event.locals.supabase
+        .from('signs_themes')
+        .select('*')
+        
+
+        if(themesError){
+            const errorMessage = 'Error fetching themes, please try again later.';
+            setFlash({ type: 'error', message: errorMessage }, event.cookies);
+            return error(500, errorMessage);
+        }
+        const themeMap = new Map<string, number>();
+        if (themes) {
+            themes.forEach((theme) => {
+                const { count, theme: themeName } = theme;
+                if (count !== null && themeName !== null) {
+                    themeMap.set(themeName, count);
+                }
+            });
+        }
+
+        return themeMap;
+    }
+
     return {
         signs: await getSigns(),
         parameters: await getParameters(),
+        themes: await getThemes(),
     };
 };
