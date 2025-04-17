@@ -60,6 +60,11 @@
 
 		<h2 class="mt-[300px] text-xl">
 			Frase em Português:
+			{#if sign?.sentence}
+			  {sign?.sentence}
+			{:else}
+			  Sem frase atribuída.
+			{/if}
 		</h2>
 	  </div>
 	

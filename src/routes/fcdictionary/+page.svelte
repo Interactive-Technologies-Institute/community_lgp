@@ -8,36 +8,21 @@
 	import { queryParam } from 'sveltekit-search-params';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import TagFilterButton from '@/components/tag-filter-button.svelte';
+	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
 	
-
-	export let theme_options: { name: string; show: boolean }[] = [];
-	export let anotation_options = [
-		{ name: 'Anotados', show: true },
-		{ name: 'Anotação não terminada', show: true },
-		{ name: 'Por anotar', show: true },
-	];
+	
 	let selection = false;
-	export let signs_to_delete: number[] = [];
+	
 	export let data;
 	let signs: Sign[] = [];
 	$: signs =  data?.signs ?? [];
 	
-	
+	let allThemes = data?.themes ? Array.from(data.themes.keys()) : [];
+	let initialThemes = allThemes.slice(0,2);
+
 	let parameters: Parameter[] = data.parameters;
 	let isLoading = false;
 	let errorMessage = '';
-
-	function debounce(func: Function, wait: number) {
-		let timeout: ReturnType<typeof setTimeout>;
-		return function (...args: any[]) {
-			const later = () => {
-				clearTimeout(timeout);
-				func(...args);
-			};
-			clearTimeout(timeout);
-			timeout = setTimeout(later, wait);
-		};
-	}
 
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
@@ -46,34 +31,9 @@
 
 	const theme = queryParam('theme', arrayQueryParam());
 
-	// Fetch signs based on the search query
-	async function fetchSigns(query: string) {
-		console.log('fetch signs for: ', query)
-		isLoading = true;
-		try {
-			const response = await fetch(`/api/fcdictionary/signs?search=${encodeURIComponent(query)}`);
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-			const data = await response.json();
-			console.log('Fetched signs:', data);
-			signs = data.signs;
-		} catch (error) {
-			errorMessage = 'Error fetching signs, please try again later.';
-		} finally {
-			isLoading = false;
-		}
-
-	}
-
 	
-	const debouncedSearch = debounce((query: string) => {
-			fetchSigns(query);
-		}, 250);
 
-		$: if ($search !== null) {
-			debouncedSearch($search);
-}
+	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0;
 
 	
 	
@@ -96,11 +56,5 @@
 		<p class="error">{errorMessage}</p>
 	{/if}
 
-	<FileTable
-		data={{ signs }}
-		bind:theme_options
-		bind:anotation_options
-		{selection}
-		bind:signs_to_delete
-	/>
+	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} />
 </div>
