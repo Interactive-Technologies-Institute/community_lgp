@@ -8,30 +8,30 @@
     import type { Sign } from "@/types/types";
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col justify-start items-start">
 
-    <h1 class="py-3 text-xl"> {theme} </h1>
+    <h1 class="py-3 text-xl text-left pl-2">{theme}</h1>
     <Carousel.Root
         opts={{
             align: "start"
         }}
-        class="w-full max-w-[1100px]"
+        class="w-full max-w-[1250px]"
     >
         <Carousel.Content>
             {#each signs.filter(sign => sign.theme.includes(theme)) as sign}
-                <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
+                <Carousel.Item class="md:basis-2/3 lg:basis-1/3">
                     <div class="p-1">
-                        <Card.Root>
+                        <Card.Root class="rounded-2xl">
                             <!-- svelte-ignore a11y-media-has-caption -->
                             <Card.Content
-                                class="flex aspect-square items-center justify-center p-6"
+                                class="flex  items-center justify-center p-3"
                             >   
                             <div class="flex flex-col">
-                            <video class="w-full h-auto rounded-2xl" controls playsinline>
+                            <video class="w-full aspect-video rounded-xl" controls playsinline >
                                 <source src={sign.video} type="video/mp4" />
                                 Your browser does not support the video tag.
                               </video> 
-                                <a href="/dictionary/sign/{sign.id}" class="text-l pt-12">{sign.name}</a>
+                                <a href="/dictionary/sign/{sign.id}" class="text-l pt-9 py-5">{sign.name}</a>
                             </div>
                             </Card.Content>
                         </Card.Root>

@@ -41,8 +41,8 @@
 		<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
 			<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
 				<Input placeholder="Procura por texto..." class="flex-1 sm:max-w-64" bind:value={$search}></Input>
-				<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
 				<ParameterDialog parameter={parameters}/>
+				<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
 			</div>
 			
 		</div>
@@ -61,7 +61,9 @@
 		<p class="error">{errorMessage}</p>
 	{/if}
 
+	<div class ="flex justify-start items-start">
 	{#if signs}
 	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} />
 	{/if}
+</div>
 </div>

@@ -12,7 +12,7 @@
 	) ?? [];
     </script>
 
-<div class="flex flex-col mx-[350px]">
+<div class="flex flex-col ml-[287px] max-w-[2000px]">
 	{#if signs.length === 0}
 		<p class="text-center text-gray-500 py-8">Nenhum resultado encontrado.</p>
 	{:else}
