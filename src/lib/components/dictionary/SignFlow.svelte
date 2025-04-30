@@ -7,8 +7,8 @@
     import type { Sign } from "@/types/types";
 
     
-
-   
+    let sign;
+    $: sign;
 </script>
 
 <div class="flex flex-col justify-start items-start">

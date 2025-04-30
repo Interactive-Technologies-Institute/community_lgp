@@ -14,6 +14,7 @@ export const load = async (event) => {
     const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
 
     let totalPages = 0;
+    let countSign = 0;
 
     async function getSigns(): Promise<Sign[]> {
 		let query = event.locals.supabase
@@ -33,7 +34,7 @@ export const load = async (event) => {
 			
 			const { data: signs, count, error: signsError } = await query;
 			totalPages = count ? Math.ceil(count / perPage) : 0;
-
+            countSign = count || 0;
 			if (signsError) {
 				const errorMessage = 'Error fetching signs, please try again later.';
 				setFlash({ type: 'error', message: errorMessage }, event.cookies);
@@ -86,6 +87,8 @@ export const load = async (event) => {
         parameters: await getParameters(),
         themes: await getThemes(),
         page,
-	    totalPages
+	    totalPages,
+        perPage,
+        countSign,
     };
 };

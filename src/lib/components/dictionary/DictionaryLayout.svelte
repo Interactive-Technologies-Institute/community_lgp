@@ -10,13 +10,15 @@
 	import TagFilterButton from '@/components/tag-filter-button.svelte';
 	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
 	import ParameterDialog from '../../../routes/dictionary/_components/ParameterDialog.svelte';
-	
+	import * as Pagination from "$lib/components/ui/pagination";
+	import { goto } from '$app/navigation';
 	
 	let selection = false;
 	
 	export let data;
 	let signs: Sign[] = [];
 	$: signs =  data?.signs ?? [];
+	
 	
 	let allThemes = data?.themes ? Array.from(data.themes.keys()) as string[] : [];
 	const desiredThemes = [
@@ -29,27 +31,36 @@
 	let isLoading = false;
 	let errorMessage = '';
 
-	let currentPage = data.page ?? 1;
 	let totalPages = data.totalPages ?? 1;
-	console.log(data)
-	
-
+	let perPage = data.perPage ?? 10;
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
 	});
 
-
+	let countSign = data.countSign ?? 0;
+	console.log(countSign, 'countSign');
 	const theme = queryParam('theme', arrayQueryParam());
 
 	const page = queryParam('page', stringQueryParam(), {
 		debounceHistory: 250,
 	});
-	
 
 	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0;
 	$: $search = data.search || $search; 
-	
-	
+	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
+	$: console.log(currentPageNumber, 'currentPageNumber');
+
+	function goToPreviousPage() {
+ 	 if (currentPageNumber > 1) {
+    	location.href = `?page=${currentPageNumber - 1}`;
+  		}
+	}
+
+	function goToNextPage() {
+		if(currentPageNumber < totalPages) {
+			location.href = `?page=${currentPageNumber + 1}`;
+		}
+	}
 </script>
 
 <div>
@@ -76,8 +87,40 @@
 	{/if}
 
 	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} />
-	<div class="flex py-2 px-[285px] gap-5 justify-start items-start">
-	<Button on:click={() => $page = String(Number($page) - 1)} disabled={Number($page) <= 1}>Anterior</Button>
-	<Button on:click={() => $page = String(Number($page ?? 1) + 1)} disabled={Number($page ?? 1) >= totalPages}>Próximo</Button>
-	</div>
+	
+	<div class ="flex justify-start items-start pb-5">
+		<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
+			<Pagination.Content class="flex justify-center items-center gap-2">
+			  
+			  <Pagination.Item>
+				<Pagination.PrevButton on:click={goToPreviousPage} disabled={currentPageNumber === 1}>
+				  Anterior
+				</Pagination.PrevButton>
+			  </Pagination.Item>
+		  
+			  {#each pages as page (page.key)}
+				{#if page.type === "ellipsis"}
+				  <Pagination.Item>
+					<Pagination.Ellipsis />
+				  </Pagination.Item>
+				{:else}
+				  <Pagination.Item>
+					<Pagination.Link {page} isActive={currentPageNumber == page.value}>
+					  <a href="?page={page.value}" data-sveltekit-reload>
+						{page.value}
+					  </a>
+					</Pagination.Link>
+				  </Pagination.Item>
+				{/if}
+			  {/each}
+		  
+			  <Pagination.Item>
+				<Pagination.NextButton on:click={goToNextPage} disabled={parseInt($page ?? '1') === totalPages}>
+				  Próximo
+				</Pagination.NextButton>
+			  </Pagination.Item>
+		  
+			</Pagination.Content>
+		  </Pagination.Root>
+</div>
 </div>
