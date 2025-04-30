@@ -3,12 +3,17 @@
 	import AnnotationShowcase from '../../../lib/components/dictionary/AnnotationShowcase.svelte';
 	import Badge from '@/components/ui/badge/badge.svelte';
 	import AnnotationLayout from '@/components/dictionary/AnnotationLayout.svelte';
+	import { Input } from "$lib/components/ui/input";
 	import { Button } from '@/components/ui/button';
+	import { TagInput } from '$lib/components/ui/tag-input'
+	import { Textarea } from "$lib/components/ui/textarea";
 	import * as Tabs from "$lib/components/ui/tabs";
 	import * as Card from "$lib/components/ui/card";
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
+	import { writable } from 'svelte/store';
     export let data;
     let sign : Sign | null = data.sign;
+	let signThemes = writable(sign?.theme);
 	let parameter: Parameter[] = data.parameters;
 </script>
 
@@ -78,14 +83,35 @@
 	<Card.Root>
 		
 		<Card.Content>
+			
 			<div class ="py-5">
+				<ScrollArea class="h-[700px] overflow-auto">
 			<AnnotationLayout {parameter} />
+		</ScrollArea>
 		</div>
 	
 		</Card.Content>
 	
 	</Card.Root>
 	</Tabs.Content>
-	<Tabs.Content value="content"></Tabs.Content>
+	<Tabs.Content value="content">
+		<Card.Root class="flex justify-start items-start">
+			<Card.Content class="flex flex-col my-5">
+				Nome : <Input type="name" placeholder={sign?.name} class="max-w-s" />
+				Temas:   
+				<TagInput 
+				bind:value={$signThemes}
+				maxTags={5} 
+				placeholder="" 
+				placeholderWhenFull="Não é possível adicionar mais temas." 
+				minLength={1} 
+				maxLength={20} 
+				class="flex w-fit h-fit col-span-3"
+			  />
+			  Descrição Textual: <Textarea placeholder={sign?.description}></Textarea>
+			  Frase em Português: <Textarea placeholder={sign?.sentence}></Textarea>
+			</Card.Content>
+	</Card.Root>
+	</Tabs.Content>
   </Tabs.Root>
 </div>

@@ -18,12 +18,21 @@
 	let signs: Sign[] = [];
 	$: signs =  data?.signs ?? [];
 	
-	let allThemes = data?.themes ? Array.from(data.themes.keys()) : [];
-	let initialThemes = allThemes.slice(0,2);
-
+	let allThemes = data?.themes ? Array.from(data.themes.keys()) as string[] : [];
+	const desiredThemes = [
+		"(1ºCEB) PORTUGUÊS",
+		"1ºCEB-ESTUDO DO MEIO",
+		"(1ºCEB) MATEMÁTICA"
+	];
+	let initialThemes = allThemes.filter(theme => desiredThemes.includes(theme));
 	let parameters: Parameter[] = data.parameters;
 	let isLoading = false;
 	let errorMessage = '';
+
+	let currentPage = data.page ?? 1;
+	let totalPages = data.totalPages ?? 1;
+	console.log(data)
+	
 
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
@@ -32,10 +41,13 @@
 
 	const theme = queryParam('theme', arrayQueryParam());
 
+	const page = queryParam('page', stringQueryParam(), {
+		debounceHistory: 250,
+	});
 	
 
 	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0;
-
+	$: $search = data.search || $search; 
 	
 	
 </script>
@@ -64,4 +76,8 @@
 	{/if}
 
 	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} />
+	<div class="flex py-2 px-[285px] gap-5 justify-start items-start">
+	<Button on:click={() => $page = String(Number($page) - 1)} disabled={Number($page) <= 1}>Anterior</Button>
+	<Button on:click={() => $page = String(Number($page ?? 1) + 1)} disabled={Number($page ?? 1) >= totalPages}>Próximo</Button>
+	</div>
 </div>

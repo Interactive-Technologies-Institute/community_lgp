@@ -5,17 +5,23 @@ import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
 
-export const load = async (event) => {
 
+
+export const load = async (event) => {
+    const page = Number(event.url.searchParams.get('page')) || 1;
+    const perPage = 10;
     const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
     const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+
+    let totalPages = 0;
 
     async function getSigns(): Promise<Sign[]> {
 		let query = event.locals.supabase
 			.from('signs')
-			.select('*')
+			.select('*', { count: 'exact' })
             .eq('is_anotated', 2)
-            .ilike('theme_flattened', '%1ºCEB%');
+            .ilike('theme_flattened', '%1ºCEB%')
+            .range((page - 1) * perPage, page * perPage - 1);
 
 			if (search) {
 				query = query.ilike('name', `%${search}%`);
@@ -25,8 +31,9 @@ export const load = async (event) => {
                 query = query.overlaps('theme', theme);
             }
 			
-			const { data: signs, error: signsError } = await query;
-			
+			const { data: signs, count, error: signsError } = await query;
+			totalPages = count ? Math.ceil(count / perPage) : 0;
+
 			if (signsError) {
 				const errorMessage = 'Error fetching signs, please try again later.';
 				setFlash({ type: 'error', message: errorMessage }, event.cookies);
@@ -78,5 +85,7 @@ export const load = async (event) => {
         signs: await getSigns(),
         parameters: await getParameters(),
         themes: await getThemes(),
+        page,
+	    totalPages
     };
 };

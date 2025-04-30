@@ -58,7 +58,7 @@
           
         </div>
 
-        <ScrollArea class="max-h-[500px] overflow-auto">
+        <ScrollArea class="max-h-[2500px] overflow-auto">
           
             <div class="grid grid-cols-5 gap-4">
               {#each filterByType(selectedTab) as p}

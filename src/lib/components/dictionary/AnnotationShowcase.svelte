@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card';
   
-  import type { AnnotationArray, Parameter } from '@/types/types';
+  import type { Parameter } from '@/types/types';
 
 
   export let data: Parameter[];

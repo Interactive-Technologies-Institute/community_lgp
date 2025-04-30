@@ -6,7 +6,6 @@
     import * as Table from "$lib/components/ui/table";
     import { Button } from "$lib/components/ui/button";
     import { goto } from "$app/navigation";
-    import { Cell } from "@/components/ui/calendar";
 	  import PencilCircleFill from "@/img/pencil_circle_fill.svelte";
     
 
