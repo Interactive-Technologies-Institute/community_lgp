@@ -42,7 +42,9 @@
 		return () => data.subscription.unsubscribe();
 	});
 </script>
-
+<svelte:head> 
+		<script async defer src="https://cloud.umami.is/script.js" data-website-id="beb4747e-010e-4571-82ef-4e969832d77f"></script>
+</svelte:head>
 <svelte:body class="theme-{branding.color_theme}" style="--radius: {branding.radius}rem" />
 
 <ModeWatcher />

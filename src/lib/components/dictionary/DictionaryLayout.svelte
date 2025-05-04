@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	
 	import type { Parameter, Sign } from '@/types/types';
     import { Button } from '@/components/ui/button';
 	import { Input } from '@/components/ui/input';
@@ -11,9 +9,6 @@
 	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
 	import ParameterDialog from '../../../routes/dictionary/_components/ParameterDialog.svelte';
 	import * as Pagination from "$lib/components/ui/pagination";
-	import { goto } from '$app/navigation';
-	
-	let selection = false;
 	
 	export let data;
 	let signs: Sign[] = [];
@@ -38,7 +33,6 @@
 	});
 
 	let countSign = data.countSign ?? 0;
-	console.log(countSign, 'countSign');
 	const theme = queryParam('theme', arrayQueryParam());
 
 	const page = queryParam('page', stringQueryParam(), {
@@ -48,7 +42,7 @@
 	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0;
 	$: $search = data.search || $search; 
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
-	$: console.log(currentPageNumber, 'currentPageNumber');
+	
 
 	function goToPreviousPage() {
  	 if (currentPageNumber > 1) {

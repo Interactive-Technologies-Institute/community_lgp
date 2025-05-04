@@ -10,7 +10,7 @@
 	$: visibleThemes = themes?.filter((theme : string) =>
 		signs?.some((sign : Sign) => sign.theme.includes(theme))
 	) ?? [];
-    </script>
+</script>
 
 <div class="flex flex-col ml-[287px] max-w-[2000px]">
 	{#if signs.length === 0}
