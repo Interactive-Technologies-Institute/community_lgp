@@ -9,7 +9,7 @@
 	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
 	import ParameterDialog from '../../../routes/dictionary/_components/ParameterDialog.svelte';
 	import * as Pagination from "$lib/components/ui/pagination";
-	
+	import { browser } from '$app/environment';
 	export let data;
 	let signs: Sign[] = [];
 	$: signs =  data?.signs ?? [];
@@ -43,16 +43,22 @@
 	$: $search = data.search || $search; 
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
 	
+	function buildUrlWithUpdatedPage(page: number): string {
+		if (!browser) return '#'; // SSR-safe fallback
+		const url = new URL(window.location.href);
+		url.searchParams.set('page', String(page));
+		return `${url.pathname}?${url.searchParams.toString()}`;
+	}
 
 	function goToPreviousPage() {
- 	 if (currentPageNumber > 1) {
-    	location.href = `?page=${currentPageNumber - 1}`;
+ 	 	if (currentPageNumber > 1) {
+    		location.href = buildUrlWithUpdatedPage(currentPageNumber - 1);
   		}
 	}
 
 	function goToNextPage() {
 		if(currentPageNumber < totalPages) {
-			location.href = `?page=${currentPageNumber + 1}`;
+			location.href = buildUrlWithUpdatedPage(currentPageNumber + 1);
 		}
 	}
 </script>
@@ -100,9 +106,9 @@
 				{:else}
 				  <Pagination.Item>
 					<Pagination.Link {page} isActive={currentPageNumber == page.value}>
-					  <a href="?page={page.value}" data-sveltekit-reload>
-						{page.value}
-					  </a>
+						<a href="{buildUrlWithUpdatedPage(page.value)}" data-sveltekit-reload>
+							{page.value}
+						</a>
 					</Pagination.Link>
 				  </Pagination.Item>
 				{/if}
