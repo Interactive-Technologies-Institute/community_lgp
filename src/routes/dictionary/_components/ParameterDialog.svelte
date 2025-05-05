@@ -81,7 +81,7 @@
 
 <Dialog.Root>
   <Dialog.Trigger>
-    <Button>Procura por gesto</Button>
+    <Button data-umami-event="procura-por-gesto">Procura por gesto</Button>
   </Dialog.Trigger>
   <Dialog.Content class="w-[1000px] max-w-[1000px] h-[600px] max-h-[600px]">
     <Dialog.Header>
@@ -98,7 +98,7 @@
               {displayName}
             </Button>
           {/each}
-          <Button class="bg-blue-500 text-white" on:click={searchSigns}>
+          <Button class="bg-blue-500 text-white" data-umami-event="submeter-procura-gesto" on:click={searchSigns}>
             Procurar
           </Button>
         </div>
@@ -124,16 +124,18 @@
                         />  
                       </Card.Content>
                     {:else}
-                      <Card.Content
-                        class="flex items-center justify-center py-12 px-2 font-bold text-lg text-black cursor-pointer"
-                      >
-                        <Button
-                          class="bg-white"
-                          on:click={() => handleParameterIdClick(p)}
-                        >
-                          {p.name ?? p.code}
-                        </Button>
-                      </Card.Content>
+                    <Card.Content
+                    class="flex items-center justify-center py-12 px-2 font-bold text-lg text-black cursor-pointer text-center"
+                  >
+                    <Button
+                      class="bg-white whitespace-normal text-wrap max-w-xs max-h-sm"
+                      on:click={() => handleParameterIdClick(p)}
+                    >
+                      <span class="line-clamp-3">
+                        {p.name ?? p.code}
+                      </span>
+                    </Button>
+                  </Card.Content>
                     {/if}
                     
                     {#if p.code}
