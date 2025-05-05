@@ -18,10 +18,10 @@ export const load = async (event) => {
 
     async function getSigns(): Promise<Sign[]> {
 		let query = event.locals.supabase
-			.from('signs')
-			.select('*', { count: 'exact' })
+            .from('signs')
+            .select('*', { count: 'exact' })
             .eq('is_anotated', 2)
-            .ilike('theme_flattened', '%1ºCEB%')
+            .or(`theme_flattened.ilike.%1ºCEB%,theme_flattened.ilike.%DACTILOLOGIA%`)
             .range((page - 1) * perPage, page * perPage - 1);
 
 			if (search) {
@@ -62,7 +62,7 @@ export const load = async (event) => {
         const { data: themes, error: themesError } = await event.locals.supabase
         .from('signs_themes')
         .select('*')
-        .ilike('theme','%1ºCEB%')
+        .or('theme.ilike.%1ºCEB%,theme.ilike.%DACTILOLOGIA%')
 
         if(themesError){
             const errorMessage = 'Error fetching themes, please try again later.';
