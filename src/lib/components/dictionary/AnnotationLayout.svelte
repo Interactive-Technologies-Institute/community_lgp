@@ -27,22 +27,25 @@
     return parameter.filter(p => p.parent === parentCode);
   }
 
-  function addToSearchArray(p: Parameter) {
+  function addToSearchArray(p: Parameter, isSelected: boolean) {
     const index = p.id - 1;
     if (index >= 0 && index < searchArray.length) {
-      searchArray[index] = 1;
+      searchArray[index] = isSelected ? 1 : 0;
     }
   }
 
   function handleParameterIdClick(p: Parameter) {
-    if (selectedParameterId.includes(p.id)) {
-      selectedParameterId = selectedParameterId.filter(id => id !== p.id);
-    } else {
-      selectedParameterId = [...selectedParameterId, p.id];
-    }
-    addToSearchArray(p);
-    console.log("Selected Parameters:", selectedParameterId, searchArray);
+  const isCurrentlySelected = selectedParameterId.includes(p.id);
+  
+  if (isCurrentlySelected) {
+    selectedParameterId = selectedParameterId.filter(id => id !== p.id);
+    addToSearchArray(p, false); 
+  } else {
+    
+    selectedParameterId = [...selectedParameterId, p.id];
+    addToSearchArray(p, true); 
   }
+}
 </script>
 
   <div class="flex flex-col items-center justify-center w-auto mx-auto">

@@ -32,12 +32,7 @@
     return parameter.filter(p => p.parent === parentCode);
   }
 
-  function addToSearchArray(p: Parameter) {
-    const index = p.id - 1;
-    if (index >= 0 && index < searchArray.length) {
-      searchArray[index] = 1;
-    }
-  }
+
 
   async function searchSigns() {
     try {
@@ -64,15 +59,28 @@
     }
   }
 
-  function handleParameterIdClick(p: Parameter) {
-    if (selectedParameterId.includes(p.id)) {
-      selectedParameterId = selectedParameterId.filter(id => id !== p.id);
-    } else {
-      selectedParameterId = [...selectedParameterId, p.id];
+  function addToSearchArray(p: Parameter, isSelected: boolean) {
+    const index = p.id - 1;
+    if (index >= 0 && index < searchArray.length) {
+      searchArray[index] = isSelected ? 1 : 0;
     }
-    addToSearchArray(p);
-    console.log("Selected Parameters:", selectedParameterId, searchArray);
   }
+
+  function handleParameterIdClick(p: Parameter) {
+  const isCurrentlySelected = selectedParameterId.includes(p.id);
+  
+  if (isCurrentlySelected) {
+    selectedParameterId = selectedParameterId.filter(id => id !== p.id);
+    addToSearchArray(p, false); 
+    console.log(searchArray)
+  } else {
+    
+    selectedParameterId = [...selectedParameterId, p.id];
+    addToSearchArray(p, true); 
+    console.log(searchArray)
+  }
+}
+
 
   function closeSearchResults() {
     showSearchResults = false; // Reset to show parameter selection
