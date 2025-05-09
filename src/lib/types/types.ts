@@ -136,15 +136,13 @@ export type Notification = {
 };
 
 export type Sign = {
-	anotated: string | "";
 	annotation: AnnotationArray | null;
 	annotation_array: number[];
 	created_at: string;
 	id: number;
-	is_anotated: number;
+	is_anotated: 0 | 1 | 2;
 	last_changed: string;
 	name: string;
-	selected: string | null;
 	theme: string[];
 	video: string;
 	written_anotation?: {
@@ -155,14 +153,16 @@ export type Sign = {
 	description?: string | null;
 	context_video?: string | null;
 	sentence?: string | null;
+	frequency: 0 | 1 | 2;
+	district?: string | null;
 };
 
 export type AnnotationArray = {
-	configuration: string[];
-	movement: string[];
-	location: string[];
-	orientation: string[];
-	expression: string[];
+	configuration: number[];
+	movement: number[];
+	location: number[];
+	orientation: number[];
+	expression: number[];
 } 
 
 export type Parameter = {

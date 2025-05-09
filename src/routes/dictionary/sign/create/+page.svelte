@@ -7,5 +7,5 @@
 
 <PageHeader title="Entrada de Gesto" subtitle="Adicione uma nova entrada de gesto ao Dicionário de Lingua Gestual Portuguesa." />
 <div class="container mx-auto mb-20">
-	<SignForm data={data.createForm} />
+	<SignForm data={data.createForm} user={data.user} parameter={data.parameters}/>
 </div>

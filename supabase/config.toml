@@ -112,7 +112,7 @@ objects_path = "./seed/placeholders"
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "community-lgp.pages.dev"
+site_url = "dclgp.dcitizens.eu"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 additional_redirect_urls = []
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).

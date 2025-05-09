@@ -6,9 +6,15 @@
 
 
   export let parameter: Parameter[];
-
-  let searchArray: number[] = Array(300).fill(0);
-  let selectedParameterId: number[] = []; 
+  export let annotation: Record<keyof AnnotationArray, number[]> = {
+    configuration: [],
+    location: [],
+    orientation: [],
+    movement: [],
+    expression: []
+    }; 
+  export let annotation_array: number[] = Array(300).fill(0);
+ 
   let tabs: Record<string, { displayName: string; annotationKey: keyof AnnotationArray }> = {
     configuracao: { displayName: "Configuração", annotationKey: "configuration" },
     localizacao: { displayName: "Localização", annotationKey: "location" },
@@ -27,23 +33,23 @@
     return parameter.filter(p => p.parent === parentCode);
   }
 
-  function addToSearchArray(p: Parameter, isSelected: boolean) {
+  function addToannotationArray(p: Parameter, isSelected: boolean) {
     const index = p.id - 1;
-    if (index >= 0 && index < searchArray.length) {
-      searchArray[index] = isSelected ? 1 : 0;
+    if (index >= 0 && index < annotation_array.length) {
+      annotation_array[index] = isSelected ? 1 : 0;
     }
   }
 
-  function handleParameterIdClick(p: Parameter) {
-  const isCurrentlySelected = selectedParameterId.includes(p.id);
-  
-  if (isCurrentlySelected) {
-    selectedParameterId = selectedParameterId.filter(id => id !== p.id);
-    addToSearchArray(p, false); 
+ function handleParameterIdClick(p: Parameter) {
+  const annotationKey = tabs[selectedTab].annotationKey;
+  const isSelected = annotation[annotationKey].includes(p.id);
+
+  if (isSelected) {
+    annotation[annotationKey] = annotation[annotationKey].filter(id => id !== p.id);
+    addToannotationArray(p, false);
   } else {
-    
-    selectedParameterId = [...selectedParameterId, p.id];
-    addToSearchArray(p, true); 
+    annotation[annotationKey] = [...annotation[annotationKey], p.id];
+    addToannotationArray(p, true);
   }
 }
 </script>
@@ -68,7 +74,7 @@
                 {#if p.is_parent}
                 
                   <Card.Root
-                    class="bg-white {selectedParameterId.includes(p.id) ? 'border-2 border-blue-500' : ''}"
+                    class="bg-white {annotation[tabs[selectedTab].annotationKey].includes(p.id) ? 'border-2 border-blue-500' : ''}"
                   >
                     {#if p.image}
                       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -102,7 +108,7 @@
                       
                       {#each getChildren(p.code) as child}
                         <div
-                          class="flex flex-col items-center justify-center w-16 h-16 cursor-pointer rounded-md {selectedParameterId.includes(child.id) ? 'border-2 border-blue-500' : ''}"
+                          class="flex flex-col items-center justify-center w-16 h-16 cursor-pointer rounded-md {annotation[tabs[selectedTab].annotationKey].includes(child.id) ? 'border-2 border-blue-500' : ''}"
                           on:click={() => handleParameterIdClick(child)}
                         >
                           {#if child.image}
@@ -112,7 +118,7 @@
                               class="w-12 h-12 aspect-square object-contain rounded-md"
                             />
                           {:else}
-                            <span class="text-xs text-center">{child.name ?? child.code}</span>
+                            <span class="text-xs text-center text-black">{child.name ?? child.code}</span>
                           {/if}
                         </div>
                       {/each}

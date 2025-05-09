@@ -9,7 +9,7 @@
 
   export let parameter: Parameter[];
 
-  let searchArray: number[] = Array(279).fill(0);
+  let searchArray: number[] = Array(300).fill(0);
   let selectedParameterId: number[] = []; // Track selected parent IDs
   let searchResults: { id: number; name: string; video: string }[] = []; // Store search results
   let showSearchResults = false; // Toggle between dialog content
@@ -32,8 +32,6 @@
     return parameter.filter(p => p.parent === parentCode);
   }
 
-
-
   async function searchSigns() {
     try {
       const response = await fetch('/api/dictionary/search', {
@@ -50,10 +48,9 @@
       }
 
       const data = await response.json();
-      console.log('Fetched signs:', data.signs);
 
       searchResults = data.signs; 
-      showSearchResults = true; // Show search results
+      showSearchResults = true;
     } catch (error) {
       console.error('Error fetching signs:', error);
     }
@@ -72,15 +69,12 @@
   if (isCurrentlySelected) {
     selectedParameterId = selectedParameterId.filter(id => id !== p.id);
     addToSearchArray(p, false); 
-    console.log(searchArray)
   } else {
     
     selectedParameterId = [...selectedParameterId, p.id];
     addToSearchArray(p, true); 
-    console.log(searchArray)
   }
 }
-
 
   function closeSearchResults() {
     showSearchResults = false; // Reset to show parameter selection
