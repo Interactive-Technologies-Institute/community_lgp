@@ -136,7 +136,7 @@ export type Notification = {
 };
 
 export type Sign = {
-	annotation: AnnotationArray | null;
+	annotation: AnnotationArray;
 	annotation_array: number[];
 	created_at: string;
 	id: number;
@@ -150,7 +150,7 @@ export type Sign = {
 		movement: string[];
 		orientation: string[];
 	}| null;
-	description?: string | null;
+	description?: string | null ;
 	context_video?: string | null;
 	sentence?: string | null;
 	frequency: 0 | 1 | 2;

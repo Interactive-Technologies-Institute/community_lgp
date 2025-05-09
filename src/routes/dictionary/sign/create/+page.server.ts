@@ -1,14 +1,13 @@
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { createSignSchema } from '@/schemas/sign';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, error } from '@sveltejs/kit';
 import { superValidate, withFiles } from 'sveltekit-superforms';
 import { v4 as uuidv4 } from 'uuid';
 import type { StorageError } from '@supabase/storage-js';
 import type { Parameter } from '@/types/types';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
-import { error } from '@sveltejs/kit';
 
 export const load = async (event) => {
 	const { session } = await event.locals.safeGetSession();
@@ -64,25 +63,25 @@ export const actions = {
 			}
 
 			let videoPath = '';
-			if (form.data.video) {
+			if (form.data.video instanceof File) {
 				const { path, error } = await uploadVideo(form.data.video);
 				if (error) {
 					return fail(500, withFiles({ message: error.message, form }));
 				}
 				videoPath = path;
-			} else if (form.data.videoUrl) {
-				videoPath = form.data.videoUrl.split('/').pop() ?? '';
+			} else if (typeof form.data.video === 'string') {
+				videoPath = form.data.video.split('/').pop() ?? '';
 			}
 
 			let contextVideoPath = '';
-			if (form.data.context_video) {
+			if (form.data.context_video instanceof File) {
 				const { path, error } = await uploadVideo(form.data.context_video, 'context');
 				if (error) {
 					return fail(500, withFiles({ message: error.message, form }));
 				}
 				contextVideoPath = path;
-			} else if (form.data.context_video_url) {
-				contextVideoPath = form.data.context_video_url.split('/').pop() ?? '';
+			} else if (typeof form.data.context_video === 'string') {
+				contextVideoPath = form.data.context_video.split('/').pop() ?? '';
 			}
 
 			
@@ -95,7 +94,7 @@ export const actions = {
 				created_at: new Date().toISOString(), // Set current timestamp
 				last_changed: new Date().toISOString(), // Set current timestamp
 				is_anotated: data.is_anotated ?? 0, // Default value if not provided
-				written_anotation: data.written_annotation ?? null, // Handle optional fields
+				written_anotation: data.written_anotation ?? null, // Handle optional fields
 				context_video: PUBLIC_SUPABASE_URL +'/storage/v1/object/public/signs/' + contextVideoPath,
 			});
 

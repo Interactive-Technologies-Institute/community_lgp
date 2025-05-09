@@ -1,9 +1,22 @@
+
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { createSignSchema } from '@/schemas/sign';
+import { handleFormAction, handleSignInRedirect } from '@/utils';
+import type { StorageError } from '@supabase/storage-js';
 import type { Parameter, Sign } from '@/types/types';
-import { error } from '@sveltejs/kit';
+import { fail, error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { v4 as uuidv4 } from 'uuid';
+import { superValidate, withFiles } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
-    async function getSignById(id: string): Promise<Sign> {
+    const { session } = await event.locals.safeGetSession();
+        if (!session) {
+            return redirect(302, handleSignInRedirect(event));
+        }
+        
+    async function getSign(id: string): Promise<Sign> {
         const { data: sign, error: signError } = await event.locals.supabase
             .from('signs')
             .select('*')
@@ -16,7 +29,7 @@ export const load = async (event) => {
             throw error(500, errorMessage);
         }
 
-        return sign as Sign;
+        return {...sign};
     }
 
     async function getParameters(): Promise<Parameter[]> {
@@ -47,16 +60,14 @@ export const load = async (event) => {
         return parametersById as Parameter[];
     }
 
-    const signId = event.params.id;
-    let specificSign = null;
+    const sign = await getSign(event.params.id);
     let parametersById: Parameter[] = [];
 
-    if (signId) {
-        specificSign = await getSignById(signId);
+    if (sign) {
 
-        if (specificSign.annotation_array && specificSign.annotation_array.length > 0) {
-			if (specificSign.annotation) {
-				const annotationIds: number[] = Object.values(specificSign.annotation)
+        if (sign.annotation_array && sign.annotation_array.length > 0) {
+			if (sign.annotation) {
+				const annotationIds: number[] = Object.values(sign.annotation)
 					.flat() 
 					.map((id) => parseInt(id, 10)) 
 					.filter((id) => !isNaN(id)); 
@@ -66,12 +77,100 @@ export const load = async (event) => {
 		}
     
         }
-    
+        const safeSign = {
+        ...sign,
+        context_video: sign.context_video ?? '',
+        video: sign.video ?? ''
+    };
     let parameters: Parameter[] = await getParameters();
-
-    return {
-        sign: specificSign,
+        return {
+        sign: safeSign,
+        updateForm: await superValidate(safeSign, zod(createSignSchema), {
+                    id: 'update-sign',
+                }),
         parameters: parameters,
         parametersById: parametersById,
     };
+};
+
+export const actions = {
+    default: async (event) =>
+        handleFormAction(event, createSignSchema, 'update-sign', async (event, userId, form) => {
+            async function uploadVideo(
+                video: File,
+                folder: string = ''
+            ): Promise<{ path: string; error: StorageError | null }> {
+                const fileExt = video.name.split('.').pop();
+                const fileName = `${userId}_${uuidv4()}.${fileExt}`;
+                const filePath = folder ? `${folder}/${fileName}` : fileName;
+
+                const { data: videoFileData, error: videoFileError } = await event.locals.supabase.storage
+                    .from('signs')
+                    .upload(filePath, video);
+
+                if (videoFileError) {
+                    setFlash({ type: 'error', message: videoFileError.message }, event.cookies);
+                    return { path: '', error: videoFileError };
+                }
+
+                return { path: videoFileData.path, error: null };
+            }
+
+           let videoPath = '';
+            if (form.data.video instanceof File) {
+                const { path, error } = await uploadVideo(form.data.video);
+                if (error) {
+                    return fail(500, withFiles({ message: error.message, form }));
+                }
+                videoPath = path;
+            } else if (typeof form.data.video === 'string') {
+                videoPath = form.data.video.split('/').pop() ?? '';
+            }
+
+            let contextVideoPath = '';
+            if (form.data.context_video instanceof File) {
+                const { path, error } = await uploadVideo(form.data.context_video, 'context');
+                if (error) {
+                    return fail(500, withFiles({ message: error.message, form }));
+                }
+                contextVideoPath = path;
+            } else if (typeof form.data.context_video === 'string') {
+                contextVideoPath = form.data.context_video.split('/').pop() ?? '';
+            }
+
+            
+            const { data: existingSign, error: fetchError } = await event.locals.supabase
+            .from('signs')
+            .select('*')
+            .eq('id', parseInt(event.params.id))
+            .single();
+
+            console.log('Fetched sign before update:', existingSign);
+
+            const { videoUrl, context_video_url, ...data } = form.data;
+            console.log('Updating sign with ID:', event.params.id)
+            const { error: supabaseError } = await event.locals.supabase.from('signs').update({
+                annotation: data.annotation,
+                annotation_array: data.annotation_array,
+                is_anotated: data.is_anotated,
+                name: data.name,
+                theme: data.theme,
+                video: videoPath,
+                description: data.description,
+                context_video: contextVideoPath,
+                sentence: data.sentence,
+                written_anotation: data.written_anotation,
+                frequency: data.frequency,
+                district: data.district, 
+            }
+            ).eq('id', parseInt(event.params.id));
+             console.log('Update result:', { data, error });
+             console.log('Type of ID param:', typeof parseInt(event.params.id))
+            if (supabaseError) {
+                setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+                return fail(500, withFiles({ message: supabaseError.message, form }));
+            }
+
+            return redirect(303, '/dictionary');
+        }),
 };

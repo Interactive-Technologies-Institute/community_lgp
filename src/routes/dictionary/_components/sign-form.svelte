@@ -118,12 +118,15 @@ $: {
 		value: $formData.district
 	  }
 	: undefined;
+
+	$: videoUrl = $formData.videoUrl;
+	$: context_video_url = $formData.context_video_url;
 </script>
 
 <form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Introdução</Card.Title>
+			<Card.Title>Entrada</Card.Title>
 			<Card.Description>
 				Para criar uma nova entrada de gesto, adicione o nome da entrada, adicione temas e carregue um vídeo do gesto. 
 				Para carregar o vídeo, deve ser via carregamento de ficheiro.
@@ -185,7 +188,7 @@ $: {
 					<input
 						type="hidden"
 						name="annotation_array"
-						value={JSON.stringify($formData.annotation_array ?? Array(256).fill(0))}
+						value={JSON.stringify($formData.annotation_array ?? Array(300).fill(0))}
 					/>
 					<Form.FieldErrors />
 				</Form.Control>
