@@ -6,9 +6,10 @@
   import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
   import SearchResults from "./SearchResults.svelte";
   import type { AnnotationArray, Parameter } from "@/types/types";
+	import { get } from "svelte/store";
+  import { page } from '$app/stores';
 
   export let parameter: Parameter[];
-
   let searchArray: number[] = Array(300).fill(0);
   let selectedParameterId: number[] = []; // Track selected parent IDs
   let searchResults: { id: number; name: string; video: string }[] = []; // Store search results
@@ -32,9 +33,22 @@
     return parameter.filter(p => p.parent === parentCode);
   }
 
-  async function searchSigns() {
+   async function searchSigns() {
     try {
-      const response = await fetch('/api/dictionary/search', {
+      const type = window.location.pathname.split('/')[1]; // Get the type from the URL
+
+      let apiUrl = '';
+
+      if (type === 'dictionary') {
+        apiUrl = '/api/dictionary/search';
+      } else if (type === 'fcdictionary') {
+        apiUrl = '/api/fcdictionary/search';
+      } else {
+        console.error('Invalid type parameter in URL');
+        return;
+      }
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,8 +62,7 @@
       }
 
       const data = await response.json();
-
-      searchResults = data.signs; 
+      searchResults = data.signs;
       showSearchResults = true;
     } catch (error) {
       console.error('Error fetching signs:', error);

@@ -5,7 +5,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const { searchArray } = await request.json();
 
         // Call the `getSignsBySearch` function with the `searchArray`
-        const { data: signs, error: signsError } = await locals.supabase.rpc('get_closest_signs', {
+        const { data: signs, error: signsError } = await locals.supabase.rpc('get_closest_signs_fc', {
             query_array: searchArray,
         });
 
