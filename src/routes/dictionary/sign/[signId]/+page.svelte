@@ -1,17 +1,7 @@
 <script lang="ts">
-	
-	import * as Card from '$lib/components/ui/card';
-	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import * as Accordion from '$lib/components/ui/accordion';
 	import Badge from '@/components/ui/badge/badge.svelte';
-	import Button from '@/components/ui/button/button.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Carousel from '$lib/components/ui/carousel';
-	
-	import { page } from '$app/stores';
 	import type { Sign } from '@/types/types';
 	import AnnotationShowcase from '../../../../lib/components/dictionary/AnnotationShowcase.svelte';
-
 	export let data;
 	export let sign : Sign | null = data.sign;
 	
@@ -48,6 +38,13 @@
 		  {/if}
 		</h2>
 
+		<h2 class="mt-2 text-lg">Variante Regional: 
+		  {#if sign?.district}
+			  <Badge variant="outline" class="m-1">{sign.district}</Badge>
+		  {:else}
+			Sem variante regional atribuída.
+		  {/if}
+		</h2>
 
 		<h2 class="mt-[360px] text-xl">Descrição textual: 
 			{#if sign?.description}

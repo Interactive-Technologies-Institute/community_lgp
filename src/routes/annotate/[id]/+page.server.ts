@@ -79,8 +79,10 @@ export const load = async (event) => {
         }
         const safeSign = {
         ...sign,
-        context_video: sign.context_video ?? '',
-        video: sign.video ?? ''
+        	context_video: sign.context_video ?? '',
+	        video: sign.video ?? '',
+	        videoUrl: sign.video ?? '',
+	        context_video_url: sign.context_video ?? ''
     };
     let parameters: Parameter[] = await getParameters();
         return {
@@ -138,15 +140,6 @@ export const actions = {
                 contextVideoPath = form.data.context_video.split('/').pop() ?? '';
             }
 
-            
-            const { data: existingSign, error: fetchError } = await event.locals.supabase
-            .from('signs')
-            .select('*')
-            .eq('id', parseInt(event.params.id))
-            .single();
-
-            console.log('Fetched sign before update:', existingSign);
-
             const { videoUrl, context_video_url, ...data } = form.data;
             console.log('Updating sign with ID:', event.params.id)
             const { error: supabaseError } = await event.locals.supabase.from('signs').update({
@@ -155,22 +148,20 @@ export const actions = {
                 is_anotated: data.is_anotated,
                 name: data.name,
                 theme: data.theme,
-                video: videoPath,
+                video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/` + videoPath,
                 description: data.description,
-                context_video: contextVideoPath,
+                context_video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/` + contextVideoPath,
                 sentence: data.sentence,
                 written_anotation: data.written_anotation,
                 frequency: data.frequency,
                 district: data.district, 
             }
             ).eq('id', parseInt(event.params.id));
-             console.log('Update result:', { data, error });
-             console.log('Type of ID param:', typeof parseInt(event.params.id))
             if (supabaseError) {
                 setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
                 return fail(500, withFiles({ message: supabaseError.message, form }));
             }
 
-            return redirect(303, '/dictionary');
+            return redirect(303, '/dictionary/sign/' + event.params.id);
         }),
 };

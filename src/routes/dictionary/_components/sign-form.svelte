@@ -11,6 +11,8 @@
 	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import Annotation from '@/components/dictionary/Annotation.svelte';
+	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
+	import { goto } from '$app/navigation';
 
 	
 
@@ -27,8 +29,8 @@
 	
 	const video = fileProxy(form, 'video');
 	const video2 = fileProxy(form, 'context_video');
-	let videoUrl: string | null | undefined = $formData.videoUrl;
-	let context_video_url: string | null | undefined = $formData.context_video_url;
+	let videoUrl: string | null | undefined = null;
+	let context_video_url: string | null | undefined = null;
 
 	// Handle file uploads
 	let fileInputRef1: HTMLInputElement | null = null;
@@ -119,8 +121,13 @@ $: {
 	  }
 	: undefined;
 
-	$: videoUrl = $formData.videoUrl;
-	$: context_video_url = $formData.context_video_url;
+	$: if (!$video.length && $formData.videoUrl) {
+	videoUrl = $formData.videoUrl;
+}
+
+	$: if (!$video2.length && $formData.context_video_url) {
+		context_video_url = $formData.context_video_url;
+	}
 </script>
 
 <form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
@@ -163,9 +170,13 @@ $: {
 								class="hidden"
 							/>
 							<Card.Root class="aspect-video overflow-hidden">
-								{#if videoUrl}
-									<video src={videoUrl} controls />
-								{/if}
+								<div class="h-[400px] w-full bg-muted flex items-center justify-center">
+									{#if videoUrl}
+										<video src={videoUrl} controls class="h-full w-full object-contain" />
+									{:else}
+										<span class="text-sm text-muted-foreground">Nenhum vídeo carregado</span>
+									{/if}
+								</div>
 							</Card.Root>
 						<input hidden value={$formData.videoUrl} name="videoUrl" />
 
@@ -177,6 +188,7 @@ $: {
 				<Form.Control let:attrs>
 					<Form.Label>Anotação</Form.Label>
 					<!-- bind annotation directly to form.data.annotation -->
+					<ScrollArea class="h-[600px] overflow-auto">
 					<Annotation
 						{parameter}
 						bind:annotation={$formData.annotation}
@@ -185,6 +197,7 @@ $: {
 							$formData.annotation_array = e.detail.annotation_array;
 						}}
 						/>
+						</ScrollArea>
 					<input
 						type="hidden"
 						name="annotation_array"
@@ -216,9 +229,13 @@ $: {
 								class="hidden"
 							/>
 							<Card.Root class="aspect-video overflow-hidden">
-								{#if context_video_url}
-									<video src={context_video_url} controls />
-								{/if}
+								<div class="h-[400px] w-full bg-muted flex items-center justify-center">
+									{#if context_video_url}
+										<video src={context_video_url} controls class="h-full w-full object-contain" />
+									{:else}
+										<span class="text-sm text-muted-foreground">Nenhum vídeo carregado</span>
+									{/if}
+								</div>
 							</Card.Root>
 						<input hidden value={$formData.context_video} name="context_video_url" />
 						<Form.FieldErrors />
@@ -322,7 +339,7 @@ $: {
 	<SuperDebug data={$formData} />
 	{/if}
 	<div class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-		<Button variant="outline">Cancelar</Button>
+		<Button variant="outline" on:click={() => goto('/annotate/')}>Cancelar</Button>
 		<Button type="submit" disabled={$submitting}>
 			{#if $submitting}
 				<Loader2 class="mr-2 h-4 w-4 animate-spin" />

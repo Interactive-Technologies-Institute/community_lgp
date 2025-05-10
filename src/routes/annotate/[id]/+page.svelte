@@ -4,7 +4,7 @@
     export let data;
 </script>
 
-<PageHeader title="Entrada de Gesto" subtitle="Altera esta entrada de gesto, complementando a sua anotação." />
+<PageHeader title="Entrada de Gesto" subtitle="Altere esta entrada de gesto, complementando a sua anotação." />
 <div class="container mx-auto mb-20">
 	<SignForm data={data.updateForm} user={data.user} parameter={data.parameters}/>
 </div>

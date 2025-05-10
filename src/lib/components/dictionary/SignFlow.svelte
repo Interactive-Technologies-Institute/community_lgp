@@ -1,12 +1,11 @@
 <script lang="ts">
     export let signs: Sign[];
     export let theme;
-    import { onMount } from "svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Carousel from "$lib/components/ui/carousel/index.js";
     import type { Sign } from "@/types/types";
+	import Badge from '@/components/ui/badge/badge.svelte';
 
-    
     let sign;
     $: sign;
 </script>
@@ -37,6 +36,12 @@
                                         </video>
                                   
                                 <a href="/dictionary/sign/{sign.id}" class="text-l pt-9 py-5">{sign.name}</a>
+                                {#each sign.theme as t}
+                                    {#if t}
+                                        <Badge class="w-fit" variant="outline">{t}</Badge>
+                                    {/if}
+                                {/each}
+                                
                             </div>
                             </Card.Content>
                         </Card.Root>
