@@ -8,6 +8,7 @@
     let signs: Sign[] = data.signs;
     let nonAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated == 0);
     let semiAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated == 1);
+    let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated == 2);
 </script>
 
 <PageHeader title="Anotações" subtitle="Anote ou altere as anotações de um gesto." />
@@ -27,5 +28,12 @@
         <p class="text-sm text-gray-500">Anotações que foram parcialmente feitas.</p>
         <Separator class="my-4 w-[40%]" />
         <AnnotateTable signs={semiAnotatedSigns} />
+    </div>
+
+    <div class="col-span-2 px-72 py-8">
+        <h2 class="text-2xl font-bold">Anotações Concluídas</h2>
+        <p class="text-sm text-gray-500">Anotações que foram concluídas.</p>
+        <Separator class="my-4 w-[40%]" />
+        <AnnotateTable signs={fullyAnotatedSigns} />
     </div>
 </div>
