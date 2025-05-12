@@ -150,7 +150,7 @@ export const actions = {
                 theme: data.theme,
                 video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/` + videoPath,
                 description: data.description,
-                context_video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/` + contextVideoPath,
+                context_video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/context/` + contextVideoPath,
                 sentence: data.sentence,
                 written_anotation: data.written_anotation,
                 frequency: data.frequency,
