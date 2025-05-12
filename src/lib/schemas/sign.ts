@@ -31,6 +31,7 @@ export const createSignSchema = z.object({
 	is_anotated: z.number().optional(),
 	name: z.string().min(1, { message: 'Name is required' }).max(100),
 	theme: z.array(z.string()).min(1, { message: 'At least one theme is required' }),
+	theme_flattened: z.string().optional(),
 	videoUrl: z.string().optional(),
 	video: z.union([z.string(), z.instanceof(File).optional()]),
 	description: z.string().nullable().optional(),

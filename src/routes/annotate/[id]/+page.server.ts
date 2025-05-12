@@ -148,6 +148,7 @@ export const actions = {
                 is_anotated: data.is_anotated,
                 name: data.name,
                 theme: data.theme,
+                theme_flattened: data.theme_flattened,
                 video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/` + videoPath,
                 description: data.description,
                 context_video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/context/` + contextVideoPath,

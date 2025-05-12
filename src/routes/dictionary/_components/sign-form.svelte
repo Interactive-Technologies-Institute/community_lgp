@@ -48,6 +48,8 @@
 		}
 	};
 
+	$: $formData.theme_flattened = ($formData.theme ?? []).join(', ');
+
 	$: {
 	if ($video.length > 0) {
 		const file = $video.item(0);
@@ -154,7 +156,7 @@ $: {
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-
+			<input hidden value={$formData.theme_flattened} name="theme_flattened" />
 			<div class="flex">
 				<Form.Field {form} name="video">
 					<Form.Control let:attrs>
