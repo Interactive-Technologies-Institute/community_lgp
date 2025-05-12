@@ -255,6 +255,7 @@ $: {
 					<Select.Value placeholder="Selecione o distrito ou região autónoma a que esta entrada pertence." />
 					</Select.Trigger>
 					<Select.Content>
+						<ScrollArea class="h-[600px] overflow-auto">
 					<Select.Item value="geral" label="Geral" />
 					<Select.Item value="açores" label="Açores" />
 					<Select.Item value="aveiro" label="Aveiro" />
@@ -276,6 +277,7 @@ $: {
 					<Select.Item value="viana_do_castelo" label="Viana do Castelo" />
 					<Select.Item value="vila_real" label="Vila Real" />
 					<Select.Item value="viseu" label="Viseu" />
+					</ScrollArea>
 					</Select.Content>
 				</Select.Root>
 				<input hidden bind:value={$formData.frequency} name={attrs.name} />
