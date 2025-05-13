@@ -1,8 +1,13 @@
 import type { AnnotationArray, Sign } from '@/types/types';
-import { error } from '@sveltejs/kit';
+import { handleSignInRedirect } from '@/utils';
+import { error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 
 export const load = async (event) => {
+    const { session } = await event.locals.safeGetSession();
+            if (!session) {
+                return redirect(302, handleSignInRedirect(event));
+            }
     async function getSigns(): Promise<Sign[]> {
         const { data: signs, error: signsError } = await event.locals.supabase
             .from('signs')

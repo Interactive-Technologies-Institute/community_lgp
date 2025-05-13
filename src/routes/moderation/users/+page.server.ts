@@ -1,12 +1,16 @@
 import { updateUserRoleSchema } from '@/schemas/user-role';
 import type { UserProfile } from '@/types/types';
-import { handleFormAction } from '@/utils';
-import { error, fail } from '@sveltejs/kit';
+import { handleFormAction, handleSignInRedirect } from '@/utils';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const load = async (event) => {
+	const { session } = await event.locals.safeGetSession();
+			if (!session) {
+				return redirect(302, handleSignInRedirect(event));
+			}
 	async function getUsers(): Promise<UserProfile[]> {
 		const query = event.locals.supabase.from('profiles_view').select('*');
 
