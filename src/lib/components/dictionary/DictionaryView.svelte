@@ -7,8 +7,8 @@
 	import type { Sign } from "@/types/types";
 
     // Only include themes that actually have matching signs
-	$: visibleThemes = themes?.filter((theme : string) =>
-		signs?.some((sign : Sign) => sign.theme.includes(theme))
+	$: visibleThemes = themes?.filter((theme: string) =>
+	signs?.some((sign: Sign) => sign.theme?.includes?.(theme))
 	) ?? [];
 </script>
 
