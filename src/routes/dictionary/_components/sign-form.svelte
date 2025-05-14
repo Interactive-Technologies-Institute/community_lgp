@@ -21,6 +21,7 @@
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;	
 	export let parameter;
+	let signParameters = data.data.annotation;
 
 	const form = superForm(data, {
 		validators: zodClient(createSignSchema),
