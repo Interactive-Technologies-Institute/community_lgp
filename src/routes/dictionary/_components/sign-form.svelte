@@ -14,14 +14,27 @@
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
 	import AnnotationShowcase from '@/components/dictionary/AnnotationShowcase.svelte';
-	import type { Parameter } from '@/types/types';
+	import type { AnnotationArray, Parameter } from '@/types/types';
 
 	
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;	
-	export let parameter;
-	let signParameters = data.data.annotation;
+	export let parameter : Parameter[];
+	
+
+	function getParameters(annotation : AnnotationArray) {
+		const parameterFilter : Parameter[] = [];
+		let flatAnnotation = Object.values(annotation || {}).flat();
+		parameter.filter((param : Parameter) => {
+			if (flatAnnotation.includes(param.id)) {
+				parameterFilter.push(param);
+			}
+		});
+		return parameterFilter;
+	}
+
+	let signParameters = getParameters(data.data.annotation ?? { configuration: [], movement: [], location: [], orientation: [], expression: [] });
 
 	const form = superForm(data, {
 		validators: zodClient(createSignSchema),
@@ -196,7 +209,7 @@ $: {
 					<Form.Label>Anotação</Form.Label>
 					<!-- bind annotation directly to form.data.annotation -->
 					 
-					 <AnnotationShowcase data={[]} />
+					 <AnnotationShowcase data={signParameters} />
 					<ScrollArea class="h-[600px] overflow-auto">
 					<Annotation
 						{parameter}
