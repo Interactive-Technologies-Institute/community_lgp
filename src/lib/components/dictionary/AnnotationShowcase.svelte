@@ -7,7 +7,6 @@
   export let data: Parameter[];
  
   
-
   const orderedKeys: string[] = ['configuracao', 'orientacao', 'localizacao', 'movimento', 'expressao facial'];
 
 
