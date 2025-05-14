@@ -20,7 +20,7 @@
         class="w-full max-w-[1250px]"
     >
         <Carousel.Content>
-            {#each signs.filter(sign => sign.theme.includes(theme)) as sign}
+            {#each signs.filter(sign => sign.theme.includes(theme)) as sign (sign.id)}
                 <Carousel.Item class="md:basis-2/3 lg:basis-1/3">
                     <div class="p-1">
                         <Card.Root class="rounded-2xl">
