@@ -16,12 +16,7 @@
 <PageHeader title="Anotações" subtitle="Crie uma nova entrada de um gesto, anote ou altere as anotações de um gesto." />
 
 <div class="flex items-start justify-start mx-72">
-{#if data?.user?.role == 'moderator' || data?.user?.role == 'admin'}
-		<Button href="/dictionary/sign/create" class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2">
-			<PlusCircle class="h-4 w-4 sm:mr-2" />
-			<span class="sr-only sm:not-sr-only">Adicionar entrada de gesto</span>
-		</Button>
-		{/if}	
+
     </div>
 <div class="grid grid-cols-2 gap-4">
     

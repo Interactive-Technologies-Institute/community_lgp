@@ -9,6 +9,8 @@
 	import * as Pagination from "$lib/components/ui/pagination";
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
+	import { PlusCircle } from 'lucide-svelte';
+	import Button from '../ui/button/button.svelte';
 	export let data;
 	let signs: Sign[] = [];
 	
@@ -77,6 +79,13 @@
             <TagFilterButton tags={data.themes} bind:filterValues={$theme} />
 		</div>
 		
+		{#if data?.user?.role == 'moderator' || data?.user?.role == 'admin'}
+		<Button href="/dictionary/sign/create" class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2">
+			<PlusCircle class="h-4 w-4 sm:mr-2" />
+			<span class="sr-only sm:not-sr-only">Adicionar entrada de gesto</span>
+		</Button>
+		{/if}	
+
 	</div>
 
 	{#if isLoading}

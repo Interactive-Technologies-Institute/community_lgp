@@ -14,14 +14,14 @@
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
 	import AnnotationShowcase from '@/components/dictionary/AnnotationShowcase.svelte';
+	import type { Parameter } from '@/types/types';
 
 	
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;	
 	export let parameter;
-	export let parametersById;
-	$: parametersById;
+	
 	const form = superForm(data, {
 		validators: zodClient(createSignSchema),
 		taintedMessage: true,
@@ -134,6 +134,9 @@ $: {
 	$: if (!$video2.length && $formData.context_video_url) {
 		context_video_url = $formData.context_video_url;
 	}
+
+	let parametersById: Parameter[] = Array.isArray($formData.annotation) ? $formData.annotation as Parameter[] : [];
+	$: parametersById;
 </script>
 
 <form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
@@ -194,6 +197,7 @@ $: {
 				<Form.Control let:attrs>
 					<Form.Label>Anotação</Form.Label>
 					<!-- bind annotation directly to form.data.annotation -->
+					 
 					 <AnnotationShowcase data={parametersById} />
 					<ScrollArea class="h-[600px] overflow-auto">
 					<Annotation
