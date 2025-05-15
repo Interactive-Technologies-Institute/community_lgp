@@ -4,7 +4,6 @@
 	import AnnotationShowcase from '../../../../lib/components/dictionary/AnnotationShowcase.svelte';
 	export let data;
 	export let sign : Sign | null = data.sign;
-	
 </script>
 
 <!-- svelte-ignore a11y-media-has-caption -->
@@ -17,18 +16,20 @@
 	
 		<AnnotationShowcase data={data.parameters} />
 
-		<h2 class="text-2xl">Utilização em Contexto</h2>
+		{#if sign?.context_video}
 		<video class="w-full h-auto rounded-2xl" controls playsinline>
+			
 			<source src={sign?.context_video} type="video/mp4" />
 			Your browser does not support the video tag.
 		  </video>
+		{/if}
 	  </div>
   
     
     <div class="flex flex-col justify-start ml-10">
 		<h1 class="text-2xl font-bold">{sign?.name}</h1>
 	
-		<h2 class="mt-2 text-lg">Temas: 
+		<h2 class="mt-2 text-lg">
 		  {#if sign?.theme}
 			{#each sign?.theme as t}
 			  <Badge variant="outline" class="m-1">{t}</Badge>
@@ -38,29 +39,22 @@
 		  {/if}
 		</h2>
 
-		<h2 class="mt-2 text-lg">Variante Regional: 
+		<h2 class="mt-2 text-lg">
 		  {#if sign?.district}
 			  <Badge variant="outline" class="m-1">{sign.district}</Badge>
-		  {:else}
-			Sem variante regional atribuída.
 		  {/if}
 		</h2>
 
-		<h2 class="mt-[360px] text-xl">Descrição textual: 
+		<h2 class="mt-[360px] text-xl">
 			{#if sign?.description}
 			  {sign?.description}
-			{:else}
-			  Sem descrição atribuída.
 			{/if}
 		</h2>
 		
 
 		<h2 class="mt-[300px] text-xl">
-			Frase em Português:
 			{#if sign?.sentence}
 			  {sign?.sentence}
-			{:else}
-			  Sem frase atribuída.
 			{/if}
 		</h2>
 	  </div>
