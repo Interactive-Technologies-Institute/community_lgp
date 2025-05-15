@@ -142,46 +142,46 @@
 <ScrollArea class="h-[700px] overflow-auto px-2">
   <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
     {#each filterByType(selectedTab) as parent}
-      {#if parent.is_parent}
-        <Card.Root class="{selectedParameterIds.includes(parent.id) ? 'border-2 border-blue-500' : 'border'} bg-white">
-          <Card.Content class="flex flex-col items-center gap-2 p-4">
-            <!-- Parent Button/Image -->
-            {#if parent.image}
-              <img
-                src={parent.image}
-                alt={parent.name ?? parent.code}
-                class="w-full h-32 object-contain cursor-pointer"
-                on:click={() => toggleParameter(parent)}
-              />
-            {:else}
-              <Button class="text-wrap" on:click={() => toggleParameter(parent)}>
-                {parent.name ?? parent.code}
-              </Button>
-            {/if}
+    {#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? ''))}
+  <Card.Root class="{selectedParameterIds.includes(parent.id) ? 'border-2 border-blue-500' : 'border'} bg-white">
+    <Card.Content class="flex flex-col items-center gap-2 p-4">
+      <!-- Parent Button/Image or fallback to name -->
+        {#if parent.image}
+          <img
+            src={parent.image}
+            alt={parent.name ?? parent.code}
+            class="w-full h-32 object-contain cursor-pointer"
+            on:click={() => toggleParameter(parent)}
+          />
+        {:else}
+          <div 
+            class="w-full h-32 flex items-center justify-center text-center font-semibold cursor-pointer"
+            on:click={() => toggleParameter(parent)}
+          >
+            {parent.name}
+          </div>
+        {/if}
 
-            <!-- Children -->
-            {#if parent.code}
-              <div class="grid grid-cols-4 gap-2 mt-2 max-h-32 overflow-y-auto">
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                {#each getChildren(parent.code) as child}
-                  <div
-                    class="flex flex-col items-center justify-center text-xs cursor-pointer rounded-md text-center {selectedParameterIds.includes(child.id) ? 'border-2 border-blue-500' : ''}"
-                    on:click={() => toggleParameter(child)}
-                  >
-                    {#if child.image}
-                      <img src={child.image} alt={child.name ?? child.code} class="w-full h-[60px] aspect-square  rounded-md" />
-                    {:else}
-                      <span>{child.name ?? child.code}</span>
-                    {/if}
-                  </div>
-                {/each}
-              </div>
-            {/if}
-          </Card.Content>
-        </Card.Root>
-      {/if}
+        <!-- Children -->
+        {#if parent.code}
+          <div class="grid grid-cols-4 gap-2 mt-2 max-h-32 overflow-y-auto">
+            {#each getChildren(parent.code) as child}
+              {#if child.image}
+                <div
+                  class="flex flex-col items-center justify-center text-xs cursor-pointer rounded-md text-center {selectedParameterIds.includes(child.id) ? 'border-2 border-blue-500' : ''}"
+                  on:click={() => toggleParameter(child)}
+                >
+                  <img src={child.image} alt={child.name ?? child.code} class="w-full h-[60px] aspect-square rounded-md" />
+                </div>
+              {/if}
+            {/each}
+          </div>
+        {/if}
+      </Card.Content>
+    </Card.Root>
+  {/if}
     {/each}
+    
   </div>
 
 </ScrollArea>
