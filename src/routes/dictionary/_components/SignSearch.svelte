@@ -142,7 +142,7 @@
 <ScrollArea class="h-[700px] overflow-auto px-2">
   <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
     {#each filterByType(selectedTab) as parent}
-    {#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? ''))}
+    {#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? '') || ['2ebj'].includes(parent.code?.toLowerCase() ?? ''))}
   <Card.Root class="{selectedParameterIds.includes(parent.id) ? 'border-2 border-blue-500' : 'border'} bg-white">
     <Card.Content class="flex flex-col items-center gap-2 p-4">
       <!-- Parent Button/Image or fallback to name -->
@@ -158,7 +158,8 @@
             class="w-full h-32 flex items-center justify-center text-center font-semibold cursor-pointer"
             on:click={() => toggleParameter(parent)}
           >
-            {parent.name}
+            <div class="text-black font-semibold">{parent.name ?? parent.code}
+              </div>
           </div>
         {/if}
 
