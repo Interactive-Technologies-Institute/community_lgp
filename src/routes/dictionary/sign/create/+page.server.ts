@@ -86,7 +86,7 @@ export const actions = {
 
 			
 			const { videoUrl, context_video_url, ...data } = form.data;
-			const { error: supabaseError } = await event.locals.supabase.from('signs').insert({
+			const { data: insertedSign, error: supabaseError } = await event.locals.supabase.from('signs').insert({
 				...data,
 				
 				video: PUBLIC_SUPABASE_URL +'/storage/v1/object/public/signs//' + videoPath,
@@ -96,13 +96,15 @@ export const actions = {
 				is_anotated: data.is_anotated ?? 0, // Default value if not provided
 				written_anotation: data.written_anotation ?? null, // Handle optional fields
 				context_video: PUBLIC_SUPABASE_URL +'/storage/v1/object/public/signs/' + contextVideoPath,
-			});
+			})
+			.select()
+			.single();
 
 			if (supabaseError) {
 				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 				return fail(500, withFiles({ message: supabaseError.message, form }));
 			}
 
-			return redirect(303, '/dictionary');
+			return redirect(303, `/dictionary/sign/${insertedSign.id}`);
 		}),
 };

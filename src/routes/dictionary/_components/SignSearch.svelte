@@ -111,15 +111,15 @@
     }
   }
 
-  
+  let isOpen = false;
 
   afterNavigate(() => {
   signs = signs ?? [];
 });
 </script>
 
-<Popover.Root>
-  <Popover.Trigger>
+<Popover.Root bind:open={isOpen}>
+  <Popover.Trigger on:click={() => (isOpen = true)}>
     <Button>Procurar por Gesto</Button>
   </Popover.Trigger>
 
@@ -135,7 +135,7 @@
       {tab.displayName}
     </Button>
   {/each}
-  <Button on:click={searchSigns} class="bg-blue-600 text-white">Procurar</Button>
+  <Button on:click={() => { searchSigns(); (isOpen=false); }} class="bg-blue-600 text-white">Procurar</Button>
 </div>
 
 <!-- Parameter Selection -->
