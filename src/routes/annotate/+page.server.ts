@@ -12,17 +12,18 @@ export const load = async (event) => {
         const { data: signs, error: signsError } = await event.locals.supabase
             .from('signs')
             .select('*')
-            .in('is_anotated', [0, 1, 2]);
-
+            .in('is_anotated', [0, 1, 2])
+            .limit(4000);
         if (signsError) {
             console.error('Error fetching signs:', signsError);
             return [];
         }
-
         return signs as Sign[];
+        
     }
 
     return {
         signs: await getSigns(),
+        
     };
 };

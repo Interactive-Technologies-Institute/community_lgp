@@ -17,7 +17,7 @@ function parseAnnotationFromUrl(params: URLSearchParams): AnnotationArray {
 
 export const load = async (event) => {  
     const page = Number(event.url.searchParams.get('page')) || 1;
-    const perPage = 10;
+    const perPage = 9;
     const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
     const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
     let totalPages = 0;

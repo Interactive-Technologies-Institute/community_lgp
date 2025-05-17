@@ -11,6 +11,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { PlusCircle } from 'lucide-svelte';
 	import Button from '../ui/button/button.svelte';
+	import SearchBar from './SearchBar.svelte';
 	export let data;
 	let signs: Sign[] = [];
 	
@@ -31,7 +32,7 @@
 	let errorMessage = '';
 
 	let totalPages = data.totalPages ?? 1;
-	let perPage = data.perPage ?? 10;
+	let perPage = data.perPage ?? 9;
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
 	});
@@ -69,18 +70,9 @@
 
 <div>
 	<div class="container mx-auto flex flex-row justify-between gap-x-2 py-5">
-		<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
-			<Input placeholder="Procura por texto..." class="flex-1 sm:max-w-64" bind:value={$search}></Input>
-			<SignSearch
-				{parameters}
-				{signs}
-				on:updateSigns={(e) => {signs = e.detail; console.log('Updated signs:', signs)}}
-			/>
-            <TagFilterButton tags={data.themes} bind:filterValues={$theme} />
-		</div>
-		
-		
-
+		<SearchBar {data} {signs} {parameters} 
+		on:updateSigns={(e) => {signs = e.detail; console.log('Updated signs from main layout:', signs)}}
+		on:updateIsFiltering={(e) => {isFiltering = e.detail;}}/>
 	</div>
 
 	{#if isLoading}
@@ -89,9 +81,10 @@
 	{#if errorMessage}
 		<p class="error">{errorMessage}</p>
 	{/if}
-
-	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} />
-	
+	<div class="pb-4">
+	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} {parameters} {isFiltering}/>
+	</div>
+	{#if isFiltering}
 	<div class ="flex justify-start items-start pb-5">
 		<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
 			<Pagination.Content class="flex justify-center items-center gap-2">
@@ -127,4 +120,5 @@
 			</Pagination.Content>
 		  </Pagination.Root>
 </div>
+{/if}
 </div>

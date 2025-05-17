@@ -8,9 +8,9 @@
 
     export let data;
     let signs: Sign[] = data.signs;
-    let nonAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated == 0);
-    let semiAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated == 1);
-    let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated == 2);
+    let nonAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 0);
+    let semiAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 1);
+    let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 2);
 </script>
 
 <PageHeader title="Anotações" subtitle="Crie uma nova entrada de um gesto, anote ou altere as anotações de um gesto." />

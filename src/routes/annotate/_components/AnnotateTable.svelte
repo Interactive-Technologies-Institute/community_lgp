@@ -50,6 +50,8 @@
   } = table.createViewModel(columns);
 
   const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
+
+  console.log('signs length ', signs.length);
 </script>
 
 <!-- 🔍 Local search bar -->
