@@ -5,10 +5,10 @@
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import TagFilterButton from '@/components/tag-filter-button.svelte';
 	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
-	import SignSearch from '../../../routes/dictionary/_components/SignSearch.svelte';
+	import SignSearch from './SignSearch.svelte';
 	import * as Pagination from "$lib/components/ui/pagination";
 	import { browser } from '$app/environment';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 	import { PlusCircle } from 'lucide-svelte';
 	import Button from '../ui/button/button.svelte';
 	import SearchBar from './SearchBar.svelte';
@@ -57,13 +57,15 @@
 
 	function goToPreviousPage() {
  	 	if (currentPageNumber > 1) {
-    		location.href = buildUrlWithUpdatedPage(currentPageNumber - 1);
+    		const newUrl = buildUrlWithUpdatedPage(currentPageNumber - 1);
+			goto(newUrl);
   		}
 	}
 
 	function goToNextPage() {
 		if(currentPageNumber < totalPages) {
-			location.href = buildUrlWithUpdatedPage(currentPageNumber + 1);
+			const newUrl = buildUrlWithUpdatedPage(currentPageNumber + 1);
+			goto(newUrl);
 		}
 	}
 </script>
@@ -103,7 +105,7 @@
 				{:else}
 				  <Pagination.Item>
 					<Pagination.Link {page} isActive={currentPageNumber == page.value}>
-						<a href="{buildUrlWithUpdatedPage(page.value)}" data-sveltekit-reload>
+						<a href="{buildUrlWithUpdatedPage(page.value)}">
 							{page.value}
 						</a>
 					</Pagination.Link>

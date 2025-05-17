@@ -7,7 +7,7 @@
     import Button from '../ui/button/button.svelte';
     import * as Tabs from "$lib/components/ui/tabs";
     import TagFilterButton from '@/components/tag-filter-button.svelte';
-	import SignSearch from '../../../routes/dictionary/_components/SignSearch.svelte';
+	import SignSearch from './SignSearch.svelte';
 	import { queryParam } from 'sveltekit-search-params';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { createEventDispatcher } from 'svelte';
@@ -69,7 +69,7 @@
                     <div class ="flex flex-row gap-x-3">
                     <Input
                         placeholder="Escreva uma palavra..."
-                        class="flex-1 w-[628px]"
+                        class="flex-1 w-[564px]"
                         bind:value={localSearch}
                         on:keydown={(e) => {
                             if (e.key === 'Enter') doSearch();
