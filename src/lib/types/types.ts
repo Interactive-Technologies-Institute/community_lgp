@@ -1,6 +1,13 @@
 import type { User } from '@supabase/supabase-js';
 
-export type Feature = 'annotate' |'dictionary' | 'fcdictionary' | 'map' | 'guides' | 'events' | 'docs';
+export type Feature =
+	| 'annotate'
+	| 'dictionary'
+	| 'fcdictionary'
+	| 'map'
+	| 'guides'
+	| 'events'
+	| 'docs';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -149,8 +156,8 @@ export type Sign = {
 		configuration: string;
 		movement: string[];
 		orientation: string[];
-	}| null;
-	description?: string | null ;
+	} | null;
+	description?: string | null;
 	context_video?: string | null;
 	sentence?: string | null;
 	frequency: 0 | 1 | 2;
@@ -163,7 +170,7 @@ export type AnnotationArray = {
 	location: number[];
 	orientation: number[];
 	expression: number[];
-} 
+};
 
 export type Parameter = {
 	id: number;

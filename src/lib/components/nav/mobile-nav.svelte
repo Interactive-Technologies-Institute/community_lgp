@@ -103,20 +103,20 @@
 					</a>
 				</FeatureWrapper>
 				{#if role === 'admin' || role === 'moderator'}
-				<FeatureWrapper feature="annotate">
-					<a
-						href="/annotate"
-						on:click={() => (open = false)}
-						class={cn(
-							'transition-colors hover:text-foreground/80',
-							$page.url.pathname.startsWith('/dictionary')
-								? 'text-foreground'
-								: 'text-foreground/60'
-						)}
-					>
-						Anotação
-					</a>
-				</FeatureWrapper>
+					<FeatureWrapper feature="annotate">
+						<a
+							href="/annotate"
+							on:click={() => (open = false)}
+							class={cn(
+								'transition-colors hover:text-foreground/80',
+								$page.url.pathname.startsWith('/dictionary')
+									? 'text-foreground'
+									: 'text-foreground/60'
+							)}
+						>
+							Anotação
+						</a>
+					</FeatureWrapper>
 				{/if}
 			</nav>
 		</ScrollArea>

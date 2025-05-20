@@ -15,29 +15,25 @@ export const load = async (event) => {
 		return redirect(302, handleSignInRedirect(event));
 	}
 	async function getParameters(): Promise<Parameter[]> {
-				const { data: parameters, error: parametersError } = await event.locals.supabase
-					.from('parameters')
-					.select('*');
-		
-				if (parametersError) {
-					const errorMessage = 'Error fetching parameters, please try again later.';
-					setFlash({ type: 'error', message: errorMessage }, event.cookies);
-					return error(500, errorMessage);
-				}
-				return parameters as Parameter[];
-			}
-			
+		const { data: parameters, error: parametersError } = await event.locals.supabase
+			.from('parameters')
+			.select('*');
+
+		if (parametersError) {
+			const errorMessage = 'Error fetching parameters, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+		return parameters as Parameter[];
+	}
+
 	return {
 		createForm: await superValidate(zod(createSignSchema), {
 			id: 'create-sign',
 		}),
 		parameters: await getParameters(),
 	};
-
-	
 };
-
-
 
 export const actions = {
 	default: async (event) =>
@@ -84,21 +80,23 @@ export const actions = {
 				contextVideoPath = form.data.context_video.split('/').pop() ?? '';
 			}
 
-			
 			const { videoUrl, context_video_url, ...data } = form.data;
-			const { data: insertedSign, error: supabaseError } = await event.locals.supabase.from('signs').insert({
-				...data,
-				
-				video: PUBLIC_SUPABASE_URL +'/storage/v1/object/public/signs//' + videoPath,
-				annotation_array: data.annotation_array ?? Array(300).fill(0), // Match field name
-				created_at: new Date().toISOString(), // Set current timestamp
-				last_changed: new Date().toISOString(), // Set current timestamp
-				is_anotated: data.is_anotated ?? 0, // Default value if not provided
-				written_anotation: data.written_anotation ?? null, // Handle optional fields
-				context_video: PUBLIC_SUPABASE_URL +'/storage/v1/object/public/signs/' + contextVideoPath,
-			})
-			.select()
-			.single();
+			const { data: insertedSign, error: supabaseError } = await event.locals.supabase
+				.from('signs')
+				.insert({
+					...data,
+
+					video: PUBLIC_SUPABASE_URL + '/storage/v1/object/public/signs//' + videoPath,
+					annotation_array: data.annotation_array ?? Array(300).fill(0), // Match field name
+					created_at: new Date().toISOString(), // Set current timestamp
+					last_changed: new Date().toISOString(), // Set current timestamp
+					is_anotated: data.is_anotated ?? 0, // Default value if not provided
+					written_anotation: data.written_anotation ?? null, // Handle optional fields
+					context_video:
+						PUBLIC_SUPABASE_URL + '/storage/v1/object/public/signs/' + contextVideoPath,
+				})
+				.select()
+				.single();
 
 			if (supabaseError) {
 				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);

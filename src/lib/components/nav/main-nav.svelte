@@ -4,7 +4,6 @@
 	import FeatureWrapper from '../feature-wrapper.svelte';
 	import type { UserProfile, UserRole } from '@/types/types';
 
-	
 	export let role: UserRole;
 </script>
 
@@ -81,17 +80,17 @@
 			</a>
 		</FeatureWrapper>
 		{#if role === 'admin' || role === 'moderator'}
-		<FeatureWrapper feature="annotate">
-			<a
-				href="/annotate"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/annotate') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Anotação
-			</a>
-		</FeatureWrapper>
+			<FeatureWrapper feature="annotate">
+				<a
+					href="/annotate"
+					class={cn(
+						'transition-colors hover:text-foreground/80',
+						$page.url.pathname.startsWith('/annotate') ? 'text-foreground' : 'text-foreground/60'
+					)}
+				>
+					Anotação
+				</a>
+			</FeatureWrapper>
 		{/if}
 	</nav>
 </div>

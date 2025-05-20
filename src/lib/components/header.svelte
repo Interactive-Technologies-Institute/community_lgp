@@ -20,8 +20,8 @@
 			<MainNav {role} />
 			<MobileNav {role} />
 		{:else}
-		<MainNav role={'user'} />
-		<MobileNav role={'user'} />
+			<MainNav role={'user'} />
+			<MobileNav role={'user'} />
 		{/if}
 		<div class="ml-auto flex items-center gap-x-2 sm:gap-x-4 md:justify-end">
 			<ModeToggle />

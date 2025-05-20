@@ -6,7 +6,7 @@
 	import TagFilterButton from '@/components/tag-filter-button.svelte';
 	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
 	import SignSearch from './SignSearch.svelte';
-	import * as Pagination from "$lib/components/ui/pagination";
+	import * as Pagination from '$lib/components/ui/pagination';
 	import { browser } from '$app/environment';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { PlusCircle } from 'lucide-svelte';
@@ -14,19 +14,14 @@
 	import SearchBar from './SearchBar.svelte';
 	export let data;
 	let signs: Sign[] = [];
-	
+
 	afterNavigate(() => {
-	signs = data?.signs ?? [];
+		signs = data?.signs ?? [];
 	});
 
-	
-	let allThemes = data?.themes ? Array.from(data.themes.keys()) as string[] : [];
-	const desiredThemes = [
-		"(1ºCEB) PORTUGUÊS",
-		"1ºCEB-ESTUDO DO MEIO",
-		"(1ºCEB) MATEMÁTICA"
-	];
-	let initialThemes = allThemes.filter(theme => desiredThemes.includes(theme));
+	let allThemes = data?.themes ? (Array.from(data.themes.keys()) as string[]) : [];
+	const desiredThemes = ['(1ºCEB) PORTUGUÊS', '1ºCEB-ESTUDO DO MEIO', '(1ºCEB) MATEMÁTICA'];
+	let initialThemes = allThemes.filter((theme) => desiredThemes.includes(theme));
 	let parameters: Parameter[] = data.parameters;
 	let isLoading = false;
 	let errorMessage = '';
@@ -45,9 +40,9 @@
 	});
 
 	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0;
-	$: $search = data.search || $search; 
+	$: $search = data.search || $search;
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
-	
+
 	function buildUrlWithUpdatedPage(page: number): string {
 		if (!browser) return '#'; // SSR-safe fallback
 		const url = new URL(window.location.href);
@@ -56,14 +51,14 @@
 	}
 
 	function goToPreviousPage() {
- 	 	if (currentPageNumber > 1) {
-    		const newUrl = buildUrlWithUpdatedPage(currentPageNumber - 1);
+		if (currentPageNumber > 1) {
+			const newUrl = buildUrlWithUpdatedPage(currentPageNumber - 1);
 			goto(newUrl);
-  		}
+		}
 	}
 
 	function goToNextPage() {
-		if(currentPageNumber < totalPages) {
+		if (currentPageNumber < totalPages) {
 			const newUrl = buildUrlWithUpdatedPage(currentPageNumber + 1);
 			goto(newUrl);
 		}
@@ -72,9 +67,17 @@
 
 <div>
 	<div class="container mx-auto flex flex-row justify-between gap-x-2 py-5">
-		<SearchBar {data} {signs} {parameters} 
-		on:updateSigns={(e) => {signs = e.detail; console.log('Updated signs from main layout:', signs)}}
-		on:updateIsFiltering={(e) => {isFiltering = e.detail;}}/>
+		<SearchBar
+			{data}
+			{signs}
+			{parameters}
+			on:updateSigns={(e) => {
+				signs = e.detail;
+			}}
+			on:updateIsFiltering={(e) => {
+				isFiltering = e.detail;
+			}}
+		/>
 	</div>
 
 	{#if isLoading}
@@ -84,43 +87,49 @@
 		<p class="error">{errorMessage}</p>
 	{/if}
 	<div class="pb-4">
-	<DictionaryView {signs} themes={isFiltering ? allThemes : initialThemes} {parameters} {isFiltering}/>
+		<DictionaryView
+			{signs}
+			themes={isFiltering ? allThemes : initialThemes}
+			{parameters}
+			{isFiltering}
+		/>
 	</div>
 	{#if isFiltering}
-	<div class ="flex justify-start items-start pb-5">
-		<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
-			<Pagination.Content class="flex justify-center items-center gap-2">
-			  
-			  <Pagination.Item>
-				<Pagination.PrevButton on:click={goToPreviousPage} disabled={currentPageNumber === 1}>
-				  Anterior
-				</Pagination.PrevButton>
-			  </Pagination.Item>
-		  
-			  {#each pages as page (page.key)}
-				{#if page.type === "ellipsis"}
-				  <Pagination.Item>
-					<Pagination.Ellipsis />
-				  </Pagination.Item>
-				{:else}
-				  <Pagination.Item>
-					<Pagination.Link {page} isActive={currentPageNumber == page.value}>
-						<a href="{buildUrlWithUpdatedPage(page.value)}">
-							{page.value}
-						</a>
-					</Pagination.Link>
-				  </Pagination.Item>
-				{/if}
-			  {/each}
-		  
-			  <Pagination.Item>
-				<Pagination.NextButton on:click={goToNextPage} disabled={parseInt($page ?? '1') === totalPages}>
-				  Próximo
-				</Pagination.NextButton>
-			  </Pagination.Item>
-		  
-			</Pagination.Content>
-		  </Pagination.Root>
-</div>
-{/if}
+		<div class="flex items-start justify-start pb-5">
+			<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
+				<Pagination.Content class="flex items-center justify-center gap-2">
+					<Pagination.Item>
+						<Pagination.PrevButton on:click={goToPreviousPage} disabled={currentPageNumber === 1}>
+							Anterior
+						</Pagination.PrevButton>
+					</Pagination.Item>
+
+					{#each pages as page (page.key)}
+						{#if page.type === 'ellipsis'}
+							<Pagination.Item>
+								<Pagination.Ellipsis />
+							</Pagination.Item>
+						{:else}
+							<Pagination.Item>
+								<Pagination.Link {page} isActive={currentPageNumber == page.value}>
+									<a href={buildUrlWithUpdatedPage(page.value)}>
+										{page.value}
+									</a>
+								</Pagination.Link>
+							</Pagination.Item>
+						{/if}
+					{/each}
+
+					<Pagination.Item>
+						<Pagination.NextButton
+							on:click={goToNextPage}
+							disabled={parseInt($page ?? '1') === totalPages}
+						>
+							Próximo
+						</Pagination.NextButton>
+					</Pagination.Item>
+				</Pagination.Content>
+			</Pagination.Root>
+		</div>
+	{/if}
 </div>

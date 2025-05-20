@@ -8,9 +8,9 @@ import { superValidate } from 'sveltekit-superforms/server';
 
 export const load = async (event) => {
 	const { session } = await event.locals.safeGetSession();
-			if (!session) {
-				return redirect(302, handleSignInRedirect(event));
-			}
+	if (!session) {
+		return redirect(302, handleSignInRedirect(event));
+	}
 	async function getUsers(): Promise<UserProfile[]> {
 		const query = event.locals.supabase.from('profiles_view').select('*');
 

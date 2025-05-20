@@ -6,10 +6,16 @@ const AnnotationArrayObjectSchema = z.object({
 	location: z.array(z.number()),
 	orientation: z.array(z.number()),
 	expression: z.array(z.number()),
-})
+});
 
 export const updateSignSchema = z.object({
-	annotation: AnnotationArrayObjectSchema.default({ configuration: [], movement: [], location: [], orientation: [], expression: [] }).optional(),
+	annotation: AnnotationArrayObjectSchema.default({
+		configuration: [],
+		movement: [],
+		location: [],
+		orientation: [],
+		expression: [],
+	}).optional(),
 	annotation_array: z.array(z.number()).length(300).optional(),
 	is_anotated: z.number().optional(),
 	name: z.string().min(1, { message: 'Name is required' }).max(100),
@@ -26,7 +32,13 @@ export const updateSignSchema = z.object({
 });
 
 export const createSignSchema = z.object({
-	annotation: AnnotationArrayObjectSchema.default({ configuration: [], movement: [], location: [], orientation: [], expression: [] }).optional(),
+	annotation: AnnotationArrayObjectSchema.default({
+		configuration: [],
+		movement: [],
+		location: [],
+		orientation: [],
+		expression: [],
+	}).optional(),
 	annotation_array: z.array(z.number()).length(300).optional(),
 	is_anotated: z.number().optional(),
 	name: z.string().min(1, { message: 'Name is required' }).max(100),
@@ -50,4 +62,3 @@ export const deleteSignSchema = z.object({
 export type CreateSignSchema = typeof createSignSchema;
 export type DeleteEventSchema = typeof deleteSignSchema;
 export type UpdateSignSchema = typeof updateSignSchema;
-

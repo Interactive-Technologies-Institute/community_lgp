@@ -24,7 +24,6 @@
 		<Button builders={[builder]} variant="outline" class="w-10 p-0 md:w-auto md:px-4 md:py-2">
 			<div class="relative">
 				<Funnel class="h-4 w-4"></Funnel>
-				
 			</div>
 		</Button>
 	</Popover.Trigger>

@@ -1,10 +1,6 @@
 <script>
 	export let anotation_value;
-	let color = anotation_value === 1 
-        ? '#ffdfba' 
-        : anotation_value === 2 
-        ? '#c1e1c1'
-        : '#ffb3ba';
+	let color = anotation_value === 1 ? '#ffdfba' : anotation_value === 2 ? '#c1e1c1' : '#ffb3ba';
 </script>
 
 <svg

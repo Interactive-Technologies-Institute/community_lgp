@@ -5,7 +5,10 @@
 	export let data;
 </script>
 
-<PageHeader title="Entrada de Gesto" subtitle="Adicione uma nova entrada de gesto ao Dicionário de Lingua Gestual Portuguesa." />
+<PageHeader
+	title="Entrada de Gesto"
+	subtitle="Adicione uma nova entrada de gesto ao Dicionário de Lingua Gestual Portuguesa."
+/>
 <div class="container mx-auto mb-20">
-	<SignForm data={data.createForm} user={data.user} parameter={data.parameters}/>
+	<SignForm data={data.createForm} user={data.user} parameter={data.parameters} />
 </div>

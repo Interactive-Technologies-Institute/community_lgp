@@ -96,7 +96,8 @@
 						<div class="space-y-0.5">
 							<Form.Label>Dicionário LGP</Form.Label>
 							<Form.Description>
-								Ative este módulo para permitir que os utilizadores vejam o Dicionário de Língua Gestual Portuguesa
+								Ative este módulo para permitir que os utilizadores vejam o Dicionário de Língua
+								Gestual Portuguesa
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.dictionary} />

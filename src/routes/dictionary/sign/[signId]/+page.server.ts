@@ -20,43 +20,42 @@ export const load = async (event) => {
 	}
 
 	async function getParametersByIds(ids: number[]): Promise<Parameter[]> {
-        const { data: parameters, error: parametersError } = await event.locals.supabase
-            .from('parameters')
-            .select('*')
-            .in('id', ids);
+		const { data: parameters, error: parametersError } = await event.locals.supabase
+			.from('parameters')
+			.select('*')
+			.in('id', ids);
 
-        if (parametersError) {
-            const errorMessage = `Error fetching parameters, please try again later.`;
-            setFlash({ type: 'error', message: errorMessage }, event.cookies);
-            throw error(500, errorMessage);
-        }
+		if (parametersError) {
+			const errorMessage = `Error fetching parameters, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
 
-        return parameters as Parameter[];
-    }
+		return parameters as Parameter[];
+	}
 
-    const signId = event.params.signId;
-    let specificSign = null;
+	const signId = event.params.signId;
+	let specificSign = null;
 	let parameters: Parameter[] = [];
 
-    if (signId) {
-        // Fetch the sign
-        specificSign = await getSignById(signId);
+	if (signId) {
+		// Fetch the sign
+		specificSign = await getSignById(signId);
 
 		if (specificSign.annotation_array && specificSign.annotation_array.length > 0) {
 			if (specificSign.annotation) {
 				const annotationIds: number[] = Object.values(specificSign.annotation)
-					.flat() 
-					.map((id) => parseInt(id, 10)) 
-					.filter((id) => !isNaN(id)); 
-		
+					.flat()
+					.map((id) => parseInt(id, 10))
+					.filter((id) => !isNaN(id));
+
 				parameters = await getParametersByIds(annotationIds);
 			}
 		}
-    
 	}
 
-    return {
-        sign: specificSign,
-        parameters: parameters,
-    };
+	return {
+		sign: specificSign,
+		parameters: parameters,
+	};
 };

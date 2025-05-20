@@ -39,10 +39,10 @@
 		<div class="flex flex-1 flex-col px-4 py-3">
 			<div class="mb-5">
 				<div class="mb-5">
-				<h2 class="line-clamp-2 text-lg font-medium">{guide.title}</h2>
-				<p class="line-clamp-2 text-muted-foreground">{guide.description}</p>
-				<p class="mt-2 text-sm text-muted-foreground">Updated at: {updatedAt}</p>
-			</div>
+					<h2 class="line-clamp-2 text-lg font-medium">{guide.title}</h2>
+					<p class="line-clamp-2 text-muted-foreground">{guide.description}</p>
+					<p class="mt-2 text-sm text-muted-foreground">Updated at: {updatedAt}</p>
+				</div>
 				<div class="flex flex-wrap gap-2">
 					<Button variant="secondary" size="sm">{guide.difficulty}</Button>
 					<Button variant="secondary" size="sm">

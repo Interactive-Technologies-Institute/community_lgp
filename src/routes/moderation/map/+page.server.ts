@@ -8,9 +8,9 @@ import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
 	const { session } = await event.locals.safeGetSession();
-			if (!session) {
-				return redirect(302, handleSignInRedirect(event));
-			}
+	if (!session) {
+		return redirect(302, handleSignInRedirect(event));
+	}
 
 	async function getMapPins(): Promise<MapPinWithModeration[]> {
 		const query = event.locals.supabase

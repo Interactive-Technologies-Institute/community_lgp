@@ -14,7 +14,10 @@
 
 <MetaTags title="Detalhes do Utilizador" description="" />
 
-<PageHeader title="Detalhes do Utilizador" subtitle="Veja os detalhes do Utilizador e as suas contribuições" />
+<PageHeader
+	title="Detalhes do Utilizador"
+	subtitle="Veja os detalhes do Utilizador e as suas contribuições"
+/>
 <div class="container mx-auto mb-20 flex max-w-3xl flex-col gap-y-8 md:gap-y-10">
 	<Card.Root>
 		<Card.Header>

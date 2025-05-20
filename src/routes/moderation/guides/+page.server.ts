@@ -11,9 +11,9 @@ export const load = async (event) => {
 	const tags = arrayQueryParam().decode(event.url.searchParams.get('tags'));
 
 	const { session } = await event.locals.safeGetSession();
-			if (!session) {
-				return redirect(302, handleSignInRedirect(event));
-			}
+	if (!session) {
+		return redirect(302, handleSignInRedirect(event));
+	}
 
 	async function getGuides(): Promise<GuideWithModeration[]> {
 		let query = event.locals.supabase
