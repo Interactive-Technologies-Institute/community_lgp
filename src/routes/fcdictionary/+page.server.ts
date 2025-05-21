@@ -4,21 +4,13 @@ import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
 
-function parseAnnotationFromUrl(params: URLSearchParams): AnnotationArray {
-	return {
-		configuration: params.get('configuration')?.split(',').map(Number).filter(Boolean) ?? [],
-		location: params.get('location')?.split(',').map(Number).filter(Boolean) ?? [],
-		orientation: params.get('orientation')?.split(',').map(Number).filter(Boolean) ?? [],
-		movement: params.get('movement')?.split(',').map(Number).filter(Boolean) ?? [],
-		expression: params.get('expression')?.split(',').map(Number).filter(Boolean) ?? [],
-	};
-}
 
 export const load = async (event) => {
 	const page = Number(event.url.searchParams.get('page')) || 1;
 	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation_array'));
 	let totalPages = 0;
 	let countSign = 0;
 
@@ -37,6 +29,15 @@ export const load = async (event) => {
 		if (theme && theme.length) {
 			query = query.overlaps('theme', theme);
 		}
+
+		if (annotation && annotation.length) {
+			query = query.or(
+				annotation
+					.map((a) => `annotation_array.overlaps.{${a}}`)
+					.join(',')
+			);
+		}
+
 		const { data: signs, count, error: signsError } = await query;
 		totalPages = count ? Math.ceil(count / perPage) : 0;
 		countSign = count || 0;

@@ -60,5 +60,5 @@ export const deleteSignSchema = z.object({
 });
 
 export type CreateSignSchema = typeof createSignSchema;
-export type DeleteEventSchema = typeof deleteSignSchema;
+export type DeleteSignSchema = typeof deleteSignSchema;
 export type UpdateSignSchema = typeof updateSignSchema;

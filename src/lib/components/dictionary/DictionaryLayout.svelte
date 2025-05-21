@@ -35,12 +35,15 @@
 	let countSign = data.countSign ?? 0;
 	const theme = queryParam('theme', arrayQueryParam());
 
+	const annotation = queryParam('annotation', arrayQueryParam());
+
 	const page = queryParam('page', stringQueryParam(), {
 		debounceHistory: 250,
 	});
 
-	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0;
+	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0 || ($annotation ?? []).length > 0;
 	$: $search = data.search || $search;
+	$: $annotation = data.annotation || $annotation;
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
 
 	function buildUrlWithUpdatedPage(page: number): string {

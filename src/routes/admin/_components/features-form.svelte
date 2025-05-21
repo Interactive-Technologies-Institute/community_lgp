@@ -97,10 +97,42 @@
 							<Form.Label>Dicionário LGP</Form.Label>
 							<Form.Description>
 								Ative este módulo para permitir que os utilizadores vejam o Dicionário de Língua
-								Gestual Portuguesa
+								Gestual Portuguesa.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.dictionary} />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field
+					{form}
+					name="fcdictionary"
+					class="flex flex-row items-center justify-between rounded-lg border p-4"
+				>
+					<Form.Control let:attrs>
+						<div class="space-y-0.5">
+							<Form.Label>Dicionário LGP de Primeiro Ciclo</Form.Label>
+							<Form.Description>
+								Ative este módulo para permitir que os utilizadores vejam o Dicionário de Língua
+								Gestual Portuguesa do Primeiro Ciclo.
+							</Form.Description>
+						</div>
+						<Switch includeInput {...attrs} bind:checked={$formData.fcdictionary} />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field
+					{form}
+					name="annotate"
+					class="flex flex-row items-center justify-between rounded-lg border p-4"
+				>
+					<Form.Control let:attrs>
+						<div class="space-y-0.5">
+							<Form.Label>Anotação</Form.Label>
+							<Form.Description>
+								Ative este módulo para permitir que utilizadores com permissões vejam a funcionalidade de Anotação
+								de uma entrada de gesto no Dicionário de Língua Gestual Portuguesa.
+							</Form.Description>
+						</div>
+						<Switch includeInput {...attrs} bind:checked={$formData.annotate} />
 					</Form.Control>
 				</Form.Field>
 			</div>

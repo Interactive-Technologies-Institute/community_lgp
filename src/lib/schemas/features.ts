@@ -6,6 +6,7 @@ export const updateFeaturesSchema = z.object({
 	map: z.boolean(),
 	docs: z.boolean(),
 	dictionary: z.boolean(),
+	fcdictionary: z.boolean(),
 	annotate: z.boolean(),
 });
 

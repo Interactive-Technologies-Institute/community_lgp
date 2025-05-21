@@ -5,22 +5,36 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Popover from '$lib/components/ui/popover';
 	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
-	import { get } from 'svelte/store';
 
 	export let parameters: Parameter[] = [];
 	export let signs: Sign[] = [];
 	import { createEventDispatcher } from 'svelte';
 	import { afterNavigate, pushState } from '$app/navigation';
 	import { Search } from 'lucide-svelte';
-	import { Trigger } from '../ui/accordion';
+	import { arrayQueryParam } from '@/utils';
+	import { queryParam } from 'sveltekit-search-params';
 	const dispatch = createEventDispatcher();
 
 	let searchResults: Sign[] = [];
 
+	const annotation = queryParam('annotation', arrayQueryParam());
+
 	let searchArray = Array(300).fill(0);
 	let selectedParameterIds: number[] = [];
-	let selectedTab: keyof typeof tabs = 'configuracao';
 	let isFiltering = false;
+	let hasLoadedFromAnnotation = false;
+
+	$: if ($annotation && $annotation.length > 0 && !isFiltering && !hasLoadedFromAnnotation) {
+		hasLoadedFromAnnotation = true;
+	selectedParameterIds = $annotation.map((id : string) => parseInt(id));
+	searchArray = Array(300).fill(0);
+	selectedParameterIds.forEach((id) => {
+		if (id > 0 && id <= 300) {
+			searchArray[id - 1] = 1;
+		}
+	});
+	searchSigns();
+}
 
 	const tabs: Record<string, { displayName: string; annotationKey: keyof AnnotationArray }> = {
 		configuracao: { displayName: 'Configuração', annotationKey: 'configuration' },
@@ -39,38 +53,19 @@
 	}
 
 	function toggleParameter(p: Parameter) {
-		const isSelected = selectedParameterIds.includes(p.id);
-		selectedParameterIds = isSelected
-			? selectedParameterIds.filter((id) => id !== p.id)
-			: [...selectedParameterIds, p.id];
-
-		searchArray[p.id - 1] = isSelected ? 0 : 1;
-	}
-
-	function buildAnnotation(): AnnotationArray {
-		// Convert searchArray (0/1 array) to AnnotationArray { configuration: [ids], ... }
-		const annotation: AnnotationArray = {
-			configuration: [],
-			location: [],
-			orientation: [],
-			movement: [],
-			expression: [],
-		};
-
-		for (const [tabKey, tab] of Object.entries(tabs)) {
-			annotation[tab.annotationKey] = parameters
-				.filter((p) => selectedParameterIds.includes(p.id) && p.tipo === tabKey)
-				.map((p) => p.id);
-		}
-
-		return annotation;
-	}
+	const isSelected = selectedParameterIds.includes(p.id);
+	if (isSelected) {
+		selectedParameterIds = selectedParameterIds.filter((id) => id !== p.id);
+		searchArray[p.id - 1] = 0;
+	} else {
+		selectedParameterIds = [...selectedParameterIds, p.id];
+		searchArray[p.id - 1] = 1;
+	} 
+}
 
 	async function searchSigns() {
 		try {
 			const type = window.location.pathname.split('/')[1]; // Get the type from the URL
-			const annotation = buildAnnotation();
-
 			let apiUrl = '';
 
 			if (type === 'dictionary') {
@@ -103,6 +98,21 @@
 		}
 	}
 
+	function applySearch() {
+	// Set URL param
+	annotation.set(selectedParameterIds.map(String));
+
+	// Update internal state
+	searchArray = Array(300).fill(0);
+	selectedParameterIds.forEach((id) => {
+		if (id > 0 && id <= 300) {
+			searchArray[id - 1] = 1;
+		}
+	});
+
+	// Trigger actual search
+	searchSigns();
+}
 	let isOpen = false;
 
 	afterNavigate(() => {
@@ -432,7 +442,7 @@
 <div class="flex justify-end">
 	<Button
 		on:click={() => {
-			searchSigns();
+			applySearch();
 		}}><Search /></Button
 	>
 </div>
