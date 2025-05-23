@@ -15,6 +15,8 @@
 	import { Hand } from 'lucide-svelte';
 	import { TextCursor } from 'lucide-svelte';
 	import { Search } from 'lucide-svelte';
+	
+	import * as Card from '$lib/components/ui/card';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,20 +35,34 @@
 		search.set(localSearch);
 	}
 </script>
-
-<div class="flex flex-1 flex-row gap-x-2 sm:gap-x-4 md:flex-auto">
+<Card.Root class="py-[2px] px-[2px] drop-shadow-xl border-white">
+<div class="flex flex-1 flex-row md:flex-auto md-rounded-2xl">
 	<Tabs.Root value="gesto">
-		<Tabs.List>
-			<Tabs.Trigger value="gesto" on:click={() => (selectedTab = 'gesto')}>
+		<Tabs.List class="drop-shadow-xl md-rounded-2xl">
+			<Tabs.Trigger
+				class={`md-rounded-2xl transition duration-300 ${
+					selectedTab !== 'gesto' ? 'opacity-25 grayscale' : ''
+				}`}
+				value="gesto"
+				on:click={() => (selectedTab = 'gesto')}
+			>
 				<Hand />&nbsp;Gesto
 			</Tabs.Trigger>
-			<Tabs.Trigger value="texto" on:click={() => (selectedTab = 'texto')}>
+
+			<Tabs.Trigger
+				class={`md-rounded-2xl transition duration-300 ${
+					selectedTab !== 'texto' ? 'opacity-40 grayscale' : ''
+				}`}
+				value="texto"
+				on:click={() => (selectedTab = 'texto')}
+			>
 				<TextCursor /> &nbsp;Texto
 			</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>
 
 	{#if selectedTab === 'gesto'}
+	<div class="flex flex-row ml-1">
 		<SignSearch
 			{parameters}
 			{signs}
@@ -59,21 +75,25 @@
 				dispatch('updateIsFiltering', e.detail);
 			}}
 		/>
+		</div>
 	{/if}
 	{#if selectedTab === 'texto'}
-		<div class="flex flex-row gap-x-3">
+		<div class="flex flex-row ml-1">
 			<Input
 				placeholder="Escreva uma palavra..."
-				class="w-[564px] flex-1"
+				class="w-[680px] flex-1 "
 				bind:value={localSearch}
 				on:keydown={(e) => {
 					if (e.key === 'Enter') doSearch();
 				}}
 			/>
+			<div class="px-2">
 			<Button on:click={doSearch} class="btn btn-primary">
 				<Search />
 			</Button>
 		</div>
+		</div>
 	{/if}
 	<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
 </div>
+</Card.Root>

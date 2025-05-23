@@ -45,6 +45,7 @@
 	$: $search = data.search || $search;
 	$: $annotation = data.annotation || $annotation;
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
+	$: countSign = data.countSign ?? 0;
 
 	function buildUrlWithUpdatedPage(page: number): string {
 		if (!browser) return '#'; // SSR-safe fallback
@@ -97,7 +98,7 @@
 			{isFiltering}
 		/>
 	</div>
-	{#if isFiltering}
+	{#if isFiltering && countSign > 0}
 		<div class="flex items-start justify-start pb-5">
 			<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
 				<Pagination.Content class="flex items-center justify-center gap-2">

@@ -15,6 +15,9 @@
 	import { queryParam } from 'sveltekit-search-params';
 	const dispatch = createEventDispatcher();
 
+	import { ChevronUp } from 'lucide-svelte';
+	import { ChevronDown } from 'lucide-svelte';
+
 	let searchResults: Sign[] = [];
 
 	const annotation = queryParam('annotation', arrayQueryParam());
@@ -114,7 +117,7 @@
 	// Trigger actual search
 	searchSigns();
 }
-	let isOpen = false;
+	let openTab = '';
 
 	afterNavigate(() => {
 		signs = signs ?? [];
@@ -125,7 +128,16 @@
 	<Tabs.List>
 		<Popover.Root>
 			<Popover.Trigger>
-				<Tabs.Trigger value="configuracao">Configuração</Tabs.Trigger>
+				<Tabs.Trigger value="configuracao" 
+				on:click={() => openTab = openTab === 'configuracao' ? '' : 'configuracao'}
+				>
+					Configuração 
+					{#if openTab === 'configuracao'}
+						<ChevronUp class="pt-1" />
+					{:else}
+						<ChevronDown class="pt-1" />
+					{/if}
+				</Tabs.Trigger>
 			</Popover.Trigger>
 
 			<Popover.Content class="w-[1000px] overflow-auto p-4">
@@ -188,7 +200,16 @@
 
 		<Popover.Root>
 			<Popover.Trigger>
-				<Tabs.Trigger value="localizacao">Localização</Tabs.Trigger>
+				<Tabs.Trigger value="localizacao" 
+				on:click={() => openTab = openTab === 'localizacao' ? '' : 'localizacao'}
+				>
+					Localização 
+					{#if openTab === 'localizacao'}
+						<ChevronUp class="pt-1" />
+					{:else}
+						<ChevronDown class="pt-1" />
+					{/if}
+				</Tabs.Trigger>
 			</Popover.Trigger>
 
 			<Popover.Content class="w-[1000px] overflow-auto p-4">
@@ -251,7 +272,16 @@
 
 		<Popover.Root>
 			<Popover.Trigger>
-				<Tabs.Trigger value="orientacao">Orientação</Tabs.Trigger>
+				<Tabs.Trigger value="orientacao" 
+				on:click={() => openTab = openTab === 'orientacao' ? '' : 'orientacao'}
+				>
+					Orientação 
+					{#if openTab === 'orientacao'}
+						<ChevronUp class="pt-1" />
+					{:else}
+						<ChevronDown class="pt-1" />
+					{/if}
+				</Tabs.Trigger>
 			</Popover.Trigger>
 
 			<Popover.Content class="w-[1000px] overflow-auto p-4">
@@ -314,7 +344,16 @@
 
 		<Popover.Root>
 			<Popover.Trigger>
-				<Tabs.Trigger value="movimento">Movimento</Tabs.Trigger>
+				<Tabs.Trigger value="movimento" 
+				on:click={() => openTab = openTab === 'movimento' ? '' : 'movimento'}
+				>
+					Movimento 
+					{#if openTab === 'movimento'}
+						<ChevronUp class="pt-1" />
+					{:else}
+						<ChevronDown class="pt-1" />
+					{/if}
+				</Tabs.Trigger>
 			</Popover.Trigger>
 
 			<Popover.Content class="w-[1000px] overflow-auto p-4">
@@ -377,7 +416,16 @@
 
 		<Popover.Root>
 			<Popover.Trigger>
-				<Tabs.Trigger value="expressao facial">Expressão Facial</Tabs.Trigger>
+				<Tabs.Trigger value="expressao facial" 
+				on:click={() => openTab = openTab === 'expressao facial' ? '' : 'expressao facial'}
+				>
+					Expressão Facial 
+					{#if openTab === 'expressao facial'}
+						<ChevronUp class="pt-1" />
+					{:else}
+						<ChevronDown class="pt-1" />
+					{/if}
+				</Tabs.Trigger>
 			</Popover.Trigger>
 
 			<Popover.Content class="w-[1000px] overflow-auto p-4">
@@ -440,7 +488,7 @@
 	</Tabs.List>
 </Tabs.Root>
 <!-- Search Button Inside Each Popover (Optional) -->
-<div class="flex justify-end">
+<div class="flex justify-end px-2">
 	<Button
 		on:click={() => {
 			applySearch();
