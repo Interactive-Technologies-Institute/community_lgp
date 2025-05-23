@@ -35,7 +35,7 @@
 		search.set(localSearch);
 	}
 </script>
-<Card.Root class="py-[2px] px-[2px] drop-shadow-xl border-white">
+<Card.Root class="py-[2px] px-[2px] drop-shadow-xl border-background" >
 <div class="flex flex-1 flex-row md:flex-auto md-rounded-2xl">
 	<Tabs.Root value="gesto">
 		<Tabs.List class="drop-shadow-xl md-rounded-2xl">
