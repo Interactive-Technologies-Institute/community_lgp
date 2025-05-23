@@ -17,12 +17,14 @@
 		});
 		return parameterFilter;
 	}
+
+	
 </script>
 
+
 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-	{#each signs.filter((sign) => sign.theme.includes(theme)) as sign (sign.id)}
+	{#each signs as sign (sign.id)}
 		<Card.Root class="rounded-2xl">
-			<!-- svelte-ignore a11y-media-has-caption -->
 			<Card.Content class="flex items-center justify-center p-3">
 				<div class="flex w-full flex-col">
 					<video class="aspect-video w-full rounded-xl" controls muted>

@@ -56,10 +56,10 @@
 	const isSelected = selectedParameterIds.includes(p.id);
 	if (isSelected) {
 		selectedParameterIds = selectedParameterIds.filter((id) => id !== p.id);
-		searchArray[p.id - 1] = 0;
+		searchArray[p.id] = 0;
 	} else {
 		selectedParameterIds = [...selectedParameterIds, p.id];
-		searchArray[p.id - 1] = 1;
+		searchArray[p.id] = 1;
 	} 
 }
 
@@ -91,6 +91,7 @@
 			}
 			const data = await response.json();
 			signs = data.signs;
+			console.log('Fetched signs:', signs);
 			dispatch('updateSigns', signs);
 			dispatch('updateIsFiltering', (isFiltering = true));
 		} catch (error) {
