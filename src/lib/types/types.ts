@@ -7,7 +7,8 @@ export type Feature =
 	| 'map'
 	| 'guides'
 	| 'events'
-	| 'docs';
+	| 'docs'
+	| 'lgp4fun';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 

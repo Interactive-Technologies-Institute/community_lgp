@@ -79,6 +79,17 @@
 				Dicionário 1º Ciclo
 			</a>
 		</FeatureWrapper>
+		<FeatureWrapper feature="lgp4fun">
+			<a
+				href="/lgp4fun"
+				class={cn(
+					'transition-colors hover:text-foreground/80',
+					$page.url.pathname.startsWith('/lgp4fun') ? 'text-foreground' : 'text-foreground/60'
+				)}
+			>
+				LGP4Fun
+			</a>
+		</FeatureWrapper>
 		{#if role === 'admin' || role === 'moderator'}
 			<FeatureWrapper feature="annotate">
 				<a
