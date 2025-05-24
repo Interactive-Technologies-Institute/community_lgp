@@ -159,7 +159,6 @@ export const actions = {
 					description: data.description,
 					context_video: contextVideoUrl,
 					sentence: data.sentence,
-					written_anotation: data.written_anotation,
 					frequency: data.frequency,
 					district: data.district,
 				})

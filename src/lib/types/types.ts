@@ -152,11 +152,6 @@ export type Sign = {
 	name: string;
 	theme: string[];
 	video: string;
-	written_anotation?: {
-		configuration: string;
-		movement: string[];
-		orientation: string[];
-	} | null;
 	description?: string | null;
 	context_video?: string | null;
 	sentence?: string | null;

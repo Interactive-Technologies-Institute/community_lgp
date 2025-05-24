@@ -50,7 +50,6 @@ export const createSignSchema = z.object({
 	context_video: z.union([z.string(), z.instanceof(File).optional()]),
 	context_video_url: z.string().optional(),
 	sentence: z.string().nullable().optional(),
-	written_anotation: z.array(z.string()).nullable().optional(),
 	frequency: z.number().nullable().optional(),
 	district: z.string().nullable().optional(),
 });

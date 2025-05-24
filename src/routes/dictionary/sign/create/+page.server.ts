@@ -91,7 +91,6 @@ export const actions = {
 					created_at: new Date().toISOString(), // Set current timestamp
 					last_changed: new Date().toISOString(), // Set current timestamp
 					is_anotated: data.is_anotated ?? 0, // Default value if not provided
-					written_anotation: data.written_anotation ?? null, // Handle optional fields
 					context_video:
 						PUBLIC_SUPABASE_URL + '/storage/v1/object/public/signs/' + contextVideoPath,
 				})
