@@ -17,6 +17,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.47.2",
 		"@sveltejs/adapter-auto": "^3.2.5",
+		"@sveltejs/adapter-cloudflare": "^7.0.3",
 		"@sveltejs/kit": "^2.5.28",
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
 		"@sveltekit-addons/document": "git://github.com/Sockitos/sveltekit-document.git",
