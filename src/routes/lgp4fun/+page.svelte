@@ -1,53 +1,42 @@
-<script>
+<script lang="ts">
   import PageHeader from '@/components/page-header.svelte';
   import { MetaTags } from 'svelte-meta-tags';
   import { onMount } from 'svelte';
-
+  import type { Sign } from '@/types/types';
+  
   export let data;
-  
+
   // State for the selected letter
-  let selectedLetter = '';
   let gameLoaded = false;
-  
-  onMount(() => {
-    // Define a global function that Godot can call
-    window.onLetterSelected = function(letter) {
-      console.log("Letter selected:", letter);
-      selectedLetter = letter;
-      // Make sure Svelte updates the UI
-      setTimeout(() => {}, 0);
-    };
-  });
+
+  let iframeRef: HTMLIFrameElement;
+
+  let signs: Sign[] = [];
+  let theme = "(1ºCEB) PORTUGUÊS/ FAMÍLIA"
+
+  signs = data?.signs 
 </script>
 
-<!-- <MetaTags title="LGP4Fun" description="Aprende Língua Portuguesa e Língua Gestual Portuguesa" />
+<MetaTags title="LGP4Fun" description="Aprende Língua Portuguesa e Língua Gestual Portuguesa" />
 
-<PageHeader title="LGP4Fun" subtitle="Aprende Língua Portuguesa e Língua Gestual Portuguesa" /> -->
+<PageHeader title="LGP4Fun" subtitle="Aprende Língua Portuguesa e Língua Gestual Portuguesa" />
 <!--Main container-->
 <div
 	class="flex flex-col justify-center text-slate-100 font-Hellovetica items-center p-4 w-full"
 >
-	<!-- Title container
-	<div
-		class="flex flex-col justify-center items-center space-y-4 text-center"
-	>
-    {#if gameLoaded}
-      {#if selectedLetter}
-        <div class="letter-display">
-          <h2>Selected Letter: {selectedLetter}</h2>
-        </div>
-      {/if}
-    {/if}
-	</div> -->
-  <div class="relative mt-5 border-slate-800 border-[3px]">
+	<!-- Title container -->
+  <div class="relative mt-2 border-slate-800 border-[3px]">
     <!--Game-->
     <iframe
-      src="game/lgp4fun.html"
+      bind:this={iframeRef}
+      src="/game/lgp4fun"
       frameborder="0"
       title="LGP4Fun"
-      height="540"
-      width="960"
-      on:load={() => gameLoaded = true}
+      height="500"
+      width="888.89"
+      on:load={() => {
+        gameLoaded = true;
+      }}
       class=""
     />
     <!--Corners-->

@@ -158,6 +158,7 @@ export type Sign = {
 	sentence?: string | null;
 	frequency: 0 | 1 | 2;
 	district?: string | null;
+	image?: string | null;
 };
 
 export type AnnotationArray = {
