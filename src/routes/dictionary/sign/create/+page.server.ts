@@ -36,7 +36,7 @@ export const load = async (event) => {
 };
 
 export const actions = {
-	default: async (event) =>
+	update: async (event) =>
 		handleFormAction(event, createSignSchema, 'create-sign', async (event, userId, form) => {
 			async function uploadVideo(
 				video: File,

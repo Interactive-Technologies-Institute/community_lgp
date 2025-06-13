@@ -178,7 +178,7 @@ export const actions = {
 		}),
 		delete: async(event) =>
 			handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
-				console.log('event.params.id', event.params.id);
+				
 						const { error: supabaseError } = await event.locals.supabase
 							.from('signs')
 							.delete()
