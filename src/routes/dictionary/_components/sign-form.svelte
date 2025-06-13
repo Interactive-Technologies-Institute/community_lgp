@@ -150,7 +150,7 @@ $: {
 	}
 </script>
 
-<form method="POST" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
+<form method="POST" action="?/update" enctype="multipart/form-data" use:enhance class="flex flex-col gap-y-10">
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Entrada</Card.Title>

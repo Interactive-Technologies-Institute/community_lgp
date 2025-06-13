@@ -74,6 +74,7 @@
 				isFiltering = e.detail;
 				dispatch('updateIsFiltering', e.detail);
 			}}
+			page = {data.page}
 		/>
 		</div>
 	{/if}

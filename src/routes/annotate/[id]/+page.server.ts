@@ -1,5 +1,5 @@
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { createSignSchema } from '@/schemas/sign';
+import { createSignSchema, deleteSignSchema } from '@/schemas/sign';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import type { StorageError } from '@supabase/storage-js';
 import type { Parameter, Sign } from '@/types/types';
@@ -87,13 +87,19 @@ export const load = async (event) => {
 		updateForm: await superValidate(safeSign, zod(createSignSchema), {
 			id: 'update-sign',
 		}),
+		deleteForm: await superValidate(zod(deleteSignSchema), {
+					id: 'delete-sign',
+				}),
 		parameters: parameters,
 		parametersById: parametersById,
 	};
 };
 
+
+
+
 export const actions = {
-	default: async (event) =>
+	update: async (event) =>
 		handleFormAction(event, createSignSchema, 'update-sign', async (event, userId, form) => {
 			async function uploadVideo(
 				video: File,
@@ -170,4 +176,19 @@ export const actions = {
 
 			return redirect(303, '/dictionary/sign/' + event.params.id);
 		}),
+		delete: async(event) =>
+			handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
+				console.log('event.params.id', event.params.id);
+						const { error: supabaseError } = await event.locals.supabase
+							.from('signs')
+							.delete()
+							.eq('id', parseInt(event.params.id));
+			
+						if (supabaseError) {
+							setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+							return fail(500, { message: supabaseError.message, form });
+						}
+			
+						return redirect(303, '/annotate');
+					}),
 };

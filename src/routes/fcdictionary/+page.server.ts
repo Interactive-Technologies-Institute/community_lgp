@@ -31,11 +31,7 @@ export const load = async (event) => {
 		}
 
 		if (annotation && annotation.length) {
-			query = query.or(
-				annotation
-					.map((a) => `annotation_array.overlaps.{${a}}`)
-					.join(',')
-			);
+			query = query.overlaps('annotation_array', annotation);
 		}
 
 		const { data: signs, count, error: signsError } = await query;

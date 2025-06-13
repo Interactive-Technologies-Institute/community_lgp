@@ -70,7 +70,7 @@
 </script>
 
 <div>
-	<div class="container mx-auto flex flex-row justify-between gap-x-2 py-5">
+	<div class="fixed container flex flex-row justify-between py-5 px-[290px]">
 		<SearchBar
 			{data}
 			{signs}
@@ -83,7 +83,7 @@
 			}}
 		/>
 	</div>
-
+	<div class="pt-[90px]">
 	{#if isLoading}
 		<p class="loading">Loading...</p>
 	{/if}
@@ -136,4 +136,5 @@
 			</Pagination.Root>
 		</div>
 	{/if}
+</div>
 </div>

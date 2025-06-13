@@ -8,6 +8,7 @@
 
 	export let parameters: Parameter[] = [];
 	export let signs: Sign[] = [];
+	export let page;
 	import { createEventDispatcher } from 'svelte';
 	import { afterNavigate, pushState } from '$app/navigation';
 	import { Search } from 'lucide-svelte';
@@ -26,6 +27,9 @@
 	let selectedParameterIds: number[] = [];
 	let isFiltering = false;
 	let hasLoadedFromAnnotation = false;
+	$: currentPageNumber = parseInt(page ?? '') || 1;
+
+	$: console.log('Current page number:', currentPageNumber);
 
 	$: if ($annotation && $annotation.length > 0 && !isFiltering && !hasLoadedFromAnnotation) {
 		hasLoadedFromAnnotation = true;
@@ -80,12 +84,16 @@
 				return;
 			}
 
+			const limit = 9;
+			const currentPage = currentPageNumber;
+			const offset = (currentPage - 1) * limit;
+
 			const response = await fetch(apiUrl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ searchArray }),
+				body: JSON.stringify({ searchArray, limit, offset }),
 			});
 
 			if (!response.ok) {
