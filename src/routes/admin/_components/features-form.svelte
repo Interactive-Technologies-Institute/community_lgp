@@ -135,6 +135,23 @@
 						<Switch includeInput {...attrs} bind:checked={$formData.annotate} />
 					</Form.Control>
 				</Form.Field>
+				<Form.Field
+					{form}
+					name="crowdsource"
+					class="flex flex-row items-center justify-between rounded-lg border p-4"
+				>
+					<Form.Control let:attrs>
+						<div class="space-y-0.5">
+							<Form.Label>Crowdsource</Form.Label>
+							<Form.Description>
+								Ative este módulo para permitir que todos os utilizadores contribuam para o processo de 
+								proposta e deliberação de uma nova entrada de gesto
+								no Dicionário de Língua Gestual Portuguesa.
+							</Form.Description>
+						</div>
+						<Switch includeInput {...attrs} bind:checked={$formData.crowdsource} />
+					</Form.Control>
+				</Form.Field>
 			</div>
 		</Card.Content>
 		<Card.Footer>

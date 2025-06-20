@@ -4,7 +4,6 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import SignDeleteDialog from '../_components/sign-delete-dialog.svelte';
-	// import SignDeleteDialog from '../_components/sign-delete-dialog.svelte'; 
 	export let data;
 
 	let openDeleteDialog = false;

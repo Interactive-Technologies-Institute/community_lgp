@@ -8,6 +8,7 @@ export const updateFeaturesSchema = z.object({
 	dictionary: z.boolean(),
 	fcdictionary: z.boolean(),
 	annotate: z.boolean(),
+	crowdsource: z.boolean(),
 });
 
 export type UpdateFeaturesSchema = typeof updateFeaturesSchema;

@@ -57,6 +57,30 @@
 				Map
 			</a>
 		</FeatureWrapper>
+		{#if role === 'admin' || role === 'moderator'}
+			<FeatureWrapper feature="annotate">
+				<a
+					href="/annotate"
+					class={cn(
+						'transition-colors hover:text-foreground/80',
+						$page.url.pathname.startsWith('/annotate') ? 'text-foreground' : 'text-foreground/60'
+					)}
+				>
+					Anotação
+				</a>
+			</FeatureWrapper>
+		{/if}
+		<FeatureWrapper feature="crowdsource">
+			<a
+				href="/crowdsource"
+				class={cn(
+					'transition-colors hover:text-foreground/80',
+					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
+				)}
+			>
+				Crowdsource
+			</a>
+		</FeatureWrapper>
 		<FeatureWrapper feature="dictionary">
 			<a
 				href="/dictionary"
@@ -90,18 +114,6 @@
 				LGP4Fun
 			</a>
 		</FeatureWrapper>
-		{#if role === 'admin' || role === 'moderator'}
-			<FeatureWrapper feature="annotate">
-				<a
-					href="/annotate"
-					class={cn(
-						'transition-colors hover:text-foreground/80',
-						$page.url.pathname.startsWith('/annotate') ? 'text-foreground' : 'text-foreground/60'
-					)}
-				>
-					Anotação
-				</a>
-			</FeatureWrapper>
-		{/if}
+		
 	</nav>
 </div>
