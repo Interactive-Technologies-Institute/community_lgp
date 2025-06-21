@@ -26,6 +26,7 @@
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
 	});
+	let countSign;
 
 	let localSearch = $search; // Initialize localSearch with current query param value
 	let selectedTab = 'gesto';
@@ -73,6 +74,10 @@
 			on:updateIsFiltering={(e) => {
 				isFiltering = e.detail;
 				dispatch('updateIsFiltering', e.detail);
+			}}
+			on:updateCountSign={(e) => {
+				countSign = e.detail;
+				dispatch('updateCountSign', e.detail);
 			}}
 			
 		/>

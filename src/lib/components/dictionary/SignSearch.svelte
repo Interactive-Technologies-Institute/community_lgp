@@ -87,8 +87,10 @@
 			}
 			const data = await response.json();
 			signs = data.signs;
+			console.log('signs length::', data)
 			dispatch('updateSigns', signs);
 			dispatch('updateIsFiltering', (isFiltering = true));
+			dispatch('updateCountSign', 90);
 		} catch (error) {
 			console.error('Error fetching signs:', error);
 		}
