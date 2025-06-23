@@ -66,6 +66,9 @@
 												class="h-32 w-full cursor-pointer object-contain"
 												on:click={() => toggleParameter(parent)}
 											/>
+											{#if parent.tipo == "expressao facial"}
+												{parent.name}
+											{/if}
 										{:else}
 											<div
 												class="flex h-32 w-full cursor-pointer items-center justify-center text-center font-semibold"
@@ -76,7 +79,7 @@
 										{/if}
 
 										{#if parent.code}
-											<div class="mt-2 grid max-h-32 grid-cols-4 gap-2 overflow-y-auto">
+											<div class="mt-2 grid max-h-32 grid-cols-3 gap-2 overflow-y-auto">
 												{#each getChildren(parent.code) as child}
 													{#if child.image}
 														<div

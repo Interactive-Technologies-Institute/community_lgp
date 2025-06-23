@@ -8,11 +8,11 @@
 
 	export let parameters: Parameter[] = [];
 	export let signs: Sign[] = [];
-	export let page;
+	const page = queryParam('page', stringQueryParam());
 	import { createEventDispatcher } from 'svelte';
 	import { afterNavigate, pushState } from '$app/navigation';
 	import { Search } from 'lucide-svelte';
-	import { arrayQueryParam } from '@/utils';
+	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { queryParam } from 'sveltekit-search-params';
 	const dispatch = createEventDispatcher();
 
@@ -28,7 +28,7 @@
 	let selectedParameterIds: number[] = [];
 	let isFiltering = false;
 	let hasLoadedFromAnnotation = false;
-	$: currentPageNumber = parseInt(page ?? '') || 1;
+	$: currentPageNumber = parseInt($page ?? '') || 1;
 
 
 	$: if ($annotation && $annotation.length > 0 && !isFiltering && !hasLoadedFromAnnotation) {
@@ -87,8 +87,10 @@
 			}
 			const data = await response.json();
 			signs = data.signs;
+			console.log('signs length::', data)
 			dispatch('updateSigns', signs);
 			dispatch('updateIsFiltering', (isFiltering = true));
+			dispatch('updateCountSign', 90);
 		} catch (error) {
 			console.error('Error fetching signs:', error);
 		}
@@ -108,6 +110,8 @@
 	// Set URL param
 	annotation.set(selectedParameterIds.map(String));
 
+	page.set('1');
+
 	// Trigger actual search
 	searchSigns();
 }
@@ -117,7 +121,9 @@
 		signs = signs ?? [];
 	});
 
-	
+	$: if (isFiltering && $page) {
+	searchSigns();
+}
 </script>
 
 <Tabs.Root value="configuracao">

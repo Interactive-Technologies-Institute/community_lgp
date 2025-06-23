@@ -67,6 +67,10 @@
 			goto(newUrl);
 		}
 	}
+
+	console.log(countSign)
+	console.log(perPage)
+	console.log(countSign/perPage)
 </script>
 
 <div>
@@ -81,6 +85,10 @@
 			on:updateIsFiltering={(e) => {
 				isFiltering = e.detail;
 			}}
+			on:updateCountSign={(e) => {
+				countSign = e.detail;
+			}}
+			
 		/>
 	</div>
 	<div class="pt-[90px]">
@@ -115,7 +123,11 @@
 							</Pagination.Item>
 						{:else}
 							<Pagination.Item>
-								<Pagination.Link {page} isActive={currentPageNumber == page.value}>
+								<Pagination.Link 
+								{page} 
+								isActive={currentPageNumber == page.value}
+								class={`${currentPageNumber === page.value ? ' px-3 py-5 rounded-lg border-primary bg-primary' : ''}`}
+								>
 									<a href={buildUrlWithUpdatedPage(page.value)}>
 										{page.value}
 									</a>
@@ -127,7 +139,7 @@
 					<Pagination.Item>
 						<Pagination.NextButton
 							on:click={goToNextPage}
-							disabled={parseInt($page ?? '1') === totalPages}
+							disabled={currentPageNumber === Math.ceil(countSign/perPage)}
 						>
 							Próximo
 						</Pagination.NextButton>

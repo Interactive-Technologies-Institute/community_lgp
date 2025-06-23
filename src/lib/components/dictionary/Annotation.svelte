@@ -66,11 +66,11 @@
 	</div>
 
 	<ScrollArea class="max-h-[4000px] overflow-auto">
-		<div class="grid auto-rows-min grid-cols-5 gap-4">
+		<div class="grid auto-rows-min grid-cols-4 gap-4">
 			{#each filterByType(selectedTab) as p}
 				{#if p.is_parent}
 					<Card.Root
-						class="flex flex-col items-center rounded-md border bg-white p-2 shadow {annotation[
+						class="flex flex-col items-center justify-center rounded-md border bg-white p-2 shadow {annotation[
 							tabs[selectedTab].annotationKey
 						].includes(p.id)
 							? 'border-4 border-blue-500'
@@ -79,13 +79,16 @@
 						{#if p.image}
 							<!-- svelte-ignore a11y-click-events-have-key-events -->
 							<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-							<Card.Content class="flex items-center justify-center px-1 py-2">
+							<Card.Content class="flex flex-col items-center justify-center px-1 py-2">
 								<img
 									src={p.image}
 									alt="Parameter drawing"
 									class="aspect-square h-[100px] w-[100px] cursor-pointer object-contain"
 									on:click={() => handleParameterIdClick(p)}
 								/>
+								{#if p.tipo == "expressao facial"}
+									<span class="mt-1 text-xs text-center text-black">{p.name}</span>
+								{/if}
 							</Card.Content>
 						{:else}
 							<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -103,7 +106,7 @@
 						{#if p.code}
 							<!-- svelte-ignore a11y-no-static-element-interactions -->
 							<!-- svelte-ignore a11y-click-events-have-key-events -->
-							<div class="mt-2 grid grid-cols-5 justify-center gap-x-10 gap-y-5 overflow-auto">
+							<div class="mt-2 grid grid-cols-3 justify-center gap-x-5 gap-y-5 overflow-auto">
 								{#each getChildren(p.code) as child}
 									<div
 										class="flex h-16 w-16 cursor-pointer flex-col items-center justify-center rounded-md {annotation[
