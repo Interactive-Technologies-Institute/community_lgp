@@ -1,4 +1,4 @@
-import type { Parameter, Sign } from '@/types/types';
+import type { CSComment, Parameter, Sign, UserProfile } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 
@@ -34,9 +34,51 @@ export const load = async (event) => {
 		return parameters as Parameter[];
 	}
 
+	async function getUserById(id: string): Promise<UserProfile> {
+		const { data: user, error: getUserByIdError } = await event.locals.supabase
+			.from('profiles_view')
+			.select(`id, display_name, avatar`)
+			.eq('id', id)
+			.single();
+
+		if (user) {
+			if (user.avatar) {
+				user.avatar = event.locals.supabase.storage
+					.from('users')
+					.getPublicUrl(user.avatar).data.publicUrl;
+			}
+		}
+
+		if (getUserByIdError) {
+			const errorMessage = `Error fetching user, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
+
+		return user as UserProfile;
+	}
+
+	async function getPostsBySignId(id: number): Promise<CSComment[]> {
+		const { data: posts, error: getPostsByIdError } = await event.locals.supabase
+			.from('crowdsource_comments')
+			.select(`user_id, parent_id, content_text, content_video, created_at, last_edited_at`)
+			.eq('parent_id', id);
+
+		if (getPostsByIdError) {
+			const errorMessage = `Error fetching posts for sign id ${id}, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
+
+		return posts as CSComment[];
+	}
+
 	const signId = event.params.signId;
 	let specificSign = null;
+	let created_by_user = null;
+	let annotated_by_user = null;
 	let parameters: Parameter[] = [];
+	let posts = null;
 
 	if (signId) {
 		// Fetch the sign
@@ -52,10 +94,19 @@ export const load = async (event) => {
 				parameters = await getParametersByIds(annotationIds);
 			}
 		}
+
+		created_by_user = await getUserById(specificSign.created_by_user_id);
+		if (specificSign.annotated_by_user_id != null) {
+			annotated_by_user = await getUserById(specificSign.annotated_by_user_id);
+		}
+		posts = await getPostsBySignId(parseInt(signId));
 	}
 
 	return {
 		sign: specificSign,
 		parameters: parameters,
+		created_by_user,
+		annotated_by_user,
+		posts,
 	};
 };

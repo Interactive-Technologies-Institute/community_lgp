@@ -1,3 +1,3 @@
 interface Window {
-  onLetterSelected: (letter: string) => void;
+	onLetterSelected: (letter: string) => void;
 }

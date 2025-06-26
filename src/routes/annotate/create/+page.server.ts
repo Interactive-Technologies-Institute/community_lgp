@@ -86,6 +86,7 @@ export const actions = {
 				.insert({
 					...data,
 					created_by_user_id: userId,
+					annotated_by_user_id: userId,
 					video: PUBLIC_SUPABASE_URL + '/storage/v1/object/public/signs//' + videoPath,
 					annotation_array: data.annotation_array ?? Array(300).fill(0), // Match field name
 					created_at: new Date().toISOString(), // Set current timestamp

@@ -30,20 +30,17 @@
 	let hasLoadedFromAnnotation = false;
 	$: currentPageNumber = parseInt($page ?? '') || 1;
 
-
 	$: if ($annotation && $annotation.length > 0 && !isFiltering && !hasLoadedFromAnnotation) {
 		hasLoadedFromAnnotation = true;
-	selectedParameterIds = $annotation.map((id : string) => parseInt(id));
-	searchArray = Array(300).fill(0);
-	selectedParameterIds.forEach((id) => {
-		if (id > 0 && id <= 300) {
-			searchArray[id - 1] = 1;
-		}
-	});
-	searchSigns();
-}
-
-
+		selectedParameterIds = $annotation.map((id: string) => parseInt(id));
+		searchArray = Array(300).fill(0);
+		selectedParameterIds.forEach((id) => {
+			if (id > 0 && id <= 300) {
+				searchArray[id - 1] = 1;
+			}
+		});
+		searchSigns();
+	}
 
 	const tabs: Record<string, { displayName: string; annotationKey: keyof AnnotationArray }> = {
 		configuracao: { displayName: 'Configuração', annotationKey: 'configuration' },
@@ -52,8 +49,6 @@
 		movimento: { displayName: 'Movimento', annotationKey: 'movement' },
 		'expressao facial': { displayName: 'Expressão Facial', annotationKey: 'expression' },
 	};
-
-	
 
 	async function searchSigns() {
 		try {
@@ -87,7 +82,7 @@
 			}
 			const data = await response.json();
 			signs = data.signs;
-			console.log('signs length::', data)
+			
 			dispatch('updateSigns', signs);
 			dispatch('updateIsFiltering', (isFiltering = true));
 			dispatch('updateCountSign', 90);
@@ -97,24 +92,24 @@
 	}
 
 	$: searchArray = (() => {
-	const arr = Array(300).fill(0);
-	selectedParameterIds.forEach((id) => {
-		if (id > 0 && id <= 300) {
-			arr[id - 1] = 1;
-		}
-	});
-	return arr;
-})();
+		const arr = Array(300).fill(0);
+		selectedParameterIds.forEach((id) => {
+			if (id > 0 && id <= 300) {
+				arr[id - 1] = 1;
+			}
+		});
+		return arr;
+	})();
 
 	function applySearch() {
-	// Set URL param
-	annotation.set(selectedParameterIds.map(String));
+		// Set URL param
+		annotation.set(selectedParameterIds.map(String));
 
-	page.set('1');
+		page.set('1');
 
-	// Trigger actual search
-	searchSigns();
-}
+		// Trigger actual search
+		searchSigns();
+	}
 	let openTab = '';
 
 	afterNavigate(() => {
@@ -122,17 +117,38 @@
 	});
 
 	$: if (isFiltering && $page) {
-	searchSigns();
-}
+		searchSigns();
+	}
 </script>
 
 <Tabs.Root value="configuracao">
 	<Tabs.List>
-		<AnnotationTab {parameters} value='configuracao' displayName='Configuração' bind:selectedParameterIds></AnnotationTab>
-		<AnnotationTab {parameters} value='localizacao' displayName='Localização'  bind:selectedParameterIds></AnnotationTab>
-		<AnnotationTab {parameters} value='orientacao' displayName='Orientação'  bind:selectedParameterIds></AnnotationTab>
-		<AnnotationTab {parameters} value='movimento' displayName='Movimento'  bind:selectedParameterIds></AnnotationTab>
-		<AnnotationTab {parameters} value='expressao facial' displayName='Expressão Facial' bind:selectedParameterIds></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="configuracao"
+			displayName="Configuração"
+			bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="localizacao"
+			displayName="Localização"
+			bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="orientacao"
+			displayName="Orientação"
+			bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab {parameters} value="movimento" displayName="Movimento" bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="expressao facial"
+			displayName="Expressão Facial"
+			bind:selectedParameterIds
+		></AnnotationTab>
 	</Tabs.List>
 </Tabs.Root>
 <!-- Search Button Inside Each Popover (Optional) -->

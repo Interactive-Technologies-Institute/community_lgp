@@ -114,6 +114,5 @@
 				LGP4Fun
 			</a>
 		</FeatureWrapper>
-		
 	</nav>
 </div>

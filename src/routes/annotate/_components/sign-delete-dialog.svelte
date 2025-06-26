@@ -23,8 +23,8 @@
 		<AlertDialog.Header>
 			<AlertDialog.Title>Tem toda a certeza?</AlertDialog.Title>
 			<AlertDialog.Description>
-				Esta ação não é reversível. Ao realizar esta ação, irá ser apagada a entrada de gesto 
-                e todas as suas anotações associadas da nossa base de dados.
+				Esta ação não é reversível. Ao realizar esta ação, irá ser apagada a entrada de gesto e
+				todas as suas anotações associadas da nossa base de dados.
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

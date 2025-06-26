@@ -88,15 +88,12 @@ export const load = async (event) => {
 			id: 'update-sign',
 		}),
 		deleteForm: await superValidate(zod(deleteSignSchema), {
-					id: 'delete-sign',
-				}),
+			id: 'delete-sign',
+		}),
 		parameters: parameters,
 		parametersById: parametersById,
 	};
 };
-
-
-
 
 export const actions = {
 	update: async (event) =>
@@ -158,6 +155,7 @@ export const actions = {
 					annotation: data.annotation,
 					annotation_array: data.annotation_array,
 					is_anotated: data.is_anotated,
+					annotated_by_user_id: userId,
 					name: data.name,
 					theme: data.theme,
 					theme_flattened: data.theme_flattened,
@@ -176,19 +174,18 @@ export const actions = {
 
 			return redirect(303, '/dictionary/sign/' + event.params.id);
 		}),
-		delete: async(event) =>
-			handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
-				
-						const { error: supabaseError } = await event.locals.supabase
-							.from('signs')
-							.delete()
-							.eq('id', parseInt(event.params.id));
-			
-						if (supabaseError) {
-							setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-							return fail(500, { message: supabaseError.message, form });
-						}
-			
-						return redirect(303, '/annotate');
-					}),
+	delete: async (event) =>
+		handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
+			const { error: supabaseError } = await event.locals.supabase
+				.from('signs')
+				.delete()
+				.eq('id', parseInt(event.params.id));
+
+			if (supabaseError) {
+				setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+				return fail(500, { message: supabaseError.message, form });
+			}
+
+			return redirect(303, '/annotate');
+		}),
 };

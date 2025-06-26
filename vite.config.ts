@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
-	assetsInclude: ['**/*.wasm'],  
+	assetsInclude: ['**/*.wasm'],
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}'],
 	},

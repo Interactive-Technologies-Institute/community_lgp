@@ -128,8 +128,9 @@
 						<div class="space-y-0.5">
 							<Form.Label>Anotação</Form.Label>
 							<Form.Description>
-								Ative este módulo para permitir que utilizadores com permissões vejam a funcionalidade de Anotação
-								de uma entrada de gesto no Dicionário de Língua Gestual Portuguesa.
+								Ative este módulo para permitir que utilizadores com permissões vejam a
+								funcionalidade de Anotação de uma entrada de gesto no Dicionário de Língua Gestual
+								Portuguesa.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.annotate} />
@@ -144,9 +145,9 @@
 						<div class="space-y-0.5">
 							<Form.Label>Crowdsource</Form.Label>
 							<Form.Description>
-								Ative este módulo para permitir que todos os utilizadores contribuam para o processo de 
-								proposta e deliberação de uma nova entrada de gesto
-								no Dicionário de Língua Gestual Portuguesa.
+								Ative este módulo para permitir que todos os utilizadores contribuam para o processo
+								de proposta e deliberação de uma nova entrada de gesto no Dicionário de Língua
+								Gestual Portuguesa.
 							</Form.Description>
 						</div>
 						<Switch includeInput {...attrs} bind:checked={$formData.crowdsource} />

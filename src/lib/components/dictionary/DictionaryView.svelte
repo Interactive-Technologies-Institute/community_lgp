@@ -16,15 +16,15 @@
 
 <div class="mx-auto flex max-w-[1400px] flex-col px-[30px]">
 	{#if signs.length === 0}
-    <p class="py-8 text-center text-gray-500">Nenhum resultado encontrado.</p>
-{:else if isFiltering}
-    <!-- When filtering, show all results in one grid -->
-    <DictionaryGrid {signs} theme={null} parameter={parameters} />
-{:else}
-    <!-- When not filtering, group by themes -->
-    {#each visibleThemes as theme}
-        <SignFlow {signs} {theme} />
-        <Separator class="my-4" />
-    {/each}
-{/if}
+		<p class="py-8 text-center text-gray-500">Nenhum resultado encontrado.</p>
+	{:else if isFiltering}
+		<!-- When filtering, show all results in one grid -->
+		<DictionaryGrid {signs} theme={null} parameter={parameters} />
+	{:else}
+		<!-- When not filtering, group by themes -->
+		{#each visibleThemes as theme}
+			<SignFlow {signs} {theme} />
+			<Separator class="my-4" />
+		{/each}
+	{/if}
 </div>

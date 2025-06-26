@@ -86,8 +86,8 @@
 									class="aspect-square h-[100px] w-[100px] cursor-pointer object-contain"
 									on:click={() => handleParameterIdClick(p)}
 								/>
-								{#if p.tipo == "expressao facial"}
-									<span class="mt-1 text-xs text-center text-black">{p.name}</span>
+								{#if p.tipo == 'expressao facial'}
+									<span class="mt-1 text-center text-xs text-black">{p.name}</span>
 								{/if}
 							</Card.Content>
 						{:else}

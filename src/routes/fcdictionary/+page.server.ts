@@ -4,7 +4,6 @@ import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
 
-
 export const load = async (event) => {
 	const page = Number(event.url.searchParams.get('page')) || 1;
 	const perPage = 9;

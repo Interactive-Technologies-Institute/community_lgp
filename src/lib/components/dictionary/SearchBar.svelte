@@ -15,7 +15,7 @@
 	import { Hand } from 'lucide-svelte';
 	import { TextCursor } from 'lucide-svelte';
 	import { Search } from 'lucide-svelte';
-	
+
 	import * as Card from '$lib/components/ui/card';
 
 	const dispatch = createEventDispatcher();
@@ -36,70 +36,70 @@
 		search.set(localSearch);
 	}
 </script>
-<Card.Root class="py-[2px] px-[2px] drop-shadow-xl border-background" >
-<div class="flex flex-1 flex-row md:flex-auto md-rounded-2xl">
-	<Tabs.Root value="gesto">
-		<Tabs.List class="drop-shadow-xl md-rounded-2xl">
-			<Tabs.Trigger
-				class={`md-rounded-2xl transition duration-300 ${
-					selectedTab !== 'gesto' ? 'opacity-25 grayscale' : ''
-				}`}
-				value="gesto"
-				on:click={() => (selectedTab = 'gesto')}
-			>
-				<Hand />&nbsp;Gesto
-			</Tabs.Trigger>
 
-			<Tabs.Trigger
-				class={`md-rounded-2xl transition duration-300 ${
-					selectedTab !== 'texto' ? 'opacity-40 grayscale' : ''
-				}`}
-				value="texto"
-				on:click={() => (selectedTab = 'texto')}
-			>
-				<TextCursor /> &nbsp;Texto
-			</Tabs.Trigger>
-		</Tabs.List>
-	</Tabs.Root>
+<Card.Root class="border-background px-[2px] py-[2px] drop-shadow-xl">
+	<div class="md-rounded-2xl flex flex-1 flex-row md:flex-auto">
+		<Tabs.Root value="gesto">
+			<Tabs.List class="md-rounded-2xl drop-shadow-xl">
+				<Tabs.Trigger
+					class={`md-rounded-2xl transition duration-300 ${
+						selectedTab !== 'gesto' ? 'opacity-25 grayscale' : ''
+					}`}
+					value="gesto"
+					on:click={() => (selectedTab = 'gesto')}
+				>
+					<Hand />&nbsp;Gesto
+				</Tabs.Trigger>
 
-	{#if selectedTab === 'gesto'}
-	<div class="flex flex-row ml-1">
-		<SignSearch
-			{parameters}
-			{signs}
-			on:updateSigns={(e) => {
-				signs = e.detail;
-				dispatch('updateSigns', e.detail);
-			}}
-			on:updateIsFiltering={(e) => {
-				isFiltering = e.detail;
-				dispatch('updateIsFiltering', e.detail);
-			}}
-			on:updateCountSign={(e) => {
-				countSign = e.detail;
-				dispatch('updateCountSign', e.detail);
-			}}
-			
-		/>
-		</div>
-	{/if}
-	{#if selectedTab === 'texto'}
-		<div class="flex flex-row ml-1">
-			<Input
-				placeholder="Escreva uma palavra..."
-				class="w-[680px] flex-1 "
-				bind:value={localSearch}
-				on:keydown={(e) => {
-					if (e.key === 'Enter') doSearch();
-				}}
-			/>
-			<div class="px-2">
-			<Button on:click={doSearch} class="btn btn-primary">
-				<Search />
-			</Button>
-		</div>
-		</div>
-	{/if}
-	<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
-</div>
+				<Tabs.Trigger
+					class={`md-rounded-2xl transition duration-300 ${
+						selectedTab !== 'texto' ? 'opacity-40 grayscale' : ''
+					}`}
+					value="texto"
+					on:click={() => (selectedTab = 'texto')}
+				>
+					<TextCursor /> &nbsp;Texto
+				</Tabs.Trigger>
+			</Tabs.List>
+		</Tabs.Root>
+
+		{#if selectedTab === 'gesto'}
+			<div class="ml-1 flex flex-row">
+				<SignSearch
+					{parameters}
+					{signs}
+					on:updateSigns={(e) => {
+						signs = e.detail;
+						dispatch('updateSigns', e.detail);
+					}}
+					on:updateIsFiltering={(e) => {
+						isFiltering = e.detail;
+						dispatch('updateIsFiltering', e.detail);
+					}}
+					on:updateCountSign={(e) => {
+						countSign = e.detail;
+						dispatch('updateCountSign', e.detail);
+					}}
+				/>
+			</div>
+		{/if}
+		{#if selectedTab === 'texto'}
+			<div class="ml-1 flex flex-row">
+				<Input
+					placeholder="Escreva uma palavra..."
+					class="w-[680px] flex-1 "
+					bind:value={localSearch}
+					on:keydown={(e) => {
+						if (e.key === 'Enter') doSearch();
+					}}
+				/>
+				<div class="px-2">
+					<Button on:click={doSearch} class="btn btn-primary">
+						<Search />
+					</Button>
+				</div>
+			</div>
+		{/if}
+		<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
+	</div>
 </Card.Root>

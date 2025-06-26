@@ -41,7 +41,10 @@
 		debounceHistory: 250,
 	});
 
-	$: isFiltering = ($search ?? '').trim().length > 0 || ($theme ?? []).length > 0 || ($annotation ?? []).length > 0;
+	$: isFiltering =
+		($search ?? '').trim().length > 0 ||
+		($theme ?? []).length > 0 ||
+		($annotation ?? []).length > 0;
 	$: $search = data.search || $search;
 	$: $annotation = data.annotation || $annotation;
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
@@ -68,13 +71,11 @@
 		}
 	}
 
-	console.log(countSign)
-	console.log(perPage)
-	console.log(countSign/perPage)
+
 </script>
 
 <div>
-	<div class="fixed container flex flex-row justify-between py-5 px-[290px]">
+	<div class="container fixed flex flex-row justify-between px-[290px] py-5">
 		<SearchBar
 			{data}
 			{signs}
@@ -88,65 +89,64 @@
 			on:updateCountSign={(e) => {
 				countSign = e.detail;
 			}}
-			
 		/>
 	</div>
 	<div class="pt-[90px]">
-	{#if isLoading}
-		<p class="loading">Loading...</p>
-	{/if}
-	{#if errorMessage}
-		<p class="error">{errorMessage}</p>
-	{/if}
-	<div class="pb-4">
-		<DictionaryView
-			{signs}
-			themes={isFiltering ? allThemes : initialThemes}
-			{parameters}
-			{isFiltering}
-		/>
-	</div>
-	{#if isFiltering && countSign > 0}
-		<div class="flex items-start justify-start pb-5">
-			<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
-				<Pagination.Content class="flex items-center justify-center gap-2">
-					<Pagination.Item>
-						<Pagination.PrevButton on:click={goToPreviousPage} disabled={currentPageNumber === 1}>
-							Anterior
-						</Pagination.PrevButton>
-					</Pagination.Item>
-
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<Pagination.Item>
-								<Pagination.Link 
-								{page} 
-								isActive={currentPageNumber == page.value}
-								class={`${currentPageNumber === page.value ? ' px-3 py-5 rounded-lg border-primary bg-primary' : ''}`}
-								>
-									<a href={buildUrlWithUpdatedPage(page.value)}>
-										{page.value}
-									</a>
-								</Pagination.Link>
-							</Pagination.Item>
-						{/if}
-					{/each}
-
-					<Pagination.Item>
-						<Pagination.NextButton
-							on:click={goToNextPage}
-							disabled={currentPageNumber === Math.ceil(countSign/perPage)}
-						>
-							Próximo
-						</Pagination.NextButton>
-					</Pagination.Item>
-				</Pagination.Content>
-			</Pagination.Root>
+		{#if isLoading}
+			<p class="loading">Loading...</p>
+		{/if}
+		{#if errorMessage}
+			<p class="error">{errorMessage}</p>
+		{/if}
+		<div class="pb-4">
+			<DictionaryView
+				{signs}
+				themes={isFiltering ? allThemes : initialThemes}
+				{parameters}
+				{isFiltering}
+			/>
 		</div>
-	{/if}
-</div>
+		{#if isFiltering && countSign > 0}
+			<div class="flex items-start justify-start pb-5">
+				<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
+					<Pagination.Content class="flex items-center justify-center gap-2">
+						<Pagination.Item>
+							<Pagination.PrevButton on:click={goToPreviousPage} disabled={currentPageNumber === 1}>
+								Anterior
+							</Pagination.PrevButton>
+						</Pagination.Item>
+
+						{#each pages as page (page.key)}
+							{#if page.type === 'ellipsis'}
+								<Pagination.Item>
+									<Pagination.Ellipsis />
+								</Pagination.Item>
+							{:else}
+								<Pagination.Item>
+									<Pagination.Link
+										{page}
+										isActive={currentPageNumber == page.value}
+										class={`${currentPageNumber === page.value ? ' rounded-lg border-primary bg-primary px-3 py-5' : ''}`}
+									>
+										<a href={buildUrlWithUpdatedPage(page.value)}>
+											{page.value}
+										</a>
+									</Pagination.Link>
+								</Pagination.Item>
+							{/if}
+						{/each}
+
+						<Pagination.Item>
+							<Pagination.NextButton
+								on:click={goToNextPage}
+								disabled={currentPageNumber === Math.ceil(countSign / perPage)}
+							>
+								Próximo
+							</Pagination.NextButton>
+						</Pagination.Item>
+					</Pagination.Content>
+				</Pagination.Root>
+			</div>
+		{/if}
+	</div>
 </div>
