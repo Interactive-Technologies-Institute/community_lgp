@@ -82,7 +82,7 @@
 			}
 			const data = await response.json();
 			signs = data.signs;
-			
+
 			dispatch('updateSigns', signs);
 			dispatch('updateIsFiltering', (isFiltering = true));
 			dispatch('updateCountSign', 90);

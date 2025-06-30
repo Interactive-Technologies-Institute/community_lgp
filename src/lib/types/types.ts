@@ -147,12 +147,13 @@ export type Notification = {
 export type Sign = {
 	annotation: AnnotationArray;
 	annotation_array: number[];
-	annotated_by_user_id: string;
+	annotated_by_user_id?: string | null;
 	created_at: string;
 	created_by_user_id: string;
 	id: number;
 	is_anotated: 0 | 1 | 2;
 	last_changed: string;
+	main_sign_id?: string | null;
 	name: string;
 	theme: string[];
 	video: string;
@@ -162,6 +163,8 @@ export type Sign = {
 	frequency: 0 | 1 | 2;
 	district?: string | null;
 	image?: string | null;
+	game_video?: string | null;
+
 };
 
 export type AnnotationArray = {

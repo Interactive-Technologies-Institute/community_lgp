@@ -70,8 +70,6 @@
 			goto(newUrl);
 		}
 	}
-
-
 </script>
 
 <div>

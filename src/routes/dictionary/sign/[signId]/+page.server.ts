@@ -34,6 +34,22 @@ export const load = async (event) => {
 		return parameters as Parameter[];
 	}
 
+	async function getSignVariants(id: number): Promise<Sign[]>{
+		const { data: signs, error: signsError } = await event.locals.supabase
+			.from('signs')
+			.select('*')
+			.eq('main_sign_id', id)
+			
+
+		if (signsError) {
+			const errorMessage = `Error fetching sign variants with ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
+
+		return signs as Sign[];
+	}
+
 	async function getUserById(id: string): Promise<UserProfile> {
 		const { data: user, error: getUserByIdError } = await event.locals.supabase
 			.from('profiles_view')
@@ -75,6 +91,8 @@ export const load = async (event) => {
 
 	const signId = event.params.signId;
 	let specificSign = null;
+	let mainSign = null;
+	let signVariants = null;
 	let created_by_user = null;
 	let annotated_by_user = null;
 	let parameters: Parameter[] = [];
@@ -100,6 +118,12 @@ export const load = async (event) => {
 			annotated_by_user = await getUserById(specificSign.annotated_by_user_id);
 		}
 		posts = await getPostsBySignId(parseInt(signId));
+
+		if(specificSign.main_sign_id){
+			mainSign = await getSignById(specificSign.main_sign_id);
+		}
+
+		signVariants = await getSignVariants(specificSign.id);
 	}
 
 	return {
@@ -108,5 +132,7 @@ export const load = async (event) => {
 		created_by_user,
 		annotated_by_user,
 		posts,
+		mainSign,
+		signVariants
 	};
 };

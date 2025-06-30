@@ -15,14 +15,10 @@
 	{/if}
 </div>
 
-<div class="flex mx-72">
-	<div class="flex justify-start items-start mr-10">
-		Gestos a aprovar
-	</div>
+<div class="mx-72 flex">
+	<div class="mr-10 flex items-start justify-start">Gestos a aprovar</div>
 
-	<Separator orientation="vertical" class="h-72"/>
+	<Separator orientation="vertical" class="h-72" />
 
-	<div class="flex justify-start items-start ml-10">
-		Gestos aprovados
-	</div>
+	<div class="ml-10 flex items-start justify-start">Gestos aprovados</div>
 </div>
