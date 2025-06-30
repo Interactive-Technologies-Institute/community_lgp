@@ -129,23 +129,23 @@ export const actions = {
 				videoPath = form.data.video.split('/').pop() ?? '';
 			}
 
-			let contextVideoPath = '';
+			let contextVideo = '';
 			let contextVideoUrl = '';
 			if (form.data.context_video instanceof File) {
 				const { path, error } = await uploadVideo(form.data.context_video, 'context');
 				if (error) {
 					return fail(500, withFiles({ message: error.message, form }));
 				}
-				contextVideoPath = path;
-				contextVideoUrl = `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/${contextVideoPath}`;
+				contextVideo = path;
+				contextVideoUrl = `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/${contextVideo}`;
 			} else if (form.data.context_video_url) {
 				contextVideoUrl = form.data.context_video_url;
 				// Extract path from existing URL for storage reference
 				const urlParts = form.data.context_video_url.split('/');
-				contextVideoPath = urlParts[urlParts.length - 1];
+				contextVideo = urlParts[urlParts.length - 1];
 			} else {
 				contextVideoUrl = '';
-				contextVideoPath = '';
+				contextVideo = '';
 			}
 
 			const { videoUrl, context_video_url, ...data } = form.data;
@@ -176,6 +176,28 @@ export const actions = {
 		}),
 	delete: async (event) =>
 		handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
+			
+			const { data: sign, error: fetchError } = await event.locals.supabase
+			.from('signs')
+			.select('video, context_video')
+			.eq('id', parseInt(event.params.id))
+			.single();
+
+			if (fetchError) {
+			setFlash({ type: 'error', message: fetchError.message }, event.cookies);
+			return fail(500, { message: fetchError.message, form });
+		}
+
+		let mainVideo = `signs/${sign.video}`
+		let contextVideo = `signs/context/${sign.context_video}`
+
+		if (mainVideo) {
+			await event.locals.supabase.storage.from('signs').remove([mainVideo]);
+		}
+		if (contextVideo) {
+			await event.locals.supabase.storage.from('signs').remove([contextVideo]);
+		}
+			
 			const { error: supabaseError } = await event.locals.supabase
 				.from('signs')
 				.delete()

@@ -13,10 +13,11 @@
 <div class="container mx-auto mb-20">
 	<Tabs.Root value={path}>
 		<Tabs.List>
-			<Tabs.TriggerLink href="/moderation/users" value="users">Users</Tabs.TriggerLink>
-			<Tabs.TriggerLink href="/moderation/guides" value="guides">Guides</Tabs.TriggerLink>
-			<Tabs.TriggerLink href="/moderation/events" value="events">Events</Tabs.TriggerLink>
-			<Tabs.TriggerLink href="/moderation/map" value="map">Map</Tabs.TriggerLink>
+			<Tabs.TriggerLink href="/moderation/signs" value="signs">Gestos</Tabs.TriggerLink>
+			<Tabs.TriggerLink href="/moderation/users" value="users">Utilizadores</Tabs.TriggerLink>
+			<Tabs.TriggerLink href="/moderation/guides" value="guides">Guias</Tabs.TriggerLink>
+			<Tabs.TriggerLink href="/moderation/events" value="events">Eventos</Tabs.TriggerLink>
+			<Tabs.TriggerLink href="/moderation/map" value="map">Mapa</Tabs.TriggerLink>
 		</Tabs.List>
 		<slot />
 	</Tabs.Root>

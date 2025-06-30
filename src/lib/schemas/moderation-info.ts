@@ -6,8 +6,8 @@ export const updateModerationInfoSchema = z.object({
 	status: z.enum(['approved', 'changes_requested', 'rejected']),
 	comment: z
 		.string()
-		.min(1, { message: 'Comment is required' })
-		.max(500, { message: 'Comment must be less than 500 characters' }),
+		.min(1, { message: 'Comentário é necessário.' })
+		.max(500, { message: 'O comentário tem de ter menos de 500 caracteres.' }),
 });
 
 export type UpdateModerationInfoSchema = typeof updateModerationInfoSchema;

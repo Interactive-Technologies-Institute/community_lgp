@@ -30,6 +30,10 @@
 		map_pin_changes_requested: 'Your map pin needs changes',
 		map_pin_approved: 'Your map pin has been approved',
 		map_pin_rejected: 'Your map pin has been rejected',
+		sign_pending: 'A sua proposta de gesto está pendente de moderação.',
+		sign_changes_requested: 'Foram requisitadas mudanças na sua proposta de gesto.',
+		sign_approved: 'A sua proposta de gesto foi aceite!',
+		sign_rejected: 'A sua proposta de gesto foi recusada.',
 	};
 
 	function getNotificationHref(notification: Notification): string {
@@ -49,6 +53,11 @@
 			case 'map_pin_approved':
 			case 'map_pin_rejected':
 				return `/map?id=${notification.data.map_pin_id ?? 'error'}`;
+			case 'sign_pending':
+			case 'sign_changes_requested':
+			case 'sign_approved':
+			case 'sign_rejected':
+				return `/dictionary/sign/${notification.data.sign_id ?? 'error'}`;
 			default:
 				return 'error';
 		}

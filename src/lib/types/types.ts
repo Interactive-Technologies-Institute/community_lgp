@@ -133,7 +133,11 @@ export type NotificationType =
 	| 'map_pin_pending'
 	| 'map_pin_changes_requested'
 	| 'map_pin_approved'
-	| 'map_pin_rejected';
+	| 'map_pin_rejected'
+	| 'sign_pending'
+	| 'sign_changes_requested'
+	| 'sign_approved'
+	| 'sign_rejected';
 
 export type Notification = {
 	id: number;
@@ -166,6 +170,8 @@ export type Sign = {
 	game_video?: string | null;
 
 };
+
+export type SignWithModeration = Sign & { moderation: ModerationInfo[] };
 
 export type AnnotationArray = {
 	configuration: number[];
