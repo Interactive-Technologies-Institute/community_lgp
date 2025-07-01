@@ -30,8 +30,8 @@
 		map_pin_changes_requested: 'Your map pin needs changes',
 		map_pin_approved: 'Your map pin has been approved',
 		map_pin_rejected: 'Your map pin has been rejected',
-		sign_pending: 'A sua proposta de gesto está pendente de moderação.',
-		sign_changes_requested: 'Foram requisitadas mudanças na sua proposta de gesto.',
+		sign_pending: 'A sua proposta de gesto está pendente.',
+		sign_changes_requested: 'A sua proposa de gesto requer mudanças.',
 		sign_approved: 'A sua proposta de gesto foi aceite!',
 		sign_rejected: 'A sua proposta de gesto foi recusada.',
 	};

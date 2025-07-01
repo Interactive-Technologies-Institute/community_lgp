@@ -1,8 +1,9 @@
 <script lang="ts">
 	import Badge from '@/components/ui/badge/badge.svelte';
-	import type { Sign } from '@/types/types';
+	import type { CSComment, Sign } from '@/types/types';
 	import AnnotationShowcase from '../../../../lib/components/dictionary/AnnotationShowcase.svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import * as Collapsible from '@/components/ui/collapsible';
 	import * as Card from '@/components/ui/card';
@@ -18,7 +19,7 @@
 	export let sign: Sign | null = data.sign;
 	let createdByUser = data.created_by_user;
 	let annotatedByUser = data.annotated_by_user;
-	let posts = data.posts;
+	let posts: CSComment[] | null = data.posts;
 	let mainSign = data.mainSign;
 	let signVariants = data.signVariants ?? [];
 	

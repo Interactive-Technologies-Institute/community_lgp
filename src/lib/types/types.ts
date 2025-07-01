@@ -192,26 +192,13 @@ export type Parameter = {
 	image: string | null;
 };
 
-export type CSProposal = {
-	id: number;
-	user_id: string;
-	title: string;
-	content_text?: string | null;
-	content_video?: string | null;
-	tags: string[];
-	created_at: string;
-	last_edited_at: string;
-	is_locked: boolean;
-};
-
 export type CSComment = {
 	id: number;
 	user_id: string;
 	parent_id: number;
-	proposal_id: number;
+	sign_id: number;
 	content_text?: string | null;
 	content_video?: string | null;
 	created_at: string;
 	last_edited_at: string;
-	include_in_proposal: boolean;
 };

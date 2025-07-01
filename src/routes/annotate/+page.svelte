@@ -5,6 +5,7 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import { Button } from '@/components/ui/button';
 	import { PlusCircle } from 'lucide-svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
 	let signs: Sign[] = data.signs;
@@ -12,6 +13,8 @@
 	let semiAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 1);
 	let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 2);
 </script>
+
+<MetaTags title="Anotações" description="Crie uma nova entrada de um gesto, anote ou altere as anotações de um gesto." />
 
 <PageHeader
 	title="Anotações"
