@@ -77,7 +77,7 @@
 			});
 
 			if (!response.ok) {
-				console.error('Failed to fetch signs');
+				console.error(`Failed to fetch signs on ${type}`);
 				return;
 			}
 			const data = await response.json();

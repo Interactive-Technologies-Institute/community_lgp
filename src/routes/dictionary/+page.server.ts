@@ -5,11 +5,20 @@ import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
 
 export const load = async (event) => {
+	const page = Number(event.url.searchParams.get('page')) || 1;
+	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation_array'));
+	let totalPages = 0;
+	let countSign = 0;
 
 	async function getSigns(): Promise<Sign[]> {
-		let query = event.locals.supabase.from('signs').select('*').eq('is_anotated', 2);
+		let query = event.locals.supabase
+			.from('signs')
+			.select('*', { count: 'exact' })
+			.eq('is_anotated', 2)
+			.range((page - 1) * perPage, page * perPage - 1);
 
 		if (search) {
 			query = query.ilike('name', `%${search}%`);
@@ -19,8 +28,13 @@ export const load = async (event) => {
 			query = query.overlaps('theme', theme);
 		}
 
-		const { data: signs, error: signsError } = await query;
+		if (annotation && annotation.length) {
+			query = query.overlaps('annotation_array', annotation);
+		}
 
+		const { data: signs, count, error: signsError } = await query;
+		totalPages = count ? Math.ceil(count / perPage) : 0;
+		countSign = count || 0;
 		if (signsError) {
 			const errorMessage = 'Error fetching signs, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
@@ -70,5 +84,9 @@ export const load = async (event) => {
 		signs: await getSigns(),
 		parameters: await getParameters(),
 		themes: await getThemes(),
+		page,
+		totalPages,
+		perPage,
+		countSign,
 	};
 };
