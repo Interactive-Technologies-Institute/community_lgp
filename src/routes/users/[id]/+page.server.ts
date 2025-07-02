@@ -1,4 +1,4 @@
-import type { UserProfile } from '@/types/types';
+import type { Sign, UserProfile } from '@/types/types';
 import { handleSignInRedirect } from '@/utils';
 import { error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -86,10 +86,70 @@ export const load = async (event) => {
 		return mapPin;
 	}
 
+	async function getSignsByUser(
+		page: number = 1,
+		pageSize: number = 20
+	): Promise<{ signs: Sign[]; count: number }> {
+		const from = (page - 1) * pageSize;
+		const to = from + pageSize - 1;
+
+		const {
+			data: signs,
+			count,
+			error: signsError,
+		} = await event.locals.supabase
+			.from('signs')
+			.select('id, name, created_at, video, theme_flattened, district', { count: 'exact' })
+			.eq('created_by_user_id', id)
+			.range(from, to);
+
+		if (signsError) {
+			const errorMessage = `Error fetching signs by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return {
+			signs: signs as Sign[],
+			count: count ?? 0,
+		};
+	}
+
+	async function getAnnotatedSignsByUser(
+		page: number = 1,
+		pageSize: number = 20
+	): Promise<{ annotatedSigns: Sign[]; count: number }> {
+		const from = (page - 1) * pageSize;
+		const to = from + pageSize - 1;
+
+		const {
+			data: annotatedSigns,
+			count,
+			error: signsError,
+		} = await event.locals.supabase
+			.from('signs')
+			.select('id, name, created_at, video, theme_flattened, district', { count: 'exact' })
+			.eq('annotated_by_user_id', id)
+			.range(from, to);
+
+		if (signsError) {
+			const errorMessage = `Error fetching annotated signs by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return {
+			annotatedSigns: annotatedSigns as Sign[],
+			count: count ?? 0,
+		};
+	}
+
 	return {
 		userProfile: await getUserProfile(),
 		guides: await getGuides(),
 		events: await getEvents(),
 		mapPin: await getMapPin(),
+		signs: await getSignsByUser(),
+		annotatedSigns: await getAnnotatedSignsByUser(),
 	};
 };

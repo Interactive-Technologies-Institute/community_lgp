@@ -5,7 +5,6 @@
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { queryParam } from 'sveltekit-search-params';
 	import SignsModerationTable from './_components/signs-moderation-table.svelte';
-	
 
 	export let data;
 

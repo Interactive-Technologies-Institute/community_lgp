@@ -176,28 +176,27 @@ export const actions = {
 		}),
 	delete: async (event) =>
 		handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
-			
 			const { data: sign, error: fetchError } = await event.locals.supabase
-			.from('signs')
-			.select('video, context_video')
-			.eq('id', parseInt(event.params.id))
-			.single();
+				.from('signs')
+				.select('video, context_video')
+				.eq('id', parseInt(event.params.id))
+				.single();
 
 			if (fetchError) {
-			setFlash({ type: 'error', message: fetchError.message }, event.cookies);
-			return fail(500, { message: fetchError.message, form });
-		}
+				setFlash({ type: 'error', message: fetchError.message }, event.cookies);
+				return fail(500, { message: fetchError.message, form });
+			}
 
-		let mainVideo = `signs/${sign.video}`
-		let contextVideo = `signs/context/${sign.context_video}`
+			let mainVideo = `signs/${sign.video}`;
+			let contextVideo = `signs/context/${sign.context_video}`;
 
-		if (mainVideo) {
-			await event.locals.supabase.storage.from('signs').remove([mainVideo]);
-		}
-		if (contextVideo) {
-			await event.locals.supabase.storage.from('signs').remove([contextVideo]);
-		}
-			
+			if (mainVideo) {
+				await event.locals.supabase.storage.from('signs').remove([mainVideo]);
+			}
+			if (contextVideo) {
+				await event.locals.supabase.storage.from('signs').remove([contextVideo]);
+			}
+
 			const { error: supabaseError } = await event.locals.supabase
 				.from('signs')
 				.delete()

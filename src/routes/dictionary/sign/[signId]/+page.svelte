@@ -15,6 +15,11 @@
 	import Button from '@/components/ui/button/button.svelte';
 	import { PlusCircle } from 'lucide-svelte';
 	import * as Accordion from '@/components/ui/accordion';
+	import { Smile } from 'lucide-svelte';
+	import { Meh } from 'lucide-svelte';
+	import { Frown } from 'lucide-svelte';
+	import SignRatingButton from './_components/SignRatingButton.svelte';
+
 	export let data;
 	export let sign: Sign | null = data.sign;
 	let createdByUser = data.created_by_user;
@@ -22,17 +27,16 @@
 	let posts: CSComment[] | null = data.posts;
 	let mainSign = data.mainSign;
 	let signVariants = data.signVariants ?? [];
-	
 
 	function goToUserProfile(id: string) {
 		goto(`/users/${id}`);
 	}
 
-	function capitalize(district: string){
+	function capitalize(district: string) {
 		return district[0].toUpperCase() + district.slice(1);
 	}
 
-	let district = capitalize(sign?.district ?? "Geral") 
+	let district = capitalize(sign?.district ?? 'Geral');
 </script>
 
 {#if sign}
@@ -83,134 +87,145 @@
 
 			<h2 class="my-2 text-lg">
 				{#if sign?.district}
-				<div class="flex justify-start items-center">
+					<div class="flex items-center justify-start">
 						{#if mainSign}
-						<div class="flex flex-col">
-							<div class="text-sm">Esta entrada de gesto é uma variante do gesto 
-								<a href={`/dictionary/sign/${mainSign.id}`} class="cursor-pointer text-primary hover:underline" rel="external">
-									{mainSign.name}
-								</a> 
-							</div>
-							<div class="text-sm">relativa ao distrito de:
-							<div class="flex items-center space-x-2 py-2">
-								<DistrictMap district={district} />
-								<Badge variant="outline" class="py-1 px-2">
-									{district}
-								</Badge>
-							</div>
-								
-							</div>
-							
-							</div>
-						{:else}	
-						<div class="flex flex-col">
-
-							<div class="flex items-center space-x-2 py-2">
-								<DistrictMap district={district} />
-								<Badge variant="outline" class="py-1 px-2">
-									{district}
-								</Badge>
-							</div>
-							{#if signVariants.length >= 1}
-							<Accordion.Root >
-								<Accordion.Item value="item-1">
-									<Accordion.Trigger>Variantes</Accordion.Trigger>
-									<Accordion.Content>
-									<Carousel.Root
-										opts={{
-											align: 'start',
-										}}
-										class="w-full max-w-[1250px]"
+							<div class="flex flex-col">
+								<div class="text-sm">
+									Esta entrada de gesto é uma variante do gesto
+									<a
+										href={`/dictionary/sign/${mainSign.id}`}
+										class="cursor-pointer text-primary hover:underline"
+										rel="external"
 									>
-										<Carousel.Content>
-											{#each signVariants as sign (sign.id)}
-												<Carousel.Item class="">
-													<div class="p-1">
-														<Card.Root class="rounded-2xl">
-															<!-- svelte-ignore a11y-media-has-caption -->
-															<Card.Content class="flex  items-center justify-center p-3">
-																<div class="flex flex-col">
-																	<video class="aspect-video w-full rounded-xl" controls muted>
-																		<source src={sign.video} type="video/mp4" />
-																		Your browser does not support the video tag.
-																	</video>
+										{mainSign.name}
+									</a>
+								</div>
+								<div class="text-sm">
+									relativa ao distrito de:
+									<div class="flex items-center space-x-2 py-2">
+										<DistrictMap {district} />
+										<Badge variant="outline" class="px-2 py-1">
+											{district}
+										</Badge>
+									</div>
+								</div>
+							</div>
+						{:else}
+							<div class="flex flex-col">
+								<div class="flex items-center space-x-2 py-2">
+									<DistrictMap {district} />
+									<Badge variant="outline" class="px-2 py-1">
+										{district}
+									</Badge>
+								</div>
+								{#if signVariants.length >= 1}
+									<Accordion.Root>
+										<Accordion.Item value="item-1">
+											<Accordion.Trigger>Variantes</Accordion.Trigger>
+											<Accordion.Content>
+												<Carousel.Root
+													opts={{
+														align: 'start',
+													}}
+													class="w-full max-w-[1250px]"
+												>
+													<Carousel.Content>
+														{#each signVariants as sign (sign.id)}
+															<Carousel.Item class="">
+																<div class="p-1">
+																	<Card.Root class="rounded-2xl">
+																		<!-- svelte-ignore a11y-media-has-caption -->
+																		<Card.Content class="flex  items-center justify-center p-3">
+																			<div class="flex flex-col">
+																				<video
+																					class="aspect-video w-full rounded-xl"
+																					controls
+																					muted
+																				>
+																					<source src={sign.video} type="video/mp4" />
+																					Your browser does not support the video tag.
+																				</video>
 
-																	<a href="/dictionary/sign/{sign.id}" rel="external" class="text-l py-5 pt-9">{sign.name}</a>
-																	
-																			<Badge class="w-fit" variant="outline">{sign.district}</Badge>
-																		
+																				<a
+																					href="/dictionary/sign/{sign.id}"
+																					rel="external"
+																					class="text-l py-5 pt-9">{sign.name}</a
+																				>
+
+																				<Badge class="w-fit" variant="outline"
+																					>{sign.district}</Badge
+																				>
+																			</div>
+																		</Card.Content>
+																	</Card.Root>
 																</div>
-															</Card.Content>
-														</Card.Root>
-													</div>
-												</Carousel.Item>
-											{/each}
-										</Carousel.Content>
-										<Carousel.Previous />
-										<Carousel.Next />
-									</Carousel.Root>
-									</Accordion.Content>
-								</Accordion.Item>
-								</Accordion.Root>	
+															</Carousel.Item>
+														{/each}
+													</Carousel.Content>
+													<Carousel.Previous />
+													<Carousel.Next />
+												</Carousel.Root>
+											</Accordion.Content>
+										</Accordion.Item>
+									</Accordion.Root>
 								{/if}
 							</div>
-							
 						{/if}
-						
-						</div>
+					</div>
 				{:else}
-						<div class="flex flex-col">
-
-							<div class="flex items-center space-x-2 py-2">
-								<DistrictMap district={district} />
-								<Badge variant="outline" class="py-1 px-2">
-									{district}
-								</Badge>
-							</div>
-							{#if signVariants.length >= 1}
-							<Accordion.Root >
+					<div class="flex flex-col">
+						<div class="flex items-center space-x-2 py-2">
+							<DistrictMap {district} />
+							<Badge variant="outline" class="px-2 py-1">
+								{district}
+							</Badge>
+						</div>
+						{#if signVariants.length >= 1}
+							<Accordion.Root>
 								<Accordion.Item value="item-1">
 									<Accordion.Trigger>Variantes</Accordion.Trigger>
 									<Accordion.Content>
-									<Carousel.Root
-										opts={{
-											align: 'start',
-										}}
-										class="w-full max-w-[1250px]"
-									>
-										<Carousel.Content>
-											{#each signVariants as sign (sign.id)}
-												<Carousel.Item class="">
-													<div class="p-1">
-														<Card.Root class="rounded-2xl">
-															<!-- svelte-ignore a11y-media-has-caption -->
-															<Card.Content class="flex  items-center justify-center p-3">
-																<div class="flex flex-col">
-																	<video class="aspect-video w-full rounded-xl" controls muted>
-																		<source src={sign.video} type="video/mp4" />
-																		Your browser does not support the video tag.
-																	</video>
+										<Carousel.Root
+											opts={{
+												align: 'start',
+											}}
+											class="w-full max-w-[1250px]"
+										>
+											<Carousel.Content>
+												{#each signVariants as sign (sign.id)}
+													<Carousel.Item class="">
+														<div class="p-1">
+															<Card.Root class="rounded-2xl">
+																<!-- svelte-ignore a11y-media-has-caption -->
+																<Card.Content class="flex  items-center justify-center p-3">
+																	<div class="flex flex-col">
+																		<video class="aspect-video w-full rounded-xl" controls muted>
+																			<source src={sign.video} type="video/mp4" />
+																			Your browser does not support the video tag.
+																		</video>
 
-																	<a href="/dictionary/sign/{sign.id}" rel="external" class="text-l py-5 pt-9">{sign.name}</a>
-																	
-																			<Badge class="w-fit" variant="outline">{sign.district}</Badge>
-																		
-																</div>
-															</Card.Content>
-														</Card.Root>
-													</div>
-												</Carousel.Item>
-											{/each}
-										</Carousel.Content>
-										<Carousel.Previous />
-										<Carousel.Next />
-									</Carousel.Root>
+																		<a
+																			href="/dictionary/sign/{sign.id}"
+																			rel="external"
+																			class="text-l py-5 pt-9">{sign.name}</a
+																		>
+
+																		<Badge class="w-fit" variant="outline">{sign.district}</Badge>
+																	</div>
+																</Card.Content>
+															</Card.Root>
+														</div>
+													</Carousel.Item>
+												{/each}
+											</Carousel.Content>
+											<Carousel.Previous />
+											<Carousel.Next />
+										</Carousel.Root>
 									</Accordion.Content>
 								</Accordion.Item>
-								</Accordion.Root>	
-								{/if}
-							</div>
-							
+							</Accordion.Root>
+						{/if}
+					</div>
 				{/if}
 			</h2>
 			<Card.Root class="rounded-3xl px-3 py-2">
@@ -266,6 +281,14 @@
 					{/if}
 				</div>
 			</Card.Root>
+
+			<div class="my-5">
+				<Card.Root class="p-0 rounded-2xl">
+					<Card.Content class="mt-5">
+						<SignRatingButton data={data.toggleRatingForm} currentValue={data.currentRating} positiveNumber={data.numberOfPositives} />
+					</Card.Content>
+			</Card.Root>
+				</div>
 			<h2 class="mt-[360px] text-xl">
 				{#if sign?.description}
 					{sign?.description}
@@ -279,12 +302,14 @@
 			</h2>
 		</div>
 		{#if sign.district == null || sign?.district == 'geral'}
-			<Button on:click={() => goto(`${sign.id}/create`)} class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2">
+			<Button
+				on:click={() => goto(`${sign.id}/create`)}
+				class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2"
+			>
 				<PlusCircle class="h-4 w-4 sm:mr-2" />
 				<span>Propor variante de gesto</span>
 			</Button>
 		{/if}
-		
 	</div>
 
 	<div class="flex items-center justify-center py-5">

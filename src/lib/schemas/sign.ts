@@ -58,6 +58,28 @@ export const deleteSignSchema = z.object({
 	id: z.number(),
 });
 
+export const toggleSignRatingSchema = z.object({
+	value: z
+		.string()
+		.optional()
+		.default('')
+		.transform((val) => {
+			if (!val || val === '') return null;
+			const parsed = parseInt(val, 10);
+			return parsed;
+		})
+		.refine(
+			(val) => {
+				return val === null || [-1, 0, 1].includes(val);
+			},
+			{
+				message: 'Rating must be -1, 0, or 1, or empty to remove rating',
+			}
+		),
+});
+
+export type ToggleSignRatingSchema = typeof toggleSignRatingSchema;
+
 export type CreateSignSchema = typeof createSignSchema;
 export type DeleteSignSchema = typeof deleteSignSchema;
 export type UpdateSignSchema = typeof updateSignSchema;

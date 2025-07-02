@@ -10,6 +10,7 @@
 	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
+	console.log(data);
 </script>
 
 <MetaTags title="Detalhes do Utilizador" description="" />
@@ -93,6 +94,51 @@
 					</div>
 				{:else}
 					<p class="text-sm text-muted-foreground">O utilizador não criou nenhum evento.</p>
+				{/if}
+			</Card.Content>
+		</Card.Root>
+	</FeatureWrapper>
+	<FeatureWrapper feature="dictionary">
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Gestos Criados ({data.signs.count})</Card.Title>
+				<Card.Description>Lista de Gestos criados pelo utilizador</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				{#if data.signs.signs.length > 0}
+					<div class="flex flex-wrap gap-4">
+						{#each data.signs.signs as sign}
+							<Button href="/signs/{sign.id}" variant="outline" class="max-w-full">
+								<span class="truncate">{sign.name}</span>
+								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+							</Button>
+						{/each}
+					</div>
+				{:else}
+					<p class="text-sm text-muted-foreground">O utilizador não criou nenhum gesto.</p>
+				{/if}
+			</Card.Content>
+		</Card.Root>
+	</FeatureWrapper>
+
+	<FeatureWrapper feature="annotate">
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Gestos Anotados ({data.annotatedSigns.count})</Card.Title>
+				<Card.Description>Lista de Gestos anotados pelo utilizador</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				{#if data.annotatedSigns.annotatedSigns.length > 0}
+					<div class="flex flex-wrap gap-4">
+						{#each data.annotatedSigns.annotatedSigns as sign}
+							<Button href="/signs/{sign.id}" variant="outline" class="max-w-full">
+								<span class="truncate">{sign.name}</span>
+								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+							</Button>
+						{/each}
+					</div>
+				{:else}
+					<p class="text-sm text-muted-foreground">O utilizador não anotou nenhum gesto.</p>
 				{/if}
 			</Card.Content>
 		</Card.Root>

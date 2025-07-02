@@ -47,15 +47,15 @@
 			<div class="max-w-2xl space-y-4">
 				<Form.Field {form} name="display_name">
 					<Form.Control let:attrs>
-						<Form.Label>Name*</Form.Label>
+						<Form.Label>Nome de exposição</Form.Label>
 						<Input {...attrs} bind:value={$formData.display_name} />
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
 				<Form.Field {form} name="description">
 					<Form.Control let:attrs>
-						<Form.Label>Description</Form.Label>
-						<Input {...attrs} bind:value={$formData.description} />
+						<Form.Label>Descrição</Form.Label>
+						<Input {...attrs} bind:value={$formData.description} placeholder="Escreva algo sobre si!"/>
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
@@ -70,6 +70,34 @@
 						</Card.Root>
 						<FileInput {...attrs} bind:files={$avatar} accept="image/*" />
 						<input hidden value={$formData.avatarUrl} name="avatarUrl" />
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field {form} name="age">
+					<Form.Control let:attrs>
+						<Form.Label>Idade</Form.Label>
+						<Input {...attrs} bind:value={$formData.age} placeholder="Insira a sua idade!"/>
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field {form} name="gender">
+					<Form.Control let:attrs>
+						<Form.Label>Género</Form.Label>
+						<Input {...attrs} bind:value={$formData.gender} placeholder="Qual é o seu género?"/>
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field {form} name="language">
+					<Form.Control let:attrs>
+						<Form.Label>Língua de Comunicação</Form.Label>
+						<Input {...attrs} bind:value={$formData.language} placeholder="Qual/Quais as línguas que usa para comunicar?"/>
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
+				<Form.Field {form} name="profession">
+					<Form.Control let:attrs>
+						<Form.Label>Profissão</Form.Label>
+						<Input {...attrs} bind:value={$formData.profession} placeholder="Que profissão exerce?"/>
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>

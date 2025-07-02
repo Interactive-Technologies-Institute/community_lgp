@@ -14,7 +14,10 @@
 	let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 2);
 </script>
 
-<MetaTags title="Anotações" description="Crie uma nova entrada de um gesto, anote ou altere as anotações de um gesto." />
+<MetaTags
+	title="Anotações"
+	description="Crie uma nova entrada de um gesto, anote ou altere as anotações de um gesto."
+/>
 
 <PageHeader
 	title="Anotações"

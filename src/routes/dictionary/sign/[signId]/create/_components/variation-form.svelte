@@ -20,7 +20,6 @@
 	export let user;
 	export let parameter: Parameter[];
 
-
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
 		let flatAnnotation = Object.values(annotation || {}).flat();
@@ -123,8 +122,6 @@
 	}) {
 		const { file, blob, fileName, mimeType } = event.detail;
 
-		
-
 		// Store the recorded file
 		recordedVideoFile = file;
 
@@ -146,11 +143,10 @@
 		$formData.videoUrl = '';
 	}
 
-
-    onMount(() => {
-        $formData.theme = ['Proposta'];
-        $formData.is_anotated = 0;
-    })
+	onMount(() => {
+		$formData.theme = ['Proposta'];
+		$formData.is_anotated = 0;
+	});
 </script>
 
 <form
@@ -164,8 +160,9 @@
 		<Card.Header>
 			<Card.Title>Proposta de Variante de Gesto</Card.Title>
 			<Card.Description>
-				Para submeter uma proposta variante de gesto, adicione o nome da entrada, carregue
-				um vídeo do gesto. Para carregar o vídeo, pode ser por gravação via webcam, câmara do smartphone, ou upload de ficheiro.
+				Para submeter uma proposta variante de gesto, adicione o nome da entrada, carregue um vídeo
+				do gesto. Para carregar o vídeo, pode ser por gravação via webcam, câmara do smartphone, ou
+				upload de ficheiro.
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
@@ -176,7 +173,7 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-            <input hidden bind:value={$formData.theme} name="theme" />
+			<input hidden bind:value={$formData.theme} name="theme" />
 			<input hidden value={$formData.theme_flattened} name="theme_flattened" />
 			<div class="flex">
 				<Form.Field {form} name="video">

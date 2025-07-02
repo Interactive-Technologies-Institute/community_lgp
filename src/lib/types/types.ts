@@ -25,6 +25,10 @@ export type UserProfile = {
 	display_name: string;
 	description: string | null;
 	avatar: string | null;
+	age: number | null;
+	gender: string | null;
+	language: string | null;
+	profession: string | null;
 };
 
 export type UserType = {
@@ -168,7 +172,6 @@ export type Sign = {
 	district?: string | null;
 	image?: string | null;
 	game_video?: string | null;
-
 };
 
 export type SignWithModeration = Sign & { moderation: ModerationInfo[] };

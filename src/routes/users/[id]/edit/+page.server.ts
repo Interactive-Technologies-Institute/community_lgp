@@ -92,21 +92,44 @@ export const actions = {
 					avatarPath = form.data.avatarUrl.split('/').pop() ?? '';
 				}
 
-				const { error: profileError } = await event.locals.supabase
-					.from('profiles')
-					.update({
-						display_name: form.data.display_name,
-						description: form.data.description,
-						avatar: avatarPath,
-					})
-					.eq('id', userId);
+				const updateData: any = {};
 
-				if (profileError) {
-					setFlash({ type: 'error', message: profileError.message }, event.cookies);
-					return fail(500, withFiles({ message: profileError.message, form }));
+				if (form.data.display_name?.trim()) {
+					updateData.display_name = form.data.display_name;
+				}
+				if (form.data.description?.trim()) {
+					updateData.description = form.data.description;
+				}
+				if (avatarPath) {
+					updateData.avatar = avatarPath;
+				}
+				if (form.data.age) {
+					updateData.age = form.data.age;
+				}
+				if (form.data.gender?.trim()) {
+					updateData.gender = form.data.gender;
+				}
+				if (form.data.language?.trim()) {
+					updateData.language = form.data.language;
+				}
+				if (form.data.profession?.trim()) {
+					updateData.profession = form.data.profession;
 				}
 
-				setFlash({ type: 'success', message: 'Profile updated successfully' }, event.cookies);
+				// Only update if there are fields to update
+				if (Object.keys(updateData).length > 0) {
+					const { error: profileError } = await event.locals.supabase
+						.from('profiles')
+						.update(updateData)
+						.eq('id', userId);
+
+					if (profileError) {
+						setFlash({ type: 'error', message: profileError.message }, event.cookies);
+						return fail(500, withFiles({ message: profileError.message, form }));
+					}
+				}
+
+				setFlash({ type: 'success', message: 'Perfil atualizado com sucesso!' }, event.cookies);
 				return withFiles({ form });
 			}
 		),
@@ -121,8 +144,8 @@ export const actions = {
 				});
 
 				if (!verifyData) {
-					setFlash({ type: 'error', message: 'Current password is incorrect' }, event.cookies);
-					return fail(500, { message: 'Current password is incorrect', form });
+					setFlash({ type: 'error', message: 'Palavra passe atual incorreta.' }, event.cookies);
+					return fail(500, { message: 'Palavra passe atual incorreta.', form });
 				}
 
 				const { error: updateError } = await event.locals.supabase.auth.updateUser({
@@ -134,7 +157,7 @@ export const actions = {
 					return fail(500, { message: updateError.message, form });
 				}
 
-				setFlash({ type: 'success', message: 'Password updated successfully' }, event.cookies);
+				setFlash({ type: 'success', message: 'Password atualizada com sucesso.' }, event.cookies);
 				return { form };
 			}
 		),

@@ -8,8 +8,11 @@
 	export let data;
 </script>
 
-<MetaTags title="Central de Crowdsource" description="Proponha uma nova entrada de gesto, consulte as propostas que estão a decorrer e participe na deliberação
-de novos termos." />
+<MetaTags
+	title="Central de Crowdsource"
+	description="Proponha uma nova entrada de gesto, consulte as propostas que estão a decorrer e participe na deliberação
+de novos termos."
+/>
 
 <PageHeader
 	title="Central de Crowdsource"
