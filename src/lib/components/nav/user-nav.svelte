@@ -33,7 +33,7 @@
 			<DropdownMenu.Item href="/users/me">Perfil</DropdownMenu.Item>
 			<DropdownMenu.Item href="/settings">Configurações</DropdownMenu.Item>
 			{#if role === 'moderator' || role === 'admin'}
-				<DropdownMenu.Item href="/moderation/users">Moderação</DropdownMenu.Item>
+				<DropdownMenu.Item href="/moderation/signs">Moderação</DropdownMenu.Item>
 			{/if}
 			{#if role === 'admin'}
 				<DropdownMenu.Item href="/admin">Administração</DropdownMenu.Item>

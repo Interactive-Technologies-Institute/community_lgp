@@ -2,12 +2,14 @@
 	import Button from '@/components/ui/button/button.svelte';
 	import * as Card from '@/components/ui/card';
 	import { Textarea } from '@/components/ui/textarea';
-	import { Video, Type, Send } from 'lucide-svelte';
+	import { Video, Type, Send, X } from 'lucide-svelte';
 	import { tick } from 'svelte';
-	import WebcamRecording from '@/components/WebcamRecording.svelte';// Your webcam component
+	import WebcamRecording from '@/components/WebcamRecording.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	
 	export let signId: string;
+	export let parentCommentId: string | null = null; // New prop for reply functionality
+	export let onCancel: (() => void) | null = null; // Callback for canceling reply
 
 	let showVideoRecorder = false;
 	let showTextInput = false;
@@ -35,6 +37,20 @@
 		recordedVideoFile = null;
 	}
 
+	function handleCancel() {
+		// Reset form state
+		contentText = '';
+		recordedVideoFile = null;
+		showVideoRecorder = false;
+		showTextInput = false;
+		errors = {};
+		
+		// Call parent cancel callback if it exists
+		if (onCancel) {
+			onCancel();
+		}
+	}
+
 	async function submitComment() {
 		if (!contentText.trim() && !recordedVideoFile) {
 			errors = { content_text: ['O comentário precisa de ter ou um vídeo ou texto.'] };
@@ -50,6 +66,10 @@
 			if (recordedVideoFile) {
 				formData.append('content_video', recordedVideoFile);
 			}
+			// Add parent_id if this is a reply
+			if (parentCommentId) {
+				formData.append('parent_id', parentCommentId);
+			}
 
 			const response = await fetch('?/createComment', {
 				method: 'POST',
@@ -64,6 +84,11 @@
 				recordedVideoFile = null;
 				showVideoRecorder = false;
 				showTextInput = false;
+				
+				// If this was a reply, call the cancel callback to hide the form
+				if (parentCommentId && onCancel) {
+					onCancel();
+				}
 				
 				// Refresh the page data
 				await invalidateAll();
@@ -81,9 +106,11 @@
 
 <Card.Root class="w-full max-w-2xl">
 	<Card.Header>
-		<Card.Title class="text-lg">Adicionar Comentário</Card.Title>
+		<Card.Title class="text-lg">
+			{parentCommentId ? 'Responder ao Comentário' : 'Adicionar Comentário'}
+		</Card.Title>
 		<Card.Description>
-			Partilhe a sua opinião através de texto ou vídeo
+			{parentCommentId ? 'Responda a este comentário' : 'Partilhe a sua opinião através de texto ou vídeo'}
 		</Card.Description>
 	</Card.Header>
 	
@@ -110,6 +137,20 @@
 					<Video class="w-4 h-4 mr-2" />
 					Vídeo
 				</Button>
+
+				<!-- Cancel button for replies -->
+				{#if parentCommentId && onCancel}
+					<Button
+						type="button"
+						variant="ghost"
+						size="sm"
+						on:click={handleCancel}
+						class="ml-auto"
+					>
+						<X class="w-4 h-4 mr-2" />
+						Cancelar
+					</Button>
+				{/if}
 			</div>
 
 			<!-- Text Input -->
@@ -117,7 +158,7 @@
 				<div class="space-y-2">
 					<Textarea
 						bind:value={contentText}
-						placeholder="Escreva o seu comentário aqui..."
+						placeholder={parentCommentId ? "Escreva a sua resposta aqui..." : "Escreva o seu comentário aqui..."}
 						class="min-h-24 resize-none"
 						maxlength={5000}
 					/>
@@ -178,7 +219,7 @@
 						Enviando...
 					{:else}
 						<Send class="w-4 h-4 mr-2" />
-						Enviar Comentário
+						{parentCommentId ? 'Enviar Resposta' : 'Enviar Comentário'}
 					{/if}
 				</Button>
 			</div>
