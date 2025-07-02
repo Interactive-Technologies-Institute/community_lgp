@@ -3,6 +3,7 @@
 	import { cn } from '@/utils';
 	import FeatureWrapper from '../feature-wrapper.svelte';
 	import type { UserProfile, UserRole } from '@/types/types';
+	import Separator from '../ui/separator/separator.svelte';
 
 	export let role: UserRole;
 </script>
@@ -75,7 +76,7 @@
 				href="/crowdsource"
 				class={cn(
 					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
+					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
 				Crowdsource
@@ -89,20 +90,22 @@
 					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
-				Dicionário
+				Dicionário Geral
 			</a>
 		</FeatureWrapper>
+		<div class="flex">
 		<FeatureWrapper feature="fcdictionary">
 			<a
 				href="/fcdictionary"
 				class={cn(
 					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
+					$page.url.pathname.startsWith('/fcdictionary') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
 				Dicionário 1º Ciclo
 			</a>
 		</FeatureWrapper>
+		<Separator class="mx-2"orientation="vertical"></Separator>
 		<FeatureWrapper feature="lgp4fun">
 			<a
 				href="/lgp4fun"
@@ -114,5 +117,6 @@
 				LGP4Fun
 			</a>
 		</FeatureWrapper>
+		</div>
 	</nav>
 </div>

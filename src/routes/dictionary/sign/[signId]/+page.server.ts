@@ -1,3 +1,4 @@
+import { createCommentSchema } from '@/schemas/cs-comment';
 import { toggleSignRatingSchema } from '@/schemas/sign';
 import type { CSComment, Parameter, Sign, UserProfile } from '@/types/types';
 import { handleFormAction } from '@/utils.js';
@@ -83,7 +84,7 @@ export const load = async (event) => {
 		const { data: posts, error: getPostsByIdError } = await event.locals.supabase
 			.from('crowdsource_comments')
 			.select(`user_id, parent_id, content_text, content_video, created_at, last_edited_at`)
-			.eq('parent_id', id);
+			.eq('sign_id', id);
 
 		if (getPostsByIdError) {
 			const errorMessage = `Error fetching posts for sign id ${id}, please try again later.`;
@@ -165,7 +166,7 @@ export const load = async (event) => {
 		if (specificSign.annotated_by_user_id != null) {
 			annotated_by_user = await getUserById(specificSign.annotated_by_user_id);
 		}
-		posts = await getPostsBySignId(parseInt(signId));
+		posts = await getPostsBySignId(specificSign.id);
 
 		if (specificSign.main_sign_id) {
 			mainSign = await getSignById(specificSign.main_sign_id);
@@ -195,7 +196,10 @@ export const load = async (event) => {
 		),
 		currentRating,
 		numberOfPositives,
-
+		createCommentForm: await superValidate(
+			zod(createCommentSchema),
+			{ id: 'create-comment' }
+		),
 	};
 };
 
@@ -239,4 +243,89 @@ export const actions = {
 				return { form };
 			}
 		),
+			createComment: async (event) => {
+		const { user } = await event.locals.safeGetSession();
+		
+		if (!user) {
+			throw error(401, 'Unauthorized');
+		}
+
+		const formData = await event.request.formData();
+		const signId = parseInt(event.params.signId);
+
+		// Parse form data manually
+		const content_text = formData.get('content_text') as string;
+		const content_video = formData.get('content_video') as File;
+
+		// Validate the data
+		const validation = createCommentSchema.safeParse({
+			content_text: content_text || undefined,
+			content_video: content_video?.size > 0 ? content_video : undefined,
+		});
+
+		if (!validation.success) {
+			const fieldErrors = validation.error.flatten().fieldErrors;
+			const formErrors = validation.error.flatten().formErrors;
+			
+			setFlash({ 
+				type: 'error', 
+				message: formErrors[0] || 'Dados do formulário inválidos' 
+			}, event.cookies);
+			
+			return fail(400, { 
+				errors: fieldErrors,
+				message: 'Form validation failed',
+			});
+		}
+
+		const { content_text: validText, content_video: validVideo } = validation.data;
+
+		let videoUrl = null;
+
+		// Handle video upload if present
+		if (validVideo && validVideo.size > 0) {
+			const fileName = `comments/${user.id}/${Date.now()}-${validVideo.name}`;
+			
+			const { data: uploadData, error: uploadError } = await event.locals.supabase.storage
+				.from('comments') // Make sure this bucket exists in your Supabase storage
+				.upload(fileName, validVideo, {
+					contentType: validVideo.type,
+				});
+
+			if (uploadError) {
+				console.error('Upload error:', uploadError.message);
+				setFlash({ type: 'error', message: 'Erro ao fazer upload do vídeo' }, event.cookies);
+				return fail(500, { message: 'Erro ao fazer upload do vídeo' });
+			}
+
+			// Get public URL
+			const { data: { publicUrl } } = event.locals.supabase.storage
+				.from('comments')
+				.getPublicUrl(fileName);
+			
+			videoUrl = publicUrl;
+		}
+
+		// Insert comment into database
+		const { error: insertError } = await event.locals.supabase
+			.from('crowdsource_comments')
+			.insert({
+				parent_id: null,
+				user_id: user.id,
+				sign_id: signId,
+				content_text: validText || null,
+				content_video: videoUrl || null,
+				created_at: new Date().toISOString(),
+				last_edited_at: new Date().toISOString(),
+			});
+
+		if (insertError) {
+			console.error('Insert error:', insertError.message);
+			setFlash({ type: 'error', message: 'Erro ao criar comentário' }, event.cookies);
+			return fail(500, { message: 'Erro ao criar comentário' });
+		}
+
+		setFlash({ type: 'success', message: 'Comentário criado com sucesso!' }, event.cookies);
+		return { success: true };
+	},
 };

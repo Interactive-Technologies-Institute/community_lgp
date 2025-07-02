@@ -19,7 +19,9 @@
 	import { Meh } from 'lucide-svelte';
 	import { Frown } from 'lucide-svelte';
 	import SignRatingButton from './_components/SignRatingButton.svelte';
-
+	import { formatDistanceToNow } from 'date-fns';
+	import { pt } from 'date-fns/locale';
+	import CommentForm from './_components/comment-form.svelte';
 	export let data;
 	export let sign: Sign | null = data.sign;
 	let createdByUser = data.created_by_user;
@@ -32,9 +34,18 @@
 		goto(`/users/${id}`);
 	}
 
+	console.log(data.posts)
+
 	function capitalize(district: string) {
 		return district[0].toUpperCase() + district.slice(1);
 	}
+
+	function formatCommentDate(dateString: string) {
+	return formatDistanceToNow(new Date(dateString), { 
+		addSuffix: true, 
+		locale: pt 
+	});
+}
 
 	let district = capitalize(sign?.district ?? 'Geral');
 </script>
@@ -312,24 +323,89 @@
 		{/if}
 	</div>
 
-	<div class="flex items-center justify-center py-5">
+<div class="flex items-center justify-center py-5">
+	<div class="w-full max-w-4xl">
 		<Collapsible.Root>
 			<Collapsible.Trigger class="flex w-full items-center justify-center space-x-2">
 				<div class="flex items-center space-x-2">
 					<Separator class="w-16" />
-					<span>Comentários</span>
+					<span>Comentários ({posts?.length || 0})</span>
 					<Separator class="w-16" />
 				</div>
 			</Collapsible.Trigger>
-			<Collapsible.Content class="w-full py-5 text-center transition-all duration-300">
-				{#if posts && posts.length > 0}
-					{#each posts as p}
-						{p}
-					{/each}
-				{:else}
-					Este gesto ainda não tem comentários. Seja o primeiro!
-				{/if}
+			<Collapsible.Content class="w-full py-5 transition-all duration-300">
+				<!-- Comment Form -->
+				<div class="mb-8 flex justify-center">
+					<CommentForm signId={sign?.id?.toString() || ''} />
+				</div>
+
+				<!-- Comments List -->
+				<div class="space-y-4">
+					{#if posts && posts.length > 0}
+						{#each posts as comment}
+							<Card.Root class="w-full">
+								<Card.Content class="p-4">
+									<div class="flex items-start space-x-4">
+										<!-- User Avatar -->
+										<Avatar.Root class="w-10 h-10">
+											<Avatar.Image 
+												src={comment.user?.avatar} 
+												alt={comment.user?.display_name || 'User'} 
+											/>
+											<Avatar.Fallback>
+												{comment.user?.display_name?.[0] || 'U'}
+											</Avatar.Fallback>
+										</Avatar.Root>
+
+										<div class="flex-1">
+											<!-- User Info -->
+											<div class="flex items-center space-x-2 mb-2">
+												<span class="font-medium text-sm">
+													{comment.user?.display_name || 'Utilizador Anónimo'}
+												</span>
+												<span class="text-xs text-gray-500">
+													{formatCommentDate(comment.created_at)}
+												</span>
+												{#if comment.last_edited_at !== comment.created_at}
+													<span class="text-xs text-gray-400">(editado)</span>
+												{/if}
+											</div>
+
+											<!-- Comment Content -->
+											<div class="space-y-2">
+												{#if comment.content_text}
+													<p class="text-sm leading-relaxed whitespace-pre-wrap">
+														{comment.content_text}
+													</p>
+												{/if}
+
+												{#if comment.content_video}
+													<!-- svelte-ignore a11y-media-has-caption -->
+													<video 
+														class="w-full max-w-md rounded-lg"
+														controls
+														preload="metadata"
+													>
+														<source src={comment.content_video} type="video/mp4" />
+														<source src={comment.content_video} type="video/webm" />
+														O seu navegador não suporta vídeos.
+													</video>
+												{/if}
+											</div>
+										</div>
+									</div>
+								</Card.Content>
+							</Card.Root>
+						{/each}
+					{:else}
+						<div class="text-center py-8">
+							<p class="text-gray-500 mb-4">Este gesto ainda não tem comentários.</p>
+							<p class="text-sm text-gray-400">Seja o primeiro a partilhar a sua opinião!</p>
+						</div>
+					{/if}
+				</div>
 			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>
+</div>
 {/if}
