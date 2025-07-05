@@ -14,7 +14,7 @@
 	];
 
 	function getParametersByTipo(tipo: string): Parameter[] {
-		return data.filter((param) => param.tipo === tipo);
+		return data.filter((param) => param.tipo === tipo && param.code !== 'F000');
 	}
 </script>
 

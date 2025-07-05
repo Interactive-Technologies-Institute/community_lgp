@@ -15,9 +15,6 @@
 	import Button from '@/components/ui/button/button.svelte';
 	import { PlusCircle } from 'lucide-svelte';
 	import * as Accordion from '@/components/ui/accordion';
-	import { Smile } from 'lucide-svelte';
-	import { Meh } from 'lucide-svelte';
-	import { Frown } from 'lucide-svelte';
 	import SignRatingButton from './_components/SignRatingButton.svelte';
 	import { formatDistanceToNow } from 'date-fns';
 	import { pt } from 'date-fns/locale';
@@ -300,9 +297,9 @@
 						<SignRatingButton 
 						data={data.toggleRatingForm} 
 						currentValue={data.currentRating} 
-						positiveNumber={data.numberOfPositives}
-						neutralNumber={data.numberOfNeutrals}
-						negativeNumber={data.numberOfNegatives} />
+						positiveNumber={data.numberOfPositives ?? 0}
+						neutralNumber={data.numberOfNeutrals ?? 0}
+						negativeNumber={data.numberOfNegatives ?? 0} />
 					</Card.Content>
 			</Card.Root>
 				</div>

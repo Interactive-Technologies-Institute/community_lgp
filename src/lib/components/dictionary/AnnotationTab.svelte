@@ -14,7 +14,7 @@
 
 	let openTab = '';
 	function filterByType(type: string) {
-		return parameters.filter((p) => p.tipo === type);
+		return parameters.filter((p) => p.tipo === type && p.code !== 'F000');
 	}
 
 	function toggleParameter(p: Parameter) {
@@ -62,14 +62,14 @@
 										on:click={() => toggleParameter(parent)}
 									/>
 									{#if parent.tipo == 'expressao facial'}
-										{parent.name}
+										<span class="font-semibold text-black">{parent.name}</span>
 									{/if}
 								{:else}
 									<div
 										class="flex h-32 w-full cursor-pointer items-center justify-center text-center font-semibold"
 										on:click={() => toggleParameter(parent)}
 									>
-										<div class="font-semibold text-black">{parent.name ?? parent.code}</div>
+										<span class="font-semibold text-black">{parent.name ?? parent.code}</span>
 									</div>
 								{/if}
 
