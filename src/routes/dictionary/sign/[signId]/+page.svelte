@@ -71,7 +71,7 @@
 				Your browser does not support the video tag.
 			</video>
 
-			<AnnotationShowcase data={data.parameters} />
+			<AnnotationShowcase data={data.parameter} />
 
 			{#if sign?.context_video}
 				<video class="h-auto w-full rounded-2xl" controls playsinline>

@@ -1,10 +1,15 @@
-import type { Sign, UserProfile } from '@/types/types';
+import type { CSComment, Sign, UserProfile } from '@/types/types';
 import { handleSignInRedirect } from '@/utils';
 import { error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 
 export const load = async (event) => {
 	const { session, user } = await event.locals.safeGetSession();
+
+	const page: number = 1;
+	const pageSize: number = 20;
+	const from = (page - 1) * pageSize;
+	const to = from + pageSize - 1;
 
 	let id = event.params.id;
 	if (id === 'me') {
@@ -116,11 +121,9 @@ export const load = async (event) => {
 	}
 
 	async function getAnnotatedSignsByUser(
-		page: number = 1,
-		pageSize: number = 20
+		
 	): Promise<{ annotatedSigns: Sign[]; count: number }> {
-		const from = (page - 1) * pageSize;
-		const to = from + pageSize - 1;
+		
 
 		const {
 			data: annotatedSigns,
@@ -144,6 +147,25 @@ export const load = async (event) => {
 		};
 	}
 
+	async function getCommentsByUser() : Promise <CSComment[]>{
+		const { data: comments, count, error: commentsError} = await event.locals.supabase
+		.from('crowdsource_comments')
+		.select('*', { count: 'exact' })
+		.eq('user_id', id)
+		.range(from, to)
+
+		if(commentsError){
+			const errorMessage = `Error fetching comments by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: commentsError }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return {
+			comments: comments as CSComment[],
+			count: count ?? 0,
+		}
+	}
+
 	return {
 		userProfile: await getUserProfile(),
 		guides: await getGuides(),
@@ -151,5 +173,6 @@ export const load = async (event) => {
 		mapPin: await getMapPin(),
 		signs: await getSignsByUser(),
 		annotatedSigns: await getAnnotatedSignsByUser(),
+		comments: await getCommentsByUser(),
 	};
 };

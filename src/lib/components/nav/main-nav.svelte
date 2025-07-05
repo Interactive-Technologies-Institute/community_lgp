@@ -79,7 +79,7 @@
 					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
 				)}
 			>
-				Crowdsource
+				Participar
 			</a>
 		</FeatureWrapper>
 		<FeatureWrapper feature="dictionary">
@@ -93,7 +93,9 @@
 				Dicionário Geral
 			</a>
 		</FeatureWrapper>
-		<div class="flex">
+
+		<Separator class="mx-2"orientation="vertical" />
+
 		<FeatureWrapper feature="fcdictionary">
 			<a
 				href="/fcdictionary"
@@ -105,7 +107,7 @@
 				Dicionário 1º Ciclo
 			</a>
 		</FeatureWrapper>
-		<Separator class="mx-2"orientation="vertical"></Separator>
+		
 		<FeatureWrapper feature="lgp4fun">
 			<a
 				href="/lgp4fun"
@@ -117,6 +119,6 @@
 				LGP4Fun
 			</a>
 		</FeatureWrapper>
-		</div>
+		
 	</nav>
 </div>

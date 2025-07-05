@@ -40,8 +40,7 @@
 <form method="POST" enctype="multipart/form-data" action="?/updateProfile" use:enhance>
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Edit Profile</Card.Title>
-			<Card.Description>Lorem Ipsum</Card.Description>
+			<Card.Title>Editar Perfil</Card.Title>	
 		</Card.Header>
 		<Card.Content>
 			<div class="max-w-2xl space-y-4">

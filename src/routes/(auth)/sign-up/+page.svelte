@@ -3,6 +3,8 @@
 	import { Card } from '@/components/ui/card';
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
+	import { Checkbox } from '@/components/ui/checkbox';
+	import { Label } from '@/components/ui/label'
 	import { PasswordInput } from '@/components/ui/password-input';
 	import { signUpSchema } from '@/schemas/sign-up';
 	import { Loader2 } from 'lucide-svelte';
@@ -18,6 +20,9 @@
 	});
 
 	const { form: formData, enhance, submitting } = form;
+	let accept : boolean = false;
+
+	$: console.log(accept)
 </script>
 
 <MetaTags title="Registar" description="Registe-se na nossa comunidade" />
@@ -54,7 +59,16 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-			<Form.Button disabled={$submitting} class="mt-5">
+			<div class="mt-6">
+			<div class="flex items-center space-x-2">
+				<Checkbox id="terms" bind:checked={accept} />
+				<Label for="terms">Aceitar Termos e Condições</Label>
+			</div>
+			<p class="text-muted-foreground text-sm mt-2">
+				Ao clicar nesta caixa, concorda com os Termos e Condições.
+			</p>
+		</div>
+			<Form.Button disabled={$submitting || !accept} class="mt-5">
 				{#if $submitting}
 					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 				{/if}
