@@ -6,6 +6,7 @@ import { error, fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { toggleSignFavoriteSchema } from '../../../../lib/schemas/sign';
 
 export const load = async (event) => {
 	const { user } = await event.locals.safeGetSession();
@@ -199,6 +200,36 @@ export const load = async (event) => {
 		return votes[value] ?? 0;
 	}
 
+	async function getNumberOfFavorites(id: number): Promise<number | null> {
+		const { count, error } = await event.locals.supabase
+			.from('signs_favorite')
+			.select('*', { count: 'exact', head: true })
+			.eq('sign_id', id)
+			.single();
+
+		if (error) {
+			console.error('Error fetching favorites count:', error);
+			return 0;
+		}
+		return count || 0;
+	}
+
+	async function getHasFavorited(id: number, userId: string): Promise<boolean | null> {
+		const { count, error: favoriteError } = await event.locals.supabase
+			.from('signs_favorite')
+			.select('*', { count: 'exact', head: true })
+			.eq('sign_id', id)
+			.eq('user_id', userId);
+
+		if (favoriteError) {
+			const errorMessage = `Error fetching favorite value, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
+
+		return count > 0;
+	}
+
 	function ratingToString(rating: number | null): '1' | '0' | '-1' | null {
 		if (rating === null) return null;
 		if (rating === 1) return '1';
@@ -218,8 +249,9 @@ export const load = async (event) => {
 	let currentRating = null;
 
 	let numberOfPositives = null;
-	let numberOfNeutrals = null;
 	let numberOfNegatives = null;
+	let numberOfFavorites = null;
+	let hasFavorite = null;
 
 	if (signId) {
 		// Fetch the sign
@@ -249,10 +281,11 @@ export const load = async (event) => {
 		signVariants = await getSignVariants(specificSign.id);
 		if (user) {
 			currentRating = await getRatingBySignId(specificSign.id, user.id);
+			hasFavorite = await getHasFavorited(specificSign.id, user.id);
 		}
 		numberOfPositives = await getNumberOfVotes(specificSign.id, 'pos_votes');
-		numberOfNeutrals = await getNumberOfVotes(specificSign.id, 'nt_votes');
 		numberOfNegatives = await getNumberOfVotes(specificSign.id, 'neg_votes');
+		numberOfFavorites = await getNumberOfFavorites(specificSign.id);
 	}
 
 	return {
@@ -270,9 +303,16 @@ export const load = async (event) => {
 		),
 		currentRating,
 		numberOfPositives,
-		numberOfNeutrals,
 		numberOfNegatives,
 		createCommentForm: await superValidate(zod(createCommentSchema), { id: 'create-comment' }),
+		numberOfFavorites,
+		toggleSignFavoriteForm: await superValidate(
+			{ value: hasFavorite },
+			zod(toggleSignFavoriteSchema),
+			{
+				id: 'toggle-sign-favorite',
+			}
+		),
 	};
 };
 
@@ -443,4 +483,41 @@ export const actions = {
 		setFlash({ type: 'success', message: successMessage }, event.cookies);
 		return { success: true };
 	},
+
+	toggleFavorite: async (event) =>
+		handleFormAction(
+			event,
+			toggleSignFavoriteSchema,
+			'toggle-sign-favorite',
+			async (event, userId, form) => {
+				if (form.data.value) {
+					const { error: supabaseError } = await event.locals.supabase
+						.from('signs_favorite')
+						.insert([
+							{
+								sign_id: parseInt(event.params.signId),
+								user_id: userId,
+							},
+						]);
+
+					if (supabaseError) {
+						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+						return fail(500, { message: supabaseError.message, form });
+					}
+				} else {
+					const { error: supabaseError } = await event.locals.supabase
+						.from('signs_favorite')
+						.delete()
+						.eq('sign_id', parseInt(event.params.signId))
+						.eq('user_id', userId);
+
+					if (supabaseError) {
+						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+						return fail(500, { message: supabaseError.message, form });
+					}
+				}
+
+				return { form };
+			}
+		),
 };

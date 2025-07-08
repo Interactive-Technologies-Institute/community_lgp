@@ -78,8 +78,12 @@ export const toggleSignRatingSchema = z.object({
 		),
 });
 
-export type ToggleSignRatingSchema = typeof toggleSignRatingSchema;
+export const toggleSignFavoriteSchema = z.object({
+	value: z.boolean(),
+});
 
 export type CreateSignSchema = typeof createSignSchema;
 export type DeleteSignSchema = typeof deleteSignSchema;
 export type UpdateSignSchema = typeof updateSignSchema;
+export type ToggleSignRatingSchema = typeof toggleSignRatingSchema;
+export type ToggleSignFavoriteSchema = typeof toggleSignFavoriteSchema;

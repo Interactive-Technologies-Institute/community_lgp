@@ -9,7 +9,7 @@
 	import * as Pagination from '$lib/components/ui/pagination';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { Plus, Search } from 'lucide-svelte';
+	import { PlusCircle, Search } from 'lucide-svelte';
 	import TagFilterButton from '@/components/tag-filter-button.svelte';
 	import SortButton from '@/components/sort-button.svelte';
 	export let data;
@@ -89,7 +89,7 @@ de novos termos."
 	</div>
 	<div class="ml-48 flex">
 		<Button on:click={() => goto('dictionary/sign/create')}>
-			<Plus /> Propor Gesto
+			<PlusCircle class="h-4 w-4 sm:mr-2" /> Propor Gesto
 		</Button>
 	</div>
 </div>

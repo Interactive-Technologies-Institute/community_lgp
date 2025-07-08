@@ -20,6 +20,7 @@
 	import { pt } from 'date-fns/locale';
 	import CommentForm from './_components/comment-form.svelte';
 	import CommentDisplay from './_components/CommentDisplay.svelte';
+	import FavoriteButton from './_components/favorite-button.svelte';
 	export let data;
 	export let sign: Sign | null = data.sign;
 	let createdByUser = data.created_by_user;
@@ -31,8 +32,6 @@
 	function goToUserProfile(id: string) {
 		goto(`/users/${id}`);
 	}
-
-	console.log(data);
 
 	function capitalize(district: string) {
 		return district[0].toUpperCase() + district.slice(1);
@@ -301,7 +300,7 @@
 					{/if}
 				</div>
 			</Card.Root>
-
+			<FavoriteButton count={data.numberOfFavorites ?? 0} data={data.toggleSignFavoriteForm} />
 			<Card.Root class="rounded-2xl p-0">
 				<Card.Content class="mt-5">
 					<SignRatingButton
