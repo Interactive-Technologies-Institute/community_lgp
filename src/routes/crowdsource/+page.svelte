@@ -1,97 +1,141 @@
 <script lang="ts">
 	import PageHeader from '@/components/page-header.svelte';
-	import { TriangleAlert } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	import * as Tabs from '@/components/ui/tabs'
-	import * as Card from '@/components/ui/card'
-	import SignFlowAuthor from './_components/SignFlowAuthor.svelte';
-	import SignFlowAuthorComments from './_components/SignFlowAuthorComments.svelte';
-	import SignFlowAuthorVotes from './_components/SignFlowAuthorVotes.svelte';
-	import FeatureDevelopment from '@/components/feature-development.svelte';
+	import { Input } from '@/components/ui/input';
+	import Button from '@/components/ui/button/button.svelte';
+	import CrowdsourceGrid from './_components/CrowdsourceGrid.svelte';
+	import { arrayQueryParam, stringQueryParam } from '@/utils';
+	import { queryParam } from 'sveltekit-search-params';
+	import * as Pagination from '$lib/components/ui/pagination';
+	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
+	import { Plus, Search } from 'lucide-svelte';
+	import TagFilterButton from '@/components/tag-filter-button.svelte';
+	import SortButton from '@/components/sort-button.svelte';
 	export let data;
+	const sortBy = queryParam('sortBy', stringQueryParam());
+	const sortOrder = queryParam('sortOrder', stringQueryParam());
 
-	let triggerString: string = "proposals";
-	let triggerArray: {name: string, description: string}[] = 
-	[
-		{name: "proposals", description: "Visualize as propostas aceites e em discussão."}, 
-		{name: "comments", description: "Visualize as propostas mais discutidas na comunidade."}, 
-		{name: "votes", description: "Veja quem interage na comunidade!"}, 
-		{name: "tutorial", description: "Veja como submeter uma proposta de gesto."}
-		];
-	
-	$: subtitle = triggerArray.find(item => item.name === triggerString)?.description ?? "";
+	let totalPages = data.totalPages ?? 1;
+	let perPage = data.perPage ?? 9;
+	const search = queryParam('s', stringQueryParam(), {
+		debounceHistory: 250,
+	});
 
-	let signsWithUsers = data.signsWithUsers;
-	let mostCommentedSigns = data.mostCommentedSigns;
-	let mostVotedSigns = data.mostVotedSigns
-	
+	let countSign = data.countSign ?? 0;
+	const theme = queryParam('theme', arrayQueryParam());
+
+	$: $search = data.search || $search;
+	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
+	$: countSign = data.countSign ?? 0;
+
+	function buildUrlWithUpdatedPage(page: number): string {
+		if (!browser) return '#'; // SSR-safe fallback
+		const url = new URL(window.location.href);
+		url.searchParams.set('page', String(page));
+		return `${url.pathname}?${url.searchParams.toString()}`;
+	}
+
+	function goToPreviousPage() {
+		if (currentPageNumber > 1) {
+			const newUrl = buildUrlWithUpdatedPage(currentPageNumber - 1);
+			goto(newUrl);
+		}
+	}
+
+	function goToNextPage() {
+		if (currentPageNumber < totalPages) {
+			const newUrl = buildUrlWithUpdatedPage(currentPageNumber + 1);
+			goto(newUrl);
+		}
+	}
+
+	let localSearch = $search;
+
+	function doSearch() {
+		search.set(localSearch);
+	}
 </script>
 
 <MetaTags
-	title="Central de Crowdsource"
+	title="Participar"
 	description="Proponha uma nova entrada de gesto, consulte as propostas que estão a decorrer e participe na deliberação
 de novos termos."
 />
 
 <PageHeader
-	title="Central de Crowdsource"
-	subtitle={subtitle}
+	title="Participar"
+	subtitle="Proponha uma nova entrada de gesto, consulte as propostas que estão a decorrer e participe na deliberação
+de novos termos."
 />
 
-
-
-
-<div class="flex items-center justify-center w-full">
-
-		<Tabs.Root value={triggerArray[0].name} >
-	<div class="flex items-center justify-center">
-	<Tabs.List>
-		<Tabs.Trigger value={triggerArray[0].name} on:click={() => triggerString = triggerArray[0].name}>Propostas</Tabs.Trigger>
-		<Tabs.Trigger value={triggerArray[1].name} on:click={() => triggerString = triggerArray[1].name}>Comentários</Tabs.Trigger>
-		<Tabs.Trigger value={triggerArray[2].name} on:click={() => triggerString = triggerArray[2].name}>Votos</Tabs.Trigger>
-		<Tabs.Trigger value={triggerArray[3].name} on:click={() => triggerString = triggerArray[3].name}>Como submeter?</Tabs.Trigger>
-	</Tabs.List>
+<div class="flex px-72 py-5">
+	<Input
+		placeholder="Procure uma entrada de gesto..."
+		class="w-[680px] flex-1 "
+		bind:value={localSearch}
+		on:keydown={(e) => {
+			if (e.key === 'Enter') doSearch();
+		}}
+	/>
+	<div class="px-2">
+		<Button on:click={doSearch} class="btn btn-primary">
+			<Search />
+		</Button>
 	</div>
-	<Tabs.Content class="w-full" value={triggerArray[0].name}>
-		<Card.Root>
-			<Card.Content>
-				<div class="flex flex-col items-start justify-start mt-2">
-					<h1 class="py-2">Propostas Em Discussão Mais Recentes</h1>
-						<SignFlowAuthor
-	signs={signsWithUsers}
-/>
-				</div>
-			</Card.Content>
-		</Card.Root>
-	</Tabs.Content>
-	<Tabs.Content value={triggerArray[1].name}><Card.Root>
-			<Card.Content>
-				<div class="flex flex-col items-start justify-start mt-2">
-					<h1 class="py-2">Propostas Mais Discutidas</h1>
-						<SignFlowAuthorComments
-	signs={mostCommentedSigns}
-/>
-				</div>
-			</Card.Content>
-		</Card.Root>
-	</Tabs.Content>
-	<Tabs.Content value={triggerArray[2].name}><Card.Root>
-			<Card.Content>
-				<div class="flex flex-col items-start justify-start mt-2">
-					<h1 class="py-2">Propostas Mais Discutidas</h1>
-						<SignFlowAuthorVotes
-	signs={mostVotedSigns}
-/>
-				</div>
-			</Card.Content>
-		</Card.Root>
-	</Tabs.Content>
-	<Tabs.Content value={triggerArray[3].name}><Card.Root>
-			<Card.Content>
-				<FeatureDevelopment />
-			</Card.Content>
-		</Card.Root>
-	</Tabs.Content>
-	</Tabs.Root>
-
+	<div class="flex gap-x-2">
+		<TagFilterButton tags={data.themes} bind:filterValues={$theme} />
+		<SortButton bind:sortBy={$sortBy} bind:sortOrder={$sortOrder} />
+	</div>
+	<div class="ml-48 flex">
+		<Button on:click={() => goto('dictionary/sign/create')}>
+			<Plus /> Propor Gesto
+		</Button>
+	</div>
 </div>
+<div class="flex items-center justify-center px-72 py-5">
+	<CrowdsourceGrid signs={data.signs} />
+</div>
+
+{#if countSign > 0}
+	<div class="flex items-start justify-start py-5">
+		<Pagination.Root count={countSign} {perPage} let:pages>
+			<Pagination.Content class="flex items-center justify-center gap-2">
+				<Pagination.Item>
+					<Pagination.PrevButton on:click={goToPreviousPage} disabled={currentPageNumber === 1}>
+						Anterior
+					</Pagination.PrevButton>
+				</Pagination.Item>
+
+				{#each pages as page (page.key)}
+					{#if page.type === 'ellipsis'}
+						<Pagination.Item>
+							<Pagination.Ellipsis />
+						</Pagination.Item>
+					{:else}
+						<Pagination.Item>
+							<Pagination.Link
+								{page}
+								isActive={currentPageNumber == page.value}
+								class={`${currentPageNumber === page.value ? ' rounded-lg border-primary bg-primary px-3 py-5' : ''}`}
+							>
+								<a href={buildUrlWithUpdatedPage(page.value)}>
+									{page.value}
+								</a>
+							</Pagination.Link>
+						</Pagination.Item>
+					{/if}
+				{/each}
+
+				<Pagination.Item>
+					<Pagination.NextButton
+						on:click={goToNextPage}
+						disabled={currentPageNumber === Math.ceil(countSign / perPage)}
+					>
+						Próximo
+					</Pagination.NextButton>
+				</Pagination.Item>
+			</Pagination.Content>
+		</Pagination.Root>
+	</div>
+{/if}

@@ -6,7 +6,7 @@
 	import { tick } from 'svelte';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
-	
+
 	export let signId: string;
 	export let parentCommentId: string | null = null; // New prop for reply functionality
 	export let onCancel: (() => void) | null = null; // Callback for canceling reply
@@ -44,7 +44,7 @@
 		showVideoRecorder = false;
 		showTextInput = false;
 		errors = {};
-		
+
 		// Call parent cancel callback if it exists
 		if (onCancel) {
 			onCancel();
@@ -77,19 +77,19 @@
 			});
 
 			const result = await response.json();
-			
+
 			if (response.ok && result.type === 'success') {
 				// Reset form
 				contentText = '';
 				recordedVideoFile = null;
 				showVideoRecorder = false;
 				showTextInput = false;
-				
+
 				// If this was a reply, call the cancel callback to hide the form
 				if (parentCommentId && onCancel) {
 					onCancel();
 				}
-				
+
 				// Refresh the page data
 				await invalidateAll();
 			} else {
@@ -110,44 +110,40 @@
 			{parentCommentId ? 'Responder ao Comentário' : 'Adicionar Comentário'}
 		</Card.Title>
 		<Card.Description>
-			{parentCommentId ? 'Responda a este comentário' : 'Partilhe a sua opinião através de texto ou vídeo'}
+			{parentCommentId
+				? 'Responda a este comentário'
+				: 'Partilhe a sua opinião através de texto ou vídeo'}
 		</Card.Description>
 	</Card.Header>
-	
+
 	<Card.Content>
 		<div class="space-y-4">
 			<!-- Mode Selection Buttons -->
 			<div class="flex gap-2">
 				<Button
 					type="button"
-					variant={showTextInput ? "default" : "outline"}
+					variant={showTextInput ? 'default' : 'outline'}
 					size="sm"
 					on:click={toggleTextMode}
 				>
-					<Type class="w-4 h-4 mr-2" />
+					<Type class="mr-2 h-4 w-4" />
 					Texto
 				</Button>
-				
+
 				<Button
 					type="button"
-					variant={showVideoRecorder || recordedVideoFile ? "default" : "outline"}
+					variant={showVideoRecorder || recordedVideoFile ? 'default' : 'outline'}
 					size="sm"
 					on:click={toggleVideoMode}
 				>
-					<Video class="w-4 h-4 mr-2" />
+					<Video class="mr-2 h-4 w-4" />
 					Vídeo
 				</Button>
 
 				<!-- Cancel button for replies -->
 				{#if parentCommentId && onCancel}
-					<Button
-						type="button"
-						variant="ghost"
-						size="sm"
-						on:click={handleCancel}
-						class="ml-auto"
-					>
-						<X class="w-4 h-4 mr-2" />
+					<Button type="button" variant="ghost" size="sm" on:click={handleCancel} class="ml-auto">
+						<X class="mr-2 h-4 w-4" />
 						Cancelar
 					</Button>
 				{/if}
@@ -158,7 +154,9 @@
 				<div class="space-y-2">
 					<Textarea
 						bind:value={contentText}
-						placeholder={parentCommentId ? "Escreva a sua resposta aqui..." : "Escreva o seu comentário aqui..."}
+						placeholder={parentCommentId
+							? 'Escreva a sua resposta aqui...'
+							: 'Escreva o seu comentário aqui...'}
 						class="min-h-24 resize-none"
 						maxlength={5000}
 					/>
@@ -187,12 +185,7 @@
 					<p class="text-sm text-green-600">
 						✓ Vídeo gravado: {recordedVideoFile.name}
 					</p>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						on:click={toggleVideoMode}
-					>
+					<Button type="button" variant="outline" size="sm" on:click={toggleVideoMode}>
 						Gravar novamente
 					</Button>
 				</div>
@@ -215,10 +208,12 @@
 					disabled={isSubmitting || (!contentText.trim() && !recordedVideoFile)}
 				>
 					{#if isSubmitting}
-						<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+						<div
+							class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+						></div>
 						Enviando...
 					{:else}
-						<Send class="w-4 h-4 mr-2" />
+						<Send class="mr-2 h-4 w-4" />
 						{parentCommentId ? 'Enviar Resposta' : 'Enviar Comentário'}
 					{/if}
 				</Button>

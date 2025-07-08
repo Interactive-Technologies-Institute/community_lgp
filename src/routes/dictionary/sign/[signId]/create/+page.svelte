@@ -11,5 +11,10 @@
 		.name} do Dicionário de Lingua Gestual Portuguesa."
 />
 <div class="container mx-auto mb-20">
-	<VariationForm data={data.createForm} user={data.user} parameter={data.parameters} />
+	<VariationForm
+		data={data.createForm}
+		user={data.user}
+		parameter={data.parameters}
+		mainSign={data.sign}
+	/>
 </div>

@@ -120,11 +120,7 @@ export const load = async (event) => {
 		};
 	}
 
-	async function getAnnotatedSignsByUser(
-		
-	): Promise<{ annotatedSigns: Sign[]; count: number }> {
-		
-
+	async function getAnnotatedSignsByUser(): Promise<{ annotatedSigns: Sign[]; count: number }> {
 		const {
 			data: annotatedSigns,
 			count,
@@ -147,14 +143,18 @@ export const load = async (event) => {
 		};
 	}
 
-	async function getCommentsByUser() : Promise <CSComment[]>{
-		const { data: comments, count, error: commentsError} = await event.locals.supabase
-		.from('crowdsource_comments')
-		.select('*', { count: 'exact' })
-		.eq('user_id', id)
-		.range(from, to)
+	async function getCommentsByUser(): Promise<CSComment[]> {
+		const {
+			data: comments,
+			count,
+			error: commentsError,
+		} = await event.locals.supabase
+			.from('crowdsource_comments')
+			.select('*', { count: 'exact' })
+			.eq('user_id', id)
+			.range(from, to);
 
-		if(commentsError){
+		if (commentsError) {
 			const errorMessage = `Error fetching comments by user ID ${id}, please try again later.`;
 			setFlash({ type: 'error', message: commentsError }, event.cookies);
 			return error(500, errorMessage);
@@ -163,7 +163,7 @@ export const load = async (event) => {
 		return {
 			comments: comments as CSComment[],
 			count: count ?? 0,
-		}
+		};
 	}
 
 	return {

@@ -81,10 +81,11 @@ export const load = async (event) => {
 	}
 
 	async function getCommentsBySignId(id: number): Promise<CSComment[]> {
-	// Fetch all comments for the sign
-	const { data: comments, error: getCommentsError } = await event.locals.supabase
-		.from('crowdsource_comments')
-		.select(`
+		// Fetch all comments for the sign
+		const { data: comments, error: getCommentsError } = await event.locals.supabase
+			.from('crowdsource_comments')
+			.select(
+				`
 			id,
 			user_id, 
 			parent_id, 
@@ -92,77 +93,78 @@ export const load = async (event) => {
 			content_video, 
 			created_at, 
 			last_edited_at
-		`)
-		.eq('sign_id', id)
-		.order('created_at', { ascending: true });
+		`
+			)
+			.eq('sign_id', id)
+			.order('created_at', { ascending: true });
 
-	if (getCommentsError) {
-		const errorMessage = `Error fetching comments for sign id ${id}, please try again later.`;
-		setFlash({ type: 'error', message: errorMessage }, event.cookies);
-		throw error(500, errorMessage);
-	}
+		if (getCommentsError) {
+			const errorMessage = `Error fetching comments for sign id ${id}, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
 
-	// Fetch user data for all comments
-	const userIds = [...new Set(comments.map(comment => comment.user_id))];
-	const { data: users, error: usersError } = await event.locals.supabase
-		.from('profiles_view')
-		.select('id, display_name, avatar')
-		.in('id', userIds);
+		// Fetch user data for all comments
+		const userIds = [...new Set(comments.map((comment) => comment.user_id))];
+		const { data: users, error: usersError } = await event.locals.supabase
+			.from('profiles_view')
+			.select('id, display_name, avatar')
+			.in('id', userIds);
 
-	if (usersError) {
-		const errorMessage = `Error fetching user data for comments, please try again later.`;
-		setFlash({ type: 'error', message: errorMessage }, event.cookies);
-		throw error(500, errorMessage);
-	}
+		if (usersError) {
+			const errorMessage = `Error fetching user data for comments, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			throw error(500, errorMessage);
+		}
 
-	// Add avatar URLs to users
-	const usersWithAvatars = users.map(user => ({
-		...user,
-		avatar: user.avatar ? event.locals.supabase.storage
-			.from('users')
-			.getPublicUrl(user.avatar).data.publicUrl : null
-	}));
+		// Add avatar URLs to users
+		const usersWithAvatars = users.map((user) => ({
+			...user,
+			avatar: user.avatar
+				? event.locals.supabase.storage.from('users').getPublicUrl(user.avatar).data.publicUrl
+				: null,
+		}));
 
-	// Create a user lookup map
-	const userMap = new Map(usersWithAvatars.map(user => [user.id, user]));
+		// Create a user lookup map
+		const userMap = new Map(usersWithAvatars.map((user) => [user.id, user]));
 
-	// Attach user data to comments
-	const commentsWithUsers = comments.map(comment => ({
-		...comment,
-		user: userMap.get(comment.user_id)
-	}));
+		// Attach user data to comments
+		const commentsWithUsers = comments.map((comment) => ({
+			...comment,
+			user: userMap.get(comment.user_id),
+		}));
 
-	// Build nested structure
-	function buildNestedComments(comments: any[]): any[] {
-		const commentMap = new Map();
-		const rootComments: any[] = [];
+		// Build nested structure
+		function buildNestedComments(comments: any[]): any[] {
+			const commentMap = new Map();
+			const rootComments: any[] = [];
 
-		// First pass: create map of all comments
-		comments.forEach(comment => {
-			commentMap.set(comment.id, { ...comment, replies: [] });
-		});
+			// First pass: create map of all comments
+			comments.forEach((comment) => {
+				commentMap.set(comment.id, { ...comment, replies: [] });
+			});
 
-		// Second pass: build the tree structure
-		comments.forEach(comment => {
-			const commentWithReplies = commentMap.get(comment.id);
-			
-			if (comment.parent_id === null) {
-				// Root comment
-				rootComments.push(commentWithReplies);
-			} else {
-				// Reply to another comment
-				const parentComment = commentMap.get(comment.parent_id);
-				if (parentComment) {
-					parentComment.replies.push(commentWithReplies);
+			// Second pass: build the tree structure
+			comments.forEach((comment) => {
+				const commentWithReplies = commentMap.get(comment.id);
+
+				if (comment.parent_id === null) {
+					// Root comment
+					rootComments.push(commentWithReplies);
+				} else {
+					// Reply to another comment
+					const parentComment = commentMap.get(comment.parent_id);
+					if (parentComment) {
+						parentComment.replies.push(commentWithReplies);
+					}
 				}
-			}
-		});
+			});
 
-		return rootComments;
+			return rootComments;
+		}
+
+		return buildNestedComments(commentsWithUsers);
 	}
-
-	return buildNestedComments(commentsWithUsers);
-}
 
 	async function getRatingBySignId(signId: number, userId: string): Promise<number | null> {
 		const { data: rating, error: ratingError } = await event.locals.supabase
@@ -181,7 +183,7 @@ export const load = async (event) => {
 		return rating?.value ?? null;
 	}
 
-	async function getNumberOfVotes(signId: number, value: string): Promise<number | null > {
+	async function getNumberOfVotes(signId: number, value: string): Promise<number | null> {
 		const { data: votes, error: votesError } = await event.locals.supabase
 			.from('signs_statistics')
 			.select(value)
@@ -194,9 +196,9 @@ export const load = async (event) => {
 			throw error(500, errorMessage);
 		}
 
-		return votes[value] ?? 0 ;
+		return votes[value] ?? 0;
 	}
-	
+
 	function ratingToString(rating: number | null): '1' | '0' | '-1' | null {
 		if (rating === null) return null;
 		if (rating === 1) return '1';
@@ -253,8 +255,6 @@ export const load = async (event) => {
 		numberOfNegatives = await getNumberOfVotes(specificSign.id, 'neg_votes');
 	}
 
-	
-
 	return {
 		sign: specificSign,
 		parameters: parameters,
@@ -272,10 +272,7 @@ export const load = async (event) => {
 		numberOfPositives,
 		numberOfNeutrals,
 		numberOfNegatives,
-		createCommentForm: await superValidate(
-			zod(createCommentSchema),
-			{ id: 'create-comment' }
-		),
+		createCommentForm: await superValidate(zod(createCommentSchema), { id: 'create-comment' }),
 	};
 };
 
@@ -302,13 +299,16 @@ export const actions = {
 						return fail(500, { message: error.message, form });
 					}
 				} else {
-					const { error } = await event.locals.supabase.from('signs_rating').upsert({
-						sign_id: signId,
-						user_id: userId,
-						value,
-					}, {
-						onConflict: 'sign_id, user_id'
-					});
+					const { error } = await event.locals.supabase.from('signs_rating').upsert(
+						{
+							sign_id: signId,
+							user_id: userId,
+							value,
+						},
+						{
+							onConflict: 'sign_id, user_id',
+						}
+					);
 
 					if (error) {
 						console.error('Upsert error:', error.message);
@@ -319,102 +319,109 @@ export const actions = {
 				return { form };
 			}
 		),
-		createComment: async (event) => {
-	const { user } = await event.locals.safeGetSession();
-	
-	if (!user) {
-		throw error(401, 'Unauthorized');
-	}
+	createComment: async (event) => {
+		const { user } = await event.locals.safeGetSession();
 
-	const formData = await event.request.formData();
-	const signId = parseInt(event.params.signId);
-
-	// Parse form data manually
-	const content_text = formData.get('content_text') as string;
-	const content_video = formData.get('content_video') as File;
-	const parent_id = formData.get('parent_id') as string | null;
-
-	// Convert parent_id to number if it exists
-	const parentCommentId = parent_id ? parseInt(parent_id) : null;
-
-	// If parent_id is provided, verify the parent comment exists and belongs to the same sign
-	if (parentCommentId) {
-		const { data: parentComment, error: parentError } = await event.locals.supabase
-			.from('crowdsource_comments')
-			.select('id, sign_id')
-			.eq('id', parentCommentId)
-			.single();
-
-		if (parentError || !parentComment) {
-			setFlash({ 
-				type: 'error', 
-				message: 'Comentário pai não encontrado' 
-			}, event.cookies);
-			return fail(400, { message: 'Parent comment not found' });
+		if (!user) {
+			throw error(401, 'Unauthorized');
 		}
 
-		if (parentComment.sign_id !== signId) {
-			setFlash({ 
-				type: 'error', 
-				message: 'Comentário pai não pertence a este gesto' 
-			}, event.cookies);
-			return fail(400, { message: 'Parent comment does not belong to this sign' });
+		const formData = await event.request.formData();
+		const signId = parseInt(event.params.signId);
+
+		// Parse form data manually
+		const content_text = formData.get('content_text') as string;
+		const content_video = formData.get('content_video') as File;
+		const parent_id = formData.get('parent_id') as string | null;
+
+		// Convert parent_id to number if it exists
+		const parentCommentId = parent_id ? parseInt(parent_id) : null;
+
+		// If parent_id is provided, verify the parent comment exists and belongs to the same sign
+		if (parentCommentId) {
+			const { data: parentComment, error: parentError } = await event.locals.supabase
+				.from('crowdsource_comments')
+				.select('id, sign_id')
+				.eq('id', parentCommentId)
+				.single();
+
+			if (parentError || !parentComment) {
+				setFlash(
+					{
+						type: 'error',
+						message: 'Comentário pai não encontrado',
+					},
+					event.cookies
+				);
+				return fail(400, { message: 'Parent comment not found' });
+			}
+
+			if (parentComment.sign_id !== signId) {
+				setFlash(
+					{
+						type: 'error',
+						message: 'Comentário pai não pertence a este gesto',
+					},
+					event.cookies
+				);
+				return fail(400, { message: 'Parent comment does not belong to this sign' });
+			}
 		}
-	}
 
-	// Validate the data
-	const validation = createCommentSchema.safeParse({
-		content_text: content_text || undefined,
-		content_video: content_video?.size > 0 ? content_video : undefined,
-	});
-
-	if (!validation.success) {
-		const fieldErrors = validation.error.flatten().fieldErrors;
-		const formErrors = validation.error.flatten().formErrors;
-		
-		setFlash({ 
-			type: 'error', 
-			message: formErrors[0] || 'Dados do formulário inválidos' 
-		}, event.cookies);
-		
-		return fail(400, { 
-			errors: fieldErrors,
-			message: 'Form validation failed',
+		// Validate the data
+		const validation = createCommentSchema.safeParse({
+			content_text: content_text || undefined,
+			content_video: content_video?.size > 0 ? content_video : undefined,
 		});
-	}
 
-	const { content_text: validText, content_video: validVideo } = validation.data;
+		if (!validation.success) {
+			const fieldErrors = validation.error.flatten().fieldErrors;
+			const formErrors = validation.error.flatten().formErrors;
 
-	let videoUrl = null;
+			setFlash(
+				{
+					type: 'error',
+					message: formErrors[0] || 'Dados do formulário inválidos',
+				},
+				event.cookies
+			);
 
-	// Handle video upload if present
-	if (validVideo && validVideo.size > 0) {
-		const fileName = `comments/${user.id}/${Date.now()}-${validVideo.name}`;
-		
-		const { data: uploadData, error: uploadError } = await event.locals.supabase.storage
-			.from('comments')
-			.upload(fileName, validVideo, {
-				contentType: validVideo.type,
+			return fail(400, {
+				errors: fieldErrors,
+				message: 'Form validation failed',
 			});
-
-		if (uploadError) {
-			console.error('Upload error:', uploadError.message);
-			setFlash({ type: 'error', message: 'Erro ao fazer upload do vídeo' }, event.cookies);
-			return fail(500, { message: 'Erro ao fazer upload do vídeo' });
 		}
 
-		// Get public URL
-		const { data: { publicUrl } } = event.locals.supabase.storage
-			.from('comments')
-			.getPublicUrl(fileName);
-		
-		videoUrl = publicUrl;
-	}
+		const { content_text: validText, content_video: validVideo } = validation.data;
 
-	// Insert comment into database
-	const { error: insertError } = await event.locals.supabase
-		.from('crowdsource_comments')
-		.insert({
+		let videoUrl = null;
+
+		// Handle video upload if present
+		if (validVideo && validVideo.size > 0) {
+			const fileName = `comments/${user.id}/${Date.now()}-${validVideo.name}`;
+
+			const { data: uploadData, error: uploadError } = await event.locals.supabase.storage
+				.from('comments')
+				.upload(fileName, validVideo, {
+					contentType: validVideo.type,
+				});
+
+			if (uploadError) {
+				console.error('Upload error:', uploadError.message);
+				setFlash({ type: 'error', message: 'Erro ao fazer upload do vídeo' }, event.cookies);
+				return fail(500, { message: 'Erro ao fazer upload do vídeo' });
+			}
+
+			// Get public URL
+			const {
+				data: { publicUrl },
+			} = event.locals.supabase.storage.from('comments').getPublicUrl(fileName);
+
+			videoUrl = publicUrl;
+		}
+
+		// Insert comment into database
+		const { error: insertError } = await event.locals.supabase.from('crowdsource_comments').insert({
 			parent_id: parentCommentId, // Now properly handles parent_id
 			user_id: user.id,
 			sign_id: signId,
@@ -424,14 +431,16 @@ export const actions = {
 			last_edited_at: new Date().toISOString(),
 		});
 
-	if (insertError) {
-		console.error('Insert error:', insertError.message);
-		setFlash({ type: 'error', message: 'Erro ao criar comentário' }, event.cookies);
-		return fail(500, { message: 'Erro ao criar comentário' });
-	}
+		if (insertError) {
+			console.error('Insert error:', insertError.message);
+			setFlash({ type: 'error', message: 'Erro ao criar comentário' }, event.cookies);
+			return fail(500, { message: 'Erro ao criar comentário' });
+		}
 
-	const successMessage = parentCommentId ? 'Resposta criada com sucesso!' : 'Comentário criado com sucesso!';
-	setFlash({ type: 'success', message: successMessage }, event.cookies);
-	return { success: true };
-},
+		const successMessage = parentCommentId
+			? 'Resposta criada com sucesso!'
+			: 'Comentário criado com sucesso!';
+		setFlash({ type: 'success', message: successMessage }, event.cookies);
+		return { success: true };
+	},
 };

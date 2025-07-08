@@ -77,12 +77,12 @@
 	</Popover.Trigger>
 	<Popover.Content class="w-80 p-0" align="end">
 		<div class="flex flex-col gap-y-1 p-4">
-			<p class="font-medium leading-none">Notifications</p>
+			<p class="font-medium leading-none">Notificações</p>
 			<p class="text-sm text-muted-foreground">
 				{#if unreadCount > 0}
-					You have {unreadCount} unread {unreadCount === 1 ? 'notification' : 'notifications'}
+					Tem {unreadCount} {unreadCount === 1 ? 'notificação' : 'notificações'} por ler.
 				{:else}
-					No unread notifications
+					Todas as notifações foram lidas!
 				{/if}
 			</p>
 		</div>
@@ -122,7 +122,7 @@
 			<form method="POST" action="/?/readAllNotifications" use:enhance>
 				<Button type="submit" class="w-full">
 					<Check class="mr-2 h-4 w-4" />
-					Mark all as read
+					Marcar todas como lidas
 				</Button>
 			</form>
 		</div>

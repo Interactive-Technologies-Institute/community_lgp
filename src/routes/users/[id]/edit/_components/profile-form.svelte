@@ -40,7 +40,7 @@
 <form method="POST" enctype="multipart/form-data" action="?/updateProfile" use:enhance>
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Editar Perfil</Card.Title>	
+			<Card.Title>Editar Perfil</Card.Title>
 		</Card.Header>
 		<Card.Content>
 			<div class="max-w-2xl space-y-4">
@@ -54,7 +54,11 @@
 				<Form.Field {form} name="description">
 					<Form.Control let:attrs>
 						<Form.Label>Descrição</Form.Label>
-						<Input {...attrs} bind:value={$formData.description} placeholder="Escreva algo sobre si!"/>
+						<Input
+							{...attrs}
+							bind:value={$formData.description}
+							placeholder="Escreva algo sobre si!"
+						/>
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
@@ -75,28 +79,36 @@
 				<Form.Field {form} name="age">
 					<Form.Control let:attrs>
 						<Form.Label>Idade</Form.Label>
-						<Input {...attrs} bind:value={$formData.age} placeholder="Insira a sua idade!"/>
+						<Input {...attrs} bind:value={$formData.age} placeholder="Insira a sua idade!" />
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
 				<Form.Field {form} name="gender">
 					<Form.Control let:attrs>
 						<Form.Label>Género</Form.Label>
-						<Input {...attrs} bind:value={$formData.gender} placeholder="Qual é o seu género?"/>
+						<Input {...attrs} bind:value={$formData.gender} placeholder="Qual é o seu género?" />
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
 				<Form.Field {form} name="language">
 					<Form.Control let:attrs>
 						<Form.Label>Língua de Comunicação</Form.Label>
-						<Input {...attrs} bind:value={$formData.language} placeholder="Qual/Quais as línguas que usa para comunicar?"/>
+						<Input
+							{...attrs}
+							bind:value={$formData.language}
+							placeholder="Qual/Quais as línguas que usa para comunicar?"
+						/>
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
 				<Form.Field {form} name="profession">
 					<Form.Control let:attrs>
 						<Form.Label>Profissão</Form.Label>
-						<Input {...attrs} bind:value={$formData.profession} placeholder="Que profissão exerce?"/>
+						<Input
+							{...attrs}
+							bind:value={$formData.profession}
+							placeholder="Que profissão exerce?"
+						/>
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>

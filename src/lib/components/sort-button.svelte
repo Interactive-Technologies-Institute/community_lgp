@@ -11,10 +11,9 @@
 	let open = false;
 
 	const sortOptions = [
-		{ key: 'date_updated', label: 'Date Updated' },
-		{ key: 'difficulty', label: 'Difficulty' },
-		{ key: 'duration', label: 'Duration' },
-		{ key: 'likes', label: 'Likes' },
+		{ key: 'total_comments', label: 'Número de Comentários' },
+		{ key: 'created_at', label: 'Submetido' },
+		{ key: 'positive_votes', label: 'Votos Positivos' },
 	];
 
 	function handleSortSelect(selectedSort: string) {
@@ -32,7 +31,7 @@
 			<div class="relative flex items-center">
 				<ArrowUpDown class="h-4 w-4 md:mr-2" />
 			</div>
-			<span class="sr-only md:not-sr-only">Sort</span>
+			<span class="sr-only md:not-sr-only">Ordenar</span>
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="mt-2 w-[200px] p-0" align="start" side="bottom">
@@ -58,12 +57,12 @@
 			</Command.List>
 		</Command.Root>
 		<div class="flex items-center justify-between border-t p-2">
-			<span class="text-sm">Order:</span>
+			<span class="text-sm">Ordenar:</span>
 			<Button variant="ghost" on:click={toggleSortOrder}>
 				{#if sortOrder === 'asc'}
-					Ascending
+					Ascendente
 				{:else}
-					Descending
+					Descendente
 				{/if}
 			</Button>
 		</div>

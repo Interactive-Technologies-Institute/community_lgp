@@ -94,7 +94,7 @@
 			</a>
 		</FeatureWrapper>
 
-		<Separator class="mx-2"orientation="vertical" />
+		<Separator class="mx-2" orientation="vertical" />
 
 		<FeatureWrapper feature="fcdictionary">
 			<a
@@ -107,7 +107,7 @@
 				Dicionário 1º Ciclo
 			</a>
 		</FeatureWrapper>
-		
+
 		<FeatureWrapper feature="lgp4fun">
 			<a
 				href="/lgp4fun"
@@ -119,6 +119,5 @@
 				LGP4Fun
 			</a>
 		</FeatureWrapper>
-		
 	</nav>
 </div>

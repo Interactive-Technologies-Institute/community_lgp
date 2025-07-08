@@ -10,7 +10,7 @@
 	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
-	console.log(data)
+	console.log(data);
 </script>
 
 <MetaTags title="Detalhes do Utilizador" description="" />

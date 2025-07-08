@@ -12,13 +12,14 @@
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
-	import type { AnnotationArray, Parameter } from '@/types/types';
+	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
 	import { onMount } from 'svelte';
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
 	export let parameter: Parameter[];
+	export let mainSign: Sign;
 
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
@@ -144,7 +145,8 @@
 	}
 
 	onMount(() => {
-		$formData.theme = ['Proposta'];
+		$formData.name = mainSign.name;
+		$formData.theme = ['Proposta - Em Discussão'];
 		$formData.is_anotated = 0;
 	});
 </script>

@@ -14,7 +14,7 @@ export const updateUserProfileSchema = z.object({
 			return isNaN(parsed) ? undefined : parsed;
 		}
 		return val;
-		}, z.number().nullable()),
+	}, z.number().nullable()),
 	gender: z.string().nullish(),
 	language: z.string().nullish(),
 	profession: z.string().nullish(),

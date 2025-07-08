@@ -32,18 +32,18 @@
 		goto(`/users/${id}`);
 	}
 
-	console.log(data)
+	console.log(data);
 
 	function capitalize(district: string) {
 		return district[0].toUpperCase() + district.slice(1);
 	}
 
 	function formatCommentDate(dateString: string) {
-	return formatDistanceToNow(new Date(dateString), { 
-		addSuffix: true, 
-		locale: pt 
-	});
-}
+		return formatDistanceToNow(new Date(dateString), {
+			addSuffix: true,
+			locale: pt,
+		});
+	}
 
 	let district = capitalize(sign?.district ?? 'Geral');
 </script>
@@ -71,7 +71,7 @@
 				Your browser does not support the video tag.
 			</video>
 
-			<AnnotationShowcase data={data.parameter} />
+			<AnnotationShowcase data={data.parameters} />
 
 			{#if sign?.context_video}
 				<video class="h-auto w-full rounded-2xl" controls playsinline>
@@ -81,24 +81,34 @@
 			{/if}
 		</div>
 
-		<div class="ml-10 flex flex-col justify-start">
-			<h1 class="text-2xl font-bold">{sign?.name}</h1>
+		<div class="ml-10 flex flex-col justify-start space-y-6">
+			<div>
+				<div class="flex gap-x-72">
+					<h1 class="text-2xl font-bold">{sign?.name}</h1>
+					<Button
+						on:click={() => goto(`${sign.id}/create`)}
+						class="w-10 p-0 sm:w-auto sm:px-4 sm:py-2"
+					>
+						<PlusCircle class="h-4 w-4 sm:mr-2" />
+						<span>Propor variante de gesto</span>
+					</Button>
+				</div>
+				<div class="mt-2">
+					{#if sign?.theme}
+						{#each sign?.theme as t}
+							<Badge variant="outline" class="m-1">{t}</Badge>
+						{/each}
+					{:else}
+						<p class="text-gray-500">Sem temas atribuídos.</p>
+					{/if}
+				</div>
+			</div>
 
-			<h2 class="mt-2 text-lg">
-				{#if sign?.theme}
-					{#each sign?.theme as t}
-						<Badge variant="outline" class="m-1">{t}</Badge>
-					{/each}
-				{:else}
-					Sem temas atribuídos.
-				{/if}
-			</h2>
-
-			<h2 class="my-2 text-lg">
+			<div>
 				{#if sign?.district}
 					<div class="flex items-center justify-start">
 						{#if mainSign}
-							<div class="flex flex-col">
+							<div class="flex flex-col space-y-2">
 								<div class="text-sm">
 									Esta entrada de gesto é uma variante do gesto
 									<a
@@ -120,7 +130,7 @@
 								</div>
 							</div>
 						{:else}
-							<div class="flex flex-col">
+							<div class="flex flex-col space-y-2">
 								<div class="flex items-center space-x-2 py-2">
 									<DistrictMap {district} />
 									<Badge variant="outline" class="px-2 py-1">
@@ -182,7 +192,7 @@
 						{/if}
 					</div>
 				{:else}
-					<div class="flex flex-col">
+					<div class="flex flex-col space-y-2">
 						<div class="flex items-center space-x-2 py-2">
 							<DistrictMap {district} />
 							<Badge variant="outline" class="px-2 py-1">
@@ -236,7 +246,8 @@
 						{/if}
 					</div>
 				{/if}
-			</h2>
+			</div>
+
 			<Card.Root class="rounded-3xl px-3 py-2">
 				<div class="flex items-start justify-start">
 					{#if createdByUser}
@@ -291,79 +302,57 @@
 				</div>
 			</Card.Root>
 
-			<div class="my-5">
-				<Card.Root class="p-0 rounded-2xl">
-					<Card.Content class="mt-5">
-						<SignRatingButton 
-						data={data.toggleRatingForm} 
-						currentValue={data.currentRating} 
+			<Card.Root class="rounded-2xl p-0">
+				<Card.Content class="mt-5">
+					<SignRatingButton
+						data={data.toggleRatingForm}
+						currentValue={data.currentRating}
 						positiveNumber={data.numberOfPositives ?? 0}
-						neutralNumber={data.numberOfNeutrals ?? 0}
-						negativeNumber={data.numberOfNegatives ?? 0} />
-					</Card.Content>
+						negativeNumber={data.numberOfNegatives ?? 0}
+					/>
+				</Card.Content>
 			</Card.Root>
-				</div>
-			<h2 class="mt-[360px] text-xl">
-				{#if sign?.description}
-					{sign?.description}
-				{/if}
-			</h2>
 
-			<h2 class="mt-[300px] text-xl">
-				{#if sign?.sentence}
-					{sign?.sentence}
-				{/if}
-			</h2>
+			{#if sign?.description}
+				<div class="text-lg">
+					{sign.description}
+				</div>
+			{/if}
+
+			{#if sign?.sentence}
+				<div class="text-lg">
+					{sign.sentence}
+				</div>
+			{/if}
 		</div>
-		{#if sign.district == null || sign?.district == 'geral'}
-			<Button
-				on:click={() => goto(`${sign.id}/create`)}
-				class=" w-10 p-0 sm:w-auto sm:px-4 sm:py-2"
-			>
-				<PlusCircle class="h-4 w-4 sm:mr-2" />
-				<span>Propor variante de gesto</span>
-			</Button>
-		{/if}
 	</div>
 
-<div class="flex items-center justify-center py-5">
-    <div class="w-full max-w-4xl">
-        <Collapsible.Root>
-            <Collapsible.Trigger class="flex w-full items-center justify-center space-x-2">
-                <div class="flex items-center space-x-2">
-                    <Separator class="w-16" />
-                    <span>Comentários ({posts?.length || 0})</span>
-                    <Separator class="w-16" />
-                </div>
-            </Collapsible.Trigger>
-            <Collapsible.Content class="w-full py-5 transition-all duration-300">
-                <!-- Comment Form -->
-                
-                <!-- Comments List -->
-                <div class="space-y-6">
-                    {#if posts && posts.length > 0}
+	<div class="flex items-center justify-center py-8">
+		<div class="w-full max-w-4xl">
+			<div class="mb-6 flex items-center justify-center space-x-2">
+				<Separator class="w-16" />
+				<span>Comentários ({posts?.length || 0})</span>
+				<Separator class="w-16" />
+			</div>
+
+			<div class="space-y-6">
+				{#if posts && posts.length > 0}
 					<div class="mb-8 flex justify-center">
-                    <CommentForm signId={sign?.id?.toString() || ''} />
-                	</div>
-                        {#each posts as comment}
-                            <CommentDisplay 
-                                {comment}
-                                signId={sign?.id?.toString() || ''}
-                                {formatCommentDate}
-                            />
-                        {/each}
-                    {:else}
-                        <div class="text-center py-8">
-                            <p class="text-gray-500 mb-4">Este gesto ainda não tem comentários.</p>
-                            <p class="text-sm text-gray-400">Seja o primeiro a partilhar a sua opinião!</p>
-						</div>
-						<div class="flex justify-center">
 						<CommentForm signId={sign?.id?.toString() || ''} />
-						</div>
-                    {/if}
-                </div>
-            </Collapsible.Content>
-        </Collapsible.Root>
-    </div>
-</div>
+					</div>
+					{#each posts as comment}
+						<CommentDisplay {comment} signId={sign?.id?.toString() || ''} {formatCommentDate} />
+					{/each}
+				{:else}
+					<div class="py-8 text-center">
+						<p class="mb-4 text-gray-500">Este gesto ainda não tem comentários.</p>
+						<p class="text-sm text-gray-400">Seja o primeiro a partilhar a sua opinião!</p>
+					</div>
+					<div class="flex justify-center">
+						<CommentForm signId={sign?.id?.toString() || ''} />
+					</div>
+				{/if}
+			</div>
+		</div>
+	</div>
 {/if}

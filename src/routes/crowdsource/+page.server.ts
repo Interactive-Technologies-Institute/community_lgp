@@ -1,208 +1,164 @@
 import type { Sign, UserProfile } from '@/types/types';
-import { stringQueryParam } from '@/utils';
+import { arrayQueryParam, stringQueryParam } from '@/utils';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 
 export const load = async (event) => {
-	
+	const page = Number(event.url.searchParams.get('page')) || 1;
+	const perPage = 9;
+	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
+	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+	const sortBy = stringQueryParam().decode(event.url.searchParams.get('sortBy'));
+	const sortOrder = stringQueryParam().decode(event.url.searchParams.get('sortOrder'));
+	let totalPages = 0;
+	let countSign = 0;
 
-	async function getProposals(): Promise<Sign[]> {
-		const { data: proposals, error: proposalsError } = await event.locals.supabase
-			.from('signs_moderation')
-			.select('sign_id', { count: 'exact' })
-			.eq('status','pending')
-			.order('inserted_at', {ascending: false})
-			.range(0,8);
+	async function getSignsWithStats(): Promise<Sign[]> {
+		let query = event.locals.supabase
+			.from('signs_summary')
+			.select('*', { count: 'exact' })
+			.range((page - 1) * perPage, page * perPage - 1);
 
+		if (sortBy === 'total_comments') {
+			query = query.order('total_comments', { ascending: sortOrder === 'asc' });
+		} else if (sortBy === 'created_at') {
+			query = query.order('created_at', { ascending: sortOrder === 'asc' });
+		} else if (sortBy === 'positive_votes') {
+			query = query.order('positive_votes', { ascending: sortOrder === 'asc' });
+		} else {
+			query = query.order('theme', { ascending: true }).order('created_at', { ascending: false });
+		}
 
-		if (proposalsError) {
-			const errorMessage = 'Error fetching crowdsource proposals, please try again later.';
+		if (search) {
+			query = query.ilike('name', `%${search}`);
+		}
+
+		if (theme && theme.length) {
+			const specificThemes = [
+				'Proposta - Em Discussão',
+				'Proposta - Aceite',
+				'Proposta - Adicionada',
+			];
+
+			const specificSelected = theme.filter((t) => specificThemes.includes(t));
+			const hasOutros = theme.includes('Outros');
+
+			if (specificSelected.length > 0 && !hasOutros) {
+				query = query.overlaps('theme', specificSelected);
+			} else if (!specificSelected.length && hasOutros) {
+			} else if (specificSelected.length > 0 && hasOutros) {
+			}
+		}
+
+		const { data: signs, count, error: signsError } = await query;
+
+		if (signsError) {
+			const errorMessage = 'Error fetching signs with statistics, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
 
-		// Step 1: Get all signs from each proposal
-	const allSignsNested = await Promise.all(proposals.map(p => getSigns(p.sign_id)));
-	const allSigns = allSignsNested.flat();
+		let filteredSigns = signs;
+		if (theme && theme.length) {
+			const specificThemes = [
+				'Proposta - Em Discussão',
+				'Proposta - Aceite',
+				'Proposta - Adicionada',
+			];
 
-	// Step 2: Get unique user IDs from signs
-	const userIds = [...new Set(allSigns.map(sign => sign.created_by_user_id))];
+			const specificSelected = theme.filter((t) => specificThemes.includes(t));
+			const hasOutros = theme.includes('Outros');
 
-	// Step 3: Fetch all user profiles in one go
-	const { data: users, error: usersError } = await event.locals.supabase
-		.from('profiles_view')
-		.select('id, display_name, avatar')
-		.in('id', userIds);
+			if (hasOutros && specificSelected.length === 0) {
+				filteredSigns = signs.filter((sign) => {
+					if (!sign.theme || !Array.isArray(sign.theme)) return true;
+					return !sign.theme.some((t) => specificThemes.includes(t));
+				});
+			} else if (hasOutros && specificSelected.length > 0) {
+				filteredSigns = signs.filter((sign) => {
+					if (!sign.theme || !Array.isArray(sign.theme)) return hasOutros;
 
-	if (usersError) {
-		const errorMessage = 'Error fetching user profiles.';
-		setFlash({ type: 'error', message: errorMessage }, event.cookies);
-		return error(500, errorMessage);
-	}
+					const hasSpecificTheme = sign.theme.some((t) => specificSelected.includes(t));
 
-	// Step 4: Map users by ID for fast lookup
-	const userMap = Object.fromEntries(users.map(user => [user.id, user]));
+					const hasOnlyOtherThemes = !sign.theme.some((t) => specificThemes.includes(t));
 
-	// Step 5: Attach user profile to each sign
-	const signsWithUsers = allSigns.map(sign => ({
-		...sign,
-		user: userMap[sign.created_by_user_id] || null
-	}));
+					return hasSpecificTheme || (hasOutros && hasOnlyOtherThemes);
+				});
+			}
+		}
+
+		totalPages = count ? Math.ceil(count / perPage) : 0;
+		countSign = count || 0;
+
+		const userIds = [...new Set(filteredSigns.map((sign) => sign.created_by_user_id))];
+
+		const { data: users, error: usersError } = await event.locals.supabase
+			.from('profiles_view')
+			.select('id, display_name, avatar')
+			.in('id', userIds);
+
+		if (usersError) {
+			const errorMessage = 'Error fetching user profiles.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		const userMap = Object.fromEntries(users.map((user) => [user.id, user]));
+
+		const signsWithUsers = filteredSigns.map((sign) => ({
+			...sign,
+			user: userMap[sign.created_by_user_id] || null,
+		}));
 
 		return signsWithUsers as Sign[];
 	}
 
-	async function getSigns(id: number): Promise<Sign[]>{
-		const { data: signs, error: signsError } = await event.locals.supabase
-			.from('signs')
-			.select('id, name, video, created_by_user_id', { count: 'exact' })
-			.eq('id',id)
-			.order('created_at', {ascending: false})
-			.range(0,8);
+	async function getThemes(): Promise<Map<string, number>> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('signs_themes')
+			.select('*');
 
-		if (signsError) {
-			const errorMessage = 'Error fetching signs, please try again later.';
+		if (themesError) {
+			const errorMessage = 'Error fetching themes, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
 
-		return signs as Sign[];
+		const specificThemes = [
+			'Proposta - Em Discussão',
+			'Proposta - Aceite',
+			'Proposta - Adicionada',
+		];
+
+		const themeMap = new Map<string, number>();
+		let outrosCount = 0;
+
+		if (themes) {
+			themes.forEach((theme) => {
+				const { count, theme: themeName } = theme;
+				if (count !== null && themeName !== null) {
+					if (specificThemes.includes(themeName)) {
+						themeMap.set(themeName, count);
+					} else {
+						outrosCount += count;
+					}
+				}
+			});
+		}
+
+		if (outrosCount > 0) {
+			themeMap.set('Outros', outrosCount);
+		}
+
+		return themeMap;
 	}
-async function getMostCommentedSigns(): Promise<Sign[]> {
-    // Step 1: Get comment counts per sign
-    const { data: commentCounts, error: commentCountsError } = await event.locals.supabase
-        .from('crowdsource_comments')
-        .select('sign_id', { count: 'exact' })
-        .order('sign_id');
 
-    if (commentCountsError) {
-        const errorMessage = 'Error fetching comment counts, please try again later.';
-        setFlash({ type: 'error', message: errorMessage }, event.cookies);
-        return error(500, errorMessage);
-    }
-
-    // Step 2: Group by sign_id and count comments
-    const signCommentCounts = commentCounts.reduce((acc, comment) => {
-        acc[comment.sign_id] = (acc[comment.sign_id] || 0) + 1;
-        return acc;
-    }, {} as Record<number, number>);
-
-    // Step 3: Get the sign IDs sorted by comment count (most to least)
-    const sortedSignIds = Object.entries(signCommentCounts)
-        .sort(([, a], [, b]) => b - a) // Sort by count descending
-        .slice(0, 8) // Take top 8
-        .map(([signId]) => parseInt(signId));
-
-    if (sortedSignIds.length === 0) {
-        return []; // No signs with comments
-    }
-
-    // Step 4: Fetch the actual sign data for these IDs
-    const { data: signs, error: signsError } = await event.locals.supabase
-        .from('signs')
-        .select('id, name, video, created_by_user_id', { count: 'exact' })
-        .in('id', sortedSignIds);
-
-    if (signsError) {
-        const errorMessage = 'Error fetching most commented signs, please try again later.';
-        setFlash({ type: 'error', message: errorMessage }, event.cookies);
-        return error(500, errorMessage);
-    }
-    // Step 5: Sort the signs according to our comment count order and add comment counts
-    const signMap = Object.fromEntries(signs.map(sign => [sign.id, sign]));
-    const sortedSigns = sortedSignIds
-        .map(id => ({
-            ...signMap[id],
-            comment_count: signCommentCounts[id]
-        }))
-        .filter(sign => sign.id); // Remove any undefined signs
-
-    // Step 6: Get unique user IDs from signs
-    const userIds = [...new Set(sortedSigns.map(sign => sign.created_by_user_id))];
-
-    // Step 7: Fetch all user profiles in one go
-    const { data: users, error: usersError } = await event.locals.supabase
-        .from('profiles_view')
-        .select('id, display_name, avatar')
-        .in('id', userIds);
-
-    if (usersError) {
-        const errorMessage = 'Error fetching user profiles for most commented signs.';
-        setFlash({ type: 'error', message: errorMessage }, event.cookies);
-        return error(500, errorMessage);
-    }
-
-    // Step 8: Map users by ID for fast lookup
-    const userMap = Object.fromEntries(users.map(user => [user.id, user]));
-
-    // Step 9: Attach user profile to each sign
-    const signsWithUsers = sortedSigns.map(sign => ({
-        ...sign,
-        user: userMap[sign.created_by_user_id] || null
-    }));
-
-    return signsWithUsers as Sign[];
-}
-
-async function getMostVotedSigns(): Promise<Sign[]> {
-    // Step 1: Fetch signs with vote counts from your view
-    const { data: signsWithVotes, error: signsError } = await event.locals.supabase
-        .from('signs_statistics') // Replace with your actual view name
-        .select('*')
-        .order('id'); // Initial order, we'll sort by total votes next
-
-    if (signsError) {
-        const errorMessage = 'Error fetching signs with votes, please try again later.';
-        setFlash({ type: 'error', message: errorMessage }, event.cookies);
-        return error(500, errorMessage);
-    }
-
-    // Step 2: Calculate total votes and sort by most voted
-    const signsWithTotalVotes = signsWithVotes
-        .map(sign => ({
-            ...sign,
-            total_votes: sign.pos_votes + sign.nt_votes + sign.neg_votes
-        }))
-        .sort((a, b) => b.total_votes - a.total_votes) // Sort by total votes descending
-        .slice(0, 8); // Take top 8
-
-    if (signsWithTotalVotes.length === 0) {
-        return []; // No signs with votes
-    }
-
-    // Step 3: Get unique user IDs from signs
-    const userIds = [...new Set(signsWithTotalVotes.map(sign => sign.created_by_user_id))];
-
-    // Step 4: Fetch all user profiles in one go
-    const { data: users, error: usersError } = await event.locals.supabase
-        .from('profiles_view')
-        .select('id, display_name, avatar')
-        .in('id', userIds);
-
-    if (usersError) {
-        const errorMessage = 'Error fetching user profiles for most voted signs.';
-        setFlash({ type: 'error', message: errorMessage }, event.cookies);
-        return error(500, errorMessage);
-    }
-
-    // Step 5: Map users by ID for fast lookup
-    const userMap = Object.fromEntries(users.map(user => [user.id, user]));
-
-    // Step 6: Attach user profile to each sign
-    const signsWithUsers = signsWithTotalVotes.map(sign => ({
-        ...sign,
-        user: userMap[sign.created_by_user_id] || null
-    }));
-
-    return signsWithUsers as Sign[];
-}
-
-
-	
-
-	return{
-		mostCommentedSigns: await getMostCommentedSigns(),
-		signsWithUsers: await getProposals(),
-		mostVotedSigns : await getMostVotedSigns(),
-	}
+	return {
+		signs: await getSignsWithStats(),
+		themes: await getThemes(),
+		page,
+		totalPages,
+		perPage,
+		countSign,
+	};
 };

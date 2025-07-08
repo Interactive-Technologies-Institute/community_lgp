@@ -28,19 +28,16 @@
 		<Card.Content class="p-4">
 			<div class="flex items-start space-x-4">
 				<!-- User Avatar -->
-				<Avatar.Root class="w-10 h-10 flex-shrink-0">
-					<Avatar.Image
-						src={comment.user?.avatar}
-						alt={comment.user?.display_name || 'User'}
-					/>
+				<Avatar.Root class="h-10 w-10 flex-shrink-0">
+					<Avatar.Image src={comment.user?.avatar} alt={comment.user?.display_name || 'User'} />
 					<Avatar.Fallback>
 						{comment.user?.display_name?.[0] || 'U'}
 					</Avatar.Fallback>
 				</Avatar.Root>
-				<div class="flex-1 min-w-0">
+				<div class="min-w-0 flex-1">
 					<!-- User Info -->
-					<div class="flex items-center space-x-2 mb-2">
-						<span class="font-medium text-sm">
+					<div class="mb-2 flex items-center space-x-2">
+						<span class="text-sm font-medium">
 							{comment.user?.display_name || 'Utilizador Anónimo'}
 						</span>
 						<span class="text-xs text-gray-500">
@@ -51,19 +48,15 @@
 						{/if}
 					</div>
 					<!-- Comment Content -->
-					<div class="space-y-2 mb-3">
+					<div class="mb-3 space-y-2">
 						{#if comment.content_text}
-							<p class="text-sm leading-relaxed whitespace-pre-wrap">
+							<p class="whitespace-pre-wrap text-sm leading-relaxed">
 								{comment.content_text}
 							</p>
 						{/if}
 						{#if comment.content_video}
 							<!-- svelte-ignore a11y-media-has-caption -->
-							<video
-								class="w-full max-w-md rounded-lg"
-								controls
-								preload="metadata"
-							>
+							<video class="w-full max-w-md rounded-lg" controls preload="metadata">
 								<source src={comment.content_video} type="video/mp4" />
 								<source src={comment.content_video} type="video/webm" />
 								O seu navegador não suporta vídeos.
@@ -78,9 +71,9 @@
 								variant="ghost"
 								size="sm"
 								on:click={toggleReplyForm}
-								class="text-xs px-2 py-1 h-auto"
+								class="h-auto px-2 py-1 text-xs"
 							>
-								<Reply class="w-3 h-3 mr-1" />
+								<Reply class="mr-1 h-3 w-3" />
 								{showReplyForm ? 'Cancelar' : 'Responder'}
 							</Button>
 							{#if comment.replies && comment.replies.length > 0}
@@ -97,12 +90,8 @@
 
 	<!-- Reply Form -->
 	{#if showReplyForm}
-		<div class="mt-4 ml-4">
-			<CommentForm 
-				{signId} 
-				parentCommentId={comment.id?.toString()} 
-				onCancel={hideReplyForm}
-			/>
+		<div class="ml-4 mt-4">
+			<CommentForm {signId} parentCommentId={comment.id?.toString()} onCancel={hideReplyForm} />
 		</div>
 	{/if}
 
@@ -110,13 +99,7 @@
 	{#if comment.replies && comment.replies.length > 0}
 		<div class="mt-4 space-y-4">
 			{#each comment.replies as reply}
-				<svelte:self
-					comment={reply}
-					{signId}
-					{formatCommentDate}
-					level={level + 1}
-					{maxLevel}
-				/>
+				<svelte:self comment={reply} {signId} {formatCommentDate} level={level + 1} {maxLevel} />
 			{/each}
 		</div>
 	{/if}
