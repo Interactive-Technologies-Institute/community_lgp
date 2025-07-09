@@ -94,26 +94,53 @@ export const actions = {
 
 				const updateData: any = {};
 
-				if (form.data.display_name?.trim()) {
-					updateData.display_name = form.data.display_name;
+				// Handle display_name - set to null if empty
+				if (form.data.display_name !== undefined) {
+					updateData.display_name = form.data.display_name?.trim() || null;
 				}
-				if (form.data.description?.trim()) {
-					updateData.description = form.data.description;
+
+				// Handle description - set to null if empty
+				if (form.data.description !== undefined) {
+					updateData.description = form.data.description?.trim() || null;
 				}
-				if (avatarPath) {
-					updateData.avatar = avatarPath;
+
+				// Handle avatar
+				if (form.data.avatar) {
+					const { path, error } = await uploadAvatar(form.data.avatar);
+					if (error) {
+						return fail(500, withFiles({ message: error.message, form }));
+					}
+					updateData.avatar = path;
+				} else if (form.data.avatarUrl) {
+					updateData.avatar = form.data.avatarUrl.split('/').pop() ?? '';
+				} else {
+					// If no avatar file and no avatarUrl, set to null
+					updateData.avatar = null;
 				}
-				if (form.data.age) {
-					updateData.age = form.data.age;
+
+				// Handle age - set to null if empty
+				if (form.data.age !== undefined) {
+					updateData.age = form.data.age || null;
 				}
-				if (form.data.gender?.trim()) {
-					updateData.gender = form.data.gender;
+
+				// Handle gender - set to null if empty
+				if (form.data.gender !== undefined) {
+					updateData.gender = form.data.gender?.trim() || null;
 				}
-				if (form.data.language?.trim()) {
-					updateData.language = form.data.language;
+
+				// Handle language - set to null if empty
+				if (form.data.language !== undefined) {
+					updateData.language = form.data.language?.trim() || null;
 				}
-				if (form.data.profession?.trim()) {
-					updateData.profession = form.data.profession;
+
+				// Handle profession - set to null if empty
+				if (form.data.profession !== undefined) {
+					updateData.profession = form.data.profession?.trim() || null;
+				}
+
+				// Handle cnum - set to null if empty
+				if (form.data.cnum !== undefined) {
+					updateData.cnum = form.data.cnum?.trim() || null;
 				}
 
 				// Only update if there are fields to update

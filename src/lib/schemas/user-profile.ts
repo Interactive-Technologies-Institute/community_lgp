@@ -18,6 +18,7 @@ export const updateUserProfileSchema = z.object({
 	gender: z.string().nullish(),
 	language: z.string().nullish(),
 	profession: z.string().nullish(),
+	cnum: z.string().nullish()
 });
 
 export type UpdateUserProfileSchema = typeof updateUserProfileSchema;

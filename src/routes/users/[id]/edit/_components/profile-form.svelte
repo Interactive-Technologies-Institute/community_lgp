@@ -5,11 +5,14 @@
 	import { FileInput } from '@/components/ui/file-input';
 	import * as Form from '@/components/ui/form';
 	import { Input } from '@/components/ui/input';
+	import { Checkbox } from '@/components/ui/checkbox';
+	import { Label } from '@/components/ui/label';
 	import { updateUserProfileSchema, type UpdateUserProfileSchema } from '@/schemas/user-profile';
 	import { firstAndLastInitials } from '@/utils';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
+	import { onMount } from 'svelte';
 
 	export let data: SuperValidated<Infer<UpdateUserProfileSchema>>;
 
@@ -35,6 +38,16 @@
 			avatarUrl = $formData.avatarUrl;
 		}
 	}
+
+	let accept = !!(data.data.cnum && data.data.cnum.trim());
+	
+
+		$: if (!accept) {
+		$formData.cnum = ""; 
+	}
+
+$: console.log('Form data cnum:', $formData.cnum);
+$: console.log('Initial data:', data.data);
 </script>
 
 <form method="POST" enctype="multipart/form-data" action="?/updateProfile" use:enhance>
@@ -112,6 +125,27 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
+				<Form.Field {form} name="cnum">
+					<Form.Control let:attrs>
+						<Form.Label>Número de telemóvel</Form.Label>
+						<Input
+							{...attrs}
+							bind:value={$formData.cnum}
+							placeholder="Qual é o seu número de telemóvel?"
+							disabled={!accept}
+						/>
+						<div class="">
+						<div class="flex items-center space-x-2 mt-8">
+							<Checkbox id="terms" bind:checked={accept} />
+							<Label for="terms">Partilhar número de telemóvel com moderadores e administradores</Label>
+						</div>
+						<p class="mt-2 text-sm text-muted-foreground">
+							Ao clicar nesta caixa, concorda em partilhar o seu número de telemóvel com moderadores e administradores.
+						</p>
+						</div>
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
 			</div>
 		</Card.Content>
 		<Card.Footer>
@@ -119,7 +153,7 @@
 				{#if $submitting}
 					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 				{/if}
-				Save Settings
+				Guardar Alterações
 			</Button>
 		</Card.Footer>
 	</Card.Root>

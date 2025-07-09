@@ -29,6 +29,7 @@ export type UserProfile = {
 	gender: string | null;
 	language: string | null;
 	profession: string | null;
+	cnum: string | null;
 };
 
 export type UserType = {

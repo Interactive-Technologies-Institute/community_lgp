@@ -166,6 +166,27 @@ export const load = async (event) => {
 		};
 	}
 
+	async function getFavoritesByUser() {
+		const { data : favorites, count, error: favoritesError} = await event.locals.supabase 
+			.from('signs_favorite_view')
+			.select('*', { count : 'exact' })
+			.eq('user_id', id)
+			.range(from,to);
+
+		if(favoritesError){
+		const errorMessage = `Error fetching favorites by user ID ${id}, please try again later.`
+		setFlash({ type: 'error', message: favoritesError }, event.cookies);
+		return error(500, errorMessage);
+	}
+
+	return {
+			favorites: favorites,
+			count: count ?? 0,
+		};
+	}
+
+	
+
 	return {
 		userProfile: await getUserProfile(),
 		guides: await getGuides(),
@@ -174,5 +195,6 @@ export const load = async (event) => {
 		signs: await getSignsByUser(),
 		annotatedSigns: await getAnnotatedSignsByUser(),
 		comments: await getCommentsByUser(),
+		favorites: await getFavoritesByUser(),
 	};
 };

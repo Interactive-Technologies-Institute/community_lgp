@@ -6,7 +6,7 @@
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import { firstAndLastInitials } from '@/utils';
-	import { Mail, Map, SquareArrowOutUpRight } from 'lucide-svelte';
+	import { Mail, Map, Phone, SquareArrowOutUpRight } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
@@ -30,7 +30,10 @@
 				<div>
 					<Card.Title class="text-xl">{data.userProfile.display_name}</Card.Title>
 					<Card.Description class="text-lg">
-						{data.userProfile.type}
+						{data.userProfile.age ?? 'Idade desconhecida'} 
+						| {data.userProfile.gender ?? 'Género Desconhecido'} 
+						| {data.userProfile.language ?? 'Línguas de comunicação desconhecidas'}
+						| {data.userProfile.profession ?? 'Profissão Desconhecida'}
 					</Card.Description>
 				</div>
 			</div>
@@ -42,6 +45,12 @@
 					<Mail class="mr-2 h-4 w-4" />
 					Email
 				</Button>
+				{#if data.userProfile.cnum && (data.user?.role === 'moderator' || data.user?.role === 'admin')}
+					<Button variant="outline">
+					<Phone class="mr-2 h-4 w-4" />
+					{data.userProfile.cnum}
+				</Button>
+				{/if}
 				{#if data.mapPin}
 					<Button href="/map?id={data.mapPin.id}&zoom=10" variant="outline">
 						<Map class="mr-2 h-4 w-4" />
@@ -108,7 +117,7 @@
 				{#if data.signs.signs.length > 0}
 					<div class="flex flex-wrap gap-4">
 						{#each data.signs.signs as sign}
-							<Button href="/signs/{sign.id}" variant="outline" class="max-w-full">
+							<Button href="/dictionary/sign/{sign.id}" variant="outline" class="max-w-full">
 								<span class="truncate">{sign.name}</span>
 								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
 							</Button>
@@ -120,7 +129,7 @@
 			</Card.Content>
 		</Card.Root>
 	</FeatureWrapper>
-
+	{#if data.userProfile.role === 'moderator' || data.userProfile.role === 'admin' }
 	<FeatureWrapper feature="annotate">
 		<Card.Root>
 			<Card.Header>
@@ -131,7 +140,7 @@
 				{#if data.annotatedSigns.annotatedSigns.length > 0}
 					<div class="flex flex-wrap gap-4">
 						{#each data.annotatedSigns.annotatedSigns as sign}
-							<Button href="/signs/{sign.id}" variant="outline" class="max-w-full">
+							<Button href="/dictionary/sign/{sign.id}" variant="outline" class="max-w-full">
 								<span class="truncate">{sign.name}</span>
 								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
 							</Button>
@@ -143,4 +152,26 @@
 			</Card.Content>
 		</Card.Root>
 	</FeatureWrapper>
+	{/if}
+
+	<Card.Root>
+			<Card.Header>
+				<Card.Title>Gestos Favoritos ({data.favorites.count})</Card.Title>
+				<Card.Description>Lista de Gestos adicionados aos favoritos pelo utilizador</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				{#if data.favorites.favorites.length > 0}
+					<div class="flex flex-wrap gap-4">
+						{#each data.favorites.favorites as sign}
+							<Button href="/dictionary/sign/{sign.sign_id}" variant="outline" class="max-w-full">
+								<span class="truncate">{sign.name}</span>
+								<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+							</Button>
+						{/each}
+					</div>
+				{:else}
+					<p class="text-sm text-muted-foreground">O utilizador não adicionou nenhum gesto aos seus favoritos.</p>
+				{/if}
+			</Card.Content>
+		</Card.Root>
 </div>
