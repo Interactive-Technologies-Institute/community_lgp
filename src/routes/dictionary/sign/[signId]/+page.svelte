@@ -85,11 +85,7 @@
 			
 			{/if}
 
-			{#if sign?.description}
-					<div class="text-lg">
-					{sign.description}
-				</div>
-			{/if}
+			
 
 			{#if sign?.context_video}
 				<video class="h-auto w-full rounded-2xl" controls playsinline>
