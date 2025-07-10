@@ -13,6 +13,7 @@
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
@@ -186,6 +187,12 @@
 		// Optional: Clear any existing description video URL from form data
 		$formData.descriptionVideoUrl = '';
 	}
+
+	onMount(() => {
+		
+		$formData.theme = ['Proposta - Em Discussão'];
+		$formData.is_anotated = 0;
+	});
 </script>
 
 <form
@@ -211,14 +218,7 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-			<Form.Field {form} name="theme">
-				<Form.Control let:attrs>
-					<Form.Label>Temas</Form.Label>
-					<TagInput {...attrs} bind:value={$formData.theme} />
-					<Form.FieldErrors />
-				</Form.Control>
-			</Form.Field>
-			<input hidden value={$formData.theme_flattened} name="theme_flattened" />
+			
 			<div class="flex">
 				<Form.Field {form} name="video">
 					<Form.Control>
