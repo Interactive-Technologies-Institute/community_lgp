@@ -1,3 +1,4 @@
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { updatePasswordSchema } from '@/schemas/password';
 import { updateUserProfileSchema } from '@/schemas/user-profile';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
@@ -6,6 +7,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { fail, superValidate, withFiles } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { v4 as uuidv4 } from 'uuid';
 
 export const load = async (event) => {
 	const { session, user } = await event.locals.safeGetSession();
@@ -92,69 +94,65 @@ export const actions = {
 					avatarPath = form.data.avatarUrl.split('/').pop() ?? '';
 				}
 
-				const updateData: any = {};
-
-				// Handle display_name - set to null if empty
-				if (form.data.display_name !== undefined) {
-					updateData.display_name = form.data.display_name?.trim() || null;
-				}
-
-				// Handle description - set to null if empty
-				if (form.data.description !== undefined) {
-					updateData.description = form.data.description?.trim() || null;
-				}
-
-				// Handle avatar
-				if (form.data.avatar) {
-					const { path, error } = await uploadAvatar(form.data.avatar);
+				async function uploadVideo(
+								video: File,
+								folder: string = ''
+							): Promise<{ path: string; error: StorageError | null }> {
+								const fileExt = video.name.split('.').pop();
+								const fileName = `${userId}_${uuidv4()}.${fileExt}`;
+								const filePath = folder ? `${folder}/${fileName}` : fileName;
+				
+								const { data: videoFileData, error: videoFileError } = await event.locals.supabase.storage
+									.from('sign-name')
+									.upload(filePath, video);
+				
+								if (videoFileError) {
+									setFlash({ type: 'error', message: videoFileError.message }, event.cookies);
+									return { path: '', error: videoFileError };
+								}
+				
+								return { path: videoFileData.path, error: null };
+							}
+				
+							let videoPath = '';
+				if (form.data.sign_name instanceof File) {
+					console.log('Uploading video file:', form.data.sign_name.name, 'Size:', form.data.sign_name.size);
+					const { path, error } = await uploadVideo(form.data.sign_name);
 					if (error) {
+						console.error('Video upload error:', error);
 						return fail(500, withFiles({ message: error.message, form }));
 					}
-					updateData.avatar = path;
-				} else if (form.data.avatarUrl) {
-					updateData.avatar = form.data.avatarUrl.split('/').pop() ?? '';
-				} else {
-					// If no avatar file and no avatarUrl, set to null
-					updateData.avatar = null;
+					videoPath = path;
+					console.log('Video uploaded successfully to:', path);
+				} else if (typeof form.data.sign_name === 'string' && form.data.sign_name) {
+					// Extract path from existing URL
+					const url = form.data.sign_name;
+					const pathMatch = url.match(/\/sign-name\/(.+)$/);
+					videoPath = pathMatch ? pathMatch[1] : '';
 				}
 
-				// Handle age - set to null if empty
-				if (form.data.age !== undefined) {
-					updateData.age = form.data.age || null;
-				}
+				
+				
 
-				// Handle gender - set to null if empty
-				if (form.data.gender !== undefined) {
-					updateData.gender = form.data.gender?.trim() || null;
-				}
+				const { signNameUrl, ...data } = form.data;
+				const { error: supabaseError } = await event.locals.supabase
+				.from('profiles')
+				.update({
+					display_name : data.display_name,
+					description: data.description,
+					age: data.age,
+					profession: data.profession,
+					language: data.language, 
+					gender: data.gender,
+					cnum: data.cnum, 
+					sign_name: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/sign-name/` + videoPath,
+				})
+				.eq('id', userId);
 
-				// Handle language - set to null if empty
-				if (form.data.language !== undefined) {
-					updateData.language = form.data.language?.trim() || null;
-				}
-
-				// Handle profession - set to null if empty
-				if (form.data.profession !== undefined) {
-					updateData.profession = form.data.profession?.trim() || null;
-				}
-
-				// Handle cnum - set to null if empty
-				if (form.data.cnum !== undefined) {
-					updateData.cnum = form.data.cnum?.trim() || null;
-				}
-
-				// Only update if there are fields to update
-				if (Object.keys(updateData).length > 0) {
-					const { error: profileError } = await event.locals.supabase
-						.from('profiles')
-						.update(updateData)
-						.eq('id', userId);
-
-					if (profileError) {
-						setFlash({ type: 'error', message: profileError.message }, event.cookies);
-						return fail(500, withFiles({ message: profileError.message, form }));
-					}
-				}
+				if (supabaseError) {
+								setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+								return fail(500, withFiles({ message: supabaseError.message, form }));
+							}
 
 				setFlash({ type: 'success', message: 'Perfil atualizado com sucesso!' }, event.cookies);
 				return withFiles({ form });

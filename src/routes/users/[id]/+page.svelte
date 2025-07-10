@@ -63,6 +63,22 @@
 			{/if}
 		</Card.Content>
 	</Card.Root>
+	<Card.Root>
+			<Card.Header>
+				<Card.Title>Nome Gestual</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<!-- svelte-ignore a11y-media-has-caption -->
+				{#if data.userProfile.sign_name}
+					
+						
+						<video class="h-auto w-full rounded-2xl" controls playsinline>
+						<source src={data.userProfile.sign_name} type="video/mp4" />
+						Your browser does not support the video tag.
+				</video>
+				{/if}
+			</Card.Content>
+		</Card.Root>
 	<FeatureWrapper feature="guides">
 		<Card.Root>
 			<Card.Header>

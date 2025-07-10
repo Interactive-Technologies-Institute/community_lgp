@@ -12,23 +12,12 @@
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
-	import type { AnnotationArray, Parameter } from '@/types/types';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
-	export let parameter: Parameter[];
 
-	function getParameters(annotation: AnnotationArray) {
-		const parameterFilter: Parameter[] = [];
-		let flatAnnotation = Object.values(annotation || {}).flat();
-		parameter.filter((param: Parameter) => {
-			if (flatAnnotation.includes(param.id)) {
-				parameterFilter.push(param);
-			}
-		});
-		return parameterFilter;
-	}
+	
 
 	const form = superForm(data, {
 		validators: zodClient(createSignSchema),
@@ -39,16 +28,24 @@
 	const { form: formData, enhance, submitting } = form;
 
 	const video = fileProxy(form, 'video');
-	const video2 = fileProxy(form, 'context_video');
+	const descriptionVideo = fileProxy(form, 'description'); 
+	
 	let videoUrl: string | null | undefined = null;
-	let context_video_url: string | null | undefined = null;
+	let descriptionVideoUrl: string | null | undefined = null; 
 
 	// Handle file uploads
 	let fileInputRef1: HTMLInputElement | null = null;
+	let fileInputRef2: HTMLInputElement | null = null; // New ref for description video upload
 
 	const handleFileUpload1 = () => {
 		if (fileInputRef1) {
 			fileInputRef1.click();
+		}
+	};
+
+	const handleFileUpload2 = () => {
+		if (fileInputRef2) {
+			fileInputRef2.click();
 		}
 	};
 
@@ -66,11 +63,23 @@
 	}
 
 	$: {
-		if ($video2.length > 0) {
-			const file = $video2.item(0);
+		if ($descriptionVideo.length > 0) {
+			const file = $descriptionVideo.item(0);
 			const reader = new FileReader();
 			reader.onload = (e) => {
-				context_video_url = e.target?.result as string | null | undefined;
+				descriptionVideoUrl = e.target?.result as string | null | undefined;
+			};
+			reader.readAsDataURL(file!);
+		}
+	}
+
+	// New reactive block for description video
+	$: {
+		if ($descriptionVideo.length > 0) {
+			const file = $descriptionVideo.item(0);
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				descriptionVideoUrl = e.target?.result as string | null | undefined;
 			};
 			reader.readAsDataURL(file!);
 		}
@@ -109,19 +118,26 @@
 		videoUrl = $formData.videoUrl;
 	}
 
-	$: if (!$video2.length && $formData.context_video_url) {
-		context_video_url = $formData.context_video_url;
+	$: if (!$descriptionVideo.length && $formData.descriptionVideoUrl) {
+		descriptionVideoUrl = $formData.descriptionVideoUrl;
+	}
+
+	// New reactive block for description video URL
+	$: if (!$descriptionVideo.length && $formData.description) {
+		descriptionVideoUrl = $formData.description;
 	}
 
 	let useWebcam = false;
+	let useWebcamForDescription = false; // New state for description video mode
 	let recordedVideoFile: File | null = null;
+	let recordedDescriptionVideoFile: File | null = null; // New state for description video file
 
 	function handleRecorded(event: {
 		detail: { blob: Blob; file: File; fileName: string; mimeType: string };
 	}) {
 		const { file, blob, fileName, mimeType } = event.detail;
 
-		console.log('Webcam recording received:', { fileName, mimeType, size: file.size });
+		
 
 		// Store the recorded file
 		recordedVideoFile = file;
@@ -142,6 +158,33 @@
 
 		// Optional: Clear any existing videoUrl from form data to ensure the file takes precedence
 		$formData.videoUrl = '';
+	}
+
+	// New function to handle description video recording
+	function handleDescriptionRecorded(event: {
+		detail: { blob: Blob; file: File; fileName: string; mimeType: string };
+	}) {
+		const { file, blob, fileName, mimeType } = event.detail;
+
+		// Store the recorded file
+		recordedDescriptionVideoFile = file;
+
+		// Create a FileList-like object for the description video proxy
+		const dataTransfer = new DataTransfer();
+		dataTransfer.items.add(file);
+
+		// Set the file in the form
+		descriptionVideo.set(dataTransfer.files);
+
+		// Generate preview URL
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			descriptionVideoUrl = e.target?.result as string | null | undefined;
+		};
+		reader.readAsDataURL(file);
+
+		// Optional: Clear any existing description video URL from form data
+		$formData.descriptionVideoUrl = '';
 	}
 </script>
 
@@ -184,7 +227,6 @@
 						<!-- Button to upload a video -->
 						<!-- svelte-ignore a11y-label-has-associated-control -->
 						<div class="flex flex-col gap-2">
-							<label class="text-sm font-medium">Modo de Vídeo</label>
 							<div class="flex gap-2">
 								<Button
 									type="button"
@@ -230,10 +272,54 @@
 				</Form.Field>
 			</div>
 
+			
+
+			<!-- New Description Video Field -->
 			<Form.Field {form} name="description">
-				<Form.Control let:attrs>
-					<Form.Label>Descrição</Form.Label>
-					<Textarea {...attrs} bind:value={$formData.description} />
+				<Form.Control>
+					<Form.Label>Vídeo de Descrição</Form.Label>
+					<br />
+					<div class="flex flex-col gap-2">
+						<div class="flex gap-2">
+							<Button
+								type="button"
+								variant={useWebcamForDescription ? 'outline' : 'default'}
+								on:click={() => (useWebcamForDescription = false)}>Upload</Button
+							>
+							<Button
+								type="button"
+								variant={useWebcamForDescription ? 'default' : 'outline'}
+								on:click={() => (useWebcamForDescription = true)}>Webcam</Button
+							>
+						</div>
+					</div>
+
+					{#if !useWebcamForDescription}
+						<!-- File upload for description video -->
+						<Button on:click={handleFileUpload2}>Carregar vídeo de descrição</Button>
+						<input
+							type="file"
+							accept="video/mp4"
+							bind:files={$descriptionVideo}
+							bind:this={fileInputRef2}
+							class="hidden"
+						/>
+					{:else}
+						<!-- Webcam recording for description -->
+						<WebcamRecording on:recorded={handleDescriptionRecorded} />
+					{/if}
+					<Card.Root class="aspect-video overflow-hidden">
+						<div class="flex h-[400px] w-full items-center justify-center bg-muted">
+							<!-- svelte-ignore a11y-media-has-caption -->
+							{#if descriptionVideoUrl}
+								<video src={descriptionVideoUrl} controls class="h-full w-full object-contain" />
+							{:else}
+								<span class="text-sm text-muted-foreground">Nenhum vídeo de descrição carregado</span>
+							{/if}
+						</div>
+					</Card.Root>
+					<input hidden value={$formData.descriptionVideoUrl} name="description" />
+
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>

@@ -30,6 +30,7 @@ export type UserProfile = {
 	language: string | null;
 	profession: string | null;
 	cnum: string | null;
+	sign_name?: string | null;
 };
 
 export type UserType = {
@@ -165,6 +166,7 @@ export type Sign = {
 	main_sign_id?: string | null;
 	name: string;
 	theme: string[];
+	theme_flattened: string;
 	video: string;
 	description?: string | null;
 	context_video?: string | null;

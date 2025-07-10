@@ -18,7 +18,9 @@ export const updateUserProfileSchema = z.object({
 	gender: z.string().nullish(),
 	language: z.string().nullish(),
 	profession: z.string().nullish(),
-	cnum: z.string().nullish()
+	cnum: z.string().nullish(),
+	sign_name: z.union([z.string(), z.instanceof(File).optional()]),
+	signNameUrl: z.string().optional(),
 });
 
 export type UpdateUserProfileSchema = typeof updateUserProfileSchema;

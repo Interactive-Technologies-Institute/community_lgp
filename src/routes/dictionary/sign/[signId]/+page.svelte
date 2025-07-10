@@ -21,6 +21,7 @@
 	import CommentForm from './_components/comment-form.svelte';
 	import CommentDisplay from './_components/CommentDisplay.svelte';
 	import FavoriteButton from './_components/favorite-button.svelte';
+	import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 	export let data;
 	export let sign: Sign | null = data.sign;
 	let createdByUser = data.created_by_user;
@@ -70,7 +71,25 @@
 				Your browser does not support the video tag.
 			</video>
 
+			{#if !sign?.theme_flattened?.includes('Proposta')}
 			<AnnotationShowcase data={data.parameters} />
+			{/if}
+			
+
+			{#if sign?.description?.includes(PUBLIC_SUPABASE_URL) && sign?.theme_flattened?.includes('Proposta')}
+			<span class="text-md">Descrição da Proposta em Vídeo</span>
+			<video class="h-auto w-full rounded-2xl" controls playsinline>
+					<source src={sign?.description}  />
+					Your browser does not support the video tag.
+				</video>
+			
+			{/if}
+
+			{#if sign?.description}
+					<div class="text-lg">
+					{sign.description}
+				</div>
+			{/if}
 
 			{#if sign?.context_video}
 				<video class="h-auto w-full rounded-2xl" controls playsinline>
@@ -312,11 +331,7 @@
 				</Card.Content>
 			</Card.Root>
 
-			{#if sign?.description}
-				<div class="text-lg">
-					{sign.description}
-				</div>
-			{/if}
+			
 
 			{#if sign?.sentence}
 				<div class="text-lg">

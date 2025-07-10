@@ -69,18 +69,18 @@ export const actions = {
 				videoPath = form.data.video.split('/').pop() ?? '';
 			}
 
-			let contextVideoPath = '';
-			if (form.data.context_video instanceof File) {
-				const { path, error } = await uploadVideo(form.data.context_video, 'context');
+			let descriptionVideoPath = '';
+			if (form.data.description instanceof File) {
+				const { path, error } = await uploadVideo(form.data.description, 'description');
 				if (error) {
 					return fail(500, withFiles({ message: error.message, form }));
 				}
-				contextVideoPath = path;
-			} else if (typeof form.data.context_video === 'string') {
-				contextVideoPath = form.data.context_video.split('/').pop() ?? '';
+				descriptionVideoPath = path;
+			} else if (typeof form.data.description === 'string') {
+				descriptionVideoPath = form.data.description.split('/').pop() ?? '';
 			}
 
-			const { videoUrl, context_video_url, ...data } = form.data;
+			const { videoUrl, descriptionVideoUrl, ...data } = form.data;
 			const { data: insertedSign, error: supabaseError } = await event.locals.supabase
 				.from('signs')
 				.insert({
@@ -91,8 +91,8 @@ export const actions = {
 					created_at: new Date().toISOString(), // Set current timestamp
 					last_changed: new Date().toISOString(), // Set current timestamp
 					is_anotated: data.is_anotated ?? 0, // Default value if not provided
-					context_video:
-						PUBLIC_SUPABASE_URL + '/storage/v1/object/public/signs/' + contextVideoPath,
+					description:
+						PUBLIC_SUPABASE_URL + '/storage/v1/object/public/signs/' + descriptionVideoPath,
 				})
 				.select()
 				.single();
