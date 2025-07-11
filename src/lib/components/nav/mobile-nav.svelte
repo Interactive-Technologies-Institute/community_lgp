@@ -74,6 +74,22 @@
 						Map
 					</a>
 				</FeatureWrapper>
+				{#if role === 'admin' || role === 'moderator'}
+					<FeatureWrapper feature="annotate">
+						<a
+							href="/annotate"
+							on:click={() => (open = false)}
+							class={cn(
+								'transition-colors hover:text-foreground/80',
+								$page.url.pathname.startsWith('/dictionary')
+									? 'text-foreground'
+									: 'text-foreground/60'
+							)}
+						>
+							Anotação
+						</a>
+					</FeatureWrapper>
+				{/if}
 				<FeatureWrapper feature="dictionary">
 					<a
 						href="/dictionary"
@@ -102,22 +118,21 @@
 						Dicionário 1º Ciclo
 					</a>
 				</FeatureWrapper>
-				{#if role === 'admin' || role === 'moderator'}
-					<FeatureWrapper feature="annotate">
-						<a
-							href="/annotate"
-							on:click={() => (open = false)}
-							class={cn(
-								'transition-colors hover:text-foreground/80',
-								$page.url.pathname.startsWith('/dictionary')
-									? 'text-foreground'
-									: 'text-foreground/60'
-							)}
-						>
-							Anotação
-						</a>
-					</FeatureWrapper>
-				{/if}
+				
+				<FeatureWrapper feature="crowdsource">
+					<a
+						href="/crowdsource"
+						on:click={() => (open = false)}
+						class={cn(
+							'transition-colors hover:text-foreground/80',
+							$page.url.pathname.startsWith('/crowdsource')
+								? 'text-foreground'
+								: 'text-foreground/60'
+						)}
+					>
+						Participar
+					</a>
+				</FeatureWrapper>
 			</nav>
 		</ScrollArea>
 	</Sheet.Content>

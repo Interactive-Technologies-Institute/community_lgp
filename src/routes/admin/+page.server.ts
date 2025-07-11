@@ -48,6 +48,8 @@ export const load = async (event) => {
 				dictionary: features.includes('dictionary'),
 				fcdictionary: features.includes('fcdictionary'),
 				annotate: features.includes('annotate'),
+				crowdsource: features.includes('crowdsource'),
+				lgp4fun: features.includes('lgp4fun'),
 			},
 			zod(updateFeaturesSchema),
 			{
@@ -85,6 +87,8 @@ export const actions = {
 					{ id: 'dictionary', enabled: form.data.dictionary },
 					{ id: 'fcdictionary', enabled: form.data.fcdictionary },
 					{ id: 'annotate', enabled: form.data.annotate },
+					{ id: 'crowdsource', enabled: form.data.crowdsource},
+					{ id: 'lgp4fun', enabled: form.data.lgp4fun},
 				]);
 
 				if (supabaseError) {

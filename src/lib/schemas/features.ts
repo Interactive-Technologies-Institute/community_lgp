@@ -9,6 +9,7 @@ export const updateFeaturesSchema = z.object({
 	fcdictionary: z.boolean(),
 	annotate: z.boolean(),
 	crowdsource: z.boolean(),
+	lgp4fun: z.boolean(),
 });
 
 export type UpdateFeaturesSchema = typeof updateFeaturesSchema;

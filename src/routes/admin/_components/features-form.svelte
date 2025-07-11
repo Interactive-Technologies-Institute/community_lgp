@@ -153,6 +153,22 @@
 						<Switch includeInput {...attrs} bind:checked={$formData.crowdsource} />
 					</Form.Control>
 				</Form.Field>
+				<Form.Field
+					{form}
+					name="lgp4fun"
+					class="flex flex-row items-center justify-between rounded-lg border p-4"
+				>
+					<Form.Control let:attrs>
+						<div class="space-y-0.5">
+							<Form.Label>LGP4Fun</Form.Label>
+							<Form.Description>
+								Ative este módulo para permitir que todos os utilizadores possam interagir com o videojogo
+								LGP4Fun, para aprenderem Língua Gestual Portuguesa e Língua Portuguesa em conjunto.
+							</Form.Description>
+						</div>
+						<Switch includeInput {...attrs} bind:checked={$formData.lgp4fun} />
+					</Form.Control>
+				</Form.Field>
 			</div>
 		</Card.Content>
 		<Card.Footer>

@@ -71,17 +71,7 @@
 				</a>
 			</FeatureWrapper>
 		{/if}
-		<FeatureWrapper feature="crowdsource">
-			<a
-				href="/crowdsource"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Participar
-			</a>
-		</FeatureWrapper>
+		
 		<FeatureWrapper feature="dictionary">
 			<a
 				href="/dictionary"
@@ -93,7 +83,17 @@
 				Dicionário Geral
 			</a>
 		</FeatureWrapper>
-
+		<FeatureWrapper feature="crowdsource">
+			<a
+				href="/crowdsource"
+				class={cn(
+					'transition-colors hover:text-foreground/80',
+					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
+				)}
+			>
+				Participar
+			</a>
+		</FeatureWrapper>
 		<Separator class="mx-2" orientation="vertical" />
 
 		<FeatureWrapper feature="fcdictionary">
