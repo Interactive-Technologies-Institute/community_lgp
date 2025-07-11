@@ -35,7 +35,7 @@
 								</div>
 							</div>
 							<span class="my-1 text-sm text-gray-700 underline"
-								>Submetido a {dayjs(signs.created_at).format('DD/MM/YY')}</span
+								>Submetido a {dayjs(sign.created_at).format('DD/MM/YY')}</span
 							>
 						{/if}
 					</div>
