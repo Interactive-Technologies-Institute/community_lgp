@@ -26,7 +26,7 @@
 	export let sign: Sign | null = data.sign;
 	let createdByUser = data.created_by_user;
 	let annotatedByUser = data.annotated_by_user;
-	let posts: CSComment[] | null = data.posts;
+	$: posts = data.posts;
 	let mainSign = data.mainSign;
 	let signVariants = data.signVariants ?? [];
 
