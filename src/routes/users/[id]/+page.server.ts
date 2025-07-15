@@ -143,28 +143,28 @@ export const load = async (event) => {
 		};
 	}
 
-	async function getCommentsByUser(): Promise<CSComment[]> {
-		const {
-			data: comments,
-			count,
-			error: commentsError,
-		} = await event.locals.supabase
-			.from('crowdsource_comments')
-			.select('*', { count: 'exact' })
-			.eq('user_id', id)
-			.range(from, to);
+	async function getCommentsByUser() {
+	const {
+		data: comments,
+		count,
+		error: commentsError,
+	} = await event.locals.supabase
+		.from('crowdsource_comments')
+		.select(`*, signs!inner(id, name)`, { count: 'exact' })
+		.eq('user_id', id)
+		.range(from, to);
 
-		if (commentsError) {
-			const errorMessage = `Error fetching comments by user ID ${id}, please try again later.`;
-			setFlash({ type: 'error', message: commentsError }, event.cookies);
-			return error(500, errorMessage);
-		}
-
-		return {
-			comments: comments as CSComment[],
-			count: count ?? 0,
-		};
+	if (commentsError) {
+		const errorMessage = `Error fetching comments by user ID ${id}, please try again later.`;
+		setFlash({ type: 'error', message: commentsError }, event.cookies);
+		return error(500, errorMessage);
 	}
+
+	return {
+		comments: comments as CSComment[],
+		count: count ?? 0,
+	};
+}
 
 	async function getFavoritesByUser() {
 		const { data : favorites, count, error: favoritesError} = await event.locals.supabase 
@@ -185,6 +185,68 @@ export const load = async (event) => {
 		};
 	}
 
+	async function getLikesGivenToSign() {
+	const {
+		data: likes,
+		count,
+		error: likesError,
+	} = await event.locals.supabase
+		.from('signs_rating')
+		.select(`
+			id,
+			inserted_at,
+			sign_id,
+			value,
+			signs!inner(id, name)
+		`, { count: 'exact' })
+		.eq('user_id', id)
+		.eq('value', 1) 
+		.order('inserted_at', { ascending: false })
+		.range(from, to);
+
+	if (likesError) {
+		const errorMessage = `Error fetching likes given by user ID ${id}, please try again later.`;
+		setFlash({ type: 'error', message: likesError }, event.cookies);
+		return error(500, errorMessage);
+	}
+
+	return {
+		likes: likes || [],
+		count: count ?? 0,
+	};
+}
+
+	async function getDislikesGivenToSign() {
+	const {
+		data: dislikes,
+		count,
+		error: likesError,
+	} = await event.locals.supabase
+		.from('signs_rating')
+		.select(`
+			id,
+			inserted_at,
+			sign_id,
+			value,
+			signs!inner(id, name)
+		`, { count: 'exact' })
+		.eq('user_id', id)
+		.eq('value', -1) 
+		.order('inserted_at', { ascending: false })
+		.range(from, to);
+
+	if (likesError) {
+		const errorMessage = `Error fetching likes given by user ID ${id}, please try again later.`;
+		setFlash({ type: 'error', message: likesError }, event.cookies);
+		return error(500, errorMessage);
+	}
+
+	return {
+		dislikes: dislikes || [],
+		count: count ?? 0,
+	};
+}
+
 	
 
 	return {
@@ -196,5 +258,7 @@ export const load = async (event) => {
 		annotatedSigns: await getAnnotatedSignsByUser(),
 		comments: await getCommentsByUser(),
 		favorites: await getFavoritesByUser(),
+		likes: await getLikesGivenToSign(),
+		dislikes: await getDislikesGivenToSign(),
 	};
 };

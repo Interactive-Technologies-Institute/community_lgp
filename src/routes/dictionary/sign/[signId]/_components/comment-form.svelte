@@ -7,7 +7,6 @@
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 
-	export let signId: string;
 	export let parentCommentId: string | null = null; // New prop for reply functionality
 	export let onCancel: (() => void) | null = null; // Callback for canceling reply
 

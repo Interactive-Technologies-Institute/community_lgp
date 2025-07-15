@@ -10,7 +10,6 @@
 	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
-	console.log(data);
 </script>
 
 <MetaTags title="Detalhes do Utilizador" description="" />
@@ -190,4 +189,101 @@
 				{/if}
 			</Card.Content>
 		</Card.Root>
+		<Card.Root>
+	<Card.Header>
+		<Card.Title>Gostos Dados ({data.likes.count})</Card.Title>
+		<Card.Description>Lista de gestos que o utilizador gostou</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		{#if data.likes.likes && data.likes.likes.length > 0}
+			<div class="flex flex-wrap gap-4">
+				{#each data.likes.likes as like}
+					<div class="flex items-center gap-2">
+						<Button href="/dictionary/sign/{like.sign_id}" variant="outline" class="max-w-full">
+							<span class="truncate">{like.signs.name}</span>
+							<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+						</Button>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<p class="text-sm text-muted-foreground">O utilizador não deu gosto a nenhum gesto.</p>
+		{/if}
+	</Card.Content>
+</Card.Root>
+<Card.Root>
+	<Card.Header>
+		<Card.Title>Não-Gostos Dados ({data.dislikes.count})</Card.Title>
+		<Card.Description>Lista de gestos que o utilizador não gostou</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		{#if data.dislikes.dislikes && data.dislikes.dislikes.length > 0}
+			<div class="flex flex-wrap gap-4">
+				{#each data.dislikes.dislikes as dislike}
+					<div class="flex items-center gap-2">
+						<Button href="/dictionary/sign/{dislike.sign_id}" variant="outline" class="max-w-full">
+							<span class="truncate">{dislike.signs.name}</span>
+							<SquareArrowOutUpRight class="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+						</Button>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<p class="text-sm text-muted-foreground">O utilizador não desgostou nenhum gesto.</p>
+		{/if}
+	</Card.Content>
+</Card.Root>
+	<Card.Root>
+	<Card.Header>
+		<Card.Title>Comentários ({data.comments.count})</Card.Title>
+		<Card.Description>Lista de comentários feitos pelo utilizador</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		{#if data.comments.comments && data.comments.comments.length > 0}
+			<div class="space-y-4">
+				{#each data.comments.comments as comment}
+					<div class="border rounded-lg p-4">
+						<div class="flex items-center justify-between mb-2">
+							<div class="flex items-center gap-2">
+								<span class="text-sm font-medium">Comentário no gesto:</span>
+								<Button href="/dictionary/sign/{comment.signs.id}" variant="link" class="p-0 h-auto text-sm">
+									{comment.signs.name}
+									<SquareArrowOutUpRight class="ml-1 h-3 w-3" />
+								</Button>
+							</div>
+							<span class="text-sm text-muted-foreground">
+								{new Date(comment.created_at).toLocaleDateString('pt-PT', {
+									year: 'numeric',
+									month: 'long',
+									day: 'numeric',
+									hour: '2-digit',
+									minute: '2-digit'
+								})}
+							</span>
+						</div>
+						
+						<!-- Display either text content or video content -->
+						{#if comment.content_text}
+							<div class="prose prose-sm max-w-none">
+								<p class="text-sm">{comment.content_text}</p>
+							</div>
+						{:else if comment.content_video}
+							<div class="mt-2">
+								<!-- svelte-ignore a11y-media-has-caption -->
+								<video class="h-auto w-full max-w-md rounded-lg" controls playsinline>
+									<source src={comment.content_video} type="video/mp4" />
+									Your browser does not support the video tag.
+								</video>
+							</div>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<p class="text-sm text-muted-foreground">O utilizador não fez nenhum comentário.</p>
+		{/if}
+	</Card.Content>
+</Card.Root>
+
+
 </div>

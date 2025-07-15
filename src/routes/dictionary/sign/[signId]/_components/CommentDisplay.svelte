@@ -91,7 +91,7 @@
 	<!-- Reply Form -->
 	{#if showReplyForm}
 		<div class="ml-4 mt-4">
-			<CommentForm {signId} parentCommentId={comment.id?.toString()} onCancel={hideReplyForm} />
+			<CommentForm parentCommentId={comment.id?.toString()} onCancel={hideReplyForm} />
 		</div>
 	{/if}
 

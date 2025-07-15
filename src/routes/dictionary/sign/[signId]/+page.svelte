@@ -348,7 +348,7 @@
 			<div class="space-y-6">
 				{#if posts && posts.length > 0}
 					<div class="mb-8 flex justify-center">
-						<CommentForm signId={sign?.id?.toString() || ''} />
+						<CommentForm />
 					</div>
 					{#each posts as comment}
 						<CommentDisplay {comment} signId={sign?.id?.toString() || ''} {formatCommentDate} />
@@ -359,7 +359,7 @@
 						<p class="text-sm text-gray-400">Seja o primeiro a partilhar a sua opinião!</p>
 					</div>
 					<div class="flex justify-center">
-						<CommentForm signId={sign?.id?.toString() || ''} />
+						<CommentForm />
 					</div>
 				{/if}
 			</div>
