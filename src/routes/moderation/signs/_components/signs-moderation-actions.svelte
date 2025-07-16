@@ -67,7 +67,7 @@
 			<input type="hidden" name="status" value="approved" />
 			<Form.Field {form} name="comment">
 				<Form.Control let:attrs>
-					<Form.Label>Comment</Form.Label>
+					<Form.Label>Comentário</Form.Label>
 					<Textarea {...attrs} bind:value={$formData.comment} />
 				</Form.Control>
 				<Form.Description>Deixe um comentário para o autor da proposta.</Form.Description>
@@ -75,8 +75,8 @@
 			</Form.Field>
 		</form>
 		<Dialog.Footer>
-			<Button variant="secondary" on:click={() => (openApproveDialog = false)}>Cancel</Button>
-			<Button type="submit" on:click={form.submit}>Approve</Button>
+			<Button variant="secondary" on:click={() => (openApproveDialog = false)}>Cancelar</Button>
+			<Button type="submit" on:click={form.submit}>Aprovar</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
@@ -93,7 +93,7 @@
 			<input type="hidden" name="status" value="rejected" />
 			<Form.Field {form} name="comment">
 				<Form.Control let:attrs>
-					<Form.Label>Comment</Form.Label>
+					<Form.Label>Comentar</Form.Label>
 					<Textarea {...attrs} bind:value={$formData.comment} />
 				</Form.Control>
 				<Form.Description>Deixe um comentário para o autor da proposta.</Form.Description>
@@ -101,7 +101,7 @@
 			</Form.Field>
 		</form>
 		<Dialog.Footer>
-			<Button variant="secondary" on:click={() => (openRejectDialog = false)}>Cancel</Button>
+			<Button variant="secondary" on:click={() => (openRejectDialog = false)}>Cancelar</Button>
 			<Button type="submit" on:click={form.submit}>Rejeitar</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
@@ -121,7 +121,7 @@
 			<input type="hidden" name="status" value="changes_requested" />
 			<Form.Field {form} name="comment">
 				<Form.Control let:attrs>
-					<Form.Label>Comment</Form.Label>
+					<Form.Label>Comentar</Form.Label>
 					<Textarea {...attrs} bind:value={$formData.comment} />
 				</Form.Control>
 				<Form.Description>Deixe um comentário para o autor da proposta.</Form.Description>
@@ -130,7 +130,7 @@
 		</form>
 		<Dialog.Footer>
 			<Button variant="secondary" on:click={() => (openRequestChangesDialog = false)}>
-				Cancel
+				Cancelar
 			</Button>
 			<Button type="submit" on:click={form.submit}>Requisitar mudanças.</Button>
 		</Dialog.Footer>
