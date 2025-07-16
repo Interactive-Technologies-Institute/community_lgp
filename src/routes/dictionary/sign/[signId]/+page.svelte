@@ -316,17 +316,20 @@
 				</div>
 			</Card.Root>
 			<FavoriteButton count={data.numberOfFavorites ?? 0} data={data.toggleSignFavoriteForm} />
+			{#if sign.theme_flattened.includes('Proposta')}
 			<Card.Root class="rounded-2xl p-0">
 				<Card.Content class="mt-5">
+					
 					<SignRatingButton
 						data={data.toggleRatingForm}
 						currentValue={data.currentRating}
 						positiveNumber={data.numberOfPositives ?? 0}
 						negativeNumber={data.numberOfNegatives ?? 0}
 					/>
+					
 				</Card.Content>
 			</Card.Root>
-
+			{/if}
 			
 
 			{#if sign?.sentence}
