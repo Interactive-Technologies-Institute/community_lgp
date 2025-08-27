@@ -94,21 +94,20 @@ export const actions = {
 					return fail(500, { message: supabaseError.message, form });
 				}
 
-				if(form.data.status === 'approved'){
-					const{ error: supabaseError} = await event.locals.supabase 
-					.from('signs')
-					.update({
-						theme: ["Proposta - Aceite"],
-						theme_flattened: "Proposta - Aceite"
-					})
-					.eq('id', form.data.ref_id);
+				if (form.data.status === 'approved') {
+					const { error: supabaseError } = await event.locals.supabase
+						.from('signs')
+						.update({
+							theme: ['Proposta - Aceite'],
+							theme_flattened: 'Proposta - Aceite',
+						})
+						.eq('id', form.data.ref_id);
 
 					if (supabaseError) {
-					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-					return fail(500, { message: supabaseError.message, form });
+						setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+						return fail(500, { message: supabaseError.message, form });
+					}
 				}
-				}
-
 
 				return { form };
 			}

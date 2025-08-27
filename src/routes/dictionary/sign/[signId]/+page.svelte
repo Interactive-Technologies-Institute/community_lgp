@@ -64,7 +64,7 @@
 	/>
 
 	<!-- svelte-ignore a11y-media-has-caption -->
-	<div class="mx-72 flex justify-start gap-8 py-10">
+	<div class="container mx-auto flex justify-start gap-8 py-10">
 		<div class="flex w-[600px] flex-col space-y-4">
 			<video class="h-auto w-full rounded-2xl" controls playsinline>
 				<source src={sign?.video} type="video/mp4" />
@@ -72,20 +72,16 @@
 			</video>
 
 			{#if !sign?.theme_flattened?.includes('Proposta')}
-			<AnnotationShowcase data={data.parameters} />
+				<AnnotationShowcase data={data.parameters} />
 			{/if}
-			
 
 			{#if sign?.description?.includes(PUBLIC_SUPABASE_URL) && sign?.theme_flattened?.includes('Proposta')}
-			<span class="text-md">Descrição da Proposta em Vídeo</span>
-			<video class="h-auto w-full rounded-2xl" controls playsinline>
-					<source src={sign?.description}  />
+				<span class="text-md">Descrição da Proposta em Vídeo</span>
+				<video class="h-auto w-full rounded-2xl" controls playsinline>
+					<source src={sign?.description} />
 					Your browser does not support the video tag.
 				</video>
-			
 			{/if}
-
-			
 
 			{#if sign?.context_video}
 				<video class="h-auto w-full rounded-2xl" controls playsinline>
@@ -317,20 +313,17 @@
 			</Card.Root>
 			<FavoriteButton count={data.numberOfFavorites ?? 0} data={data.toggleSignFavoriteForm} />
 			{#if sign.theme_flattened.includes('Proposta')}
-			<Card.Root class="rounded-2xl p-0">
-				<Card.Content class="mt-5">
-					
-					<SignRatingButton
-						data={data.toggleRatingForm}
-						currentValue={data.currentRating}
-						positiveNumber={data.numberOfPositives ?? 0}
-						negativeNumber={data.numberOfNegatives ?? 0}
-					/>
-					
-				</Card.Content>
-			</Card.Root>
+				<Card.Root class="rounded-2xl p-0">
+					<Card.Content class="mt-5">
+						<SignRatingButton
+							data={data.toggleRatingForm}
+							currentValue={data.currentRating}
+							positiveNumber={data.numberOfPositives ?? 0}
+							negativeNumber={data.numberOfNegatives ?? 0}
+						/>
+					</Card.Content>
+				</Card.Root>
 			{/if}
-			
 
 			{#if sign?.sentence}
 				<div class="text-lg">

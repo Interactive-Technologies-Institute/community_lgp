@@ -71,7 +71,7 @@
 				</a>
 			</FeatureWrapper>
 		{/if}
-		
+
 		<FeatureWrapper feature="dictionary">
 			<a
 				href="/dictionary"

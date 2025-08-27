@@ -27,7 +27,7 @@
 		<!--Game-->
 		<iframe
 			bind:this={iframeRef}
-			src="/game/lgp4fun"
+			src="/game/lgp4fun/index.html"
 			frameborder="0"
 			title="LGP4Fun"
 			height="500"

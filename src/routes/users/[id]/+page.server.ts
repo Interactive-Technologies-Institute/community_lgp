@@ -144,110 +144,118 @@ export const load = async (event) => {
 	}
 
 	async function getCommentsByUser() {
-	const {
-		data: comments,
-		count,
-		error: commentsError,
-	} = await event.locals.supabase
-		.from('crowdsource_comments')
-		.select(`*, signs!inner(id, name)`, { count: 'exact' })
-		.eq('user_id', id)
-		.range(from, to);
+		const {
+			data: comments,
+			count,
+			error: commentsError,
+		} = await event.locals.supabase
+			.from('crowdsource_comments')
+			.select(`*, signs!inner(id, name)`, { count: 'exact' })
+			.eq('user_id', id)
+			.range(from, to);
 
-	if (commentsError) {
-		const errorMessage = `Error fetching comments by user ID ${id}, please try again later.`;
-		setFlash({ type: 'error', message: commentsError }, event.cookies);
-		return error(500, errorMessage);
+		if (commentsError) {
+			const errorMessage = `Error fetching comments by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: commentsError }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return {
+			comments: comments as CSComment[],
+			count: count ?? 0,
+		};
 	}
-
-	return {
-		comments: comments as CSComment[],
-		count: count ?? 0,
-	};
-}
 
 	async function getFavoritesByUser() {
-		const { data : favorites, count, error: favoritesError} = await event.locals.supabase 
+		const {
+			data: favorites,
+			count,
+			error: favoritesError,
+		} = await event.locals.supabase
 			.from('signs_favorite_view')
-			.select('*', { count : 'exact' })
+			.select('*', { count: 'exact' })
 			.eq('user_id', id)
-			.range(from,to);
+			.range(from, to);
 
-		if(favoritesError){
-		const errorMessage = `Error fetching favorites by user ID ${id}, please try again later.`
-		setFlash({ type: 'error', message: favoritesError }, event.cookies);
-		return error(500, errorMessage);
-	}
+		if (favoritesError) {
+			const errorMessage = `Error fetching favorites by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: favoritesError }, event.cookies);
+			return error(500, errorMessage);
+		}
 
-	return {
+		return {
 			favorites: favorites,
 			count: count ?? 0,
 		};
 	}
 
 	async function getLikesGivenToSign() {
-	const {
-		data: likes,
-		count,
-		error: likesError,
-	} = await event.locals.supabase
-		.from('signs_rating')
-		.select(`
+		const {
+			data: likes,
+			count,
+			error: likesError,
+		} = await event.locals.supabase
+			.from('signs_rating')
+			.select(
+				`
 			id,
 			inserted_at,
 			sign_id,
 			value,
 			signs!inner(id, name)
-		`, { count: 'exact' })
-		.eq('user_id', id)
-		.eq('value', 1) 
-		.order('inserted_at', { ascending: false })
-		.range(from, to);
+		`,
+				{ count: 'exact' }
+			)
+			.eq('user_id', id)
+			.eq('value', 1)
+			.order('inserted_at', { ascending: false })
+			.range(from, to);
 
-	if (likesError) {
-		const errorMessage = `Error fetching likes given by user ID ${id}, please try again later.`;
-		setFlash({ type: 'error', message: likesError }, event.cookies);
-		return error(500, errorMessage);
+		if (likesError) {
+			const errorMessage = `Error fetching likes given by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: likesError }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return {
+			likes: likes || [],
+			count: count ?? 0,
+		};
 	}
-
-	return {
-		likes: likes || [],
-		count: count ?? 0,
-	};
-}
 
 	async function getDislikesGivenToSign() {
-	const {
-		data: dislikes,
-		count,
-		error: likesError,
-	} = await event.locals.supabase
-		.from('signs_rating')
-		.select(`
+		const {
+			data: dislikes,
+			count,
+			error: likesError,
+		} = await event.locals.supabase
+			.from('signs_rating')
+			.select(
+				`
 			id,
 			inserted_at,
 			sign_id,
 			value,
 			signs!inner(id, name)
-		`, { count: 'exact' })
-		.eq('user_id', id)
-		.eq('value', -1) 
-		.order('inserted_at', { ascending: false })
-		.range(from, to);
+		`,
+				{ count: 'exact' }
+			)
+			.eq('user_id', id)
+			.eq('value', -1)
+			.order('inserted_at', { ascending: false })
+			.range(from, to);
 
-	if (likesError) {
-		const errorMessage = `Error fetching likes given by user ID ${id}, please try again later.`;
-		setFlash({ type: 'error', message: likesError }, event.cookies);
-		return error(500, errorMessage);
+		if (likesError) {
+			const errorMessage = `Error fetching likes given by user ID ${id}, please try again later.`;
+			setFlash({ type: 'error', message: likesError }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return {
+			dislikes: dislikes || [],
+			count: count ?? 0,
+		};
 	}
-
-	return {
-		dislikes: dislikes || [],
-		count: count ?? 0,
-	};
-}
-
-	
 
 	return {
 		userProfile: await getUserProfile(),

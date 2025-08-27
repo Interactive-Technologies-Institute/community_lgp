@@ -95,28 +95,33 @@ export const actions = {
 				}
 
 				async function uploadVideo(
-								video: File,
-								folder: string = ''
-							): Promise<{ path: string; error: StorageError | null }> {
-								const fileExt = video.name.split('.').pop();
-								const fileName = `${userId}_${uuidv4()}.${fileExt}`;
-								const filePath = folder ? `${folder}/${fileName}` : fileName;
-				
-								const { data: videoFileData, error: videoFileError } = await event.locals.supabase.storage
-									.from('sign-name')
-									.upload(filePath, video);
-				
-								if (videoFileError) {
-									setFlash({ type: 'error', message: videoFileError.message }, event.cookies);
-									return { path: '', error: videoFileError };
-								}
-				
-								return { path: videoFileData.path, error: null };
-							}
-				
-							let videoPath = '';
+					video: File,
+					folder: string = ''
+				): Promise<{ path: string; error: StorageError | null }> {
+					const fileExt = video.name.split('.').pop();
+					const fileName = `${userId}_${uuidv4()}.${fileExt}`;
+					const filePath = folder ? `${folder}/${fileName}` : fileName;
+
+					const { data: videoFileData, error: videoFileError } = await event.locals.supabase.storage
+						.from('sign-name')
+						.upload(filePath, video);
+
+					if (videoFileError) {
+						setFlash({ type: 'error', message: videoFileError.message }, event.cookies);
+						return { path: '', error: videoFileError };
+					}
+
+					return { path: videoFileData.path, error: null };
+				}
+
+				let videoPath = '';
 				if (form.data.sign_name instanceof File) {
-					console.log('Uploading video file:', form.data.sign_name.name, 'Size:', form.data.sign_name.size);
+					console.log(
+						'Uploading video file:',
+						form.data.sign_name.name,
+						'Size:',
+						form.data.sign_name.size
+					);
 					const { path, error } = await uploadVideo(form.data.sign_name);
 					if (error) {
 						console.error('Video upload error:', error);
@@ -131,28 +136,25 @@ export const actions = {
 					videoPath = pathMatch ? pathMatch[1] : '';
 				}
 
-				
-				
-
 				const { signNameUrl, ...data } = form.data;
 				const { error: supabaseError } = await event.locals.supabase
-				.from('profiles')
-				.update({
-					display_name : data.display_name,
-					description: data.description,
-					age: data.age,
-					profession: data.profession,
-					language: data.language, 
-					gender: data.gender,
-					cnum: data.cnum, 
-					sign_name: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/sign-name/` + videoPath,
-				})
-				.eq('id', userId);
+					.from('profiles')
+					.update({
+						display_name: data.display_name,
+						description: data.description,
+						age: data.age,
+						profession: data.profession,
+						language: data.language,
+						gender: data.gender,
+						cnum: data.cnum,
+						sign_name: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/sign-name/` + videoPath,
+					})
+					.eq('id', userId);
 
 				if (supabaseError) {
-								setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-								return fail(500, withFiles({ message: supabaseError.message, form }));
-							}
+					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
+					return fail(500, withFiles({ message: supabaseError.message, form }));
+				}
 
 				setFlash({ type: 'success', message: 'Perfil atualizado com sucesso!' }, event.cookies);
 				return withFiles({ form });

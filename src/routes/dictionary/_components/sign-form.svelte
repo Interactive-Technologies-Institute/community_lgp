@@ -18,8 +18,6 @@
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
 
-	
-
 	const form = superForm(data, {
 		validators: zodClient(createSignSchema),
 		taintedMessage: true,
@@ -29,10 +27,10 @@
 	const { form: formData, enhance, submitting } = form;
 
 	const video = fileProxy(form, 'video');
-	const descriptionVideo = fileProxy(form, 'description'); 
-	
+	const descriptionVideo = fileProxy(form, 'description');
+
 	let videoUrl: string | null | undefined = null;
-	let descriptionVideoUrl: string | null | undefined = null; 
+	let descriptionVideoUrl: string | null | undefined = null;
 
 	// Handle file uploads
 	let fileInputRef1: HTMLInputElement | null = null;
@@ -138,8 +136,6 @@
 	}) {
 		const { file, blob, fileName, mimeType } = event.detail;
 
-		
-
 		// Store the recorded file
 		recordedVideoFile = file;
 
@@ -189,7 +185,6 @@
 	}
 
 	onMount(() => {
-		
 		$formData.theme = ['Proposta - Em Discussão'];
 		$formData.is_anotated = 0;
 	});
@@ -218,7 +213,7 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
-			
+
 			<div class="flex">
 				<Form.Field {form} name="video">
 					<Form.Control>
@@ -272,8 +267,6 @@
 				</Form.Field>
 			</div>
 
-			
-
 			<!-- New Description Video Field -->
 			<Form.Field {form} name="description">
 				<Form.Control>
@@ -314,7 +307,9 @@
 							{#if descriptionVideoUrl}
 								<video src={descriptionVideoUrl} controls class="h-full w-full object-contain" />
 							{:else}
-								<span class="text-sm text-muted-foreground">Nenhum vídeo de descrição carregado</span>
+								<span class="text-sm text-muted-foreground"
+									>Nenhum vídeo de descrição carregado</span
+								>
 							{/if}
 						</div>
 					</Card.Root>

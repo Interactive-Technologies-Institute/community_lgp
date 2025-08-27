@@ -87,8 +87,8 @@ export const actions = {
 					{ id: 'dictionary', enabled: form.data.dictionary },
 					{ id: 'fcdictionary', enabled: form.data.fcdictionary },
 					{ id: 'annotate', enabled: form.data.annotate },
-					{ id: 'crowdsource', enabled: form.data.crowdsource},
-					{ id: 'lgp4fun', enabled: form.data.lgp4fun},
+					{ id: 'crowdsource', enabled: form.data.crowdsource },
+					{ id: 'lgp4fun', enabled: form.data.lgp4fun },
 				]);
 
 				if (supabaseError) {

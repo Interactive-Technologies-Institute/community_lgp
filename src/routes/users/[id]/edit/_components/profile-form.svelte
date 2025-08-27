@@ -23,13 +23,13 @@
 		dataType: 'json',
 		onSubmit: ({ formData, cancel }) => {
 			console.log('Form submitting with data:', Object.fromEntries(formData.entries()));
-			
+
 			// Ensure the file is properly attached before submission
 			if (currentVideoFile && !formData.has('sign_name')) {
 				console.log('Re-adding video file to form data');
 				formData.append('sign_name', currentVideoFile);
 			}
-			
+
 			// Debug what's actually being sent
 			console.log('FormData entries:', [...formData.entries()]);
 		},
@@ -38,7 +38,7 @@
 		},
 		onError: ({ result }) => {
 			console.error('Form submission error:', result);
-		}
+		},
 	});
 
 	const { form: formData, enhance, submitting, isTainted, tainted } = form;
@@ -62,12 +62,12 @@
 	// Phone number consent
 	let accept = !!(data.data.cnum && data.data.cnum.trim());
 	$: if (!accept) {
-		$formData.cnum = ""; 
+		$formData.cnum = '';
 	}
 
 	// Video handling
 	const sign_name = fileProxy(form, 'sign_name');
-	let signNameUrl: string | null | undefined = $formData.signNameUrl; 
+	let signNameUrl: string | null | undefined = $formData.signNameUrl;
 	let fileInputRef1: HTMLInputElement | null = null;
 	let currentVideoFile: File | null = null;
 
@@ -104,7 +104,7 @@
 		detail: { blob: Blob; file: File; fileName: string; mimeType: string };
 	}) {
 		const { file, blob, fileName, mimeType } = event.detail;
-		
+
 		console.log('Recorded video:', fileName, 'Size:', file.size, 'Type:', mimeType);
 
 		// Store the file reference
@@ -155,7 +155,7 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="description">
 					<Form.Control let:attrs>
 						<Form.Label>Descrição</Form.Label>
@@ -167,7 +167,7 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="avatar">
 					<Form.Control let:attrs>
 						<Form.Label>Avatar</Form.Label>
@@ -182,12 +182,12 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="sign_name">
 					<Form.Control>
 						<Form.Label>Video</Form.Label>
 						<br />
-						
+
 						<div class="flex flex-col gap-2">
 							<div class="flex gap-2">
 								<Button
@@ -229,15 +229,10 @@
 							<WebcamRecording on:recorded={handleRecorded} />
 							<!-- Hidden input for webcam recorded file -->
 							{#if currentVideoFile}
-								<input
-									type="file"
-									class="hidden"
-									name="sign_name"
-									bind:files={$sign_name}
-								/>
+								<input type="file" class="hidden" name="sign_name" bind:files={$sign_name} />
 							{/if}
 						{/if}
-						
+
 						<Card.Root class="aspect-video overflow-hidden">
 							<div class="flex h-[400px] w-full items-center justify-center bg-muted">
 								{#if signNameUrl}
@@ -248,12 +243,12 @@
 								{/if}
 							</div>
 						</Card.Root>
-						
+
 						<input type="hidden" value={$formData.signNameUrl || ''} name="signNameUrl" />
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="age">
 					<Form.Control let:attrs>
 						<Form.Label>Idade</Form.Label>
@@ -261,7 +256,7 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="gender">
 					<Form.Control let:attrs>
 						<Form.Label>Género</Form.Label>
@@ -269,7 +264,7 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="language">
 					<Form.Control let:attrs>
 						<Form.Label>Língua de Comunicação</Form.Label>
@@ -281,7 +276,7 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="profession">
 					<Form.Control let:attrs>
 						<Form.Label>Profissão</Form.Label>
@@ -293,7 +288,7 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-				
+
 				<Form.Field {form} name="cnum">
 					<Form.Control let:attrs>
 						<Form.Label>Número de telemóvel</Form.Label>
@@ -306,10 +301,13 @@
 						<div class="mt-4">
 							<div class="flex items-center space-x-2">
 								<Checkbox id="terms" bind:checked={accept} />
-								<Label for="terms">Partilhar número de telemóvel com moderadores e administradores</Label>
+								<Label for="terms"
+									>Partilhar número de telemóvel com moderadores e administradores</Label
+								>
 							</div>
 							<p class="mt-2 text-sm text-muted-foreground">
-								Ao clicar nesta caixa, concorda em partilhar o seu número de telemóvel com moderadores e administradores.
+								Ao clicar nesta caixa, concorda em partilhar o seu número de telemóvel com
+								moderadores e administradores.
 							</p>
 						</div>
 						<Form.FieldErrors />

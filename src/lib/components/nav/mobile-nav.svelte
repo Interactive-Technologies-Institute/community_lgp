@@ -118,7 +118,7 @@
 						Dicionário 1º Ciclo
 					</a>
 				</FeatureWrapper>
-				
+
 				<FeatureWrapper feature="crowdsource">
 					<a
 						href="/crowdsource"

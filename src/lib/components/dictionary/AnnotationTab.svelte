@@ -43,7 +43,7 @@
 		</Tabs.Trigger>
 	</Popover.Trigger>
 
-	<Popover.Content class="w-[1000px] overflow-auto p-4">
+	<Popover.Content class="flex w-[1000px] flex-auto overflow-auto p-4">
 		<ScrollArea class="h-[700px] overflow-auto px-2">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-4">
 				{#each filterByType(value) as parent}

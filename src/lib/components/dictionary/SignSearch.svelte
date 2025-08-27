@@ -1,27 +1,19 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Popover from '$lib/components/ui/popover';
 	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
-
-	export let parameters: Parameter[] = [];
-	export let signs: Sign[] = [];
-	const page = queryParam('page', stringQueryParam());
 	import { createEventDispatcher } from 'svelte';
 	import { afterNavigate, pushState } from '$app/navigation';
 	import { Search } from 'lucide-svelte';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { queryParam } from 'sveltekit-search-params';
-	const dispatch = createEventDispatcher();
-
-	import { ChevronUp } from 'lucide-svelte';
-	import { ChevronDown } from 'lucide-svelte';
 	import AnnotationTab from './AnnotationTab.svelte';
 
-	let searchResults: Sign[] = [];
+	export let parameters: Parameter[] = [];
+	export let signs: Sign[] = [];
 
+	const page = queryParam('page', stringQueryParam());
+	const dispatch = createEventDispatcher();
 	const annotation = queryParam('annotation', arrayQueryParam());
 
 	let searchArray = Array(300).fill(0);
@@ -41,14 +33,6 @@
 		});
 		searchSigns();
 	}
-
-	const tabs: Record<string, { displayName: string; annotationKey: keyof AnnotationArray }> = {
-		configuracao: { displayName: 'Configuração', annotationKey: 'configuration' },
-		localizacao: { displayName: 'Localização', annotationKey: 'location' },
-		orientacao: { displayName: 'Orientação', annotationKey: 'orientation' },
-		movimento: { displayName: 'Movimento', annotationKey: 'movement' },
-		'expressao facial': { displayName: 'Expressão Facial', annotationKey: 'expression' },
-	};
 
 	async function searchSigns() {
 		try {

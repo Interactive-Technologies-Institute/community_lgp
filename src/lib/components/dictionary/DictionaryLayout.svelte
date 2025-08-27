@@ -73,7 +73,9 @@
 </script>
 
 <div>
-	<div class="container fixed flex flex-row justify-between px-[290px] py-5">
+	<div
+		class="container mx-auto flex flex-auto flex-row items-center justify-center overflow-x-auto py-5"
+	>
 		<SearchBar
 			{data}
 			{signs}
