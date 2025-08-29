@@ -82,15 +82,6 @@
 				z-index: 1;
 			}
 		</style>
-		<!-- This script creates a bridge between Godot and the parent Svelte page -->
-		<script>
-			window.onLetterSelected = function (letter) {
-				// Forward the message to the parent (Svelte) page if this is in an iframe
-				if (window !== window.parent) {
-					window.parent.onLetterSelected(letter);
-				}
-			};
-		</script>
 	</head>
 	<body>
 		<canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
@@ -98,20 +89,20 @@
 		<noscript> Your browser does not support JavaScript. </noscript>
 
 		<div id="status">
-			<img id="status-splash" src="/game/lgp4fun.png" alt="" />
+			<img id="status-splash" src="/game/index.png" alt="" />
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
 		<script src="/game/pako_inflate.min.js"></script>
-		<script src="/game/lgp4fun.js"></script>
+		<script src="/game/index.js"></script>
 		<script>
 			const GODOT_CONFIG = {
 				args: [],
 				canvasResizePolicy: 2,
-				ensureCrossOriginIsolationHeaders: true,
-				executable: '/game/lgp4fun',
+				ensureCrossOriginIsolationHeaders: false,
+				executable: '/game/index',
 				experimentalVK: false,
-				fileSizes: { '/game/lgp4fun.pck': 4085200, '/game/lgp4fun.wasm': 43016933 },
+				fileSizes: { '/game/index.pck': 14911904, '/game/index.wasm': 35376909 },
 				focusCanvas: true,
 				gdextensionLibs: [],
 			};

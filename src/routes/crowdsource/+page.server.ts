@@ -14,17 +14,13 @@ export const load = async (event) => {
 	let countSign = 0;
 
 	async function getSignsWithStats(): Promise<Sign[]> {
-		let query = event.locals.supabase
-			.from('signs_summary')
-			.select('*', { count: 'exact' });
+		let query = event.locals.supabase.from('signs_summary').select('*', { count: 'exact' });
 
-		
-		
 		const specificThemes = [
-				'Proposta - Em Discussão',
-				'Proposta - Aceite',
-				'Proposta - Adicionada',
-			];
+			'Proposta - Em Discussão',
+			'Proposta - Aceite',
+			'Proposta - Adicionada',
+		];
 
 		query.overlaps('theme', specificThemes);
 
@@ -37,7 +33,6 @@ export const load = async (event) => {
 			if (validSelectedThemes.length > 0) {
 				query = query.overlaps('theme', validSelectedThemes);
 			}
-
 		}
 
 		if (sortBy === 'total_comments') {
@@ -67,10 +62,6 @@ export const load = async (event) => {
 				'Proposta - Aceite',
 				'Proposta - Adicionada',
 			];
-
-			
-
-			
 		}
 
 		totalPages = count ? Math.ceil(count / perPage) : 0;
@@ -128,8 +119,6 @@ export const load = async (event) => {
 				}
 			});
 		}
-
-		
 
 		return themeMap;
 	}
