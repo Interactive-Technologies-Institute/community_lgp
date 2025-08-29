@@ -165,9 +165,9 @@
 			<div class="flex flex-col items-start justify-start">
 				<h1 class="mb-4 text-start text-3xl font-bold text-primary md:text-5xl">LGP4Fun</h1>
 				<p class="text-md md:text-l mb-4 text-start text-muted-foreground">
-					Participe na discussão de novos termos para o Dicionário. Simplesmente grave o seu vídeo a
-					partir da sua webcam ou câmara do telemóvel, comente outras propostas via texto ou vídeo e
-					vote em novos termos.
+					O LGP4Fun é um jogo interativo de primeiro ciclo, para dois jogadores,
+					com o objetivo de aprendizagem bilingue LGP-Português,
+					com 4 níveis divertidíssimos! Ideal para as salas de aula!
 				</p>
 			</div>
 			<img

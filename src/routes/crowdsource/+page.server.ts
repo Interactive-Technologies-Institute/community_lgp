@@ -16,8 +16,29 @@ export const load = async (event) => {
 	async function getSignsWithStats(): Promise<Sign[]> {
 		let query = event.locals.supabase
 			.from('signs_summary')
-			.select('*', { count: 'exact' })
-			.range((page - 1) * perPage, page * perPage - 1);
+			.select('*', { count: 'exact' });
+
+		
+		
+		const specificThemes = [
+				'Proposta - Em Discussão',
+				'Proposta - Aceite',
+				'Proposta - Adicionada',
+			];
+
+		query.overlaps('theme', specificThemes);
+
+		if (search) {
+			query = query.ilike('name', `%${search}`);
+		}
+
+		if (theme && theme.length) {
+			const validSelectedThemes = theme.filter((t) => specificThemes.includes(t));
+			if (validSelectedThemes.length > 0) {
+				query = query.overlaps('theme', validSelectedThemes);
+			}
+
+		}
 
 		if (sortBy === 'total_comments') {
 			query = query.order('total_comments', { ascending: sortOrder === 'asc' });
@@ -29,26 +50,7 @@ export const load = async (event) => {
 			query = query.order('theme', { ascending: true }).order('created_at', { ascending: false });
 		}
 
-		if (search) {
-			query = query.ilike('name', `%${search}`);
-		}
-
-		if (theme && theme.length) {
-			const specificThemes = [
-				'Proposta - Em Discussão',
-				'Proposta - Aceite',
-				'Proposta - Adicionada',
-			];
-
-			const specificSelected = theme.filter((t) => specificThemes.includes(t));
-			const hasOutros = theme.includes('Outros');
-
-			if (specificSelected.length > 0 && !hasOutros) {
-				query = query.overlaps('theme', specificSelected);
-			} else if (!specificSelected.length && hasOutros) {
-			} else if (specificSelected.length > 0 && hasOutros) {
-			}
-		}
+		query = query.range((page - 1) * perPage, page * perPage - 1);
 
 		const { data: signs, count, error: signsError } = await query;
 
@@ -66,25 +68,9 @@ export const load = async (event) => {
 				'Proposta - Adicionada',
 			];
 
-			const specificSelected = theme.filter((t) => specificThemes.includes(t));
-			const hasOutros = theme.includes('Outros');
+			
 
-			if (hasOutros && specificSelected.length === 0) {
-				filteredSigns = signs.filter((sign) => {
-					if (!sign.theme || !Array.isArray(sign.theme)) return true;
-					return !sign.theme.some((t) => specificThemes.includes(t));
-				});
-			} else if (hasOutros && specificSelected.length > 0) {
-				filteredSigns = signs.filter((sign) => {
-					if (!sign.theme || !Array.isArray(sign.theme)) return hasOutros;
-
-					const hasSpecificTheme = sign.theme.some((t) => specificSelected.includes(t));
-
-					const hasOnlyOtherThemes = !sign.theme.some((t) => specificThemes.includes(t));
-
-					return hasSpecificTheme || (hasOutros && hasOnlyOtherThemes);
-				});
-			}
+			
 		}
 
 		totalPages = count ? Math.ceil(count / perPage) : 0;
@@ -131,7 +117,6 @@ export const load = async (event) => {
 		];
 
 		const themeMap = new Map<string, number>();
-		let outrosCount = 0;
 
 		if (themes) {
 			themes.forEach((theme) => {
@@ -139,16 +124,12 @@ export const load = async (event) => {
 				if (count !== null && themeName !== null) {
 					if (specificThemes.includes(themeName)) {
 						themeMap.set(themeName, count);
-					} else {
-						outrosCount += count;
 					}
 				}
 			});
 		}
 
-		if (outrosCount > 0) {
-			themeMap.set('Outros', outrosCount);
-		}
+		
 
 		return themeMap;
 	}
