@@ -17,7 +17,7 @@
 		});
 	}
 
-	console.log(data);
+	
 </script>
 
 <div class="mt-2 flex flex-wrap gap-2">

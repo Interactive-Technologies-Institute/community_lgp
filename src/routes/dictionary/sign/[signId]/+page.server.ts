@@ -11,7 +11,7 @@ import { toggleSignFavoriteSchema } from '../../../../lib/schemas/sign';
 export const load = async (event) => {
 	const { user } = await event.locals.safeGetSession();
 
-	async function getSignById(id: string): Promise<Sign> {
+	async function getSignById(id: number): Promise<Sign> {
 		const { data: sign, error: signError } = await event.locals.supabase
 			.from('signs')
 			.select('*')

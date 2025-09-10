@@ -100,6 +100,7 @@
 		{/if}
 		<div class="pb-4">
 			<DictionaryView
+				{data}
 				{signs}
 				themes={isFiltering ? allThemes : initialThemes}
 				{parameters}

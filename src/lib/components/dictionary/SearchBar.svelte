@@ -67,6 +67,7 @@
 			{#if selectedTab === 'gesto'}
 				<div class="ml-1 flex flex-row">
 					<SignSearch
+						{data}
 						{parameters}
 						{signs}
 						on:updateSigns={(e) => {
@@ -95,7 +96,9 @@
 						}}
 					/>
 					<div class="px-2">
-						<Button on:click={doSearch} class="btn btn-primary">
+						<Button data-umami-event="Procura por texto"
+						data-umami-event-data={JSON.stringify({username: data.user?.user_metadata?.display_name, texto: localSearch})}
+						 on:click={doSearch} class="btn btn-primary">
 							<Search />
 						</Button>
 					</div>

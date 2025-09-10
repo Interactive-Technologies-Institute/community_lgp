@@ -3,6 +3,7 @@
 	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
 	import Badge from '@/components/ui/badge/badge.svelte';
 	import AnnotationGrid from './AnnotationGrid.svelte';
+	export let data;
 	export let signs: Sign[];
 	export let theme;
 	export let parameter: Parameter[];
@@ -28,7 +29,10 @@
 						<source src={sign.video} type="video/mp4" />
 						Your browser does not support the video tag.
 					</video>
-					<a href="/dictionary/sign/{sign.id}" class="pt-4 text-lg">{sign.name}</a>
+					<a href="/dictionary/sign/{sign.id}" 
+					data-umami-event="Clicar na entrada do gesto"
+					data-umami-event-data={JSON.stringify({username: data.user?.user_metadata?.display_name, gesto: sign.name})}
+					 class="pt-4 text-lg">{sign.name}</a>
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each sign.theme as t}
 							{#if t}

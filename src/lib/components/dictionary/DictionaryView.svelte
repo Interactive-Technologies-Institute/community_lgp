@@ -6,7 +6,7 @@
 	import DictionaryGrid from './DictionaryGrid.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import type { Sign } from '@/types/types';
-
+    export let data;
 	export let isFiltering: boolean = false;
 	// Only include themes that actually have matching signs
 	$: visibleThemes =
@@ -19,7 +19,7 @@
 		<p class="py-8 text-center text-gray-500">Nenhum resultado encontrado.</p>
 	{:else if isFiltering}
 		<!-- When filtering, show all results in one grid -->
-		<DictionaryGrid {signs} theme={null} parameter={parameters} />
+		<DictionaryGrid {data} {signs} theme={null} parameter={parameters} />
 	{:else}
 		<!-- When not filtering, group by themes -->
 		{#each visibleThemes as theme}

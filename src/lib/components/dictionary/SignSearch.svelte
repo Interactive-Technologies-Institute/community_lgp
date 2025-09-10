@@ -8,7 +8,9 @@
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { queryParam } from 'sveltekit-search-params';
 	import AnnotationTab from './AnnotationTab.svelte';
+	import { stringify } from 'postcss';
 
+	export let data;
 	export let parameters: Parameter[] = [];
 	export let signs: Sign[] = [];
 
@@ -137,7 +139,8 @@
 </Tabs.Root>
 <!-- Search Button Inside Each Popover (Optional) -->
 <div class="flex justify-end px-2">
-	<Button
+	<Button data-umami-event="Procura por gesto"
+			data-umami-event-data={JSON.stringify({username: data.user?.user_metadata?.display_name, selectedParemeters: selectedParameterIds})}.
 		on:click={() => {
 			applySearch();
 		}}><Search /></Button
