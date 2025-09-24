@@ -83,17 +83,7 @@
 				Dicionário Geral
 			</a>
 		</FeatureWrapper>
-		<FeatureWrapper feature="crowdsource">
-			<a
-				href="/crowdsource"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Participar
-			</a>
-		</FeatureWrapper>
+		
 		<Separator class="mx-2" orientation="vertical" />
 
 		<FeatureWrapper feature="fcdictionary">
@@ -117,6 +107,20 @@
 				)}
 			>
 				LGP4Fun
+			</a>
+		</FeatureWrapper>
+
+		<Separator class="mx-2" orientation="vertical" />
+
+		<FeatureWrapper feature="crowdsource">
+			<a
+				href="/crowdsource"
+				class={cn(
+					'transition-colors hover:text-foreground/80',
+					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
+				)}
+			>
+				Participação em Comunidade
 			</a>
 		</FeatureWrapper>
 	</nav>

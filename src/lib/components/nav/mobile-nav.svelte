@@ -130,7 +130,7 @@
 								: 'text-foreground/60'
 						)}
 					>
-						Participar
+						Participação em Comunidade
 					</a>
 				</FeatureWrapper>
 			</nav>

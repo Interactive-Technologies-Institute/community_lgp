@@ -4,6 +4,7 @@
 	import { Button } from '@/components/ui/button';
 	import SignDeleteDialog from '../_components/sign-delete-dialog.svelte';
 	import AnnotateForm from '../_components/annotate-form.svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 	export let data;
 
 	let openDeleteDialog = false;
@@ -13,6 +14,12 @@
 	title="Entrada de Gesto"
 	subtitle="Altere esta entrada de gesto, complementando a sua anotação."
 />
+
+<MetaTags
+	title={`Anotação ${data.sign.name}`}
+	description="Altere esta entrada de gesto, complementando a sua anotação."
+/>
+
 <div class="container mx-auto mb-20">
 	<AnnotateForm data={data.updateForm} user={data.user} parameter={data.parameters} />
 

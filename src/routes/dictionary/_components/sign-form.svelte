@@ -214,13 +214,14 @@
 				</Form.Control>
 			</Form.Field>
 
-			<div class="flex">
+			<div class="flex gap-64">
 				<Form.Field {form} name="video">
 					<Form.Control>
 						<Form.Label>Video</Form.Label>
 						<br />
 						<!-- Button to upload a video -->
 						<!-- svelte-ignore a11y-label-has-associated-control -->
+						
 						<div class="flex flex-col gap-2">
 							<div class="flex gap-2">
 								<Button
@@ -251,7 +252,7 @@
 							<WebcamRecording on:recorded={handleRecorded} />
 						{/if}
 						<Card.Root class="aspect-video overflow-hidden">
-							<div class="flex h-[400px] w-full items-center justify-center bg-muted">
+							<div class="relative flex h-[400px] w-full items-center justify-center bg-muted">
 								<!-- svelte-ignore a11y-media-has-caption -->
 								{#if videoUrl}
 									<video src={videoUrl} controls class="h-full w-full object-contain" />
@@ -265,9 +266,8 @@
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>
-			</div>
 
-			<!-- New Description Video Field -->
+				<!-- New Description Video Field -->
 			<Form.Field {form} name="description">
 				<Form.Control>
 					<Form.Label>Vídeo de Descrição</Form.Label>
@@ -318,6 +318,9 @@
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>
+			</div>
+
+			
 
 			<Form.Field {form} name="district">
 				<Form.Control let:attrs>

@@ -58,13 +58,13 @@
 </script>
 
 <MetaTags
-	title="Participar"
+	title="Participação em Comunidade"
 	description="Proponha uma nova entrada de gesto, consulte as propostas que estão a decorrer e participe na deliberação
 de novos termos."
 />
 
 <PageHeader
-	title="Participar"
+	title="Participação em Comunidade"
 	subtitle="Proponha uma nova entrada de gesto, consulte as propostas que estão a decorrer e participe na deliberação
 de novos termos."
 />

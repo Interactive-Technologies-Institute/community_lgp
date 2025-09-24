@@ -3,6 +3,7 @@
 	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
 	import Badge from '@/components/ui/badge/badge.svelte';
 	import AnnotationGrid from './AnnotationGrid.svelte';
+	import { goto } from '$app/navigation';
 	export let data;
 	export let signs: Sign[];
 	export let theme;
@@ -22,9 +23,11 @@
 
 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
 	{#each signs as sign (sign.id)}
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<Card.Root class="rounded-2xl">
-			<Card.Content class="flex items-center justify-center p-3">
-				<div class="flex w-full flex-col">
+			<Card.Content class="flex items-center justify-center p-3" on:click={() => goto(`dictionary/sign/${sign.id}`)}>
+				<div class="flex w-full flex-col" on:click={() => goto(`dictionary/sign/${sign.id}`)}>
 					<video class="aspect-video w-full rounded-xl" controls muted>
 						<source src={sign.video} type="video/mp4" />
 						Your browser does not support the video tag.
