@@ -27,11 +27,11 @@
 		<!--Game-->
 		<iframe
 			bind:this={iframeRef}
-			src="/game/lgp4fun/index.html"
+			src="/game/index.html"
 			frameborder="0"
 			title="LGP4Fun"
-			height="500"
-			width="888.89"
+			height="540"
+			width="960"
 			on:load={() => {
 				gameLoaded = true;
 			}}
