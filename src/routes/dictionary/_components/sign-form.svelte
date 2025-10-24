@@ -3,6 +3,7 @@
 	import * as Card from '@/components/ui/card';
 	import * as Form from '@/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '@/components/ui/input';
 	import { TagInput } from '@/components/ui/tag-input';
 	import { Textarea } from '@/components/ui/textarea';
@@ -13,7 +14,8 @@
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import DistrictMap from '../sign/[signId]/_components/DistrictMap.svelte';
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
@@ -34,7 +36,11 @@
 
 	// Handle file uploads
 	let fileInputRef1: HTMLInputElement | null = null;
-	let fileInputRef2: HTMLInputElement | null = null; // New ref for description video upload
+	let fileInputRef2: HTMLInputElement | null = null;
+
+	// Confirmation dialog state
+	let confirmationOpen = false;
+	let formElement: HTMLFormElement;
 
 	const handleFileUpload1 = () => {
 		if (fileInputRef1) {
@@ -61,18 +67,6 @@
 		}
 	}
 
-	$: {
-		if ($descriptionVideo.length > 0) {
-			const file = $descriptionVideo.item(0);
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				descriptionVideoUrl = e.target?.result as string | null | undefined;
-			};
-			reader.readAsDataURL(file!);
-		}
-	}
-
-	// New reactive block for description video
 	$: {
 		if ($descriptionVideo.length > 0) {
 			const file = $descriptionVideo.item(0);
@@ -121,67 +115,75 @@
 		descriptionVideoUrl = $formData.descriptionVideoUrl;
 	}
 
-	// New reactive block for description video URL
 	$: if (!$descriptionVideo.length && $formData.description) {
 		descriptionVideoUrl = $formData.description;
 	}
 
 	let useWebcam = false;
-	let useWebcamForDescription = false; // New state for description video mode
+	let useWebcamForDescription = false;
 	let recordedVideoFile: File | null = null;
-	let recordedDescriptionVideoFile: File | null = null; // New state for description video file
+	let recordedDescriptionVideoFile: File | null = null;
 
 	function handleRecorded(event: {
 		detail: { blob: Blob; file: File; fileName: string; mimeType: string };
 	}) {
 		const { file, blob, fileName, mimeType } = event.detail;
 
-		// Store the recorded file
 		recordedVideoFile = file;
 
-		// Create a FileList-like object for the video proxy
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(file);
 
-		// Set the file in the form
 		video.set(dataTransfer.files);
 
-		// Generate preview URL
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			videoUrl = e.target?.result as string | null | undefined;
 		};
 		reader.readAsDataURL(file);
 
-		// Optional: Clear any existing videoUrl from form data to ensure the file takes precedence
 		$formData.videoUrl = '';
 	}
 
-	// New function to handle description video recording
 	function handleDescriptionRecorded(event: {
 		detail: { blob: Blob; file: File; fileName: string; mimeType: string };
 	}) {
 		const { file, blob, fileName, mimeType } = event.detail;
 
-		// Store the recorded file
 		recordedDescriptionVideoFile = file;
 
-		// Create a FileList-like object for the description video proxy
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(file);
 
-		// Set the file in the form
 		descriptionVideo.set(dataTransfer.files);
 
-		// Generate preview URL
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			descriptionVideoUrl = e.target?.result as string | null | undefined;
 		};
 		reader.readAsDataURL(file);
 
-		// Optional: Clear any existing description video URL from form data
 		$formData.descriptionVideoUrl = '';
+	}
+
+	async function handleSubmitClick(e: Event) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		// Scroll to top
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+		
+		// Wait a bit for scroll to complete
+		await tick();
+		
+		confirmationOpen = true;
+	}
+
+	function confirmSubmit() {
+		confirmationOpen = false;
+		if (formElement) {
+			formElement.requestSubmit();
+		}
 	}
 
 	onMount(() => {
@@ -191,6 +193,7 @@
 </script>
 
 <form
+	bind:this={formElement}
 	method="POST"
 	action="?/update"
 	enctype="multipart/form-data"
@@ -218,8 +221,6 @@
 					<Form.Control>
 						<Form.Label>Video</Form.Label>
 						<br />
-						<!-- Button to upload a video -->
-						<!-- svelte-ignore a11y-label-has-associated-control -->
 						
 						<div class="flex flex-col gap-2">
 							<div class="flex gap-2">
@@ -237,8 +238,7 @@
 						</div>
 
 						{#if !useWebcam}
-							<!-- File upload -->
-							<Button on:click={handleFileUpload1}>Carregar vídeo</Button>
+							<Button type="button" on:click={handleFileUpload1}>Carregar vídeo</Button>
 							<input
 								type="file"
 								accept="video/mp4"
@@ -247,12 +247,10 @@
 								class="hidden"
 							/>
 						{:else}
-							<!-- Webcam recording -->
 							<WebcamRecording on:recorded={handleRecorded} />
 						{/if}
 						<Card.Root class="aspect-video overflow-hidden">
 							<div class="relative flex h-[400px] w-full items-center justify-center bg-muted">
-								<!-- svelte-ignore a11y-media-has-caption -->
 								{#if videoUrl}
 									<video src={videoUrl} controls class="h-full w-full object-contain" />
 								{:else}
@@ -266,60 +264,54 @@
 					</Form.Control>
 				</Form.Field>
 
-				<!-- New Description Video Field -->
-			<Form.Field {form} name="description">
-				<Form.Control>
-					<Form.Label>Vídeo de Descrição</Form.Label>
-					<br />
-					<div class="flex flex-col gap-2">
-						<div class="flex gap-2">
-							<Button
-								type="button"
-								variant={useWebcamForDescription ? 'outline' : 'default'}
-								on:click={() => (useWebcamForDescription = false)}>Upload</Button
-							>
-							<Button
-								type="button"
-								variant={useWebcamForDescription ? 'default' : 'outline'}
-								on:click={() => (useWebcamForDescription = true)}>Webcam</Button
-							>
-						</div>
-					</div>
-
-					{#if !useWebcamForDescription}
-						<!-- File upload for description video -->
-						<Button on:click={handleFileUpload2}>Carregar vídeo de descrição</Button>
-						<input
-							type="file"
-							accept="video/mp4"
-							bind:files={$descriptionVideo}
-							bind:this={fileInputRef2}
-							class="hidden"
-						/>
-					{:else}
-						<!-- Webcam recording for description -->
-						<WebcamRecording on:recorded={handleDescriptionRecorded} />
-					{/if}
-					<Card.Root class="aspect-video overflow-hidden">
-						<div class="flex h-[400px] w-full items-center justify-center bg-muted">
-							<!-- svelte-ignore a11y-media-has-caption -->
-							{#if descriptionVideoUrl}
-								<video src={descriptionVideoUrl} controls class="h-full w-full object-contain" />
-							{:else}
-								<span class="text-sm text-muted-foreground"
-									>Nenhum vídeo de descrição carregado</span
+				<Form.Field {form} name="description">
+					<Form.Control>
+						<Form.Label>Vídeo de Descrição</Form.Label>
+						<br />
+						<div class="flex flex-col gap-2">
+							<div class="flex gap-2">
+								<Button
+									type="button"
+									variant={useWebcamForDescription ? 'outline' : 'default'}
+									on:click={() => (useWebcamForDescription = false)}>Upload</Button
 								>
-							{/if}
+								<Button
+									type="button"
+									variant={useWebcamForDescription ? 'default' : 'outline'}
+									on:click={() => (useWebcamForDescription = true)}>Webcam</Button
+								>
+							</div>
 						</div>
-					</Card.Root>
-					<input hidden value={$formData.descriptionVideoUrl} name="description" />
 
-					<Form.FieldErrors />
-				</Form.Control>
-			</Form.Field>
+						{#if !useWebcamForDescription}
+							<Button type="button" on:click={handleFileUpload2}>Carregar vídeo de descrição</Button>
+							<input
+								type="file"
+								accept="video/mp4"
+								bind:files={$descriptionVideo}
+								bind:this={fileInputRef2}
+								class="hidden"
+							/>
+						{:else}
+							<WebcamRecording on:recorded={handleDescriptionRecorded} />
+						{/if}
+						<Card.Root class="aspect-video overflow-hidden">
+							<div class="flex h-[400px] w-full items-center justify-center bg-muted">
+								{#if descriptionVideoUrl}
+									<video src={descriptionVideoUrl} controls class="h-full w-full object-contain" />
+								{:else}
+									<span class="text-sm text-muted-foreground"
+										>Nenhum vídeo de descrição carregado</span
+									>
+								{/if}
+							</div>
+						</Card.Root>
+						<input hidden value={$formData.descriptionVideoUrl} name="description" />
+
+						<Form.FieldErrors />
+					</Form.Control>
+				</Form.Field>
 			</div>
-
-			
 
 			<Form.Field {form} name="district">
 				<Form.Control let:attrs>
@@ -373,8 +365,13 @@
 	<div
 		class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>
-		<Button variant="outline" on:click={() => goto('/annotate/')}>Cancelar</Button>
-		<Button type="submit" disabled={$submitting}>
+		<Button variant="outline" type="button" on:click={() => goto('/crowdsource/')}>Cancelar</Button>
+		
+		<Button 
+			type="button" 
+			disabled={$submitting}
+			on:click={handleSubmitClick}
+		>
 			{#if $submitting}
 				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 			{/if}
@@ -382,3 +379,75 @@
 		</Button>
 	</div>
 </form>
+
+<!-- Confirmation Dialog -->
+<Dialog.Root bind:open={confirmationOpen}>
+	<Dialog.Content class="max-w-2xl">
+		<Dialog.Header>
+			<Dialog.Title class="text-2xl">Confirmar Submissão</Dialog.Title>
+			<Dialog.Description>
+				Por favor, reveja os detalhes antes de submeter o gesto.
+			</Dialog.Description>
+		</Dialog.Header>
+		
+		<div class="space-y-6 py-4">
+			<div class="space-y-4">
+				<div class="rounded-lg border p-4">
+					<h4 class="mb-2 font-semibold text-foreground">Nome do Gesto</h4>
+					<p class="text-sm text-muted-foreground">{$formData.name || 'Não especificado'}</p>
+				</div>
+
+				<div class="rounded-lg border p-4">
+					<h4 class="mb-2 font-semibold text-foreground">Distrito / Região</h4>
+					<p class="text-sm text-muted-foreground">{district?.label || 'Geral'}</p> <DistrictMap district={district?.label ?? 'Geral'} />
+				</div>
+
+				<div class="grid grid-cols-2 gap-4">
+					<div class="rounded-lg border p-4">
+						<h4 class="mb-2 font-semibold text-foreground">Vídeo Principal</h4>
+						{#if videoUrl}
+							<div class="relative aspect-video overflow-hidden rounded-md bg-muted">
+								<video src={videoUrl} controls class="h-full w-full object-contain" />
+							</div>
+							<p class="mt-2 text-xs text-green-600">✓ Gravado</p>
+						{:else}
+							<p class="text-sm text-red-600">✗ Não Gravado</p>
+						{/if}
+					</div>
+
+					<div class="rounded-lg border p-4">
+						<h4 class="mb-2 font-semibold text-foreground">Vídeo de Descrição</h4>
+						{#if descriptionVideoUrl}
+							<div class="relative aspect-video overflow-hidden rounded-md bg-muted">
+								<video src={descriptionVideoUrl} controls class="h-full w-full object-contain" />
+							</div>
+							<p class="mt-2 text-xs text-green-600">✓ Gravado</p>
+						{:else}
+							<p class="text-sm text-muted-foreground">Opcional - Não Gravado</p>
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<Dialog.Footer class="gap-2">
+			<Button 
+				variant="outline"
+				type="button"
+				on:click={() => confirmationOpen = false}
+			>
+				Voltar e Editar
+			</Button>
+			<Button 
+				type="button"
+				on:click={confirmSubmit}
+				disabled={$submitting}
+			>
+				{#if $submitting}
+					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+				{/if}
+				Confirmar e Submeter
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
