@@ -21,7 +21,7 @@ export const load = async (event) => {
 			.range((page - 1) * perPage, page * perPage - 1);
 
 		if (search) {
-			query = query.ilike('name', `%${search}%`).order('name', { ascending: true });
+			query = query.ilike('name_unaccented', `%${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 		}
 
 		if (theme && theme.length) {
