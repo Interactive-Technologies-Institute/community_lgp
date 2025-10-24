@@ -33,8 +33,6 @@
 						Your browser does not support the video tag.
 					</video>
 					<a href="/dictionary/sign/{sign.id}" 
-					data-umami-event="Clicar na entrada do gesto"
-					data-umami-event-data={JSON.stringify({username: data.user?.user_metadata?.display_name, gesto: sign.name})}
 					 class="pt-4 text-lg">{sign.name}</a>
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each sign.theme as t}

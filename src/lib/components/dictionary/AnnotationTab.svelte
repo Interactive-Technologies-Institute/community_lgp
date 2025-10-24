@@ -29,6 +29,8 @@
 	function getChildren(code: string) {
 		return parameters.filter((p) => p.parent === code);
 	}
+
+	
 </script>
 
 <Popover.Root>
@@ -50,7 +52,7 @@
 					{#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? '') || ['2ebj'].includes(parent.code?.toLowerCase() ?? ''))}
 						<Card.Root
 							class="{selectedParameterIds.includes(parent.id)
-								? 'border-2 border-blue-500'
+								? 'border-4 border-solid border-blue-500'
 								: 'border'} bg-white"
 						>
 							<Card.Content class="flex flex-col items-center gap-2 p-4">
@@ -81,7 +83,7 @@
 													class="flex cursor-pointer flex-col items-center justify-center rounded-md text-center text-xs {selectedParameterIds.includes(
 														child.id
 													)
-														? 'border-2 border-blue-500'
+														? 'border-4 border-solid border-blue-500'
 														: ''}"
 													on:click={() => toggleParameter(child)}
 												>

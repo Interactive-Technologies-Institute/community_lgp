@@ -91,7 +91,7 @@
 			}}
 		/>
 	</div>
-	<div class="pt-[90px]">
+	<div>
 		{#if isLoading}
 			<p class="loading">Loading...</p>
 		{/if}

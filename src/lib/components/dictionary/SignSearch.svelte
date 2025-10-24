@@ -9,6 +9,7 @@
 	import { queryParam } from 'sveltekit-search-params';
 	import AnnotationTab from './AnnotationTab.svelte';
 	import { stringify } from 'postcss';
+	import AnnotationShowcase from './AnnotationShowcase.svelte';
 
 	export let data;
 	export let parameters: Parameter[] = [];
@@ -22,11 +23,16 @@
 	let selectedParameterIds: number[] = [];
 	let isFiltering = false;
 	let hasLoadedFromAnnotation = false;
+
+	let committedParameterIds: number[] = [];
+	$: committedParameters = getParametersById(committedParameterIds);
+
 	$: currentPageNumber = parseInt($page ?? '') || 1;
 
 	$: if ($annotation && $annotation.length > 0 && !isFiltering && !hasLoadedFromAnnotation) {
 		hasLoadedFromAnnotation = true;
 		selectedParameterIds = $annotation.map((id: string) => parseInt(id));
+		committedParameterIds = [...selectedParameterIds];
 		searchArray = Array(300).fill(0);
 		selectedParameterIds.forEach((id) => {
 			if (id > 0 && id <= 300) {
@@ -34,6 +40,10 @@
 			}
 		});
 		searchSigns();
+	}
+
+	function getParametersById(ids: number[]) {
+    	return parameters.filter((param) => ids.includes(param.id))
 	}
 
 	async function searchSigns() {
@@ -88,12 +98,9 @@
 	})();
 
 	function applySearch() {
-		// Set URL param
+		committedParameterIds = [...selectedParameterIds];
 		annotation.set(selectedParameterIds.map(String));
-
 		page.set('1');
-
-		// Trigger actual search
 		searchSigns();
 	}
 	let openTab = '';
@@ -105,9 +112,14 @@
 	$: if (isFiltering && $page) {
 		searchSigns();
 	}
+
+	$: type = window.location.pathname.split('/')[1] === 'dictionary';
 </script>
 
-<Tabs.Root value="configuracao">
+<div class="flex-col">
+<div class="flex">
+{#if type}
+	<Tabs.Root value="configuracao">
 	<Tabs.List>
 		<AnnotationTab
 			{parameters}
@@ -137,12 +149,63 @@
 		></AnnotationTab>
 	</Tabs.List>
 </Tabs.Root>
-<!-- Search Button Inside Each Popover (Optional) -->
+{:else}
+		<Tabs.Root value="localizacao">
+	<Tabs.List>
+		<AnnotationTab
+			{parameters}
+			value="localizacao"
+			displayName="Localização"
+			bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="configuracao"
+			displayName="Configuração"
+			bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="orientacao"
+			displayName="Orientação"
+			bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab {parameters} value="movimento" displayName="Movimento" bind:selectedParameterIds
+		></AnnotationTab>
+		<AnnotationTab
+			{parameters}
+			value="expressao facial"
+			displayName="Expressão Facial"
+			bind:selectedParameterIds
+		></AnnotationTab>
+	</Tabs.List>
+</Tabs.Root>
+{/if}
+
+
 <div class="flex justify-end px-2">
-	<Button data-umami-event="Procura por gesto"
-			data-umami-event-data={JSON.stringify({username: data.user?.user_metadata?.display_name, selectedParemeters: selectedParameterIds})}.
+	<Button
 		on:click={() => {
 			applySearch();
 		}}><Search /></Button
 	>
+</div>
+</div>
+
+<div class="flex items-center justify-center gap-2">
+	<AnnotationShowcase data={committedParameters}/>
+	{#if committedParameterIds.length > 0}
+		<Button
+			variant="outline"
+			on:click={() => {
+				committedParameterIds = [];
+				selectedParameterIds = [];
+				annotation.set([]);
+			}}
+		>
+			Limpar pesquisa
+		</Button>
+	{/if}
+</div>
+
 </div>

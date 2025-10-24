@@ -96,8 +96,7 @@
 						}}
 					/>
 					<div class="px-2">
-						<Button data-umami-event="Procura por texto"
-						data-umami-event-data={JSON.stringify({username: data.user?.user_metadata?.display_name, texto: localSearch})}
+						<Button
 						 on:click={doSearch} class="btn btn-primary">
 							<Search />
 						</Button>

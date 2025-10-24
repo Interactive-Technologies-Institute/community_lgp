@@ -199,16 +199,15 @@
 >
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Entrada</Card.Title>
 			<Card.Description>
-				Para criar uma nova entrada de gesto, adicione o nome da entrada, adicione temas e carregue
-				um vídeo do gesto. Para carregar o vídeo, deve ser via carregamento de ficheiro.
+				Para propor um novo gesto, atribua-lhe um nome, adicione os seus temas, e carregue
+				um vídeo do gesto. Para carregar o vídeo, pode ser via gravação ou carregamento de vídeo.
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
 			<Form.Field {form} name="name">
 				<Form.Control let:attrs>
-					<Form.Label>Nome</Form.Label>
+					<Form.Label>Nome do gesto</Form.Label>
 					<Input {...attrs} bind:value={$formData.name} />
 					<Form.FieldErrors />
 				</Form.Control>
