@@ -9,7 +9,8 @@ export type Feature =
 	| 'guides'
 	| 'events'
 	| 'docs'
-	| 'lgp4fun';
+	| 'lgp4fun'
+	| 'tutorial';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 

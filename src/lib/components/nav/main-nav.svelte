@@ -14,50 +14,21 @@
 		<span class="font-bold"> {$page.data.branding.name} </span>
 	</a>
 	<nav class="flex items-center space-x-6 text-sm font-medium">
-		<FeatureWrapper feature="docs">
-			<a
-				href="/docs"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/academy') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Academy
-			</a>
-		</FeatureWrapper>
-		<FeatureWrapper feature="guides">
-			<a
-				href="guides"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/how-to') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				How To
-			</a>
-		</FeatureWrapper>
-		<FeatureWrapper feature="events">
-			<a
-				href="/events"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/events') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Events
-			</a>
-		</FeatureWrapper>
-		<FeatureWrapper feature="map">
-			<a
-				href="/map"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/map') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Map
-			</a>
-		</FeatureWrapper>
+		
+			<FeatureWrapper feature="tutorial">
+				<a
+					href="/tutorial"
+					class={cn(
+						'transition-colors hover:text-foreground/80',
+						$page.url.pathname.startsWith('/tutorial') ? 'text-foreground' : 'text-foreground/60'
+					)}
+				>
+					Como usar a plataforma
+				</a>
+			</FeatureWrapper>
+
+		<Separator class="mx-2" orientation="vertical" />
+
 		{#if role === 'admin' || role === 'moderator'}
 			<FeatureWrapper feature="annotate">
 				<a

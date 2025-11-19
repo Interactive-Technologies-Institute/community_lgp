@@ -29,34 +29,20 @@
 			<div class="max-w-2xl space-y-4">
 				<Form.Field
 					{form}
-					name="guides"
+					name="tutorial"
 					class="flex flex-row items-center justify-between rounded-lg border p-4"
 				>
 					<Form.Control let:attrs>
 						<div class="space-y-0.5">
-							<Form.Label>Guias</Form.Label>
+							<Form.Label>Tutorial</Form.Label>
 							<Form.Description>
-								Ative este módulo para permitir que os utilizadores criem e partilhem guias.
+								Ative este módulo para permitir que os utilizadores conheçam tutoriais para usar a plataforma.
 							</Form.Description>
 						</div>
-						<Switch includeInput {...attrs} bind:checked={$formData.guides} />
+						<Switch includeInput {...attrs} bind:checked={$formData.tutorial} />
 					</Form.Control>
 				</Form.Field>
-				<Form.Field
-					{form}
-					name="events"
-					class="flex flex-row items-center justify-between rounded-lg border p-4"
-				>
-					<Form.Control let:attrs>
-						<div class="space-y-0.5">
-							<Form.Label>Eventos</Form.Label>
-							<Form.Description>
-								Ative este módulo para permitir que os utilizadores criem e partilhem eventos.
-							</Form.Description>
-						</div>
-						<Switch includeInput {...attrs} bind:checked={$formData.events} />
-					</Form.Control>
-				</Form.Field>
+				
 				<Form.Field
 					{form}
 					name="map"
@@ -72,21 +58,7 @@
 						<Switch includeInput {...attrs} bind:checked={$formData.map} />
 					</Form.Control>
 				</Form.Field>
-				<Form.Field
-					{form}
-					name="docs"
-					class="flex flex-row items-center justify-between rounded-lg border p-4"
-				>
-					<Form.Control let:attrs>
-						<div class="space-y-0.5">
-							<Form.Label>Documentação</Form.Label>
-							<Form.Description>
-								Ative este módulo para permitir que os utilizadores criem e partilhem documentação.
-							</Form.Description>
-						</div>
-						<Switch includeInput {...attrs} bind:checked={$formData.docs} />
-					</Form.Control>
-				</Form.Field>
+				
 				<Form.Field
 					{form}
 					name="dictionary"

@@ -41,10 +41,8 @@ export const load = async (event) => {
 	return {
 		updateFeatures: await superValidate(
 			{
-				guides: features.includes('guides'),
-				events: features.includes('events'),
+				tutorial: features.includes('tutorial'),
 				map: features.includes('map'),
-				docs: features.includes('docs'),
 				dictionary: features.includes('dictionary'),
 				fcdictionary: features.includes('fcdictionary'),
 				annotate: features.includes('annotate'),
@@ -80,15 +78,13 @@ export const actions = {
 			'update-features',
 			async (event, userId, form) => {
 				const { error: supabaseError } = await event.locals.supabase.from('feature_flags').upsert([
-					{ id: 'guides', enabled: form.data.guides },
-					{ id: 'events', enabled: form.data.events },
 					{ id: 'map', enabled: form.data.map },
-					{ id: 'docs', enabled: form.data.docs },
 					{ id: 'dictionary', enabled: form.data.dictionary },
 					{ id: 'fcdictionary', enabled: form.data.fcdictionary },
 					{ id: 'annotate', enabled: form.data.annotate },
 					{ id: 'crowdsource', enabled: form.data.crowdsource },
 					{ id: 'lgp4fun', enabled: form.data.lgp4fun },
+					{ id: 'tutorial', enabled: form.data.tutorial },
 				]);
 
 				if (supabaseError) {

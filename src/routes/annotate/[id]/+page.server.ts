@@ -1,13 +1,30 @@
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { PUBLIC_R2_PUBLIC_URL } from '$env/static/public';
+import { 
+    CLOUDFLARE_R2_ACCOUNT_ID, 
+    CLOUDFLARE_R2_ACCESS_KEY_ID, 
+    CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+} from '$env/static/private';
 import { createSignSchema, deleteSignSchema } from '@/schemas/sign';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
-import type { StorageError } from '@supabase/storage-js';
 import type { Parameter, Sign } from '@/types/types';
 import { fail, error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { v4 as uuidv4 } from 'uuid';
 import { superValidate, withFiles } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+
+// Initialize R2 client
+const r2Client = new S3Client({
+    region: 'auto',
+    endpoint: `https://${CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+        accessKeyId: CLOUDFLARE_R2_ACCESS_KEY_ID,
+        secretAccessKey: CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+    },
+    // Disable checksum validation for R2 compatibility
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+});
 
 export const load = async (event) => {
 	const { session } = await event.locals.safeGetSession();
@@ -98,51 +115,66 @@ export const load = async (event) => {
 export const actions = {
 	update: async (event) =>
 		handleFormAction(event, createSignSchema, 'update-sign', async (event, userId, form) => {
-			async function uploadVideo(
+			async function uploadVideoToR2(
 				video: File,
 				folder: string = ''
-			): Promise<{ path: string; error: StorageError | null }> {
-				const fileExt = video.name.split('.').pop();
-				const fileName = `${userId}_${uuidv4()}.${fileExt}`;
-				const filePath = folder ? `${folder}/${fileName}` : fileName;
+			): Promise<{ path: string; error: Error | null }> {
+				try {
+					const fileExt = video.name.split('.').pop();
+					const fileName = `${userId}_${uuidv4()}.${fileExt}`;
+					
+					// Build the full path within R2: signs/[folder]/filename
+					const filePath = folder 
+						? `signs/${folder}/${fileName}` 
+						: `signs/${fileName}`;
 
-				const { data: videoFileData, error: videoFileError } = await event.locals.supabase.storage
-					.from('signs')
-					.upload(filePath, video);
+					// Convert File to Buffer
+					const arrayBuffer = await video.arrayBuffer();
+					const buffer = Buffer.from(arrayBuffer);
 
-				if (videoFileError) {
-					setFlash({ type: 'error', message: videoFileError.message }, event.cookies);
-					return { path: '', error: videoFileError };
+					// Upload to R2
+					const command = new PutObjectCommand({
+						Bucket: 'dclgp',
+						Key: filePath,
+						Body: buffer,
+						ContentType: video.type || 'video/mp4',
+					});
+
+					await r2Client.send(command);
+
+					return { path: filePath, error: null };
+				} catch (err) {
+					const error = err as Error;
+					setFlash({ type: 'error', message: error.message }, event.cookies);
+					return { path: '', error };
 				}
-
-				return { path: videoFileData.path, error: null };
 			}
 
 			let videoPath = '';
 			if (form.data.video instanceof File) {
-				const { path, error } = await uploadVideo(form.data.video);
+				const { path, error } = await uploadVideoToR2(form.data.video);
 				if (error) {
 					return fail(500, withFiles({ message: error.message, form }));
 				}
 				videoPath = path;
 			} else if (typeof form.data.video === 'string') {
-				videoPath = form.data.video.split('/').pop() ?? '';
+				// Extract the path from existing R2 URL
+				videoPath = form.data.video.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
 			}
 
 			let contextVideo = '';
 			let contextVideoUrl = '';
 			if (form.data.context_video instanceof File) {
-				const { path, error } = await uploadVideo(form.data.context_video, 'context');
+				const { path, error } = await uploadVideoToR2(form.data.context_video, 'context');
 				if (error) {
 					return fail(500, withFiles({ message: error.message, form }));
 				}
 				contextVideo = path;
-				contextVideoUrl = `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/${contextVideo}`;
+				contextVideoUrl = `${PUBLIC_R2_PUBLIC_URL}/${contextVideo}`;
 			} else if (form.data.context_video_url) {
 				contextVideoUrl = form.data.context_video_url;
 				// Extract path from existing URL for storage reference
-				const urlParts = form.data.context_video_url.split('/');
-				contextVideo = urlParts[urlParts.length - 1];
+				contextVideo = form.data.context_video_url.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
 			} else {
 				contextVideoUrl = '';
 				contextVideo = '';
@@ -159,7 +191,7 @@ export const actions = {
 					name: data.name,
 					theme: data.theme,
 					theme_flattened: data.theme_flattened,
-					video: `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/signs/` + videoPath,
+					video: `${PUBLIC_R2_PUBLIC_URL}/${videoPath}`,
 					description: data.description,
 					context_video: contextVideoUrl,
 					sentence: data.sentence,
@@ -187,16 +219,49 @@ export const actions = {
 				return fail(500, { message: fetchError.message, form });
 			}
 
-			let mainVideo = `signs/${sign.video}`;
-			let contextVideo = `signs/context/${sign.context_video}`;
+			// Helper function to delete file from R2
+			async function deleteFromR2(fileUrl: string): Promise<void> {
+				if (!fileUrl || fileUrl.trim() === '') return;
+				
+				try {
+					// Extract the key from the R2 URL
+					let key = fileUrl.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
+					
+					// Remove any leading slashes
+					key = key.replace(/^\/+/, '');
+					
+					if (!key) {
+						console.log('No valid key extracted from URL:', fileUrl);
+						return;
+					}
 
-			if (mainVideo) {
-				await event.locals.supabase.storage.from('signs').remove([mainVideo]);
-			}
-			if (contextVideo) {
-				await event.locals.supabase.storage.from('signs').remove([contextVideo]);
+					console.log('Attempting to delete from R2:', key);
+
+					const command = new DeleteObjectCommand({
+						Bucket: 'dclgp',
+						Key: key,
+						// Explicitly disable checksum for delete
+						ChecksumAlgorithm: undefined,
+					});
+
+					const response = await r2Client.send(command);
+					console.log('Delete response:', response);
+					console.log('Successfully deleted from R2:', key);
+				} catch (err) {
+					console.error(`Failed to delete file from R2: ${fileUrl}`, err);
+					// Don't fail the entire operation if file deletion fails
+				}
 			}
 
+			// Delete videos from R2
+			if (sign.video) {
+				await deleteFromR2(sign.video);
+			}
+			if (sign.context_video) {
+				await deleteFromR2(sign.context_video);
+			}
+
+			// Delete from database
 			const { error: supabaseError } = await event.locals.supabase
 				.from('signs')
 				.delete()
