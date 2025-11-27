@@ -69,13 +69,13 @@ export const actions = {
 
                     // Convert File to Buffer
                     const arrayBuffer = await video.arrayBuffer();
-                    const buffer = Buffer.from(arrayBuffer);
+                    const uint8Array = new Uint8Array(arrayBuffer);
 
                     // Upload to R2
                     const command = new PutObjectCommand({
                         Bucket: 'dclgp',
                         Key: filePath,
-                        Body: buffer,
+                        Body: uint8Array,
                         ContentType: video.type || 'video/mp4',
                     });
 
