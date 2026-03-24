@@ -46,8 +46,8 @@
 	</Popover.Trigger>
 
 	<Popover.Content class="flex w-[1000px] flex-auto overflow-auto p-4">
-		<ScrollArea class="h-[700px] overflow-auto px-2">
-			<div class="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-4">
+		<ScrollArea class="flex h-[600px] flex-auto overflow-auto px-2">
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 				{#each filterByType(value) as parent}
 					{#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? '') || ['2ebj'].includes(parent.code?.toLowerCase() ?? ''))}
 						<Card.Root
@@ -55,7 +55,7 @@
 								? 'border-4 border-solid border-blue-500'
 								: 'border'} bg-white"
 						>
-							<Card.Content class="flex flex-col items-center gap-2 p-4">
+							<Card.Content class="flex flex-col flex-1 items-center gap-2 p-2">
 								{#if parent.image}
 									<img
 										src={parent.image}
@@ -68,7 +68,7 @@
 									{/if}
 								{:else}
 									<div
-										class="flex h-32 w-full cursor-pointer items-center justify-center text-center font-semibold"
+										class="flex h-16 w-full cursor-pointer items-center justify-center text-center font-semibold"
 										on:click={() => toggleParameter(parent)}
 									>
 										<span class="font-semibold text-black">{parent.name ?? parent.code}</span>
@@ -76,7 +76,7 @@
 								{/if}
 
 								{#if parent.code}
-									<div class="mt-2 grid max-h-32 grid-cols-3 gap-2 overflow-y-auto">
+									<div class="grid grid-cols-3 gap-1 overflow-y-auto">
 										{#each getChildren(parent.code) as child}
 											{#if child.image}
 												<div
@@ -90,7 +90,7 @@
 													<img
 														src={child.image}
 														alt={child.name ?? child.code}
-														class="aspect-square h-[60px] w-full rounded-md"
+														class="aspect-square w-full object-contain rounded-md"
 													/>
 												</div>
 											{/if}
