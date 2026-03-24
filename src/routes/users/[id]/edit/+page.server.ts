@@ -1,5 +1,4 @@
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { updatePasswordSchema } from '@/schemas/password';
 import { updateUserProfileSchema } from '@/schemas/user-profile';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import type { StorageError } from '@supabase/storage-js';
@@ -50,9 +49,6 @@ export const load = async (event) => {
 	return {
 		updateProfile: await superValidate(userProfileData, zod(updateUserProfileSchema), {
 			id: 'update-profile',
-		}),
-		updatePassword: await superValidate(zod(updatePasswordSchema), {
-			id: 'update-password',
 		}),
 	};
 };
@@ -158,34 +154,6 @@ export const actions = {
 
 				setFlash({ type: 'success', message: 'Perfil atualizado com sucesso!' }, event.cookies);
 				return withFiles({ form });
-			}
-		),
-	updatePassword: async (event) =>
-		handleFormAction(
-			event,
-			updatePasswordSchema,
-			'update-password',
-			async (event, userId, form) => {
-				const { data: verifyData } = await event.locals.supabase.rpc('verify_user_password', {
-					password: form.data.currentPassword,
-				});
-
-				if (!verifyData) {
-					setFlash({ type: 'error', message: 'Palavra passe atual incorreta.' }, event.cookies);
-					return fail(500, { message: 'Palavra passe atual incorreta.', form });
-				}
-
-				const { error: updateError } = await event.locals.supabase.auth.updateUser({
-					password: form.data.newPassword,
-				});
-
-				if (updateError) {
-					setFlash({ type: 'error', message: updateError.message }, event.cookies);
-					return fail(500, { message: updateError.message, form });
-				}
-
-				setFlash({ type: 'success', message: 'Password atualizada com sucesso.' }, event.cookies);
-				return { form };
 			}
 		),
 };

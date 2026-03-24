@@ -1,10 +1,14 @@
 import type { EmailOtpType } from '@supabase/supabase-js';
 import { redirect } from '@sveltejs/kit';
 
-export const GET = async ({ url, locals: { supabase } }) => {
-	const token_hash = url.searchParams.get('token_hash');
-	const type = url.searchParams.get('type') as EmailOtpType | null;
-	const next = url.searchParams.get('redirectTo') ?? '/';
+export const GET = async (event) => {
+  const {
+    url,
+    locals: { supabase },
+  } = event
+  const token_hash = url.searchParams.get('token_hash') as string
+  const type = url.searchParams.get('type') as EmailOtpType | null
+  const next = url.searchParams.get('next') ?? '/'
 
 	/**
 	 * Clean up the redirect URL by deleting the Auth flow parameters.
@@ -17,7 +21,7 @@ export const GET = async ({ url, locals: { supabase } }) => {
 	redirectTo.searchParams.delete('type');
 
 	if (token_hash && type) {
-		const { error } = await supabase.auth.verifyOtp({ type, token_hash });
+		const { error } = await supabase.auth.verifyOtp({ token_hash, type });
 		if (!error) {
 			redirectTo.searchParams.delete('next');
 			return redirect(303, redirectTo);
