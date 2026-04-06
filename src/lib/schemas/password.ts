@@ -2,13 +2,26 @@ import { z } from 'zod';
 
 export const updatePasswordSchema = z
 	.object({
-		currentPassword: z.string().min(1, { message: 'Current password is required' }),
-		newPassword: z.string().min(8, { message: 'New password must be at least 8 characters' }),
+		currentPassword: z.string().min(1, { message: 'A palavra-passe atual é necessária' }),
+		newPassword: z.string().min(8, { message: 'A nova palavra-passe deve ter pelo menos 8 caracteres' }),
 		confirmNewPassword: z.string(),
 	})
 	.refine((data) => data.newPassword === data.confirmNewPassword, {
-		message: "Passwords don't match",
+		message: "As palavras-passe não são iguais.",
 		path: ['confirmNewPassword'],
 	});
 
 export type UpdatePasswordSchema = typeof updatePasswordSchema;
+
+export const resetPasswordSchema = z
+	.object({
+		newPassword: z.string().min(8, { message: 'A nova palavra-passe deve ter pelo menos 8 caracteres' }),
+		confirmNewPassword: z.string(),
+	})
+	.refine((data) => data.newPassword === data.confirmNewPassword, {
+		message: "As palavras-passe não são iguais.",
+		path: ['confirmNewPassword'],
+	});
+
+export type ResetPasswordSchema = typeof resetPasswordSchema;
+

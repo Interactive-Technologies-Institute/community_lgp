@@ -50,11 +50,18 @@
 <Toaster />
 
 <div class="relative flex min-h-screen flex-col">
-	<Header role={user?.role ?? null} {profile} {notifications} />
-	<div class="flex-1">
-		<slot />
-	</div>
-	<Footer />
+	{#if $page.url.pathname === '/reset-password'}
+		<div class="flex-1">
+			<slot />
+		</div>
+		<Footer />
+	{:else}
+		<Header role={user?.role ?? null} {profile} {notifications} />
+		<div class="flex-1">
+			<slot />
+		</div>
+		<Footer />
+	{/if}
 	{#if dev}
 		<TailwindIndicator />
 		<NavigatingIndicator />
