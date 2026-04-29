@@ -76,6 +76,28 @@
 								{/if}
 
 								{#if parent.code}
+									{#if parent.code === 'LTR'}
+									<div class="grid grid-cols-2 gap-1 overflow-y-auto">
+										{#each getChildren(parent.code) as child}
+											{#if child.image}
+												<div
+													class="flex cursor-pointer flex-col items-center justify-center rounded-md text-center text-xs {selectedParameterIds.includes(
+														child.id
+													)
+														? 'border-4 border-solid border-blue-500'
+														: ''}"
+													on:click={() => toggleParameter(child)}
+												>
+													<img
+														src={child.image}
+														alt={child.name ?? child.code}
+														class="aspect-square w-full object-contain rounded-md"
+													/>
+												</div>
+											{/if}
+										{/each}
+									</div>
+									{:else}
 									<div class="grid grid-cols-3 gap-1 overflow-y-auto">
 										{#each getChildren(parent.code) as child}
 											{#if child.image}
@@ -96,6 +118,7 @@
 											{/if}
 										{/each}
 									</div>
+									{/if}
 								{/if}
 							</Card.Content>
 						</Card.Root>

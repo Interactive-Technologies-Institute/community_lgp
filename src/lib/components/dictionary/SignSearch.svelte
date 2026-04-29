@@ -112,13 +112,10 @@
 	$: if (isFiltering && $page) {
 		searchSigns();
 	}
-
-	$: type = window.location.pathname.split('/')[1] === 'dictionary';
 </script>
 
 <div class="flex-col">
 <div class="flex">
-{#if type}
 	<Tabs.Root value="configuracao">
 	<Tabs.List>
 		<AnnotationTab
@@ -149,39 +146,6 @@
 		></AnnotationTab>
 	</Tabs.List>
 </Tabs.Root>
-{:else}
-		<Tabs.Root value="localizacao">
-	<Tabs.List>
-		<AnnotationTab
-			{parameters}
-			value="localizacao"
-			displayName="Localização"
-			bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab
-			{parameters}
-			value="configuracao"
-			displayName="Configuração"
-			bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab
-			{parameters}
-			value="orientacao"
-			displayName="Orientação"
-			bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab {parameters} value="movimento" displayName="Movimento" bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab
-			{parameters}
-			value="expressao facial"
-			displayName="Expressão Facial"
-			bind:selectedParameterIds
-		></AnnotationTab>
-	</Tabs.List>
-</Tabs.Root>
-{/if}
-
 
 <div class="flex justify-end px-2">
 	<Button
