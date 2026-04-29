@@ -22,7 +22,7 @@ export const load = async (event) => {
 			.range((page - 1) * perPage, page * perPage - 1);
 
 		if (search) {
-			query = query.ilike('name_unaccented', `%${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`).order('name_unaccented', { ascending: true });;
 		}
 
 		if (theme && theme.length) {

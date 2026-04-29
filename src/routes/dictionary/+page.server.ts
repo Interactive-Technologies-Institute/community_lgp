@@ -18,10 +18,12 @@ export const load = async (event) => {
 			.from('signs')
 			.select('*', { count: 'exact' })
 			.eq('is_anotated', 2)
+			.not('theme_flattened', 'ilike', '%CEB%')
+			.not('theme_flattened', 'ilike', '%Filmar%')
 			.range((page - 1) * perPage, page * perPage - 1);
 
 		if (search) {
-			query = query.ilike('name_unaccented', `%${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`).order('name_unaccented', { ascending: true });
 		}
 
 		if (theme && theme.length) {
@@ -60,7 +62,9 @@ export const load = async (event) => {
 	async function getThemes(): Promise<Map<string, number>> {
 		const { data: themes, error: themesError } = await event.locals.supabase
 			.from('signs_themes')
-			.select('*');
+			.select('*')
+			.not('theme', 'ilike', '%CEB%')
+			.not('theme', 'ilike', '%Filmar%');
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';

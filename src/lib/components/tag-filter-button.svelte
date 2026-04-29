@@ -17,6 +17,15 @@
 			filterValues = [...(Array.isArray(filterValues) ? filterValues : []), currentValue];
 		}
 	}
+
+	function customFilter(
+    commandValue: string,
+    search: string,
+    commandKeywords?: string[]
+  ): number {
+		commandValue = commandValue.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    return commandValue.includes(search) ? 1 : 0;
+  }
 </script>
 
 <Popover.Root bind:open>
@@ -28,7 +37,7 @@
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="mt-2 w-[200px] p-0" align="start" side="bottom">
-		<Command.Root>
+		<Command.Root filter={customFilter}>
 			<Command.Input placeholder="Filtrar por" />
 			<Command.List>
 				<Command.Empty>Não foram encontrados temas.</Command.Empty>
