@@ -42,7 +42,7 @@ export const actions = {
           return fail(500, { message: resetError.message, form });
         }
 
-        setFlash({ type: 'success', message: 'Password redifinida com sucesso.' }, event.cookies);
+        setFlash({ type: 'success', message: 'Palavra-passe redifinida com sucesso.' }, event.cookies);
         
         await event.locals.supabase.auth.signOut();
         redirect(302, '/');
