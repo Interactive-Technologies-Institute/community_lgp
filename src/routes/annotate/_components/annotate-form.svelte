@@ -269,7 +269,7 @@
 								{/if}
 							</div>
 						</Card.Root>
-						<input hidden value={$formData.context_video} name="context_video_url" />
+						<input hidden value={$formData.context_video_url} name="context_video_url" />
 						<Form.FieldErrors />
 					</Form.Control>
 				</Form.Field>

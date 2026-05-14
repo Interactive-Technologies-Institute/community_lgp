@@ -162,25 +162,20 @@ export const actions = {
 				videoPath = form.data.video.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
 			}
 
-			let contextVideo = '';
-			let contextVideoUrl = '';
+			let contextVideoPath = '';
 			if (form.data.context_video instanceof File) {
-				const { path, error } = await uploadVideoToR2(form.data.context_video, 'context');
-				if (error) {
-					return fail(500, withFiles({ message: error.message, form }));
-				}
-				contextVideo = path;
-				contextVideoUrl = `${PUBLIC_R2_PUBLIC_URL}/${contextVideo}`;
-			} else if (form.data.context_video_url) {
-				contextVideoUrl = form.data.context_video_url;
-				// Extract path from existing URL for storage reference
-				contextVideo = form.data.context_video_url.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
-			} else {
-				contextVideoUrl = '';
-				contextVideo = '';
+					const { path, error } = await uploadVideoToR2(form.data.context_video, 'context');
+					if (error) {
+							return fail(500, withFiles({ message: error.message, form }));
+					}
+					contextVideoPath = path;
+			} else if (typeof form.data.context_video === 'string') {
+					// Extract the path from existing URL
+					contextVideoPath = form.data.context_video.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
 			}
 
 			const { videoUrl, context_video_url, ...data } = form.data;
+
 			const { error: supabaseError } = await event.locals.supabase
 				.from('signs')
 				.update({
@@ -193,7 +188,7 @@ export const actions = {
 					theme_flattened: data.theme_flattened,
 					video: `${PUBLIC_R2_PUBLIC_URL}/${videoPath}`,
 					description: data.description,
-					context_video: contextVideoUrl,
+					context_video: contextVideoPath ? `${PUBLIC_R2_PUBLIC_URL}/${contextVideoPath}` : '',
 					sentence: data.sentence,
 					frequency: data.frequency,
 					district: data.district,
