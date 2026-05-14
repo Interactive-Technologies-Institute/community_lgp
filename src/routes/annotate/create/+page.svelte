@@ -10,5 +10,5 @@
 	subtitle="Adicione uma nova entrada de gesto ao Dicionário de Lingua Gestual Portuguesa."
 />
 <div class="container mx-auto mb-20">
-	<AnnotateForm data={data.createForm} user={data.user} parameter={data.parameters} />
+	<AnnotateForm data={data.createForm} user={data.user} parameter={data.parameters} themes={data.themes} />
 </div>

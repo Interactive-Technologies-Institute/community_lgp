@@ -43,11 +43,27 @@ export const load = async (event) => {
 		return parameters as Parameter[];
 	}
 
+    async function getThemes(): Promise<[]> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('signs_themes')
+			.select('theme')
+            .order('theme', { ascending: true });
+
+		if (themesError) {
+			const errorMessage = 'Error fetching themes, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return themes;
+	}
+
 	return {
 		createForm: await superValidate(zod(createSignSchema), {
 			id: 'create-sign',
 		}),
 		parameters: await getParameters(),
+        themes: await getThemes(),
 	};
 };
 
@@ -114,6 +130,8 @@ export const actions = {
             }
 
             const { videoUrl, context_video_url, ...data } = form.data;
+            console.log(videoUrl);
+            console.log(context_video_url);
 
             const { data: insertedSign, error: supabaseError } = await event.locals.supabase
                 .from('signs')

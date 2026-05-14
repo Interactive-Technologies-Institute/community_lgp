@@ -1,13 +1,15 @@
 <script lang="ts">
+	import { cn } from '$lib/utils.js';
 	import { Button, buttonVariants } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import * as Form from '@/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
+	import * as Command from '@/components/ui/command';
 	import { Input } from '@/components/ui/input';
 	import { TagInput } from '@/components/ui/tag-input';
 	import { Textarea } from '@/components/ui/textarea';
 	import { createSignSchema, type CreateSignSchema } from '@/schemas/sign';
-	import { Loader2 } from 'lucide-svelte';
+	import { Check, Loader2, X } from 'lucide-svelte';
 	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import Annotation from '@/components/dictionary/Annotation.svelte';
@@ -19,6 +21,7 @@
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
 	export let parameter: Parameter[];
+	export let themes;
 
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
@@ -67,6 +70,37 @@
 	const handleFileUpload2 = () => {
 		if (fileInputRef2) {
 			fileInputRef2.click();
+		}
+	};
+
+	$: selectedThemes = $formData.theme ?? [];
+	
+	let themeSearch = '';
+	const toggleTheme = (value: string) => {
+		const selected = $formData.theme ?? [];
+		if (selected.includes(value)) {
+			$formData.theme = selected.filter((theme: string) => theme !== value);
+			return;
+		}
+
+		$formData.theme = [...selected, value];
+	};
+
+	const addThemeFromSearch = () => {
+		const newTheme = themeSearch.trim();
+		if (!newTheme) {
+			return;
+		}
+
+		$formData.theme = [...($formData.theme ?? []), newTheme];
+		themeSearch = '';
+	};
+
+	const handleThemeInputKeydown = (event: Event) => {
+		const keyboardEvent = event as KeyboardEvent;
+		if (keyboardEvent.key === 'Enter') {
+			event.preventDefault();
+			addThemeFromSearch();
 		}
 	};
 
@@ -153,6 +187,15 @@
 	$: if (!$video2.length && $formData.context_video_url) {
 		context_video_url = $formData.context_video_url;
 	}
+
+	function customFilter(
+    commandValue: string,
+    search: string,
+    commandKeywords?: string[]
+  ): number {
+		commandValue = commandValue.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    return commandValue.includes(search) ? 1 : 0;
+  }
 </script>
 
 <form
@@ -179,9 +222,63 @@
 				</Form.Control>
 			</Form.Field>
 			<Form.Field {form} name="theme">
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Temas</Form.Label>
-					<TagInput {...attrs} bind:value={$formData.theme} />
+					{#if ($formData.theme ?? []).length > 0}
+						<div class="mb-2 flex flex-wrap gap-2">
+							{#each $formData.theme ?? [] as selectedTheme}
+								<button
+									type="button"
+									on:click={() => toggleTheme(selectedTheme)}
+									class="inline-flex items-center gap-1 rounded-md border bg-muted px-2 py-1 text-sm"
+								>
+									{selectedTheme}
+									<X class="h-3 w-3" />
+								</button>
+							{/each}
+						</div>
+					{/if}
+					<Command.Root filter={customFilter} class="h-auto rounded-md border">
+						<Command.Input
+							bind:value={themeSearch}
+							placeholder="Pesquisar ou adicionar tema"
+							on:keydown={handleThemeInputKeydown}
+						/>
+						<Command.List>
+							<Command.Empty>
+								<button
+									type="button"
+									on:click={addThemeFromSearch}
+									class="w-full px-2 py-1.5 text-left text-sm"
+								>
+									Adicionar "{themeSearch.trim()}"
+								</button>
+							</Command.Empty>
+							<Command.Group>
+								{#each themes as themeOption}
+									<Command.Item
+										value={themeOption.theme}
+										onSelect={() => {
+											toggleTheme(themeOption.theme);
+											themeSearch = '';
+										}}
+									>
+										<div
+								class={cn(
+									'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+									selectedThemes?.includes(themeOption.theme)
+										? 'bg-primary text-primary-foreground'
+										: 'opacity-50 [&_svg]:invisible'
+								)}
+										>
+											<Check class="h-4 w-4" />
+										</div>
+										<span>{themeOption.theme}</span>
+									</Command.Item>
+								{/each}
+							</Command.Group>
+						</Command.List>
+					</Command.Root>
 					<Form.FieldErrors />
 				</Form.Control>
 			</Form.Field>

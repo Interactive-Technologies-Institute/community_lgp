@@ -21,7 +21,7 @@
 />
 
 <div class="container mx-auto mb-20">
-	<AnnotateForm data={data.updateForm} user={data.user} parameter={data.parameters} />
+	<AnnotateForm data={data.updateForm} user={data.user} parameter={data.parameters} themes={data.themes} />
 
 	<div class="flex items-center justify-center">
 		<Button variant="destructive" on:click={() => (openDeleteDialog = true)}>

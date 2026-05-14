@@ -61,6 +61,21 @@ export const load = async (event) => {
 		return parameters as Parameter[];
 	}
 
+	async function getThemes(): Promise<[]> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('signs_themes')
+			.select('theme')
+      .order('theme', { ascending: true });
+
+		if (themesError) {
+			const errorMessage = 'Error fetching themes, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return themes;
+	}
+
 	async function getParametersByIds(ids: number[]): Promise<Parameter[]> {
 		const { data: parametersById, error: parametersError } = await event.locals.supabase
 			.from('parameters')
@@ -109,6 +124,7 @@ export const load = async (event) => {
 		}),
 		parameters: parameters,
 		parametersById: parametersById,
+		themes: await getThemes(),
 	};
 };
 
