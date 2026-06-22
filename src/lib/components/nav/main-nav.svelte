@@ -13,7 +13,7 @@
 <div class="hidden min-w-0 items-center lg:flex">
 	<a href="/" class="mr-7 flex shrink-0 items-center" aria-label="Dicionário LGP - Início">
 		<img
-			src="/branding/submark light.svg"
+			src="/branding/submark-light.svg"
 			alt="Dicionário LGP"
 			class="h-11 w-[110px] object-contain"
 		/>
@@ -87,7 +87,7 @@
 						'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
 				)}
 			>
-				Gestos da Comunidade
+				Propor Gestos
 			</a>
 		</FeatureWrapper>
 

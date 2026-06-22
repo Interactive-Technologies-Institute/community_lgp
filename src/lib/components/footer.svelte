@@ -8,7 +8,7 @@
 		<div class="grid gap-10 md:grid-cols-3 md:gap-14">
 			<div>
 				<a href="/" class="inline-flex items-center gap-3" aria-label="Dicionário LGP - Início">
-					<img src="/branding/brandmark light.svg" alt="" class="h-12 w-10 object-contain" />
+					<img src="/branding/brandmark-light.svg" alt="" class="h-12 w-10 object-contain" />
 					<span class="max-w-[210px] text-sm font-bold leading-tight">
 						O Dicionário Online de<br />Língua Gestual Portuguesa
 					</span>

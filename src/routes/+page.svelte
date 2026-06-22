@@ -13,7 +13,7 @@
 			class="relative mx-auto flex h-screen w-full max-w-[1920px] flex-col items-center justify-center overflow-hidden rounded-[32px] bg-brand-surface px-6 py-16 text-center sm:px-10"
 		>
 			<img
-				src="/branding/logo dark.svg"
+				src="/branding/logo-dark.svg"
 				alt="Dicionário LGP"
 				class="relative z-10 w-full max-w-[760px]"
 			/>
@@ -28,7 +28,7 @@
 			</p>
 			<div class="relative z-10 mt-16 sm:mt-20">
 				<img
-					src="branding/spark yellow.svg"
+					src="branding/spark-yellow.svg"
 					alt="Spark Yellow"
 					class="absolute -left-10 -top-6 h-12"
 				/>
@@ -87,10 +87,10 @@
 			<div class="grid items-center gap-9 lg:grid-cols-2 lg:gap-20">
 				<div class="overflow-hidden rounded-xl bg-muted shadow-md">
 					<img
-						src="/img/fcdictionary.png"
-						alt="Entrada do Dicionário do 1º Ciclo"
-						class="aspect-auto h-auto w-full"
-						loading="lazy"
+					src="/img/fcdictionary.png"
+					alt="Entrada do Dicionário do 1º Ciclo"
+					class="aspect-auto h-auto w-full"
+					loading="lazy"
 					/>
 				</div>
 				<div class="order-1 text-left lg:order-2 lg:text-right">

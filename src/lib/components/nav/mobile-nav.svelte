@@ -29,7 +29,7 @@
 			<div class="border-b border-brand-white/15 px-6 py-5">
 				<a href="/" on:click={closeMenu} aria-label="Dicionário LGP - Início">
 					<img
-						src="/branding/submark light.svg"
+						src="/branding/submark-light.svg"
 						alt="Dicionário LGP"
 						class="h-14 w-36 object-contain"
 					/>
@@ -70,7 +70,7 @@
 
 	<a href="/" class="flex items-center" aria-label="Dicionário LGP - Início">
 		<img
-			src="/branding/submark light.svg"
+			src="/branding/submark-light.svg"
 			alt="Dicionário LGP"
 			class="h-10 w-[100px] object-contain"
 		/>
