@@ -23,8 +23,9 @@
     search: string,
     commandKeywords?: string[]
   ): number {
-		commandValue = commandValue.normalize('NFD').replace(/\p{Diacritic}/gu, '');
-    return commandValue.includes(search) ? 1 : 0;
+		commandValue = commandValue.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+		search = search.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+		return commandValue.includes(search) ? 1 : 0;
   }
 </script>
 
