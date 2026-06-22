@@ -9,7 +9,7 @@ export const load = async (event) => {
 	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
-	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation_array'));
+	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation'));
 	let totalPages = 0;
 	let countSign = 0;
 
@@ -31,7 +31,8 @@ export const load = async (event) => {
 		}
 
 		if (annotation && annotation.length) {
-			query = query.overlaps('annotation_array', annotation);
+		// 	query = query.overlaps('annotation_array', annotation);
+			return [] as Sign[]; // Temporarily return an empty array until the annotation filtering is implemented
 		}
 
 		const { data: signs, count, error: signsError } = await query;

@@ -11,6 +11,7 @@
 	import { queryParam } from 'sveltekit-search-params';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	import { Hand } from 'lucide-svelte';
 	import { TextCursor } from 'lucide-svelte';
@@ -31,6 +32,40 @@
 	let localSearch = $search; // Initialize localSearch with current query param value
 	let selectedTab = 'gesto';
 
+	function buildUrlForMode(mode: 'gesto' | 'texto') {
+		const url = new URL(window.location.href);
+		const themes = Array.isArray($theme) ? $theme : [];
+
+		url.searchParams.delete('s');
+		url.searchParams.delete('annotation');
+		url.searchParams.delete('page');
+		url.searchParams.delete('theme');
+
+		for (const themeValue of themes) {
+			url.searchParams.append('theme', themeValue);
+		}
+
+		url.searchParams.set('page', '1');
+
+		if (mode === 'texto') {
+			localSearch = '';
+		}
+
+		return `${url.pathname}?${url.searchParams.toString()}`;
+	}
+
+	async function switchTab(mode: 'gesto' | 'texto') {
+		if (selectedTab === mode) return;
+
+		selectedTab = mode;
+		localSearch = '';
+		await goto(buildUrlForMode(mode), {
+			replaceState: true,
+			noScroll: true,
+			keepFocus: true,
+		});
+	}
+
 	// Update query param on button click
 	function doSearch() {
 		search.set(localSearch);
@@ -47,7 +82,7 @@
 							selectedTab !== 'gesto' ? 'opacity-25 grayscale' : ''
 						}`}
 						value="gesto"
-						on:click={() => (selectedTab = 'gesto')}
+						on:click={() => switchTab('gesto')}
 					>
 						<Hand />&nbsp;Gesto
 					</Tabs.Trigger>
@@ -57,7 +92,7 @@
 							selectedTab !== 'texto' ? 'opacity-40 grayscale' : ''
 						}`}
 						value="texto"
-						on:click={() => (selectedTab = 'texto')}
+						on:click={() => switchTab('texto')}
 					>
 						<TextCursor /> &nbsp;Texto
 					</Tabs.Trigger>
