@@ -7,7 +7,7 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger asChild let:builder>
-		<Button builders={[builder]} variant="outline" size="icon-sm">
+		<Button builders={[builder]} variant="outline" size="icon-sm" class="h-9 w-9 rounded-lg border-brand-blue bg-transparent text-brand-white hover:bg-brand-white/10 hover:text-brand-white">
 			<Sun
 				class="h-4 w-4 rotate-0 scale-100 transition-all duration-[5000] dark:-rotate-90 dark:scale-0"
 			/>

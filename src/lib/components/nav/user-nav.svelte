@@ -14,10 +14,16 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger asChild let:builder>
-		<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
-			<Avatar.Root class="h-8 w-8">
+		<Button
+			variant="ghost"
+			builders={[builder]}
+			class={`relative h-9 w-9 rounded-full p-0`}
+		>
+			<Avatar.Root class="h-9 w-9">
 				<Avatar.Image src={profile.avatar} alt={profile.display_name} />
-				<Avatar.Fallback>{firstAndLastInitials(profile.display_name)}</Avatar.Fallback>
+				<Avatar.Fallback class="bg-brand-blue text-xs font-bold text-brand-white">
+					{firstAndLastInitials(profile.display_name)}
+				</Avatar.Fallback>
 			</Avatar.Root>
 		</Button>
 	</DropdownMenu.Trigger>

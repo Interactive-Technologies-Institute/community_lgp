@@ -50,6 +50,14 @@ const config = {
 					DEFAULT: 'hsl(var(--card) / <alpha-value>)',
 					foreground: 'hsl(var(--card-foreground) / <alpha-value>)',
 				},
+				brand: {
+					dark: 'hsl(var(--brand-dark-blue) / <alpha-value>)',
+					blue: 'hsl(var(--brand-blue) / <alpha-value>)',
+					yellow: 'hsl(var(--brand-yellow) / <alpha-value>)',
+					white: 'hsl(var(--brand-white) / <alpha-value>)',
+					grey: 'hsl(var(--brand-dark-grey) / <alpha-value>)',
+					surface: 'hsl(var(--brand-surface) / <alpha-value>)',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -58,6 +66,7 @@ const config = {
 			},
 			fontFamily: {
 				sans: ['InterVariable', ...fontFamily.sans],
+				heading: ['Baloo', 'InterVariable', ...fontFamily.sans],
 			},
 			typography: {
 				DEFAULT: {

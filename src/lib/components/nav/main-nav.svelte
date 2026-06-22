@@ -2,40 +2,75 @@
 	import { page } from '$app/stores';
 	import { cn } from '@/utils';
 	import FeatureWrapper from '../feature-wrapper.svelte';
-	import type { UserProfile, UserRole } from '@/types/types';
-	import Separator from '../ui/separator/separator.svelte';
+	import type { UserRole } from '@/types/types';
 
 	export let role: UserRole;
+
+	const linkClass =
+		'relative flex h-16 items-center whitespace-nowrap text-sm font-semibold text-brand-white/85 transition-colors hover:text-brand-white';
 </script>
 
-<div class="mr-4 hidden md:flex">
-	<a href="/" class="mr-6 flex items-center gap-x-2">
-		<div class="h-4 w-4 rounded-full bg-primary"></div>
-		<span class="font-bold"> {$page.data.branding.name} </span>
+<div class="hidden min-w-0 items-center lg:flex">
+	<a href="/" class="mr-7 flex shrink-0 items-center" aria-label="Dicionário LGP - Início">
+		<img
+			src="/branding/submark light.svg"
+			alt="Dicionário LGP"
+			class="h-11 w-[110px] object-contain"
+		/>
 	</a>
-	<nav class="flex items-center space-x-6 text-sm font-medium">
-		
-			<FeatureWrapper feature="tutorial">
-				<a
-					href="/tutorial"
-					class={cn(
-						'transition-colors hover:text-foreground/80',
-						$page.url.pathname.startsWith('/tutorial') ? 'text-foreground' : 'text-foreground/60'
-					)}
-				>
-					Como usar a plataforma
-				</a>
-			</FeatureWrapper>
 
-		<Separator class="mx-2" orientation="vertical" />
+	<div class="mr-6 h-8 w-px shrink-0 bg-brand-blue"></div>
+
+	<nav class="flex min-w-0 items-center gap-7">
+		<FeatureWrapper feature="tutorial">
+			<a
+				href="/tutorial"
+				class={cn(
+					linkClass,
+					$page.url.pathname.startsWith('/tutorial') &&
+						'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
+				)}
+			>
+				Como usar a plataforma
+			</a>
+			<div class="h-8 w-px shrink-0 bg-brand-blue"></div>
+		</FeatureWrapper>
+
+		<FeatureWrapper feature="map">
+			<a
+				href="/map"
+				class={cn(
+				linkClass,
+				$page.url.pathname.startsWith('/map') &&
+					'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
+			)}
+			>
+				Mapa
+			</a>
+			<div class="h-8 w-px shrink-0 bg-brand-blue"></div>
+		</FeatureWrapper>
+
+		<FeatureWrapper feature="dictionary">
+			<a
+				href="/dictionary"
+				class={cn(
+					linkClass,
+					$page.url.pathname.startsWith('/dictionary') &&
+						'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
+				)}
+			>
+				Dicionário Geral
+			</a>
+		</FeatureWrapper>
 
 		{#if role === 'admin' || role === 'moderator'}
 			<FeatureWrapper feature="annotate">
 				<a
 					href="/annotate"
 					class={cn(
-						'transition-colors hover:text-foreground/80',
-						$page.url.pathname.startsWith('/annotate') ? 'text-foreground' : 'text-foreground/60'
+						linkClass,
+						$page.url.pathname.startsWith('/annotate') &&
+							'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
 					)}
 				>
 					Anotação
@@ -43,26 +78,28 @@
 			</FeatureWrapper>
 		{/if}
 
-		<FeatureWrapper feature="dictionary">
+		<FeatureWrapper feature="crowdsource">
 			<a
-				href="/dictionary"
+				href="/crowdsource"
 				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/dictionary') ? 'text-foreground' : 'text-foreground/60'
+					linkClass,
+					$page.url.pathname.startsWith('/crowdsource') &&
+						'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
 				)}
 			>
-				Dicionário Geral
+				Gestos da Comunidade
 			</a>
 		</FeatureWrapper>
-		
-		<Separator class="mx-2" orientation="vertical" />
+
+		<div class="h-8 w-px shrink-0 bg-brand-blue"></div>
 
 		<FeatureWrapper feature="fcdictionary">
 			<a
 				href="/fcdictionary"
 				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/fcdictionary') ? 'text-foreground' : 'text-foreground/60'
+					linkClass,
+					$page.url.pathname.startsWith('/fcdictionary') &&
+						'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
 				)}
 			>
 				Dicionário 1º Ciclo
@@ -73,25 +110,12 @@
 			<a
 				href="/lgp4fun"
 				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/lgp4fun') ? 'text-foreground' : 'text-foreground/60'
+					linkClass,
+					$page.url.pathname.startsWith('/lgp4fun') &&
+						'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
 				)}
 			>
 				LGP4Fun
-			</a>
-		</FeatureWrapper>
-
-		<Separator class="mx-2" orientation="vertical" />
-
-		<FeatureWrapper feature="crowdsource">
-			<a
-				href="/crowdsource"
-				class={cn(
-					'transition-colors hover:text-foreground/80',
-					$page.url.pathname.startsWith('/crowdsource') ? 'text-foreground' : 'text-foreground/60'
-				)}
-			>
-				Participação em Comunidade
 			</a>
 		</FeatureWrapper>
 	</nav>

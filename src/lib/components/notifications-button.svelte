@@ -66,7 +66,7 @@
 
 <Popover.Root bind:open>
 	<Popover.Trigger asChild let:builder>
-		<Button variant="outline" size="icon-sm" builders={[builder]}>
+		<Button variant="outline" class="h-9 w-9 rounded-lg border-brand-blue bg-transparent text-brand-white hover:bg-brand-white/10 hover:text-brand-white" size="icon-sm" builders={[builder]}>
 			<div class="relative">
 				<Inbox class="h-4 w-4" />
 				{#if unreadCount > 0}

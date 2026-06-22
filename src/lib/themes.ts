@@ -1,5 +1,13 @@
 export const themes = [
 	{
+		name: 'dclgp',
+		label: 'DCLGP',
+		activeColor: {
+			light: '240 60% 38%',
+			dark: '240 60% 38%',
+		},
+	},
+	{
 		name: 'zinc',
 		label: 'Zinc',
 		activeColor: {

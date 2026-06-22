@@ -1,3 +1,81 @@
+.theme-dclgp {
+	--brand-dark-blue: 240 60% 38%;
+	--brand-blue: 210 100% 60%;
+	--brand-yellow: 52 80% 63%;
+	--brand-white: 0 0% 100%;
+	--brand-dark-grey: 0 0% 20%;
+	--brand-surface: 209 100% 96%;
+
+	--background: var(--brand-white);
+	--foreground: var(--brand-dark-grey);
+
+	--muted: var(--brand-surface);
+	--muted-foreground: 0 0% 27%;
+
+	--popover: var(--brand-white);
+	--popover-foreground: var(--brand-dark-grey);
+
+	--card: var(--brand-white);
+	--card-foreground: var(--brand-dark-grey);
+
+	--border: var(--brand-blue);
+	--input: 210 100% 90%;
+
+	--primary: var(--brand-dark-blue);
+	--primary-foreground: var(--brand-white);
+
+	--secondary: var(--brand-blue);
+	--secondary-foreground: var(--brand-white);
+
+	--accent: var(--brand-yellow);
+	--accent-foreground: var(--brand-dark-blue);
+
+	--destructive: 0 72.22% 50.59%;
+	--destructive-foreground: var(--brand-white);
+
+	--ring: var(--brand-blue);
+
+	--radius: 0.75rem;
+}
+
+.dark .theme-dclgp {
+	--brand-dark-blue: 240 60% 38%;
+	--brand-blue: 210 100% 60%;
+	--brand-yellow: 52 80% 63%;
+	--brand-white: 0 0% 100%;
+	--brand-dark-grey: 0 0% 20%;
+	--brand-surface: 209 100% 96%;
+
+	--background: 240 43% 12%;
+	--foreground: var(--brand-white);
+
+	--muted: 240 36% 18%;
+	--muted-foreground: 210 100% 88%;
+
+	--popover: 240 36% 14%;
+	--popover-foreground: var(--brand-white);
+
+	--card: 240 36% 14%;
+	--card-foreground: var(--brand-white);
+
+	--border: var(--brand-blue);
+	--input: 240 30% 24%;
+
+	--primary: var(--brand-blue);
+	--primary-foreground: var(--brand-white);
+
+	--secondary: var(--brand-dark-blue);
+	--secondary-foreground: var(--brand-white);
+
+	--accent: var(--brand-yellow);
+	--accent-foreground: var(--brand-dark-blue);
+
+	--destructive: 0 62.8% 30.6%;
+	--destructive-foreground: var(--brand-white);
+
+	--ring: var(--brand-blue);
+}
+
 .theme-zinc {
 	--background: 0 0% 100%;
 	--foreground: 240 10% 3.9%;
