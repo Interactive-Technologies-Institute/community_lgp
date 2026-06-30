@@ -9,7 +9,7 @@ export const load = async (event) => {
 	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
-	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation_array'));
+	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation'));
 	let totalPages = 0;
 	let countSign = 0;
 
@@ -18,11 +18,11 @@ export const load = async (event) => {
 			.from('signs')
 			.select('*', { count: 'exact' })
 			.eq('is_anotated', 2)
-			.or(`theme_flattened.ilike.%1ºCEB%,theme_flattened.ilike.%DACTILOLOGIA%`)
+			.or(`theme_flattened.ilike.%CEB%,theme_flattened.ilike.%DACTILOLOGIA%`)
 			.range((page - 1) * perPage, page * perPage - 1);
 
 		if (search) {
-			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`).order('name_unaccented', { ascending: true });;
+			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 		}
 
 		if (theme && theme.length) {
@@ -30,10 +30,11 @@ export const load = async (event) => {
 		}
 
 		if (annotation && annotation.length) {
-			query = query.overlaps('annotation_array', annotation);
+			// 	query = query.overlaps('annotation_array', annotation);
+			return [] as Sign[]; // Temporarily return an empty array until the annotation filtering is implemented
 		}
 
-		const { data: signs, count, error: signsError } = await query;
+		const { data: signs, count, error: signsError } = await query.order('name_unaccented', { ascending: true });
 		totalPages = count ? Math.ceil(count / perPage) : 0;
 		countSign = count || 0;
 		if (signsError) {
@@ -62,7 +63,7 @@ export const load = async (event) => {
 		const { data: themes, error: themesError } = await event.locals.supabase
 			.from('signs_themes')
 			.select('*')
-			.or('theme.ilike.%1ºCEB%,theme.ilike.%DACTILOLOGIA%');
+			.or('theme.ilike.%CEB%,theme.ilike.%DACTILOLOGIA%');
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';

@@ -23,7 +23,7 @@ export const load = async (event) => {
 			.range((page - 1) * perPage, page * perPage - 1);
 
 		if (search) {
-			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`).order('name_unaccented', { ascending: true });
+			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 		}
 
 		if (theme && theme.length) {
@@ -35,7 +35,7 @@ export const load = async (event) => {
 			return [] as Sign[]; // Temporarily return an empty array until the annotation filtering is implemented
 		}
 
-		const { data: signs, count, error: signsError } = await query;
+		const { data: signs, count, error: signsError } = await query.order('name_unaccented', { ascending: true });
 		totalPages = count ? Math.ceil(count / perPage) : 0;
 		countSign = count || 0;
 		if (signsError) {
