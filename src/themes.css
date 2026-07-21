@@ -5,6 +5,7 @@
 	--brand-white: 0 0% 100%;
 	--brand-dark-grey: 0 0% 20%;
 	--brand-surface: 209 100% 96%;
+	--brand-border: 210 100% 86.27%;
 
 	--background: var(--brand-white);
 	--foreground: var(--brand-dark-grey);
@@ -18,7 +19,7 @@
 	--card: var(--brand-white);
 	--card-foreground: var(--brand-dark-grey);
 
-	--border: var(--brand-blue);
+	--border: var(--brand-border);
 	--input: 210 100% 90%;
 
 	--primary: var(--brand-dark-blue);

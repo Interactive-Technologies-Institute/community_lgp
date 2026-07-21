@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 825 664" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1353.788931,-715.698734)">
+        <g transform="matrix(1.907102,0,0,1,24.132698,0)">
+            <g id="search-empty-state" serif:id="search empty state" transform="matrix(0.718081,0,0,1,1.573067,-536.525044)">
+                <g id="bubble" transform="matrix(0.981969,0,0,1.301708,-1737.53714,789.306966)">
+                    <path d="M2927.786,782.351C2831.27,775.31 2642.788,573.128 2847.934,420.382C3089.653,240.406 3249.253,479.41 3268.317,606.173C3279.616,681.306 3367.455,650.823 3369.163,721.586C3370.629,782.351 3287.32,781.899 3236.307,781.457C3140.904,780.631 3141.984,869.281 3071.478,865.001C3003.578,860.879 3038.568,790.432 2927.786,782.351Z" style="fill:rgb(51,153,255);fill-opacity:0.1;"/>
+                </g>
+                <g id="magnifying-glass" serif:id="magnifying glass" transform="matrix(1.27446,0,0,1.27446,-1571.499013,779.305417)">
+                    <g transform="matrix(0.88367,0,0,1.176397,-496.832156,-112.435675)">
+                        <ellipse cx="3045" cy="598.5" rx="122" ry="125.5" style="fill:none;stroke:rgb(39,39,155);stroke-width:16.44px;"/>
+                    </g>
+                    <g transform="matrix(-0.559379,-0.642788,0.469375,-0.766044,3723.627661,3288.496422)">
+                        <path d="M3189,710.75L3189,724.25C3189,727.975 3185.975,731 3182.25,731L3143.75,731C3140.025,731 3137,727.975 3137,724.25L3137,710.75C3137,707.025 3140.025,704 3143.75,704L3182.25,704C3185.975,704 3189,707.025 3189,710.75Z" style="fill:rgb(39,39,155);stroke:rgb(39,39,155);stroke-width:19.62px;"/>
+                    </g>
+                    <g transform="matrix(-2.146206,-2.466224,0.914745,-1.492912,8492.406391,9656.81855)">
+                        <path d="M3189,710.75L3189,724.25C3189,727.975 3187.464,731 3185.571,731L3140.429,731C3138.536,731 3137,727.975 3137,724.25L3137,710.75C3137,707.025 3138.536,704 3140.429,704L3185.571,704C3187.464,704 3189,707.025 3189,710.75Z" style="fill:rgb(39,39,155);stroke:rgb(39,39,155);stroke-width:6.45px;"/>
+                    </g>
+                </g>
+                <g id="glass-reflex" serif:id="glass reflex" transform="matrix(0.730218,0,0,1,-1001.839895,922.82426)">
+                    <path d="M3008,490C2965.333,509 2940.667,529 2928,571" style="fill:none;stroke:white;stroke-width:25px;"/>
+                </g>
+                <g id="spark-yellow" serif:id="spark yellow" transform="matrix(1.145598,0,0,1.145598,-1296.48474,867.181906)">
+                    <g transform="matrix(0.730218,0,0,1,-17.622124,-1)">
+                        <path d="M2760,548L2827,548" style="fill:none;stroke:rgb(236,215,84);stroke-width:21.82px;"/>
+                    </g>
+                    <g transform="matrix(0.641211,0.478459,-0.349379,0.87811,426.919297,-1327.779924)">
+                        <path d="M2760,548L2827,548" style="fill:none;stroke:rgb(236,215,84);stroke-width:21.82px;"/>
+                    </g>
+                    <g transform="matrix(0.478642,0.755214,-0.55147,0.655479,1016.933382,-2020.219382)">
+                        <path d="M2760,548L2827,548" style="fill:none;stroke:rgb(236,215,84);stroke-width:21.82px;"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

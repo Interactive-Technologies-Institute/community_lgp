@@ -9,35 +9,66 @@ export const load = async (event) => {
 	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
-	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation'));
+	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation')) ?? null;
 	let totalPages = 0;
 	let countSign = 0;
+	let searchArray = Array(300).fill(0);
 
 	async function getSigns(): Promise<Sign[]> {
-		let query = event.locals.supabase
-			.from('signs')
-			.select('*', { count: 'exact' })
-			.eq('is_anotated', 2)
-			.not('theme_flattened', 'ilike', '%CEB%')
-			.not('theme_flattened', 'ilike', '%Filmar%')
-			.range((page - 1) * perPage, page * perPage - 1);
-
+		let query = event.locals.supabase;
+		
 		if (search) {
-			query = query.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+			query = query.from('signs')
+										.select('*', { count: 'exact' })
+										.eq('is_anotated', 2)
+										.not('theme_flattened', 'ilike', '%CEB%')
+										.not('theme_flattened', 'ilike', '%Filmar%')
+										.range((page - 1) * perPage, page * perPage - 1)
+										.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+
+			if (theme && theme.length) {
+				query = query.overlaps('theme', theme);
+			}
+
+			query = query.order('name_unaccented', { ascending: true });
 		}
 
-		if (theme && theme.length) {
-			query = query.overlaps('theme', theme);
+		else if (annotation && annotation.length) {
+			annotation.forEach((id) => {
+				const numericId = Number(id);
+				if (numericId > 0 && numericId <= 300) {
+					searchArray[numericId - 1] = 1;
+				}
+			});
+
+			query = query.rpc('get_closest_signs', 
+												{query_array: searchArray,
+												limit_count: 9,
+												offset_count: 1},
+												{ count: 'exact' })
+												.range((page - 1) * perPage, page * perPage - 1);
+
+			if (theme && theme.length) {
+				query = query.overlaps('theme', theme);
+			}
 		}
 
-		if (annotation && annotation.length) {
-		// 	query = query.overlaps('annotation_array', annotation);
-			return [] as Sign[]; // Temporarily return an empty array until the annotation filtering is implemented
+		else if (theme && theme.length) {
+			query = query.from('signs')
+										.select('*', { count: 'exact' })
+										.eq('is_anotated', 2)
+										.not('theme_flattened', 'ilike', '%CEB%')
+										.not('theme_flattened', 'ilike', '%Filmar%')
+										.range((page - 1) * perPage, page * perPage - 1)
+										.overlaps('theme', theme)
+										.order('name_unaccented', { ascending: true });
 		}
 
-		const { data: signs, count, error: signsError } = await query.order('name_unaccented', { ascending: true });
+
+		const { data: signs, count, error: signsError } = await query;
 		totalPages = count ? Math.ceil(count / perPage) : 0;
 		countSign = count || 0;
+
 		if (signsError) {
 			const errorMessage = 'Error fetching signs, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);

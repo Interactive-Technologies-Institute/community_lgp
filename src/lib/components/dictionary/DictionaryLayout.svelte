@@ -18,25 +18,19 @@
 	afterNavigate(() => {
 		signs = data?.signs ?? [];
 	});
-
-	let allThemes = data?.themes ? (Array.from(data.themes.keys()) as string[]) : [];
-	const desiredThemes = ['(1ºCEB) PORTUGUÊS', '1ºCEB-ESTUDO DO MEIO', '(1ºCEB) MATEMÁTICA'];
-	let initialThemes = allThemes.filter((theme) => desiredThemes.includes(theme));
+	
 	let parameters: Parameter[] = data.parameters;
-	let isLoading = false;
 	let errorMessage = '';
 
 	let totalPages = data.totalPages ?? 1;
 	let perPage = data.perPage ?? 9;
+	let countSign = data.countSign ?? 0;
+
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
 	});
-
-	let countSign = data.countSign ?? 0;
 	const theme = queryParam('theme', arrayQueryParam());
-
 	const annotation = queryParam('annotation', arrayQueryParam());
-
 	const page = queryParam('page', stringQueryParam(), {
 		debounceHistory: 250,
 	});
@@ -74,27 +68,15 @@
 
 <div>
 	<div
-		class="container mx-auto flex flex-auto flex-row items-center justify-center overflow-x-auto py-5"
+		class="container mx-auto flex flex-auto flex-col items-start justify-start overflow-x-auto pb-5"
 	>
 		<SearchBar
 			{data}
 			{signs}
 			{parameters}
-			on:updateSigns={(e) => {
-				signs = e.detail;
-			}}
-			on:updateIsFiltering={(e) => {
-				isFiltering = e.detail;
-			}}
-			on:updateCountSign={(e) => {
-				countSign = e.detail;
-			}}
 		/>
 	</div>
 	<div>
-		{#if isLoading}
-			<p class="loading">Loading...</p>
-		{/if}
 		{#if errorMessage}
 			<p class="error">{errorMessage}</p>
 		{/if}
@@ -102,7 +84,6 @@
 			<DictionaryView
 				{data}
 				{signs}
-				themes={isFiltering ? allThemes : initialThemes}
 				{parameters}
 				{isFiltering}
 			/>

@@ -57,6 +57,7 @@ const config = {
 					white: 'hsl(var(--brand-white) / <alpha-value>)',
 					grey: 'hsl(var(--brand-dark-grey) / <alpha-value>)',
 					surface: 'hsl(var(--brand-surface) / <alpha-value>)',
+					border: 'hsl(var(--brand-border) / <alpha-value>)',
 				},
 			},
 			borderRadius: {

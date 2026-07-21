@@ -4,9 +4,14 @@
 	import * as Command from '@/components//ui/command';
 	import * as Popover from '@/components//ui/popover';
 	import { Check, Funnel } from 'lucide-svelte';
+	import { queryParam } from 'sveltekit-search-params';
+	import { arrayQueryParam, stringQueryParam } from '@/utils';
 
 	export let filterValues: string[] | null = [];
 	export let tags: Map<string, number> = new Map();
+
+	const theme = queryParam('theme', arrayQueryParam());
+	const page = queryParam('page', stringQueryParam());
 
 	let open = false;
 
@@ -31,16 +36,29 @@
 
 <Popover.Root bind:open>
 	<Popover.Trigger asChild let:builder>
-		<Button builders={[builder]} variant="outline" class="w-10 p-0 md:w-auto md:px-4 md:py-2">
+		<Button builders={[builder]} variant="outline" class="flex-none min-w-10 text-base text-brand-blue border-brand-border rounded-lg px-4 py-2">
 			<div class="relative flex items-center">
 				<Funnel class="h-4 w-4" /> &nbsp; Filtrar
 			</div>
 		</Button>
 	</Popover.Trigger>
-	<Popover.Content class="mt-2 w-[200px] p-0" align="start" side="bottom">
+	<Popover.Content class="mt-2 w-[350px] p-0 rounded-lg border border-brand-border" align="start" side="bottom">
 		<Command.Root filter={customFilter}>
 			<Command.Input placeholder="Filtrar por" />
 			<Command.List>
+				{#if filterValues && filterValues.length > 0}
+					<Command.Separator />
+					<Command.Item
+						class="justify-center text-center rounded-none shadow-sm"
+						onSelect={() => {
+							filterValues = [];
+							theme.set([]);
+							page.set('1');
+						}}
+					>
+						Limpar Filtros
+					</Command.Item>
+				{/if}
 				<Command.Empty>Não foram encontrados temas.</Command.Empty>
 				<Command.Group>
 					{#each tags as tag}
@@ -48,6 +66,8 @@
 							value={tag[0]}
 							onSelect={(currentValue) => {
 								handleSelect(currentValue);
+								theme.set(Array.isArray(filterValues) ? filterValues : []);
+								page.set('1');
 							}}
 						>
 							<div
@@ -63,23 +83,12 @@
 							<span>
 								{tag[0]}
 							</span>
-							<span class="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+							<span class="ml-auto flex h-4 w-4 items-center justify-center text-xs">
 								{tag[1]}
 							</span>
 						</Command.Item>
 					{/each}
 				</Command.Group>
-				{#if filterValues && filterValues.length > 0}
-					<Command.Separator />
-					<Command.Item
-						class="justify-center text-center"
-						onSelect={() => {
-							filterValues = [];
-						}}
-					>
-						Limpar Filtros
-					</Command.Item>
-				{/if}
 			</Command.List>
 		</Command.Root>
 	</Popover.Content>

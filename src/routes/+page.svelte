@@ -17,11 +17,11 @@
 				alt="Dicionário LGP"
 				class="relative z-10 w-full max-w-[760px]"
 			/>
-			<h1 class="relative z-10 mt-7 text-2xl font-extrabold text-brand-dark sm:text-3xl">
+			<h1 class="relative z-10 mt-7 text-2xl font-extrabold text-brand-dark md:text-3xl">
 				O Dicionário Online de Língua Gestual Portuguesa
 			</h1>
 			<p
-				class="relative z-10 mt-5 max-w-3xl text-base font-semibold leading-relaxed text-brand-grey sm:text-lg"
+				class="relative z-10 mt-5 max-w-3xl text-base font-semibold leading-7 text-foreground md:text-lg"
 			>
 				Descubra, aprenda e partilhe a Língua Gestual Portuguesa através de recursos digitais
 				acessíveis, educativos e colaborativos.
@@ -56,8 +56,8 @@
 		class="mx-auto grid max-w-[1920px] scroll-mt-24 items-center gap-10 px-7 py-20 sm:px-10 lg:grid-cols-2 lg:gap-20 lg:py-28"
 	>
 		<div class="max-w-xl">
-			<h2 class="text-3xl font-black text-brand-dark sm:text-4xl">Dicionário Geral</h2>
-			<p class="mt-8 text-base leading-7 text-foreground sm:text-lg">
+			<h2 class="text-2xl font-black text-brand-dark md:text-3xl">Dicionário Geral</h2>
+			<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 				Com mais de <strong>2000 entradas</strong> anotadas, este Dicionário tem um motor de
 				pesquisa
 				<strong>único</strong>, sendo possível pesquisar um gesto por <strong>texto</strong> ou
@@ -94,8 +94,8 @@
 					/>
 				</div>
 				<div class="order-1 text-left lg:order-2 lg:text-right">
-					<h2 class="text-3xl font-black text-brand-dark sm:text-4xl">Dicionário 1º Ciclo</h2>
-					<p class="mt-8 text-base leading-7 text-foreground sm:text-lg">
+					<h2 class="text-2xl font-black text-brand-dark md:text-3xl">Dicionário 1º Ciclo</h2>
+					<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 						Um recurso pensado para a aprendizagem bilingue LGP-Português no 1º Ciclo. Pesquise por
 						texto ou através dos seus parâmetros.
 					</p>
@@ -108,8 +108,8 @@
 
 			<div class="grid items-center gap-9 lg:grid-cols-2 lg:gap-20">
 				<div>
-					<h2 class="text-3xl font-black text-brand-dark sm:text-4xl">LGP4Fun</h2>
-					<p class="mt-8 text-base leading-7 text-foreground sm:text-lg">
+					<h2 class="text-2xl font-black text-brand-dark md:text-3xl">LGP4Fun</h2>
+					<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 						Um jogo interativo para dois jogadores, com quatro níveis progressivos para aprender
 						Língua Gestual Portuguesa e Português de forma divertida.
 					</p>
@@ -142,8 +142,8 @@
 			/>
 		</div>
 		<div class="text-left lg:text-right">
-			<h2 class="text-3xl font-black text-brand-dark sm:text-4xl">Propor Gestos</h2>
-			<p class="mt-8 text-base leading-7 text-foreground sm:text-lg">
+			<h2 class="text-2xl font-black text-brand-dark md:text-3xl">Propor Gestos</h2>
+			<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 				A comunidade faz o Dicionário crescer! Proponha novos termos e participe nas discussões,
 				comentando e votando nas propostas.
 			</p>

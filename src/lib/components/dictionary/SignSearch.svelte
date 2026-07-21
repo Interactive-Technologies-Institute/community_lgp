@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
-	import { createEventDispatcher } from 'svelte';
-	import { afterNavigate, pushState } from '$app/navigation';
-	import { Search } from 'lucide-svelte';
+	import type { Parameter, Sign } from '@/types/types';
+	import { afterNavigate } from '$app/navigation';
+	import { Search, X } from 'lucide-svelte';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import { queryParam } from 'sveltekit-search-params';
 	import AnnotationTab from './AnnotationTab.svelte';
-	import { stringify } from 'postcss';
 	import AnnotationShowcase from './AnnotationShowcase.svelte';
 
 	export let data;
@@ -16,160 +14,104 @@
 	export let signs: Sign[] = [];
 
 	const page = queryParam('page', stringQueryParam());
-	const dispatch = createEventDispatcher();
 	const annotation = queryParam('annotation', arrayQueryParam());
 
-	let searchArray = Array(300).fill(0);
 	let selectedParameterIds: number[] = [];
-	let isFiltering = false;
 	let hasLoadedFromAnnotation = false;
 
-	let committedParameterIds: number[] = [];
-	$: committedParameters = getParametersById(committedParameterIds);
+	$: selectedParameters = getParametersById(selectedParameterIds);
 
-	$: currentPageNumber = parseInt($page ?? '') || 1;
-
-	$: if ($annotation && $annotation.length > 0 && !isFiltering && !hasLoadedFromAnnotation) {
+	$: if ($annotation && $annotation.length > 0 && !hasLoadedFromAnnotation) {
 		hasLoadedFromAnnotation = true;
 		selectedParameterIds = $annotation.map((id: string) => parseInt(id));
-		committedParameterIds = [...selectedParameterIds];
-		searchArray = Array(300).fill(0);
-		selectedParameterIds.forEach((id) => {
-			if (id > 0 && id <= 300) {
-				searchArray[id - 1] = 1;
-			}
-		});
-		searchSigns();
 	}
 
 	function getParametersById(ids: number[]) {
-    	return parameters.filter((param) => ids.includes(param.id))
+		return parameters.filter((param) => ids.includes(param.id));
 	}
-
-	async function searchSigns() {
-		try {
-			const type = window.location.pathname.split('/')[1]; // Get the type from the URL
-			let apiUrl = '';
-
-			if (type === 'dictionary') {
-				apiUrl = '/api/dictionary/search';
-			} else if (type === 'fcdictionary') {
-				apiUrl = '/api/fcdictionary/search';
-			} else {
-				console.error('Invalid type parameter in URL');
-				return;
-			}
-
-			const limit = 9;
-			const currentPage = currentPageNumber;
-			const offset = (currentPage - 1) * limit;
-
-			const response = await fetch(apiUrl, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ searchArray, limit, offset }),
-			});
-
-			if (!response.ok) {
-				console.error(`Failed to fetch signs on ${type}`);
-				return;
-			}
-			const data = await response.json();
-			signs = data.signs;
-
-			dispatch('updateSigns', signs);
-			dispatch('updateIsFiltering', (isFiltering = true));
-			dispatch('updateCountSign', 90);
-		} catch (error) {
-			console.error('Error fetching signs:', error);
-		}
-	}
-
-	$: searchArray = (() => {
-		const arr = Array(300).fill(0);
-		selectedParameterIds.forEach((id) => {
-			if (id > 0 && id <= 300) {
-				arr[id - 1] = 1;
-			}
-		});
-		return arr;
-	})();
 
 	function applySearch() {
-		committedParameterIds = [...selectedParameterIds];
 		annotation.set(selectedParameterIds.map(String));
 		page.set('1');
-		searchSigns();
 	}
-	let openTab = '';
+
+	function removeSelectedParameter(id: number) {
+		selectedParameterIds = selectedParameterIds.filter((parameterId) => parameterId !== id);
+		annotation.set(selectedParameterIds.map(String));
+		page.set('1');
+	}
 
 	afterNavigate(() => {
 		signs = signs ?? [];
 	});
-
-	$: if (isFiltering && $page) {
-		searchSigns();
-	}
 </script>
 
-<div class="flex-col">
-<div class="flex">
-	<Tabs.Root value="configuracao">
-	<Tabs.List>
-		<AnnotationTab
-			{parameters}
-			value="configuracao"
-			displayName="Configuração"
-			bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab
-			{parameters}
-			value="localizacao"
-			displayName="Localização"
-			bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab
-			{parameters}
-			value="orientacao"
-			displayName="Orientação"
-			bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab {parameters} value="movimento" displayName="Movimento" bind:selectedParameterIds
-		></AnnotationTab>
-		<AnnotationTab
-			{parameters}
-			value="expressao facial"
-			displayName="Expressão Facial"
-			bind:selectedParameterIds
-		></AnnotationTab>
-	</Tabs.List>
-</Tabs.Root>
+<div class="flex w-full min-w-0 flex-1 flex-col gap-4">
+	<div class="flex w-full min-w-0 flex-1 gap-0">
+		<AnnotationShowcase
+			data={selectedParameters}
+			removable
+			on:remove={(event) => removeSelectedParameter(event.detail)}
+		/>
+		{#if selectedParameterIds.length > 0}
+			<Button
+				variant="outline"
+				class="h-auto shrink-0 rounded-none border border-brand-border bg-red-100 p-1 hover:bg-red-200"
+				on:click={() => {
+					selectedParameterIds = [];
+					annotation.set([]);
+					page.set('1');
+				}}
+			>
+				<X class="h-5 w-5 text-red-500" />
+			</Button>
+		{/if}
+		<div class="flex shrink-0 justify-end">
+			<Button
+				class="h-auto rounded-l-none rounded-r-lg bg-brand-blue text-brand-white"
+				on:click={() => {
+					applySearch();
+				}}><Search /></Button
+			>
+		</div>
+	</div>
 
-<div class="flex justify-end px-2">
-	<Button
-		on:click={() => {
-			applySearch();
-		}}><Search /></Button
-	>
-</div>
-</div>
-
-<div class="flex items-center justify-center gap-2">
-	<AnnotationShowcase data={committedParameters}/>
-	{#if committedParameterIds.length > 0}
-		<Button
-			variant="outline"
-			on:click={() => {
-				committedParameterIds = [];
-				selectedParameterIds = [];
-				annotation.set([]);
-			}}
-		>
-			Limpar pesquisa
-		</Button>
-	{/if}
-</div>
-
+	<div class="flex w-full min-w-0 flex-1 flex-row">
+		<Tabs.Root value="configuracao" class="flex w-full min-w-0 flex-1">
+			<Tabs.List
+				class="grid h-auto w-full min-w-0 flex-1 grid-cols-2 gap-2 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-5"
+			>
+				<AnnotationTab
+					{parameters}
+					value="configuracao"
+					displayName="Configuração"
+					bind:selectedParameterIds
+				></AnnotationTab>
+				<AnnotationTab
+					{parameters}
+					value="localizacao"
+					displayName="Localização"
+					bind:selectedParameterIds
+				></AnnotationTab>
+				<AnnotationTab
+					{parameters}
+					value="orientacao"
+					displayName="Orientação"
+					bind:selectedParameterIds
+				></AnnotationTab>
+				<AnnotationTab
+					{parameters}
+					value="movimento"
+					displayName="Movimento"
+					bind:selectedParameterIds
+				></AnnotationTab>
+				<AnnotationTab
+					{parameters}
+					value="expressao facial"
+					displayName="Expressão Facial"
+					bind:selectedParameterIds
+				></AnnotationTab>
+			</Tabs.List>
+		</Tabs.Root>
+	</div>
 </div>

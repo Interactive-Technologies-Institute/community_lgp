@@ -13,7 +13,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		if (signsError) {
 			return new Response(
-				JSON.stringify({ error: `Error fetching signs: ${signsError.message}` }),
+				JSON.stringify({
+					error: `Error fetching signs: ${signsError.message}`,
+					details: signsError,
+				}),
 				{
 					status: 500,
 				}
