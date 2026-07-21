@@ -77,7 +77,7 @@
 	</div>
 
 	<div class="flex w-full min-w-0 flex-1 flex-row">
-		<Tabs.Root value="configuracao" class="flex w-full min-w-0 flex-1">
+		<Tabs.Root value=" " class="flex w-full min-w-0 flex-1">
 			<Tabs.List
 				class="grid h-auto w-full min-w-0 flex-1 grid-cols-2 gap-2 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-5"
 			>

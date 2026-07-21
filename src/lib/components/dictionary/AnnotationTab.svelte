@@ -35,7 +35,7 @@
 	<Popover.Trigger class="flex min-w-0 flex-1 bg-brand-surface">
 		<Tabs.Trigger
 			{value}
-			class="min-h-8 min-w-0 flex-1 whitespace-normal px-2 text-center text-sm sm:text-base"
+			class="min-h-8 min-w-0 flex-1 whitespace-normal px-2 text-center text-sm sm:text-base data-[state=active]:text-brand-blue data-[state=active]:bg-brand-white"
 			on:click={() => (openTab = openTab === value ? '' : value)}
 		>
 			<span class="min-w-0 break-words leading-tight">{displayName}</span>
@@ -48,7 +48,7 @@
 	</Popover.Trigger>
 
 	<Popover.Content
-		class="flex max-h-[400px] h-auto max-w-[1000px] w-auto flex-1 overflow-y-scroll p-4"
+		class="flex max-h-[400px] h-auto max-w-[900px] w-auto flex-1 overflow-y-scroll p-4 border border-brand-border drop-shadow-lg"
 		side="bottom"
 		sideOffset={8}
 		avoidCollisions={false}
@@ -58,8 +58,8 @@
 					{#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? '') || ['2ebj'].includes(parent.code?.toLowerCase() ?? ''))}
 						<Card.Root
 							class="min-w-0 {selectedParameterIds.includes(parent.id)
-								? 'border-4 border-solid border-blue-500'
-								: 'border'} bg-white"
+								? 'border-2 border-solid border-brand-blue'
+								: 'border border-brand-border'} bg-white"
 						>
 							<Card.Content class="flex min-w-0 flex-1 flex-col items-center gap-2 p-2">
 								{#if parent.image}
@@ -90,7 +90,7 @@
 														class="flex cursor-pointer flex-col items-center justify-center rounded-md text-center text-xs {selectedParameterIds.includes(
 															child.id
 														)
-															? 'border-4 border-solid border-blue-500'
+															? 'border-2 border-solid border-brand-blue'
 															: ''}"
 														on:click={() => toggleParameter(child)}
 													>
@@ -111,7 +111,7 @@
 														class="flex cursor-pointer flex-col items-center justify-center rounded-md text-center text-xs {selectedParameterIds.includes(
 															child.id
 														)
-															? 'border-4 border-solid border-blue-500'
+															? 'border-2 border-solid border-brand-blue'
 															: ''}"
 														on:click={() => toggleParameter(child)}
 													>

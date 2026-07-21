@@ -34,7 +34,7 @@
 					<div class="showcase-grid">
 						{#each filteredData as parameter}
 							<div
-								class="overflow-visible showcase-tile relative flex min-w-0 flex-col items-center justify-center rounded-lg border bg-brand-white shadow-sm"
+								class="overflow-visible showcase-tile relative flex min-w-0 flex-col items-center justify-center rounded-lg border border-brand-border bg-brand-white shadow-sm"
 							>
 								{#if removable}
 									<button

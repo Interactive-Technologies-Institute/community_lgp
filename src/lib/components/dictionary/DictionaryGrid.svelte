@@ -25,10 +25,10 @@
 	{#each signs as sign (sign.id)}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<Card.Root class="rounded-2xl">
+		<Card.Root class="rounded-2xl border border-brand-border">
 			<Card.Content class="flex items-center justify-center p-3" on:click={() => goto(`dictionary/sign/${sign.id}`)}>
 				<div class="flex w-full flex-col" on:click={() => goto(`dictionary/sign/${sign.id}`)}>
-					<video class="aspect-video w-full rounded-xl" controls muted>
+					<video class="aspect-video w-full rounded-b-none rounded-t-xl" controls muted>
 						<source src={sign.video} type="video/mp4" />
 						Your browser does not support the video tag.
 					</video>
@@ -37,7 +37,7 @@
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each sign.theme as t}
 							{#if t}
-								<Badge class="w-fit" variant="outline">{t}</Badge>
+								<Badge class="w-fit border border-brand-border bg-brand-surface" variant="outline">{t}</Badge>
 							{/if}
 						{/each}
 						<AnnotationGrid data={getParameters(sign.annotation)} />

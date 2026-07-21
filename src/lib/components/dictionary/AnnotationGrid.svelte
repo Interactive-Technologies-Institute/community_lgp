@@ -20,10 +20,10 @@
 	
 </script>
 
-<div class="mt-2 flex flex-wrap gap-2">
+<div class="mt-2 flex flex-wrap w-full gap-3">
 	{#each sortParameters(data).filter((p) => p.code !== 'F000') as parameter}
 		<Card.Root
-			class="flex h-[70px] w-[70px] items-center justify-center overflow-hidden rounded-xl bg-white shadow"
+			class="flex h-[70px] w-[70px] items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm border border-brand-border"
 		>
 			{#if parameter.image}
 				<img

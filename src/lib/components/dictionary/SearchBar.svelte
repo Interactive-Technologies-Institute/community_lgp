@@ -61,7 +61,7 @@
 
 <div class="flex w-full min-w-0 flex-1">
 	<Card.Root
-		class="w-full min-w-0 rounded-2xl border border-brand-border bg-brand-surface p-3 shadow-sm"
+		class="w-full min-w-0 rounded-2xl border border-brand-border bg-brand-surface p-3 shadow-md"
 	>
 		<div class="flex min-w-0 flex-auto flex-col">
 			<Tabs.Root value="gesto">
