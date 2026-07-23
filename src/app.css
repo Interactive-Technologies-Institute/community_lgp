@@ -33,6 +33,13 @@
 		--radius: 0.5rem;
 	}
 	.dark {
+		--brand-dark-blue: 240 60% 38%;
+		--brand-blue: 210 100% 60%;
+		--brand-yellow: 52 80% 63%;
+		--brand-white: 0 0% 100%;
+		--brand-dark-grey: 0 0% 20%;
+		--brand-surface: 209 100% 96%;
+		--brand-border: 210 100% 86.27%;
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;

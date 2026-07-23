@@ -21,7 +21,7 @@
 <div class="flex flex-1">
     <Input
         placeholder="Escreva uma palavra ou expressão para pesquisar..."
-        class="flex flex-1 min-w-0 h-10 px-4 bg-brand-white border border-brand-border rounded-l-lg rounded-r-none truncate text-base placeholder:text-foreground/60"
+        class="flex flex-1 min-w-0 h-10 px-4 bg-brand-white dark:bg-brand-surface border border-brand-border rounded-l-lg rounded-r-none truncate text-base placeholder:text-foreground/60"
         bind:value={localSearch}
         on:keydown={(e) => {
             if (e.key === 'Enter') doSearch();

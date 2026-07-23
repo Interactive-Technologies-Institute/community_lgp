@@ -35,7 +35,7 @@
 	<Popover.Trigger class="flex min-w-0 flex-1 bg-brand-surface">
 		<Tabs.Trigger
 			{value}
-			class="min-h-8 min-w-0 flex-1 whitespace-normal px-2 text-center text-sm sm:text-base data-[state=active]:text-brand-blue data-[state=active]:bg-brand-white"
+			class="min-h-8 min-w-0 flex-1 whitespace-normal px-2 text-center text-sm sm:text-base data-[state=active]:text-brand-blue data-[state=active]:bg-brand-white dark:data-[state=active]:bg-brand-surface"
 			on:click={() => (openTab = openTab === value ? '' : value)}
 		>
 			<span class="min-w-0 break-words leading-tight">{displayName}</span>
@@ -59,7 +59,7 @@
 						<Card.Root
 							class="min-w-0 {selectedParameterIds.includes(parent.id)
 								? 'border-2 border-solid border-brand-blue'
-								: 'border border-brand-border'} bg-white"
+								: 'border border-brand-border'} bg-brand-white"
 						>
 							<Card.Content class="flex min-w-0 flex-1 flex-col items-center gap-2 p-2">
 								{#if parent.image}

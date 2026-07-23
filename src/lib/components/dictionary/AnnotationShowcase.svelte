@@ -24,7 +24,7 @@
 
 <div class="flex w-full min-w-0 flex-1">
 	<Card.Root
-		class={`flex w-full min-w-0 flex-1 rounded-l-lg rounded-r-none border border-brand-border bg-brand-white ${
+		class={`flex w-full min-w-0 flex-1 rounded-l-lg rounded-r-none border border-brand-border bg-brand-white dark:bg-brand-surface ${
 			filteredData.length > 0 ? 'min-h-28' : 'h-10'
 		}`}
 	>

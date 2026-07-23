@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowRight } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
+	import { mode } from 'mode-watcher';
 	export let data;
 	$: ({ branding } = data);
 </script>
@@ -13,11 +14,11 @@
 			class="relative mx-auto flex h-screen w-full max-w-[1920px] flex-col items-center justify-center overflow-hidden rounded-[32px] bg-brand-surface px-6 py-16 text-center sm:px-10"
 		>
 			<img
-				src="/branding/logo-dark.svg"
+				src={$mode === 'dark' ? '/branding/logo-light.svg' : '/branding/logo-dark.svg'}
 				alt="Dicionário LGP"
 				class="relative z-10 w-full max-w-[760px]"
 			/>
-			<h1 class="relative z-10 mt-7 text-2xl font-extrabold text-brand-dark md:text-3xl">
+			<h1 class="relative z-10 mt-7 text-2xl font-extrabold text-brand-dark dark:text-foreground md:text-3xl">
 				O Dicionário Online de Língua Gestual Portuguesa
 			</h1>
 			<p
@@ -56,7 +57,7 @@
 		class="mx-auto grid max-w-[1920px] scroll-mt-24 items-center gap-10 px-7 py-20 sm:px-10 lg:grid-cols-2 lg:gap-20 lg:py-28"
 	>
 		<div class="max-w-xl">
-			<h2 class="text-2xl font-black text-brand-dark md:text-3xl">Dicionário Geral</h2>
+			<h2 class="text-2xl font-black text-brand-dark dark:text-foreground md:text-3xl">Dicionário Geral</h2>
 			<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 				Com mais de <strong>2000 entradas</strong> anotadas, este Dicionário tem um motor de
 				pesquisa
@@ -82,7 +83,7 @@
 
 	<section class="px-3 sm:px-5">
 		<div
-			class="mx-auto max-w-[1920px] space-y-14 rounded-[32px] bg-brand-yellow/60 px-5 py-8 sm:px-8 sm:py-10 lg:space-y-16"
+			class="mx-auto max-w-[1920px] space-y-14 rounded-[32px] bg-brand-yellow/60 dark:bg-transparent dark:border dark:border-brand-yellow px-5 py-8 sm:px-8 sm:py-10 lg:space-y-16"
 		>
 			<div class="grid items-center gap-9 lg:grid-cols-2 lg:gap-20">
 				<div class="overflow-hidden rounded-xl bg-muted shadow-md">
@@ -94,7 +95,7 @@
 					/>
 				</div>
 				<div class="order-1 text-left lg:order-2 lg:text-right">
-					<h2 class="text-2xl font-black text-brand-dark md:text-3xl">Dicionário 1º Ciclo</h2>
+					<h2 class="text-2xl font-black text-brand-dark dark:text-brand-yellow md:text-3xl">Dicionário 1º Ciclo</h2>
 					<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 						Um recurso pensado para a aprendizagem bilingue LGP-Português no 1º Ciclo. Pesquise por
 						texto ou através dos seus parâmetros.
@@ -108,7 +109,7 @@
 
 			<div class="grid items-center gap-9 lg:grid-cols-2 lg:gap-20">
 				<div>
-					<h2 class="text-2xl font-black text-brand-dark md:text-3xl">LGP4Fun</h2>
+					<h2 class="text-2xl font-black text-brand-dark dark:text-brand-yellow md:text-3xl">LGP4Fun</h2>
 					<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 						Um jogo interativo para dois jogadores, com quatro níveis progressivos para aprender
 						Língua Gestual Portuguesa e Português de forma divertida.
@@ -142,7 +143,7 @@
 			/>
 		</div>
 		<div class="text-left lg:text-right">
-			<h2 class="text-2xl font-black text-brand-dark md:text-3xl">Propor Gestos</h2>
+			<h2 class="text-2xl font-black text-brand-dark dark:text-foreground md:text-3xl">Propor Gestos</h2>
 			<p class="mt-8 text-base leading-7 text-foreground md:text-lg">
 				A comunidade faz o Dicionário crescer! Proponha novos termos e participe nas discussões,
 				comentando e votando nas propostas.

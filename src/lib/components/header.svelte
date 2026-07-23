@@ -22,7 +22,7 @@
 			<MobileNav role={'user'} />
 		{/if}
 		<div class="ml-auto flex items-center gap-x-2 sm:gap-x-4 md:justify-end">
-			<!-- <ModeToggle /> -->
+			<ModeToggle />
 			{#if profile && role}
 				<NotificationsButton {notifications} />
 				<UserNav {role} {profile} />

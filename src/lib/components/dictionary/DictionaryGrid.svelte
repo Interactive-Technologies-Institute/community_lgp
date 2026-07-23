@@ -33,11 +33,11 @@
 						Your browser does not support the video tag.
 					</video>
 					<a href="/dictionary/sign/{sign.id}" 
-					 class="pt-4 text-lg">{sign.name}</a>
+					 class="pt-4 text-lg font-medium">{sign.name}</a>
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each sign.theme as t}
 							{#if t}
-								<Badge class="w-fit border border-brand-border bg-brand-surface" variant="outline">{t}</Badge>
+								<Badge class="w-fit border border-brand-border bg-brand-surface dark:bg-brand-border/60" variant="outline">{t}</Badge>
 							{/if}
 						{/each}
 						<AnnotationGrid data={getParameters(sign.annotation)} />

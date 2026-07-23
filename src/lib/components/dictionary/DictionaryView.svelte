@@ -16,7 +16,7 @@
 					aria-hidden="true"
 					class="h-32 lg:h-40"
 				/>
-				<p class="py-8 text-center text-gray-500">Comece a sua pesquisa por um gesto</p>
+				<p class="py-8 text-center text-foreground/80">Comece a sua pesquisa por um gesto</p>
 		</div>
 	{:else}
 		<!-- When filtering, show all results in one grid -->
