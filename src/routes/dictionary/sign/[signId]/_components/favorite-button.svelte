@@ -21,25 +21,37 @@
 		},
 	});
 
-	const { form: formData, enhance, submit } = form;
+	const { form: formData, enhance, submit, submitting } = form;
 
 	async function toggleFavorite() {
+		if ($submitting) return;
+
 		$formData.value = !$formData.value;
 		count += $formData.value ? 1 : -1;
 		await tick();
-		submit();
+
+		try {
+			await submit();
+		} catch (err) {
+			console.error('Submit failed:', err);
+		}
 	}
 </script>
 
-<form method="POST" action="?/toggleFavorite" use:enhance>
+<form method="POST" action="?/toggleFavorite" use:enhance class="min-w-0">
 	<input type="hidden" name="value" value={$formData.value} />
-	<Button type="button" on:click={toggleFavorite} variant="outline" class="rounded-xl">
-		<Star class={cn('mr-2 h-4 w-4', { 'fill-foreground': $formData.value })} />
-		{#if $formData.value}
-			Adicionado aos favoritos
-		{:else}
-			Adicionar aos favoritos
-		{/if}
-		<span class="ml-4 font-mono text-xs">{count}</span>
+	<Button 
+		type="button" 
+		on:click={toggleFavorite} 
+		variant="outline"
+		data-selected={$formData.value}
+		aria-pressed={$formData.value}
+		aria-label={`${$formData.value ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}. ${count} ${count === 1 ? 'favorito' : 'favoritos'}`}
+		disabled={$submitting} 
+		class="h-16 w-full justify-center gap-3 rounded-xl border px-4 bg-brand-white text-brand-grey hover:border-brand-yellow hover:bg-brand-yellow/10 data-[selected=true]:border-brand-yellow data-[selected=true]:bg-brand-yellow/15">
+		<Star class={cn('h-6 w-6 shrink-0 transition hover:scale-110', { 'fill-brand-yellow': $formData.value })} />
+		<span class="min-w-0 text-left leading-tight">
+			<p class="block truncate font-semibold">Favorito</p>
+		</span>
 	</Button>
 </form>

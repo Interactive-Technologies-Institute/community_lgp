@@ -128,8 +128,6 @@
 				name={selected.name}
 				id={selected.id}
 				fill="#2c3e50"
-				stroke="#fff"
-				stroke-width="2"
 				vector-effect="non-scaling-stroke"
 			/>
 		</svg>

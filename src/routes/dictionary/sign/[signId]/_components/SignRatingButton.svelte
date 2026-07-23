@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { Button } from '@/components/ui/button';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { cn } from '@/utils';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toggleSignRatingSchema, type ToggleSignRatingSchema } from '@/schemas/sign';
 	import { ThumbsUp, ThumbsDown } from 'lucide-svelte';
@@ -22,7 +24,7 @@
 		},
 	});
 
-	const { form: formData, enhance, submit } = form;
+	const { form: formData, enhance, submit, submitting } = form;
 
 	function calculateRate(posVotes: number, negVotes: number) {
 		const total = posVotes + negVotes;
@@ -31,9 +33,12 @@
 	}
 
 	async function selectRating(val: number) {
+		if ($submitting) return;
+
 		const newValue = currentValue === val ? null : val;
 		$formData.value = newValue === null ? '' : newValue.toString();
 		await tick();
+		
 		try {
 			await submit();
 		} catch (err) {
@@ -42,33 +47,39 @@
 	}
 </script>
 
-<form method="POST" action="?/toggleRating" use:enhance>
+<form method="POST" action="?/toggleRating" use:enhance class="min-w-0">
 	<input type="hidden" name="value" value={$formData.value} />
-	<div class="mb-5 flex items-start justify-start text-sm">O que acha desta entrada de gesto?</div>
-	<div class="flex flex-col items-center">
-		<div class="flex items-center justify-between gap-x-48">
-			<div class="flex flex-col items-center justify-center space-y-1">
-				<button type="button" class="transition hover:scale-110" on:click={() => selectRating(1)}>
-					<ThumbsUp size="48" class={currentValue === 1 ? 'text-green-500' : 'text-gray-400'} />
-				</button>
-				<span class={`text-sm ${currentValue === 1 ? 'text-green-500' : 'text-gray-400'}`}
-					>Gosto!</span
-				>
-				<div class="text-gray-600">({positiveNumber})</div>
-			</div>
+	<div class="grid grid-cols-2 gap-3">
+		<Button 
+			on:click={() => selectRating(1)}
+			variant="outline"
+			data-selected={Number($formData.value) === 1}
+			aria-pressed={Number($formData.value) === 1}
+			aria-label={`Gosto. ${positiveNumber} ${positiveNumber === 1 ? 'voto' : 'votos'}`}
+			disabled={$submitting}
+			class="h-16 w-full justify-start gap-3 rounded-xl border px-4 bg-brand-white text-brand-grey hover:border-brand-blue hover:bg-brand-blue/10 data-[selected=true]:border-brand-blue data-[selected=true]:bg-brand-blue/10" 
+		>
+			<ThumbsUp class={cn('h-5 w-5 shrink-0 transition hover:scale-110', { 'fill-brand-blue': $formData.value === 1 })} />
+			<span class="min-w-0 text-left leading-tight">
+				<p class="block truncate font-semibold">Gosto</p>
+				<p class="block text-xs tabular-nums text-brand-grey">{positiveNumber}</p>
+			</span>
+		</Button>
 
-			<div class="flex flex-col items-center justify-center space-y-1">
-				<button type="button" class="transition hover:scale-110" on:click={() => selectRating(-1)}>
-					<ThumbsDown size="48" class={currentValue === -1 ? 'text-red-500' : 'text-gray-400'} />
-				</button>
-				<span class={`text-sm ${currentValue === -1 ? 'text-red-500' : 'text-gray-400'}`}
-					>Não gosto.</span
-				>
-				<div class="text-gray-600">({negativeNumber})</div>
-			</div>
-		</div>
-		<div class="text-center font-medium text-gray-700">
-			{calculateRate(positiveNumber, negativeNumber)}% das pessoas aprovam este gesto!
-		</div>
+		<Button
+			on:click={() => selectRating(-1)}
+			variant="outline"
+			data-selected={Number($formData.value) === -1}
+			aria-pressed={Number($formData.value) === -1}
+			aria-label={`Não gosto. ${negativeNumber} ${negativeNumber === 1 ? 'voto' : 'votos'}`}
+			disabled={$submitting}
+			class="h-16 w-full justify-start gap-3 rounded-xl border px-4 bg-brand-white text-brand-grey hover:border-destructive hover:bg-destructive/10 data-[selected=true]:border-destructive data-[selected=true]:bg-destructive/10" 
+		>
+			<ThumbsDown class={cn('h-5 w-5 shrink-0 transition hover:scale-110', { 'fill-destructive': $formData.value === -1 })} />
+			<span class="min-w-0 text-left leading-tight">
+				<p class="block truncate font-semibold">Não gosto</p>
+				<p class="block text-xs tabular-nums text-brand-grey">{negativeNumber}</p>
+			</span>
+		</Button>
 	</div>
 </form>

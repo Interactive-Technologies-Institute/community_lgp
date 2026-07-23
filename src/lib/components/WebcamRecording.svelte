@@ -125,23 +125,12 @@
 
 <!-- svelte-ignore a11y-media-has-caption -->
 <div>
-	{#if loading}
-		<h1>Loading camera...</h1>
-	{/if}
-
-	<video
-		class="rounded-2xl"
-		bind:this={videoElement}
-		width="640"
-		height="480"
-		style="max-width: 100%; height: auto;"
-	/>
-
-	<div class="mt-4 flex gap-2">
+	<div class="flex flex-wrap gap-4 justify-start pt-8 pb-4">
 		<Button
 			on:click={getCamera}
 			disabled={loading || activateCamera || isRecording}
 			variant={activateCamera ? 'secondary' : 'default'}
+			class="h-8 bg-brand-blue"
 		>
 			{#if loading}
 				Ativando...
@@ -156,6 +145,7 @@
 			on:click={startRecording}
 			disabled={isRecording || isPreview || !stream}
 			variant="default"
+			class="h-8 bg-brand-blue"
 		>
 			{#if isRecording}
 				Gravando...
@@ -164,12 +154,19 @@
 			{/if}
 		</Button>
 
-		<Button on:click={stopRecording} disabled={!isRecording} variant="destructive">
+		<Button on:click={stopRecording} disabled={!isRecording} variant="destructive" class="h-8">
 			Parar Gravação
 		</Button>
 
-		<Button on:click={reRecord} disabled={!isPreview} variant="outline">Voltar A Gravar</Button>
+		<Button on:click={reRecord} disabled={!isPreview} variant="outline" class="h-8">Voltar A Gravar</Button>
 	</div>
+	<video
+		class="rounded-2xl"
+		bind:this={videoElement}
+		width="640"
+		height="480"
+		style="max-width: 100%; height: auto;"
+	/>
 
 	{#if isPreview}
 		<p class="mt-2 text-sm text-green-600">
