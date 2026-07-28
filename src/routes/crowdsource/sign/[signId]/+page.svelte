@@ -55,7 +55,7 @@
 			return;
 		}
 
-		goto('/dictionary');
+		goto('/crowdsource');
 	}
 
 	function capitalize(district: string) {
@@ -79,15 +79,15 @@
 {#if sign}
 	<MetaTags
 		title={sign.name}
-		description={`Página do gesto ${sign.name} - Dicionário Geral`}
+		description={`Página do gesto ${sign.name} - Propor Gestos`}
 		openGraph={{
 			title: sign.name,
-			description: `Página do gesto ${sign.name} - Dicionário Geral`,
+			description: `Página do gesto ${sign.name} - Propor Gestos`,
 		}}
 		twitter={{
 			cardType: 'summary_large_image',
 			title: sign.name,
-			description: `Página do gesto ${sign.name} - Dicionário Geral`,
+			description: `Página do gesto ${sign.name} - Propor Gestos`,
 		}}
 	/>
 
@@ -161,7 +161,7 @@
 										<p class="pt-5 text-sm leading-relaxed text-brand-grey">
 											Esta entrada é uma variante do gesto
 											<a
-												href={`/dictionary/sign/${mainSign.id}`}
+												href={`/crowdsource/sign/${mainSign.id}`}
 												class="font-semibold text-brand-blue hover:underline"
 												rel="external"
 											>
@@ -214,7 +214,7 @@
 																			</video>
 
 																			<a
-																				href="/dictionary/sign/{sign.id}"
+																				href="/crowdsource/sign/{sign.id}"
 																				rel="external"
 																				class="text-lg font-medium">{sign.name}</a
 																			>
@@ -240,10 +240,20 @@
 
 							<!-- Community actions -->
 							<div class="space-y-3 flex flex-1 items-end">
+								<div class="grid grid-cols-1 gap-5 sm:grid-cols-[2fr_1fr]">
+									{#if sign.theme_flattened.includes('Proposta')}
+										<SignRatingButton
+											data={data.toggleRatingForm}
+											currentValue={data.currentRating}
+											positiveNumber={data.numberOfPositives ?? 0}
+											negativeNumber={data.numberOfNegatives ?? 0}
+										/>
+									{/if}
 									<FavoriteButton
 										count={data.numberOfFavorites ?? 0}
 										data={data.toggleSignFavoriteForm}
 									/>
+								</div>
 							</div>
 							
 						</div>
@@ -304,6 +314,21 @@
 										</Card.Root>
 									{/each}
 								</div>
+							</div>
+						{/if}
+
+						<!-- Description -->
+						{#if sign?.description?.includes(PUBLIC_R2_PUBLIC_URL) && sign?.theme_flattened?.includes('Proposta')}
+							<div class="space-y-2">
+								<p class="text-base font-semibold">Descrição da Proposta em Vídeo</p>
+								<video
+									class="aspect-video w-full rounded-2xl bg-brand-border object-contain shadow-sm"
+									controls
+									playsinline
+								>
+									<source src={sign?.description} />
+									Your browser does not support the video tag.
+								</video>
 							</div>
 						{/if}
 					</div>

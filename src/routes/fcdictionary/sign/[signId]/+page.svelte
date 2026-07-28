@@ -55,7 +55,7 @@
 			return;
 		}
 
-		goto('/dictionary');
+		goto('/fcdictionary');
 	}
 
 	function capitalize(district: string) {
@@ -79,15 +79,15 @@
 {#if sign}
 	<MetaTags
 		title={sign.name}
-		description={`Página do gesto ${sign.name} - Dicionário Geral`}
+		description={`Página do gesto ${sign.name} - Dicionário 1º Ciclo`}
 		openGraph={{
 			title: sign.name,
-			description: `Página do gesto ${sign.name} - Dicionário Geral`,
+			description: `Página do gesto ${sign.name} - Dicionário 1º Ciclo`,
 		}}
 		twitter={{
 			cardType: 'summary_large_image',
 			title: sign.name,
-			description: `Página do gesto ${sign.name} - Dicionário Geral`,
+			description: `Página do gesto ${sign.name} - Dicionário 1º Ciclo`,
 		}}
 	/>
 
@@ -161,7 +161,7 @@
 										<p class="pt-5 text-sm leading-relaxed text-brand-grey">
 											Esta entrada é uma variante do gesto
 											<a
-												href={`/dictionary/sign/${mainSign.id}`}
+												href={`/fcdictionary/sign/${mainSign.id}`}
 												class="font-semibold text-brand-blue hover:underline"
 												rel="external"
 											>
@@ -214,7 +214,7 @@
 																			</video>
 
 																			<a
-																				href="/dictionary/sign/{sign.id}"
+																				href="/fcdictionary/sign/{sign.id}"
 																				rel="external"
 																				class="text-lg font-medium">{sign.name}</a
 																			>

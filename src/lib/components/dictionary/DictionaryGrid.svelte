@@ -19,6 +19,19 @@
 		});
 		return parameterFilter;
 	}
+
+	function goToDictionary(signId: number) {
+		const type = window.location.pathname.split('/')[1]; // Get the type from the URL
+
+		if (type === 'dictionary') {
+			return goto(`/dictionary/sign/${signId}`);
+		} else if (type === 'fcdictionary') {
+			return goto(`/fcdictionary/sign/${signId}`);
+		} else {
+			console.error('Invalid type parameter in URL');
+			return;
+		}
+	}
 </script>
 
 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
@@ -26,14 +39,13 @@
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<Card.Root class="rounded-2xl border border-brand-border">
-			<Card.Content class="flex items-center justify-center p-3" on:click={() => goto(`dictionary/sign/${sign.id}`)}>
-				<div class="flex w-full flex-col" on:click={() => goto(`dictionary/sign/${sign.id}`)}>
+			<Card.Content class="flex items-center justify-center p-3" on:click={() => goToDictionary(sign.id)}>
+				<div class="flex w-full flex-col" on:click={() => goToDictionary(sign.id)}>
 					<video class="aspect-video w-full rounded-b-none rounded-t-xl" controls muted>
 						<source src={sign.video} type="video/mp4" />
 						Your browser does not support the video tag.
 					</video>
-					<a href="/dictionary/sign/{sign.id}" 
-					 class="pt-4 text-lg font-medium">{sign.name}</a>
+					<p class="pt-4 text-lg font-medium">{sign.name}</p> 
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each sign.theme as t}
 							{#if t}

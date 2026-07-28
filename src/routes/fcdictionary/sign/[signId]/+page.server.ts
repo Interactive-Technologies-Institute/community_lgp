@@ -1,8 +1,8 @@
 import { createCommentSchema } from '@/schemas/cs-comment';
 import { toggleSignRatingSchema } from '@/schemas/sign';
 import type { CSComment, Parameter, Sign, UserProfile } from '@/types/types';
-import { handleFormAction } from '@/utils.js';
-import { error, fail } from '@sveltejs/kit';
+import { handleFormAction, handleSignInRedirect } from '@/utils.js';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';

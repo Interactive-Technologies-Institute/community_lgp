@@ -6,6 +6,7 @@
 	import { tick } from 'svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { goto } from '$app/navigation';
 
 	export let count: number;
 	export let data: SuperValidated<Infer<ToggleSignFavoriteSchema>>;
@@ -17,6 +18,8 @@
 			if (result.type === 'failure') {
 				$formData.value = !$formData.value;
 				count += $formData.value ? 1 : -1;
+				const redirectTo = `${window.location.pathname}${window.location.search}`;
+				goto(`/sign-in?redirectTo=${encodeURIComponent(redirectTo)}`);
 			}
 		},
 	});

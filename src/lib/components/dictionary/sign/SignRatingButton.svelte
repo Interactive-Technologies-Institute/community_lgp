@@ -6,6 +6,7 @@
 	import { toggleSignRatingSchema, type ToggleSignRatingSchema } from '@/schemas/sign';
 	import { ThumbsUp, ThumbsDown } from 'lucide-svelte';
 	import { tick } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let data: SuperValidated<Infer<ToggleSignRatingSchema>>;
 	export let currentValue: number | null;
@@ -20,6 +21,8 @@
 			if (result.type === 'failure') {
 				// Reset to current value - now as number or null
 				$formData.value = currentValue;
+				const redirectTo = `${window.location.pathname}${window.location.search}`;
+				goto(`/sign-in?redirectTo=${encodeURIComponent(redirectTo)}`);
 			}
 		},
 	});

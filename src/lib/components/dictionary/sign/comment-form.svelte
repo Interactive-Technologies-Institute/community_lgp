@@ -5,7 +5,7 @@
 	import { Textarea } from '@/components/ui/textarea';
 	import { Video, TextCursor, Send, X } from 'lucide-svelte';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	export let parentCommentId: string | null = null; // New prop for reply functionality
 	export let onCancel: (() => void) | null = null; // Callback for canceling reply
@@ -16,6 +16,7 @@
 	let isSubmitting = false;
 	let contentText = '';
 	let errors: Record<string, string[]> = {};
+
 
 	function handleVideoRecorded(event: CustomEvent) {
 		recordedVideoFile = event.detail.file;
@@ -71,9 +72,15 @@
 				method: 'POST',
 				body: formData,
 			});
-
+			
+			if (response.status === 401) {
+				const redirectTo = `${window.location.pathname}${window.location.search}`;
+				await goto(`/sign-in?redirectTo=${encodeURIComponent(redirectTo)}`);
+				return;
+			}
+			
 			const result = await response.json();
-
+			
 			if (response.ok && result.type === 'success') {
 				// Reset form
 				contentText = '';

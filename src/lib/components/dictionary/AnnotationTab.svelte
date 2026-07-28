@@ -82,7 +82,7 @@
 								{/if}
 
 								{#if parent.code}
-									{#if parent.code === 'LTR'}
+									{#if parent.tipo === 'localizacao'}
 										<div class="grid w-full grid-cols-2 gap-1 overflow-y-auto">
 											{#each getChildren(parent.code) as child}
 												{#if child.image}
@@ -97,6 +97,7 @@
 														<img
 															src={child.image}
 															alt={child.name ?? child.code}
+															title={child.name ?? child.code}
 															class="h-24 w-full rounded-md object-contain"
 														/>
 													</div>

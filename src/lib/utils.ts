@@ -121,7 +121,7 @@ export async function handleFormAction<
 		const { session, user } = await event.locals.safeGetSession();
 
 		if (!session || !user) {
-			setFlash({ type: 'error', message: 'Unauthorized' }, event.cookies);
+			setFlash({ type: 'error', message: 'Utilizador não autenticado. Por favor, faça login para continuar.' }, event.cookies);
 			return fail(401, { message: 'Unauthorized', form });
 		}
 
