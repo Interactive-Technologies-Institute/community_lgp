@@ -70,7 +70,7 @@
 	}
 
 	function formatTimestamp(dateString: string) {
-		return format(new Date(dateString), 'dd/MM/yyyy');
+		return format(new Date(dateString), 'dd-MM-yyyy');
 	}
 
 	let district = capitalize(sign?.district ?? 'Geral');
