@@ -54,6 +54,15 @@
 		}
 	};
 
+	function handleCancel() {
+		if (window.history.length > 1) {
+			window.history.back();
+			return;
+		}
+
+		goto('/');
+	}
+
 	$: $formData.theme_flattened = ($formData.theme ?? []).join(', ');
 
 	$: {
@@ -282,7 +291,7 @@
 	<div
 		class="sticky bottom-0 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>
-		<Button variant="outline" on:click={() => goto('/annotate/')}>Cancelar</Button>
+		<Button type="button" variant="outline" on:click={handleCancel}>Cancelar</Button>
 		<Button type="submit" disabled={$submitting}>
 			{#if $submitting}
 				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
