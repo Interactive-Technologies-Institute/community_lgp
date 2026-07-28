@@ -15,7 +15,7 @@
 	import { goto } from '$app/navigation';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
 	import { onMount, tick } from 'svelte';
-	import DistrictMap from '../sign/[signId]/_components/DistrictMap.svelte';
+	import DistrictMap from '@/components/dictionary/sign/DistrictMap.svelte';
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
