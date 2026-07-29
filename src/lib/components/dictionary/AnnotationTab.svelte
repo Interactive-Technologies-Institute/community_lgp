@@ -1,7 +1,6 @@
 <script lang="ts">
+	import { cn } from '$lib/utils.js';
 	import * as Card from '$lib/components/ui/card';
-	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Popover from '$lib/components/ui/popover';
 	import { ChevronUp } from 'lucide-svelte';
 	import { ChevronDown } from 'lucide-svelte';
@@ -12,7 +11,7 @@
 	export let displayName: string;
 	export let selectedParameterIds: number[] = [];
 
-	let openTab = '';
+	let openTab = false;
 	function filterByType(type: string) {
 		return parameters.filter((p) => p.tipo === type && p.code !== 'F000');
 	}
@@ -31,20 +30,19 @@
 	}
 </script>
 
-<Popover.Root>
-	<Popover.Trigger class="flex min-w-0 flex-1 bg-brand-surface">
-		<Tabs.Trigger
-			{value}
-			class="min-h-8 min-w-0 flex-1 whitespace-normal px-2 text-center text-sm sm:text-base data-[state=active]:text-brand-blue data-[state=active]:bg-brand-white dark:data-[state=active]:bg-brand-surface"
-			on:click={() => (openTab = openTab === value ? '' : value)}
+<Popover.Root bind:open={openTab}>
+		<Popover.Trigger
+			class={cn(
+				'flex flex-row gap-2 h-8 w-full min-w-0 rounded-lg bg-brand-white dark:bg-brand-surface px-2 items-center justify-center border border-brand-border text-foreground',
+				openTab && 'text-brand-blue border-brand-blue'
+			)}
 		>
 			<span class="min-w-0 break-words leading-tight">{displayName}</span>
-			{#if openTab === value}
+			{#if openTab}
 				<ChevronUp class="h-5 w-5 shrink-0 pt-1" />
 			{:else}
 				<ChevronDown class="h-5 w-5 shrink-0 pt-1" />
 			{/if}
-		</Tabs.Trigger>
 	</Popover.Trigger>
 
 	<Popover.Content
