@@ -88,7 +88,7 @@ de novos termos."
 		<SortButton bind:sortBy={$sortBy} bind:sortOrder={$sortOrder} />
 	</div>
 	<div class="ml-48 flex">
-		<Button on:click={() => goto('dictionary/sign/create')}>
+		<Button on:click={() => goto('crowdsource/sign/create')}>
 			<PlusCircle class="h-4 w-4 sm:mr-2" /> Propor Gesto
 		</Button>
 	</div>
