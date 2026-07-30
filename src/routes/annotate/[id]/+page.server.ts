@@ -109,9 +109,11 @@ export const load = async (event) => {
 	const safeSign = {
 		...sign,
 		context_video: sign.context_video ?? '',
+		context_video_2: sign.context_video_2 ?? '',
 		video: sign.video ?? '',
 		videoUrl: sign.video ?? '',
 		context_video_url: sign.context_video ?? '',
+		context_video_url_2: sign.context_video_2 ?? '',
 	};
 	let parameters: Parameter[] = await getParameters();
 	return {
@@ -190,7 +192,19 @@ export const actions = {
 					contextVideoPath = form.data.context_video.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
 			}
 
-			const { videoUrl, context_video_url, ...data } = form.data;
+			let contextVideo2Path = '';
+			if (form.data.context_video_2 instanceof File) {
+					const { path, error } = await uploadVideoToR2(form.data.context_video_2, 'context');
+					if (error) {
+							return fail(500, withFiles({ message: error.message, form }));
+					}
+					contextVideo2Path = path;
+			} else if (typeof form.data.context_video_2 === 'string') {
+					// Extract the path from existing URL
+					contextVideo2Path = form.data.context_video_2.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
+			}
+
+			const { videoUrl, context_video_url, context_video_url_2, ...data } = form.data;
 
 			const { error: supabaseError } = await event.locals.supabase
 				.from('signs')
@@ -205,7 +219,9 @@ export const actions = {
 					video: `${PUBLIC_R2_PUBLIC_URL}/${videoPath}`,
 					description: data.description,
 					context_video: contextVideoPath ? `${PUBLIC_R2_PUBLIC_URL}/${contextVideoPath}` : '',
+					context_video_2: contextVideo2Path ? `${PUBLIC_R2_PUBLIC_URL}/${contextVideo2Path}` : '',
 					sentence: data.sentence,
+					sentence_2: data.sentence_2,
 					frequency: data.frequency,
 					district: data.district,
 				})
@@ -221,7 +237,7 @@ export const actions = {
 		handleFormAction(event, deleteSignSchema, 'delete-sign', async (event, form) => {
 			const { data: sign, error: fetchError } = await event.locals.supabase
 				.from('signs')
-				.select('video, context_video')
+				.select('video, context_video, context_video_2')
 				.eq('id', parseInt(event.params.id))
 				.single();
 
@@ -270,6 +286,9 @@ export const actions = {
 			}
 			if (sign.context_video) {
 				await deleteFromR2(sign.context_video);
+			}
+			if (sign.context_video_2) {
+				await deleteFromR2(sign.context_video_2);
 			}
 
 			// Delete from database

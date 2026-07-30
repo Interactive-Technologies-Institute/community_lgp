@@ -42,8 +42,10 @@
 
 	const video = fileProxy(form, 'video');
 	const video2 = fileProxy(form, 'context_video');
+	const video3 = fileProxy(form, 'context_video_2');
 	let videoUrl: string | null | undefined = null;
 	let context_video_url: string | null | undefined = null;
+	let context_video_url_2: string | null | undefined = null;
 
 	// Handle file uploads
 	let fileInputRef1: HTMLInputElement | null = null;
@@ -87,6 +89,17 @@
 		}
 	}
 
+	$: {
+		if ($video3.length > 0) {
+			const file = $video3.item(0);
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				context_video_url_2 = e.target?.result as string | null | undefined;
+			};
+			reader.readAsDataURL(file!);
+		}
+	}
+
 	$: district = $formData.district
 		? {
 				label: {
@@ -122,6 +135,10 @@
 
 	$: if (!$video2.length && $formData.context_video_url) {
 		context_video_url = $formData.context_video_url;
+	}
+
+	$: if (!$video3.length && $formData.context_video_url_2) {
+		context_video_url_2 = $formData.context_video_url_2;
 	}
 
 	let useWebcam = false;

@@ -4,19 +4,44 @@
 	import { addPagination } from 'svelte-headless-table/plugins';
 	import { writable, derived } from 'svelte/store';
 	import * as Table from '$lib/components/ui/table';
+	import * as Pagination from '$lib/components/ui/pagination';
 	import { Button } from '$lib/components/ui/button';
 	import { goto } from '$app/navigation';
 	import PencilCircleFill from '@/img/pencil_circle_fill.svelte';
 	import { Input } from '@/components/ui/input';
+	import { ChevronLeft, ChevronRight, Search, Pencil } from 'lucide-svelte';
+	import TagFilterButton from '@/components/tag-filter-button.svelte';
+	import AnnotateFilterButton from '@/components/annotate-filter-button.svelte';
+	import { format } from 'date-fns';
+	import Badge from '@/components/ui/badge/badge.svelte';
 
 	export let signs: Sign[];
+	export let themes: Map<string, number> = new Map();
 
 	const searchQuery = writable('');
+	const selectedThemes = writable<string[]>([]);
 
 	// Filter signs based on local search input
-	const filteredSigns = derived(searchQuery, ($searchQuery) =>
-		signs.filter((sign) => sign.name.toLowerCase().includes($searchQuery.toLowerCase()))
-	);
+	const filteredSigns = derived(
+	[searchQuery, selectedThemes],
+	([$searchQuery, $selectedThemes]) => {
+		return signs.filter((sign) => {
+			const matchesSearch =
+				$searchQuery.trim() === '' ||
+				sign.name_unaccented
+					.toLowerCase()
+					.startsWith($searchQuery.toLowerCase());
+
+			const matchesThemes =
+				$selectedThemes.length === 0 ||
+				$selectedThemes.some((selectedTheme) =>
+					sign.theme.includes(selectedTheme)
+				);
+
+			return matchesSearch && matchesThemes;
+		});
+	}
+);
 
 	const table = createTable<Sign>(filteredSigns, {
 		page: addPagination(),
@@ -29,11 +54,15 @@
 		}),
 		table.column({
 			accessor: 'theme',
-			header: 'Etiquetas',
+			header: 'Temas',
+		}),
+		table.column({
+			accessor: 'last_changed',
+			header: 'Última atualização',
 		}),
 		table.column({
 			accessor: 'is_anotated',
-			header: 'Estado de Anotação',
+			header: 'Ações',
 			cell: () => '',
 		}),
 	]);
@@ -41,30 +70,76 @@
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns } =
 		table.createViewModel(columns);
 
-	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
+	const { hasNextPage, hasPreviousPage, pageIndex, pageSize, pageCount } = pluginStates.page;
+
+	$: currentPageNumber = $pageIndex + 1;
+	$: compactPages = getCompactPages(currentPageNumber, $pageCount);
+
+	function formatTimestamp(dateString: string) {
+		return format(new Date(dateString), 'dd-MM-yyyy');
+	}
+
+	function getCompactPages(currentPage: number, totalPages: number) {
+		if (totalPages <= 4) {
+			return Array.from({ length: totalPages }, (_, index) => index + 1);
+		}
+
+		if (currentPage <= 2) {
+			return [1, 2, 'ellipsis-end', totalPages];
+		}
+
+		if (currentPage >= totalPages - 1) {
+			return [1, 'ellipsis-start', totalPages - 1, totalPages];
+		}
+
+		return [1, 'ellipsis-start', currentPage, 'ellipsis-end', totalPages];
+	}
 </script>
 
-<!-- 🔍 Local search bar -->
-<div class="mb-4">
-	<Input
-		type="text"
-		class="w-full border px-4 py-2"
-		placeholder="Procurar por nome..."
-		on:input={(e) => searchQuery.set(e.target.value)}
-	/>
+<!-- Local search bar -->
+<div class="flex w-full min-w-0 flex-1 flex-col gap-4 pt-2 lg:flex-row lg:gap-10">
+	<div class="flex flex-1">
+		 <Input
+				 placeholder="Procurar por nome..."
+				 class="flex flex-1 min-w-0 h-10 px-4 bg-brand-white dark:bg-brand-surface border border-brand-border rounded-l-lg rounded-r-none truncate text-base placeholder:text-foreground/60"
+				 on:keydown={(e) => {
+						 if (e.key === 'Enter') searchQuery.set(e.target.value);
+				 }}
+		 />
+		 <div class="flex justify-end">
+				 <Button class="rounded-l-none rounded-r-lg bg-brand-blue text-brand-white"
+						 on:click={(e) => searchQuery.set(e.target.value)}>
+						 <Search />
+				 </Button>
+		 </div>
+ </div>
+ 
+ <AnnotateFilterButton themes={themes} bind:filterValues={$selectedThemes} />
 </div>
 
 <!-- Table Container -->
-<div class="w-full overflow-x-hidden">
-	<Table.Root {...$tableAttrs} class="w-full table-fixed">
+<div class="w-full overflow-x-hidden mt-4 rounded-b-2xl border border-brand-border">
+	<Table.Root {...$tableAttrs} class="w-full text-sm md:text-base">
 		<Table.Header>
 			{#each $headerRows as headerRow}
 				<Subscribe rowAttrs={headerRow.attrs()}>
-					<Table.Row class="h-12">
+					<Table.Row class="flex min-h-12 w-full hover:bg-transparent">
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-								<Table.Head {...attrs} class="w-1/3 overflow-hidden truncate whitespace-nowrap">
-									<Render of={cell.render()} />
+								<Table.Head	{...attrs} class={`
+															flex min-w-0 items-center overflow-hidden truncate whitespace-nowrap px-2 font-semibold text-muted-foreground sm:px-3
+															${cell.id === 'name' ? 'flex flex-[2]' : ''}
+															${cell.id === 'theme' ? 'flex w-full flex-[3]' : ''}
+															${cell.id === 'last_changed' ? 'hidden lg:flex lg:flex-1 lg:justify-center' : ''}
+															${cell.id === 'is_anotated' ? 'flex flex-1 justify-center' : ''}
+														`}>
+									{#if cell.id === 'last_changed' || cell.id === 'is_anotated'}
+										<div class="flex items-center justify-center">
+											<Render of={cell.render()} />
+										</div>
+									{:else}
+										<Render of={cell.render()} />
+									{/if}
 								</Table.Head>
 							</Subscribe>
 						{/each}
@@ -76,20 +151,50 @@
 			{#each $pageRows as row (row)}
 				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
 					<Table.Row
-						class="h-12"
+						class="flex min-h-14 w-full hover:bg-transparent"
 						{...rowAttrs}
-						on:click={() => goto(`/annotate/${row.original.id}`)}
 					>
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
-								<Table.Cell {...attrs} class="w-1/3 overflow-hidden truncate whitespace-nowrap">
+								<Table.Cell {...attrs} lang="pt" class={`
+															flex min-w-0 items-center overflow-hidden px-2 sm:px-3
+															${cell.id === 'name' ? 'flex flex-[2] whitespace-normal break-normal hyphens-auto' : ''}
+															${cell.id === 'theme' ? 'flex w-full flex-[3] whitespace-normal break-normal hyphens-auto' : ''}
+															${cell.id === 'last_changed' ? 'hidden whitespace-nowrap lg:flex lg:flex-1 lg:justify-center' : ''}
+															${cell.id === 'is_anotated' ? 'flex flex-1 justify-center' : ''}
+														`}>
 									{#if cell.id === 'is_anotated'}
-										<div class="items-right flex justify-center">
-											<PencilCircleFill anotation_value={cell.value} />
-											<Render of={cell.render()} />
+										<div class="flex items-center justify-center">
+											<Button
+												variant="outline"
+												class="h-10 w-10 min-w-10 flex-none rounded-lg border-brand-border p-0 text-brand-blue md:h-auto md:w-auto md:px-4 md:py-2 sm:text-base"
+												aria-label="Anotar {row.original.name}"
+												on:click={() => goto(`/annotate/${row.original.id}`)}
+											>
+												<div class="relative flex items-center">
+													<Pencil class="h-4 w-4" />
+													<span class="sr-only lg:not-sr-only sm:inline">&nbsp; Anotar</span>
+												</div>
+											</Button>
+										</div>
+									{:else if cell.id === 'last_changed'}
+										<div class="flex items-center justify-center">
+											<Render of={formatTimestamp(cell.value)} />
+										</div>
+									{:else if cell.id === 'theme'}
+										<div class="flex flex-wrap gap-2">
+											{#each cell.value as t}
+												<Badge
+													lang="pt"
+													class="h-auto max-w-full whitespace-normal break-normal hyphens-auto border border-brand-border bg-brand-surface px-3 py-1 text-left text-xs leading-tight dark:bg-brand-border/60 md:text-base"
+													variant="outline">{t}</Badge
+												>
+											{/each}
 										</div>
 									{:else}
-										<Render of={cell.render()} />
+										<div>
+											<Render of={cell.render()} />
+										</div>
 									{/if}
 								</Table.Cell>
 							</Subscribe>
@@ -101,22 +206,91 @@
 	</Table.Root>
 
 	<!-- Pagination -->
-	<div class="flex items-center justify-end space-x-4 py-4">
-		<Button
-			variant="outline"
-			size="sm"
-			on:click={() => ($pageIndex = $pageIndex - 1)}
-			disabled={!$hasPreviousPage}
-		>
-			Anterior
-		</Button>
-		<Button
-			variant="outline"
-			size="sm"
-			disabled={!$hasNextPage}
-			on:click={() => ($pageIndex = $pageIndex + 1)}
-		>
-			Próximo
-		</Button>
+	<div class="flex items-start justify-center border-t border-brand-border px-2 py-4 sm:px-4">
+		<Pagination.Root count={$filteredSigns.length} perPage={$pageSize} let:pages>
+			<Pagination.Content class="flex items-center justify-center gap-1 sm:hidden">
+				<Pagination.Item>
+					<Pagination.PrevButton
+						class="h-9 w-9 p-0"
+						aria-label="Página anterior"
+						on:click={() => ($pageIndex = $pageIndex - 1)}
+						disabled={currentPageNumber === 1}
+					>
+						<ChevronLeft class="h-4 w-4" aria-hidden="true" />
+					</Pagination.PrevButton>
+				</Pagination.Item>
+
+				{#each compactPages as compactPage, index (`${compactPage}-${index}`)}
+					<Pagination.Item>
+						{#if typeof compactPage === 'number'}
+							<Button
+								variant={currentPageNumber === compactPage ? 'outline' : 'ghost'}
+								size="icon"
+								class={currentPageNumber === compactPage
+									? 'h-9 w-9 border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
+									: 'h-9 w-9'}
+								aria-label="Ir para a página {compactPage}"
+								aria-current={currentPageNumber === compactPage ? 'page' : undefined}
+								on:click={() => ($pageIndex = compactPage - 1)}
+							>
+								{compactPage}
+							</Button>
+						{:else}
+							<Pagination.Ellipsis class="h-9 w-9" />
+						{/if}
+					</Pagination.Item>
+				{/each}
+
+				<Pagination.Item>
+					<Pagination.NextButton
+						class="h-9 w-9 p-0"
+						aria-label="Página seguinte"
+						on:click={() => ($pageIndex = $pageIndex + 1)}
+						disabled={currentPageNumber === $pageCount}
+					>
+						<ChevronRight class="h-4 w-4" aria-hidden="true" />
+					</Pagination.NextButton>
+				</Pagination.Item>
+			</Pagination.Content>
+
+			<Pagination.Content class="hidden items-center justify-center gap-2 sm:flex">
+				<Pagination.Item>
+					<Pagination.PrevButton
+						on:click={() => ($pageIndex = $pageIndex - 1)}
+						disabled={currentPageNumber === 1}
+					>
+						Anterior
+					</Pagination.PrevButton>
+				</Pagination.Item>
+
+				{#each pages as page (page.key)}
+					{#if page.type === 'ellipsis'}
+						<Pagination.Item>
+							<Pagination.Ellipsis />
+						</Pagination.Item>
+					{:else}
+						<Pagination.Item>
+							<Pagination.Link
+								{page}
+								isActive={currentPageNumber == page.value}
+								class={`${currentPageNumber === page.value ? ' rounded-lg border-primary bg-primary px-3 py-5' : ''}`}
+								on:click={() => ($pageIndex = page.value - 1)}
+							>
+								{page.value}
+							</Pagination.Link>
+						</Pagination.Item>
+					{/if}
+				{/each}
+
+				<Pagination.Item>
+					<Pagination.NextButton
+						on:click={() => ($pageIndex = $pageIndex + 1)}
+						disabled={currentPageNumber === $pageCount}
+					>
+						Próximo
+					</Pagination.NextButton>
+				</Pagination.Item>
+			</Pagination.Content>
+		</Pagination.Root>
 	</div>
 </div>

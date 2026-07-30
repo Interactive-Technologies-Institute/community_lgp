@@ -129,9 +129,19 @@ export const actions = {
                 contextVideoPath = form.data.context_video.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
             }
 
-            const { videoUrl, context_video_url, ...data } = form.data;
-            console.log(videoUrl);
-            console.log(context_video_url);
+            let contextVideo2Path = '';
+            if (form.data.context_video_2 instanceof File) {
+                const { path, error } = await uploadVideoToR2(form.data.context_video_2, 'context');
+                if (error) {
+                    return fail(500, withFiles({ message: error.message, form }));
+                }
+                contextVideo2Path = path;
+            } else if (typeof form.data.context_video_2 === 'string') {
+                // Extract the path from existing URL
+                contextVideo2Path = form.data.context_video_2.replace(PUBLIC_R2_PUBLIC_URL + '/', '');
+            }
+
+            const { videoUrl, context_video_url, context_video_url_2, ...data } = form.data;
 
             const { data: insertedSign, error: supabaseError } = await event.locals.supabase
                 .from('signs')
@@ -146,6 +156,9 @@ export const actions = {
                     is_anotated: data.is_anotated ?? 0,
                     context_video: contextVideoPath 
                         ? PUBLIC_R2_PUBLIC_URL + '/' + contextVideoPath 
+                        : null,
+                    context_video_2: contextVideo2Path 
+                        ? PUBLIC_R2_PUBLIC_URL + '/' + contextVideo2Path 
                         : null,
                 })
                 .select()

@@ -172,10 +172,13 @@ export type Sign = {
 	description?: string | null;
 	context_video?: string | null;
 	sentence?: string | null;
+	context_video_2?: string | null;
+	sentence_2?: string | null;
 	frequency: 0 | 1 | 2;
 	district?: string | null;
 	image?: string | null;
 	game_video?: string | null;
+	name_unaccented: string;			
 };
 
 export type SignWithModeration = Sign & { moderation: ModerationInfo[] };

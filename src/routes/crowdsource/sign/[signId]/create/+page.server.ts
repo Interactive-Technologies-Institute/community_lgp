@@ -141,6 +141,7 @@ export const actions = {
 					last_changed: new Date().toISOString(), // Set current timestamp
 					is_anotated: 0, // Default value if not provided
 					context_video: null,
+					context_video_2: null,
 					main_sign_id: event.params.signId,
 				})
 				.select()

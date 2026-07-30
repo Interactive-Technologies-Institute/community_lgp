@@ -375,7 +375,8 @@
 		</section>
 
 		<!-- Context Video -->
-		{#if sign?.context_video?.includes(PUBLIC_R2_PUBLIC_URL) && sign?.sentence}
+		{#if (sign?.context_video?.includes(PUBLIC_R2_PUBLIC_URL) && sign?.sentence) || 
+			(sign?.context_video_2?.includes(PUBLIC_R2_PUBLIC_URL) && sign?.sentence_2)}
 			<section class="container mx-auto px-4 pb-10 pt-20">
 				<div class="relative space-y-2">
 					<img src="/branding/curve-blue.svg" alt="Curve Blue" class="absolute -top-10 h-12 w-12" />
@@ -384,21 +385,41 @@
 					</h2>
 				</div>
 
-				<div class="flex flex-wrap gap-10">
+				<div class="flex flex-col md:flex-row gap-20">
+					<!-- Context Video 1 -->
 					<div class="flex w-full flex-col gap-4">
-						<!-- svelte-ignore a11y-media-has-caption -->
-						<video
-							class="aspect-video rounded-2xl bg-brand-border object-contain shadow-sm lg:w-1/2"
-							controls
-							playsinline
-						>
-							<source src={sign?.context_video} type="video/mp4" />
-							Your browser does not support the video tag.
-						</video>
-						<p>
-							{sign.sentence}
-						</p>
-					</div>
+						{#if (sign?.context_video?.includes(PUBLIC_R2_PUBLIC_URL) && sign?.sentence)}
+							<!-- svelte-ignore a11y-media-has-caption -->
+							<video
+								class="aspect-video rounded-2xl bg-brand-border object-contain shadow-sm"
+								controls
+								playsinline
+							>
+								<source src={sign?.context_video} type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+							<p>
+								{sign?.sentence}
+							</p>
+							{/if}
+						</div>
+					<!-- Context Video 2 -->
+					<div class="flex w-full flex-col gap-4">
+						{#if (sign?.context_video_2?.includes(PUBLIC_R2_PUBLIC_URL) && sign?.sentence_2)}
+							<!-- svelte-ignore a11y-media-has-caption -->
+							<video
+								class="aspect-video rounded-2xl bg-brand-border object-contain shadow-sm"
+								controls
+								playsinline
+							>
+								<source src={sign?.context_video_2} type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+							<p>
+								{sign?.sentence_2}
+							</p>
+							{/if}
+						</div>
 				</div>
 			</section>
 		{/if}

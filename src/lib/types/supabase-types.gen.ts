@@ -811,6 +811,7 @@ export type Database = {
           annotation: Json | null
           annotation_array: number[] | null
           context_video: string | null
+          context_video_2: string | null
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
@@ -825,6 +826,7 @@ export type Database = {
           name: string | null
           name_unaccented: string | null
           sentence: string | null
+          sentence_2: string | null
           theme: string[] | null
           theme_flattened: string | null
           video: string | null
@@ -834,6 +836,7 @@ export type Database = {
           annotation?: Json | null
           annotation_array?: number[] | null
           context_video?: string | null
+          context_video_2?: string | null
           created_at?: string | null
           created_by_user_id?: string | null
           description?: string | null
@@ -848,6 +851,7 @@ export type Database = {
           name?: string | null
           name_unaccented?: string | null
           sentence?: string | null
+          sentence_2?: string | null
           theme?: string[] | null
           theme_flattened?: string | null
           video?: string | null
@@ -857,6 +861,7 @@ export type Database = {
           annotation?: Json | null
           annotation_array?: number[] | null
           context_video?: string | null
+          context_video_2?: string | null
           created_at?: string | null
           created_by_user_id?: string | null
           description?: string | null
@@ -871,6 +876,7 @@ export type Database = {
           name?: string | null
           name_unaccented?: string | null
           sentence?: string | null
+          sentence_2?: string | null
           theme?: string[] | null
           theme_flattened?: string | null
           video?: string | null
@@ -1734,6 +1740,7 @@ export type Database = {
           annotation: Json | null
           annotation_array: number[] | null
           context_video: string | null
+          context_video_2: string | null
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
@@ -1748,6 +1755,7 @@ export type Database = {
           name: string | null
           name_unaccented: string | null
           sentence: string | null
+          sentence_2: string | null
           theme: string[] | null
           theme_flattened: string | null
           video: string | null
@@ -1766,6 +1774,7 @@ export type Database = {
           annotation: Json | null
           annotation_array: number[] | null
           context_video: string | null
+          context_video_2: string | null
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
@@ -1780,6 +1789,7 @@ export type Database = {
           name: string | null
           name_unaccented: string | null
           sentence: string | null
+          sentence_2: string | null
           theme: string[] | null
           theme_flattened: string | null
           video: string | null
