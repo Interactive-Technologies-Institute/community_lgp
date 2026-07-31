@@ -37,8 +37,6 @@
 
 	function removeSelectedParameter(id: number) {
 		selectedParameterIds = selectedParameterIds.filter((parameterId) => parameterId !== id);
-		annotation.set(selectedParameterIds.map(String));
-		page.set('1');
 	}
 
 	afterNavigate(() => {
