@@ -31,27 +31,28 @@
 </script>
 
 <Popover.Root bind:open={openTab}>
-		<Popover.Trigger
-			class={cn(
-				'flex flex-row gap-2 h-8 w-full min-w-0 rounded-lg bg-brand-white dark:bg-brand-surface px-2 items-center justify-center border border-brand-border text-foreground',
-				openTab && 'text-brand-blue border-brand-blue'
-			)}
-		>
-			<span class="min-w-0 break-words leading-tight">{displayName}</span>
-			{#if openTab}
-				<ChevronUp class="h-5 w-5 shrink-0 pt-1" />
-			{:else}
-				<ChevronDown class="h-5 w-5 shrink-0 pt-1" />
-			{/if}
+	<Popover.Trigger
+		class={cn(
+			'flex h-auto min-h-8 w-full min-w-0 flex-row items-center justify-center gap-2 rounded-lg border border-brand-border bg-brand-white px-2 text-foreground dark:bg-brand-surface',
+			openTab && 'border-brand-blue text-brand-blue'
+		)}
+	>
+		<span class="min-w-0 break-words leading-tight">{displayName}</span>
+		{#if openTab}
+			<ChevronUp class="h-5 w-5 shrink-0 pt-1" />
+		{:else}
+			<ChevronDown class="h-5 w-5 shrink-0 pt-1" />
+		{/if}
 	</Popover.Trigger>
 
 	<Popover.Content
-		class="flex max-h-[400px] h-auto max-w-[900px] w-auto flex-1 overflow-y-scroll p-4 border border-brand-border drop-shadow-lg"
+		class="w-[900px] max-w-[calc(100vw-2rem)] overflow-hidden border border-brand-border p-0 drop-shadow-lg"
 		side="bottom"
 		sideOffset={8}
 		avoidCollisions={false}
 	>
-			<div class="grid h-full w-full min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4">
+		<div class="max-h-[400px] overflow-y-auto overscroll-contain p-4">
+			<div class="grid w-full min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4">
 				{#each filterByType(value) as parent}
 					{#if parent.is_parent && (parent.image || ['mão', 'braço', 'frente', 'tronco'].includes(parent.name?.toLowerCase() ?? '') || ['2ebj'].includes(parent.code?.toLowerCase() ?? ''))}
 						<Card.Root
@@ -81,7 +82,7 @@
 
 								{#if parent.code}
 									{#if parent.tipo === 'localizacao'}
-										<div class="grid w-full grid-cols-2 gap-1 overflow-y-auto">
+										<div class="grid w-full grid-cols-2 gap-1">
 											{#each getChildren(parent.code) as child}
 												{#if child.image}
 													<div
@@ -103,7 +104,7 @@
 											{/each}
 										</div>
 									{:else}
-										<div class="grid w-full grid-cols-3 gap-1 overflow-y-auto">
+										<div class="grid w-full grid-cols-3 gap-1">
 											{#each getChildren(parent.code) as child}
 												{#if child.image}
 													<div
@@ -130,5 +131,6 @@
 					{/if}
 				{/each}
 			</div>
+		</div>
 	</Popover.Content>
 </Popover.Root>
