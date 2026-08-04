@@ -25,12 +25,15 @@
 	const filteredSigns = derived(
 	[searchQuery, selectedThemes],
 	([$searchQuery, $selectedThemes]) => {
+		const normalizedSearch = $searchQuery
+			.normalize('NFD')
+			.replace(/\p{Diacritic}/gu, '')
+			.toLowerCase();
+
 		return signs.filter((sign) => {
 			const matchesSearch =
-				$searchQuery.trim() === '' ||
-				sign.name_unaccented
-					.toLowerCase()
-					.startsWith($searchQuery.toLowerCase());
+				normalizedSearch.trim() === '' ||
+				sign.name_unaccented.toLowerCase().startsWith(normalizedSearch);
 
 			const matchesThemes =
 				$selectedThemes.length === 0 ||
