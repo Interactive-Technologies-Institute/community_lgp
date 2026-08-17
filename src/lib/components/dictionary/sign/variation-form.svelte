@@ -3,11 +3,12 @@
 	import * as Card from '@/components/ui/card';
 	import * as Form from '@/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { Input } from '@/components/ui/input';
 	import { TagInput } from '@/components/ui/tag-input';
 	import { Textarea } from '@/components/ui/textarea';
 	import { createSignSchema, type CreateSignSchema } from '@/schemas/sign';
-	import { Loader2 } from 'lucide-svelte';
+	import { Camera, Loader2, Upload } from 'lucide-svelte';
 	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
@@ -184,124 +185,174 @@
 	use:enhance
 	class="flex flex-col gap-y-10"
 >
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Proposta de Variante de Gesto</Card.Title>
-			<Card.Description>
-				Para submeter uma proposta variante de gesto, adicione o nome da entrada, carregue um vídeo
-				do gesto. Para carregar o vídeo, pode ser por gravação via webcam, câmara do smartphone, ou
-				upload de ficheiro.
-			</Card.Description>
-		</Card.Header>
-		<Card.Content class="space-y-4">
-			<Form.Field {form} name="name">
-				<Form.Control let:attrs>
-					<Form.Label>Nome</Form.Label>
-					<Input {...attrs} bind:value={$formData.name} />
-					<Form.FieldErrors />
-				</Form.Control>
-			</Form.Field>
-			<input hidden bind:value={$formData.theme} name="theme" />
-			<input hidden value={$formData.theme_flattened} name="theme_flattened" />
-			<div class="flex">
-				<Form.Field {form} name="video">
-					<Form.Control>
-						<Form.Label>Video</Form.Label>
-						<br />
-						<!-- Button to upload a video -->
-						<!-- svelte-ignore a11y-label-has-associated-control -->
-						<div class="flex flex-col gap-2">
-							<label class="text-sm font-medium">Modo de Vídeo</label>
-							<div class="flex gap-2">
-								<Button
-									type="button"
-									variant={useWebcam ? 'outline' : 'default'}
-									on:click={() => (useWebcam = false)}>Upload</Button
-								>
-								<Button
-									type="button"
-									variant={useWebcam ? 'default' : 'outline'}
-									on:click={() => (useWebcam = true)}>Webcam</Button
-								>
-							</div>
-						</div>
+	<!-- General Information -->
+	<section class="rounded-[2rem] bg-brand-surface shadow-md">
+		<div class="container mx-auto p-4">
+			<div class="mt-2 flex flex-col gap-5 lg:mt-6 lg:flex-row-reverse lg:gap-10">
+				<!-- Sign Card -->
+				<Card.Root
+					class="w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
+				>
+					<div class="flex h-full w-full flex-col items-start gap-5">
+						<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">2. Informação Geral</h2>
+						<!-- Sign Name -->
+						<Form.Field {form} name="name" class="flex w-full flex-col">
+							<Form.Control let:attrs>
+								<Form.Label class="text-base font-semibold text-brand-grey">Nome</Form.Label>
+								<Input
+									{...attrs}
+									bind:value={$formData.name}
+									placeholder="Escreva o nome da entrada..."
+								/>
+								<Form.FieldErrors />
+							</Form.Control>
+						</Form.Field>
 
-						{#if !useWebcam}
-							<!-- File upload -->
-							<Button on:click={handleFileUpload1}>Carregar vídeo</Button>
-							<input
-								type="file"
-								accept="video/mp4"
-								bind:files={$video}
-								bind:this={fileInputRef1}
-								class="hidden"
-							/>
-						{:else}
-							<!-- Webcam recording -->
-							<WebcamRecording on:recorded={handleRecorded} />
-						{/if}
-						<Card.Root class="aspect-video overflow-hidden">
-							<div class="flex h-[400px] w-full items-center justify-center bg-muted">
-								<!-- svelte-ignore a11y-media-has-caption -->
-								{#if videoUrl}
-									<video src={videoUrl} controls class="h-full w-full object-contain" />
+						<input hidden bind:value={$formData.theme} name="theme" />
+						<input hidden value={$formData.theme_flattened} name="theme_flattened" />
+
+						<!-- District -->
+						<Form.Field {form} name="district" class="flex w-full flex-col">
+							<Form.Control let:attrs>
+								<Form.Label class="text-base font-semibold text-brand-grey"
+									>Este gesto é usado em</Form.Label
+								>
+								<Select.Root
+									selected={district}
+									onSelectedChange={(v) => {
+										v && ($formData.district = v.value);
+									}}
+								>
+									<Select.Trigger {...attrs}>
+										<Select.Value placeholder="Selecione o Distrito ou Região Autónoma..." />
+									</Select.Trigger>
+									<Select.Content class="max-h-[300px] overflow-y-visible">
+										<Select.Item value="Geral" label="Geral" />
+										<Select.Item value="Açores" label="Açores" />
+										<Select.Item value="Aveiro" label="Aveiro" />
+										<Select.Item value="Beja" label="Beja" />
+										<Select.Item value="Braga" label="Braga" />
+										<Select.Item value="Braganca" label="Bragança" />
+										<Select.Item value="Castelo Branco" label="Castelo Branco" />
+										<Select.Item value="Coimbra" label="Coimbra" />
+										<Select.Item value="Évora" label="Évora" />
+										<Select.Item value="Faro" label="Faro" />
+										<Select.Item value="Guarda" label="Guarda" />
+										<Select.Item value="Leiria" label="Leiria" />
+										<Select.Item value="Lisboa" label="Lisboa" />
+										<Select.Item value="Madeira" label="Madeira" />
+										<Select.Item value="Portalegre" label="Portalegre" />
+										<Select.Item value="Porto" label="Porto" />
+										<Select.Item value="Santarém" label="Santarém" />
+										<Select.Item value="Setúbal" label="Setúbal" />
+										<Select.Item value="Viana Do Castelo" label="Viana do Castelo" />
+										<Select.Item value="Vila Real" label="Vila Real" />
+										<Select.Item value="Viseu" label="Viseu" />
+									</Select.Content>
+								</Select.Root>
+								<input hidden bind:value={$formData.frequency} name={attrs.name} />
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+					</div>
+				</Card.Root>
+
+				<!-- Video -->
+				<Card.Root
+					class="w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
+				>
+					<div class="flex h-full w-full flex-col items-start gap-4">
+						<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">1. Vídeo do gesto</h2>
+						<Form.Field {form} name="video" class="w-full">
+							<Form.Control>
+								<Form.Label class="text-base font-normal leading-7 text-brand-grey">
+									Carregar vídeo em LGP do gesto.
+								</Form.Label>
+
+								<Tabs.Root value={useWebcam ? 'webcam' : 'upload'} class="pt-5 pb-2">
+									<Tabs.List
+										class="border border-brand-border p-0 rounded-lg w-full h-8"
+										aria-label="Origem do vídeo"
+									>
+										<Tabs.Trigger
+											value="upload"
+											class="h-8 rounded-l-lg rounded-r-none px-4 gap-2 transition duration-300"
+											on:click={() => (useWebcam = false)}
+										>
+											<Upload class="h-4 w-4 shrink-0" />
+											Ficheiro
+										</Tabs.Trigger>
+										<Tabs.Trigger
+											value="webcam"
+											class="h-8 rounded-l-none rounded-r-lg px-4 gap-2 transition duration-300"
+											on:click={() => (useWebcam = true)}
+										>
+											<Camera class="h-4 w-4 shrink-0" />
+											Webcam
+										</Tabs.Trigger>
+									</Tabs.List>
+								</Tabs.Root>
+
+								{#if !useWebcam}
+									<!-- File upload -->
+									<div
+										class="py-4"
+									>
+										<Button 
+											variant="outline"
+											class="flex min-w-10 flex-1 rounded-lg border-brand-border px-4 py-2 gap-2 text-base text-brand-blue"	
+											on:click={handleFileUpload1}>
+											<Upload class="h-4 w-4" />
+											{videoUrl ? 'Substituir vídeo' : 'Carregar vídeo'}
+										</Button>
+										<input
+											type="file"
+											accept="video/mp4"
+											bind:files={$video}
+											bind:this={fileInputRef1}
+											class="hidden"
+										/>
+									</div>
 								{:else}
-									<span class="text-sm text-muted-foreground">Nenhum vídeo carregado</span>
+									<!-- Webcam recording -->
+									<div
+										class="py-4"
+									>
+										<WebcamRecording on:recorded={handleRecorded} />
+									</div>
 								{/if}
-							</div>
-						</Card.Root>
-						<input hidden value={$formData.videoUrl} name="videoUrl" />
 
-						<Form.FieldErrors />
-					</Form.Control>
-				</Form.Field>
+								<div class="pt-5 w-full space-y-2">
+									<p class="text-sm font-semibold text-brand-grey">Pré-visualização</p>
+									<Card.Root
+										class="w-full overflow-visible border-brand-border bg-brand-surface shadow-none"
+									>
+										<!-- svelte-ignore a11y-media-has-caption -->
+										{#if videoUrl}
+											<video
+												src={videoUrl}
+												controls
+												preload="metadata"
+												class="aspect-video w-full rounded-lg bg-black object-contain"
+											/>
+										{:else}
+											<div class="flex aspect-video w-full items-center justify-center rounded-lg">
+												<span class="text-sm text-muted-foreground">Nenhum vídeo adicionado</span>
+											</div>
+										{/if}
+									</Card.Root>
+								</div>
+								<input hidden value={$formData.videoUrl} name="videoUrl" />
+
+								<Form.FieldErrors />
+							</Form.Control>
+						</Form.Field>
+					</div>
+				</Card.Root>
 			</div>
-			<Form.Field {form} name="district">
-				<Form.Control let:attrs>
-					<Form.Label>Distritos e Regiões Autónomas</Form.Label>
-					<Select.Root
-						selected={district}
-						onSelectedChange={(v) => {
-							v && ($formData.district = v.value);
-						}}
-					>
-						<Select.Trigger {...attrs}>
-							<Select.Value
-								placeholder="Selecione o distrito ou região autónoma a que esta variante de gesto pertence."
-							/>
-						</Select.Trigger>
-						<Select.Content>
-							<ScrollArea class="h-[600px] overflow-auto">
-								<Select.Item value="Geral" label="Geral" />
-								<Select.Item value="Açores" label="Açores" />
-								<Select.Item value="Aveiro" label="Aveiro" />
-								<Select.Item value="Beja" label="Beja" />
-								<Select.Item value="Braga" label="Braga" />
-								<Select.Item value="Braganca" label="Bragança" />
-								<Select.Item value="Castelo Branco" label="Castelo Branco" />
-								<Select.Item value="Coimbra" label="Coimbra" />
-								<Select.Item value="Évora" label="Évora" />
-								<Select.Item value="Faro" label="Faro" />
-								<Select.Item value="Guarda" label="Guarda" />
-								<Select.Item value="Leiria" label="Leiria" />
-								<Select.Item value="Lisboa" label="Lisboa" />
-								<Select.Item value="Madeira" label="Madeira" />
-								<Select.Item value="Portalegre" label="Portalegre" />
-								<Select.Item value="Porto" label="Porto" />
-								<Select.Item value="Santarém" label="Santarém" />
-								<Select.Item value="Setúbal" label="Setúbal" />
-								<Select.Item value="Viana do Castelo" label="Viana do Castelo" />
-								<Select.Item value="Vila Real" label="Vila Real" />
-								<Select.Item value="Viseu" label="Viseu" />
-							</ScrollArea>
-						</Select.Content>
-					</Select.Root>
-					<input hidden bind:value={$formData.frequency} name={attrs.name} />
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-		</Card.Content>
-	</Card.Root>
+		</div>
+	</section>
+
 	{#if user?.role === 'admin'}
 		<SuperDebug data={$formData} />
 	{/if}
