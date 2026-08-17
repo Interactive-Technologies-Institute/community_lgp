@@ -475,8 +475,9 @@
 									class="flex min-w-10 flex-1 rounded-lg border-brand-border px-4 py-2 text-base text-brand-blue"
 									on:click={handleFileUpload1}
 								>
-									<div class="relative flex items-center">
-										<Upload class="h-4 w-4" /> &nbsp; Carregar vídeo
+									<div class="relative flex items-center gap-2">
+										<Upload class="h-4 w-4" />
+										{videoUrl ? 'Substituir vídeo' : 'Carregar vídeo'}
 									</div>
 								</Button>
 								<input
@@ -628,8 +629,9 @@
 							class="flex min-w-10 flex-1 rounded-lg border-brand-border px-4 py-2 text-base text-brand-blue"
 							on:click={handleFileUpload2}
 						>
-							<div class="relative flex items-center">
-								<Upload class="h-4 w-4" /> &nbsp; Carregar vídeo
+							<div class="relative flex items-center gap-2">
+								<Upload class="h-4 w-4" />
+								{context_video_url ? 'Substituir vídeo' : 'Carregar vídeo'}
 							</div>
 						</Button>
 						<input
@@ -688,8 +690,9 @@
 							class="flex min-w-10 flex-1 rounded-lg border-brand-border px-4 py-2 text-base text-brand-blue"
 							on:click={handleFileUpload3}
 						>
-							<div class="relative flex items-center">
-								<Upload class="h-4 w-4" /> &nbsp; Carregar vídeo
+							<div class="relative flex items-center gap-2">
+								<Upload class="h-4 w-4" />
+								{context_video_url_2 ? 'Substituir vídeo' : 'Carregar vídeo'}
 							</div>
 						</Button>
 						<input
