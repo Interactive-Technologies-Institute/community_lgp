@@ -7,10 +7,8 @@
 	import * as Pagination from '$lib/components/ui/pagination';
 	import { Button } from '$lib/components/ui/button';
 	import { goto } from '$app/navigation';
-	import PencilCircleFill from '@/img/pencil_circle_fill.svelte';
 	import { Input } from '@/components/ui/input';
 	import { ChevronLeft, ChevronRight, Search, Pencil } from 'lucide-svelte';
-	import TagFilterButton from '@/components/tag-filter-button.svelte';
 	import AnnotateFilterButton from '@/components/annotate-filter-button.svelte';
 	import { format } from 'date-fns';
 	import Badge from '@/components/ui/badge/badge.svelte';
@@ -20,31 +18,30 @@
 
 	const searchQuery = writable('');
 	const selectedThemes = writable<string[]>([]);
+	let searchInput = '';
 
 	// Filter signs based on local search input
 	const filteredSigns = derived(
-	[searchQuery, selectedThemes],
-	([$searchQuery, $selectedThemes]) => {
-		const normalizedSearch = $searchQuery
-			.normalize('NFD')
-			.replace(/\p{Diacritic}/gu, '')
-			.toLowerCase();
+		[searchQuery, selectedThemes],
+		([$searchQuery, $selectedThemes]) => {
+			const normalizedSearch = $searchQuery
+				.normalize('NFD')
+				.replace(/\p{Diacritic}/gu, '')
+				.toLowerCase();
 
-		return signs.filter((sign) => {
-			const matchesSearch =
-				normalizedSearch.trim() === '' ||
-				sign.name_unaccented.toLowerCase().startsWith(normalizedSearch);
+			return signs.filter((sign) => {
+				const matchesSearch =
+					normalizedSearch.trim() === '' ||
+					sign.name_unaccented.toLowerCase().startsWith(normalizedSearch);
 
-			const matchesThemes =
-				$selectedThemes.length === 0 ||
-				$selectedThemes.some((selectedTheme) =>
-					sign.theme.includes(selectedTheme)
-				);
+				const matchesThemes =
+					$selectedThemes.length === 0 ||
+					$selectedThemes.some((selectedTheme) => sign.theme.includes(selectedTheme));
 
-			return matchesSearch && matchesThemes;
-		});
-	}
-);
+				return matchesSearch && matchesThemes;
+			});
+		}
+	);
 
 	const table = createTable<Sign>(filteredSigns, {
 		page: addPagination(),
@@ -70,13 +67,24 @@
 		}),
 	]);
 
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns } =
+	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
 		table.createViewModel(columns);
 
 	const { hasNextPage, hasPreviousPage, pageIndex, pageSize, pageCount } = pluginStates.page;
 
 	$: currentPageNumber = $pageIndex + 1;
 	$: compactPages = getCompactPages(currentPageNumber, $pageCount);
+	$: previousPageDisabled = !$hasPreviousPage;
+	$: nextPageDisabled = !$hasNextPage;
+	$: {
+		$searchQuery;
+		$selectedThemes;
+		$pageIndex = 0;
+	}
+
+	function applySearch() {
+		searchQuery.set(searchInput);
+	}
 
 	function formatTimestamp(dateString: string) {
 		return format(new Date(dateString), 'dd-MM-yyyy');
@@ -102,26 +110,30 @@
 <!-- Local search bar -->
 <div class="flex w-full min-w-0 flex-1 flex-col gap-4 pt-2 lg:flex-row lg:gap-10">
 	<div class="flex flex-1">
-		 <Input
-				 placeholder="Procurar por nome..."
-				 class="flex flex-1 min-w-0 h-10 px-4 bg-brand-white dark:bg-brand-surface border border-brand-border rounded-l-lg rounded-r-none truncate text-base placeholder:text-foreground/60"
-				 on:keydown={(e) => {
-						 if (e.key === 'Enter') searchQuery.set(e.target.value);
-				 }}
-		 />
-		 <div class="flex justify-end">
-				 <Button class="rounded-l-none rounded-r-lg bg-brand-blue text-brand-white"
-						 on:click={(e) => searchQuery.set(e.target.value)}>
-						 <Search />
-				 </Button>
-		 </div>
- </div>
- 
- <AnnotateFilterButton themes={themes} bind:filterValues={$selectedThemes} />
+		<Input
+			placeholder="Procurar por nome..."
+			class="flex h-10 min-w-0 flex-1 truncate rounded-l-lg rounded-r-none border border-brand-border bg-brand-white px-4 text-base placeholder:text-foreground/60 dark:bg-brand-surface"
+			bind:value={searchInput}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') applySearch();
+			}}
+		/>
+		<div class="flex justify-end">
+			<Button
+				class="rounded-l-none rounded-r-lg bg-brand-blue text-brand-white"
+				on:click={applySearch}
+				aria-label="Procurar"
+			>
+				<Search />
+			</Button>
+		</div>
+	</div>
+
+	<AnnotateFilterButton themes={themes} bind:filterValues={$selectedThemes} />
 </div>
 
 <!-- Table Container -->
-<div class="w-full overflow-x-hidden mt-4 rounded-b-2xl border border-brand-border">
+<div class="mt-4 w-full overflow-x-hidden rounded-b-2xl border border-brand-border">
 	<Table.Root {...$tableAttrs} class="w-full text-sm md:text-base">
 		<Table.Header>
 			{#each $headerRows as headerRow}
@@ -129,13 +141,16 @@
 					<Table.Row class="flex min-h-12 w-full hover:bg-transparent">
 						{#each headerRow.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-								<Table.Head	{...attrs} class={`
-															flex min-w-0 items-center overflow-hidden truncate whitespace-nowrap px-2 font-semibold text-muted-foreground sm:px-3
-															${cell.id === 'name' ? 'flex flex-[2]' : ''}
-															${cell.id === 'theme' ? 'flex w-full flex-[3]' : ''}
-															${cell.id === 'last_changed' ? 'hidden lg:flex lg:flex-1 lg:justify-center' : ''}
-															${cell.id === 'is_anotated' ? 'flex flex-1 justify-center' : ''}
-														`}>
+								<Table.Head
+									{...attrs}
+									class={`
+										flex min-w-0 items-center overflow-hidden truncate whitespace-nowrap px-2 font-semibold text-muted-foreground sm:px-3
+										${cell.id === 'name' ? 'flex flex-[2]' : ''}
+										${cell.id === 'theme' ? 'flex w-full flex-[3]' : ''}
+										${cell.id === 'last_changed' ? 'hidden lg:flex lg:flex-1 lg:justify-center' : ''}
+										${cell.id === 'is_anotated' ? 'flex flex-1 justify-center' : ''}
+									`}
+								>
 									{#if cell.id === 'last_changed' || cell.id === 'is_anotated'}
 										<div class="flex items-center justify-center">
 											<Render of={cell.render()} />
@@ -153,19 +168,20 @@
 		<Table.Body {...$tableBodyAttrs}>
 			{#each $pageRows as row (row)}
 				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-					<Table.Row
-						class="flex min-h-14 w-full hover:bg-transparent"
-						{...rowAttrs}
-					>
+					<Table.Row class="flex min-h-14 w-full hover:bg-transparent" {...rowAttrs}>
 						{#each row.cells as cell (cell.id)}
 							<Subscribe attrs={cell.attrs()} let:attrs>
-								<Table.Cell {...attrs} lang="pt" class={`
-															flex min-w-0 items-center overflow-hidden px-2 sm:px-3
-															${cell.id === 'name' ? 'flex flex-[2] whitespace-normal break-normal hyphens-auto' : ''}
-															${cell.id === 'theme' ? 'flex w-full flex-[3] whitespace-normal break-normal hyphens-auto' : ''}
-															${cell.id === 'last_changed' ? 'hidden whitespace-nowrap lg:flex lg:flex-1 lg:justify-center' : ''}
-															${cell.id === 'is_anotated' ? 'flex flex-1 justify-center' : ''}
-														`}>
+								<Table.Cell
+									{...attrs}
+									lang="pt"
+									class={`
+										flex min-w-0 items-center overflow-hidden px-2 sm:px-3
+										${cell.id === 'name' ? 'flex flex-[2] whitespace-normal break-normal hyphens-auto' : ''}
+										${cell.id === 'theme' ? 'flex w-full flex-[3] whitespace-normal break-normal hyphens-auto' : ''}
+										${cell.id === 'last_changed' ? 'hidden whitespace-nowrap lg:flex lg:flex-1 lg:justify-center' : ''}
+										${cell.id === 'is_anotated' ? 'flex flex-1 justify-center' : ''}
+									`}
+								>
 									{#if cell.id === 'is_anotated'}
 										<div class="flex items-center justify-center">
 											<Button
@@ -209,91 +225,93 @@
 	</Table.Root>
 
 	<!-- Pagination -->
-	<div class="flex items-start justify-center border-t border-brand-border px-2 py-4 sm:px-4">
-		<Pagination.Root count={$filteredSigns.length} perPage={$pageSize} let:pages>
-			<Pagination.Content class="flex items-center justify-center gap-1 sm:hidden">
-				<Pagination.Item>
-					<Pagination.PrevButton
-						class="h-9 w-9 p-0"
-						aria-label="Página anterior"
-						on:click={() => ($pageIndex = $pageIndex - 1)}
-						disabled={currentPageNumber === 1}
-					>
-						<ChevronLeft class="h-4 w-4" aria-hidden="true" />
-					</Pagination.PrevButton>
-				</Pagination.Item>
-
-				{#each compactPages as compactPage, index (`${compactPage}-${index}`)}
+	{#if $filteredSigns.length > 0}
+		<div class="flex items-start justify-center border-t border-brand-border px-2 py-4 sm:px-4">
+			<Pagination.Root count={$filteredSigns.length} perPage={$pageSize} let:pages>
+				<Pagination.Content class="flex items-center justify-center gap-1 sm:hidden">
 					<Pagination.Item>
-						{#if typeof compactPage === 'number'}
-							<Button
-								variant={currentPageNumber === compactPage ? 'outline' : 'ghost'}
-								size="icon"
-								class={currentPageNumber === compactPage
-									? 'h-9 w-9 border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
-									: 'h-9 w-9'}
-								aria-label="Ir para a página {compactPage}"
-								aria-current={currentPageNumber === compactPage ? 'page' : undefined}
-								on:click={() => ($pageIndex = compactPage - 1)}
-							>
-								{compactPage}
-							</Button>
-						{:else}
-							<Pagination.Ellipsis class="h-9 w-9" />
-						{/if}
+						<Pagination.PrevButton
+							class="h-9 w-9 p-0"
+							aria-label="Página anterior"
+							on:click={() => ($pageIndex = $pageIndex - 1)}
+							disabled={previousPageDisabled}
+						>
+							<ChevronLeft class="h-4 w-4" aria-hidden="true" />
+						</Pagination.PrevButton>
 					</Pagination.Item>
-				{/each}
 
-				<Pagination.Item>
-					<Pagination.NextButton
-						class="h-9 w-9 p-0"
-						aria-label="Página seguinte"
-						on:click={() => ($pageIndex = $pageIndex + 1)}
-						disabled={currentPageNumber === $pageCount}
-					>
-						<ChevronRight class="h-4 w-4" aria-hidden="true" />
-					</Pagination.NextButton>
-				</Pagination.Item>
-			</Pagination.Content>
-
-			<Pagination.Content class="hidden items-center justify-center gap-2 sm:flex">
-				<Pagination.Item>
-					<Pagination.PrevButton
-						on:click={() => ($pageIndex = $pageIndex - 1)}
-						disabled={currentPageNumber === 1}
-					>
-						Anterior
-					</Pagination.PrevButton>
-				</Pagination.Item>
-
-				{#each pages as page (page.key)}
-					{#if page.type === 'ellipsis'}
+					{#each compactPages as compactPage, index (`${compactPage}-${index}`)}
 						<Pagination.Item>
-							<Pagination.Ellipsis />
+							{#if typeof compactPage === 'number'}
+								<Button
+									variant={currentPageNumber === compactPage ? 'outline' : 'ghost'}
+									size="icon"
+									class={currentPageNumber === compactPage
+										? 'h-9 w-9 border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
+										: 'h-9 w-9'}
+									aria-label="Ir para a página {compactPage}"
+									aria-current={currentPageNumber === compactPage ? 'page' : undefined}
+									on:click={() => ($pageIndex = compactPage - 1)}
+								>
+									{compactPage}
+								</Button>
+							{:else}
+								<Pagination.Ellipsis class="h-9 w-9" />
+							{/if}
 						</Pagination.Item>
-					{:else}
-						<Pagination.Item>
-							<Pagination.Link
-								{page}
-								isActive={currentPageNumber == page.value}
-								class={`${currentPageNumber === page.value ? ' rounded-lg border-primary bg-primary px-3 py-5' : ''}`}
-								on:click={() => ($pageIndex = page.value - 1)}
-							>
-								{page.value}
-							</Pagination.Link>
-						</Pagination.Item>
-					{/if}
-				{/each}
+					{/each}
 
-				<Pagination.Item>
-					<Pagination.NextButton
-						on:click={() => ($pageIndex = $pageIndex + 1)}
-						disabled={currentPageNumber === $pageCount}
-					>
-						Próximo
-					</Pagination.NextButton>
-				</Pagination.Item>
-			</Pagination.Content>
-		</Pagination.Root>
-	</div>
+					<Pagination.Item>
+						<Pagination.NextButton
+							class="h-9 w-9 p-0"
+							aria-label="Página seguinte"
+							on:click={() => ($pageIndex = $pageIndex + 1)}
+							disabled={nextPageDisabled}
+						>
+							<ChevronRight class="h-4 w-4" aria-hidden="true" />
+						</Pagination.NextButton>
+					</Pagination.Item>
+				</Pagination.Content>
+
+				<Pagination.Content class="hidden items-center justify-center gap-2 sm:flex">
+					<Pagination.Item>
+						<Pagination.PrevButton
+							on:click={() => ($pageIndex = $pageIndex - 1)}
+							disabled={previousPageDisabled}
+						>
+							Anterior
+						</Pagination.PrevButton>
+					</Pagination.Item>
+
+					{#each pages as page (page.key)}
+						{#if page.type === 'ellipsis'}
+							<Pagination.Item>
+								<Pagination.Ellipsis />
+							</Pagination.Item>
+						{:else}
+							<Pagination.Item>
+								<Pagination.Link
+									{page}
+									isActive={currentPageNumber == page.value}
+									class={`${currentPageNumber === page.value ? ' rounded-lg border-primary bg-primary px-3 py-5' : ''}`}
+									on:click={() => ($pageIndex = page.value - 1)}
+								>
+									{page.value}
+								</Pagination.Link>
+							</Pagination.Item>
+						{/if}
+					{/each}
+
+					<Pagination.Item>
+						<Pagination.NextButton
+							on:click={() => ($pageIndex = $pageIndex + 1)}
+							disabled={nextPageDisabled}
+						>
+							Próximo
+						</Pagination.NextButton>
+					</Pagination.Item>
+				</Pagination.Content>
+			</Pagination.Root>
+		</div>
+	{/if}
 </div>
