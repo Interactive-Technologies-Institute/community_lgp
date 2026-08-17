@@ -8,6 +8,7 @@
 	export let signs: Sign[];
 	export let theme;
 	export let parameter: Parameter[];
+	export let horizontal: boolean = false;
 
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
@@ -34,11 +35,19 @@
 	}
 </script>
 
-<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+<div
+	class={horizontal
+		? 'flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3'
+		: 'grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'}
+>
 	{#each signs as sign (sign.id)}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<Card.Root class="rounded-2xl border border-brand-border">
+		<Card.Root
+			class={`rounded-2xl border border-brand-border ${
+				horizontal ? 'w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]' : ''
+			}`}
+		>
 			<Card.Content class="flex items-center justify-center p-3" on:click={() => goToDictionary(sign.id)}>
 				<div class="flex w-full flex-col" on:click={() => goToDictionary(sign.id)}>
 					<video class="aspect-video w-full rounded-b-none rounded-t-xl" controls muted>

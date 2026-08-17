@@ -9,6 +9,7 @@
 	import * as Pagination from '$lib/components/ui/pagination';
 	import { browser } from '$app/environment';
 	import { afterNavigate, goto } from '$app/navigation';
+	import { navigating } from '$app/stores';
 	import { PlusCircle } from 'lucide-svelte';
 	import Button from '../ui/button/button.svelte';
 	import SearchBar from './SearchBar.svelte';
@@ -39,6 +40,7 @@
 		($search ?? '').trim().length > 0 ||
 		($theme ?? []).length > 0 ||
 		($annotation ?? []).length > 0;
+	$: isSearching = $navigating !== null;
 	$: $search = data.search || $search;
 	$: $annotation = data.annotation || $annotation;
 	$: currentPageNumber = parseInt(data?.page ?? '') || 1;
@@ -86,9 +88,10 @@
 				{signs}
 				{parameters}
 				{isFiltering}
+				{isSearching}
 			/>
 		</div>
-		{#if isFiltering && countSign > 0}
+		{#if isFiltering && !isSearching && countSign > 0}
 			<div class="flex items-start justify-start pb-5">
 				<Pagination.Root count={countSign} {perPage} let:pages let:currentPage>
 					<Pagination.Content class="flex items-center justify-center gap-2">
