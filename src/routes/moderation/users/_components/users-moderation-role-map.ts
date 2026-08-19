@@ -1,5 +1,5 @@
 import type { UserRole } from '@/types/types';
-import { Shield, ShieldPlus, SquareUser, type Icon } from 'lucide-svelte';
+import { Shield, ShieldPlus, SquareUser, UserPlus, type Icon } from 'lucide-svelte';
 import type { ComponentType } from 'svelte';
 
 export const typeMap: Record<UserRole, { label: string; icon: ComponentType<Icon> }> = {
@@ -14,5 +14,9 @@ export const typeMap: Record<UserRole, { label: string; icon: ComponentType<Icon
 	admin: {
 		label: 'Admin',
 		icon: ShieldPlus,
+	},
+	contributor: {
+		label: 'Contributor',
+		icon: UserPlus,
 	},
 };

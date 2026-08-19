@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const updateUserRoleSchema = z.object({
 	userId: z.string(),
-	role: z.enum(['user', 'moderator', 'admin']),
+	role: z.enum(['user', 'moderator', 'admin', 'contributor']),
 });
 
 export type UpdateUserRoleSchema = typeof updateUserRoleSchema;

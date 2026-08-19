@@ -53,6 +53,11 @@
 							<a href="/annotate" on:click={closeMenu} class="py-4"> Anotação </a>
 						</FeatureWrapper>
 					{/if}
+					{#if role === 'admin' || role === 'contributor'}
+						<FeatureWrapper feature="islrdatasetcontribute">
+							<a href="/islr-dataset" on:click={closeMenu} class="py-4"> Dataset ISLR </a>
+						</FeatureWrapper>
+					{/if}
 					<FeatureWrapper feature="crowdsource">
 						<a href="/crowdsource" on:click={closeMenu} class="py-4"> Propor Gestos </a>
 					</FeatureWrapper>

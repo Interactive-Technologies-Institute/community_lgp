@@ -48,6 +48,7 @@ export const load = async (event) => {
 				annotate: features.includes('annotate'),
 				crowdsource: features.includes('crowdsource'),
 				lgp4fun: features.includes('lgp4fun'),
+				islrdatasetcontribute: features.includes('islrdatasetcontribute'),
 			},
 			zod(updateFeaturesSchema),
 			{
@@ -85,6 +86,7 @@ export const actions = {
 					{ id: 'crowdsource', enabled: form.data.crowdsource },
 					{ id: 'lgp4fun', enabled: form.data.lgp4fun },
 					{ id: 'tutorial', enabled: form.data.tutorial },
+					{ id: 'islrdatasetcontribute', enabled: form.data.islrdatasetcontribute },
 				]);
 
 				if (supabaseError) {

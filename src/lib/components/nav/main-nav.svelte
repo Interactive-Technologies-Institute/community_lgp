@@ -78,6 +78,21 @@
 			</FeatureWrapper>
 		{/if}
 
+		{#if role === 'admin' || role === 'contributor'}
+			<FeatureWrapper feature="islrdatasetcontribute">
+				<a
+					href="/islr-dataset"
+					class={cn(
+						linkClass,
+						$page.url.pathname.startsWith('/islr-dataset') &&
+							'text-brand-white after:absolute after:inset-x-0 after:bottom-0 after:h-1 after:rounded-t-full after:bg-brand-yellow'
+					)}
+				>
+					Dataset ISLR
+				</a>
+			</FeatureWrapper>
+		{/if}
+
 		<FeatureWrapper feature="crowdsource">
 			<a
 				href="/crowdsource"

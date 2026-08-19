@@ -8,6 +8,7 @@ export const updateFeaturesSchema = z.object({
 	crowdsource: z.boolean(),
 	lgp4fun: z.boolean(),
 	tutorial: z.boolean(),
+	islrdatasetcontribute: z.boolean(),
 });
 
 export type UpdateFeaturesSchema = typeof updateFeaturesSchema;

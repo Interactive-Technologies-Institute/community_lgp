@@ -10,9 +10,10 @@ export type Feature =
 	| 'events'
 	| 'docs'
 	| 'lgp4fun'
-	| 'tutorial';
+	| 'tutorial'
+	| 'islrdatasetcontribute';
 
-export type UserRole = 'user' | 'moderator' | 'admin';
+export type UserRole = 'user' | 'moderator' | 'admin' | 'contributor';
 
 export type UserWithRole = User & { role: UserRole };
 

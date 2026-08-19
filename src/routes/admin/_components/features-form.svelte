@@ -142,6 +142,23 @@
 						<Switch includeInput {...attrs} bind:checked={$formData.lgp4fun} />
 					</Form.Control>
 				</Form.Field>
+				<Form.Field
+					{form}
+					name="islrdatasetcontribute"
+					class="flex flex-row items-center justify-between rounded-lg border p-4"
+				>
+					<Form.Control let:attrs>
+						<div class="space-y-0.5">
+							<Form.Label>Contribuição para Dataset ISLR</Form.Label>
+							<Form.Description>
+								Ative este módulo para permitir que os utilizadores com permissões contribuam com
+								vídeos para o dataset de reconhecimento de gestos isolados (ISLR) de Língua Gestual
+								Portuguesa.
+							</Form.Description>
+						</div>
+						<Switch includeInput {...attrs} bind:checked={$formData.islrdatasetcontribute} />
+					</Form.Control>
+				</Form.Field>
 			</div>
 		</Card.Content>
 		<Card.Footer>
