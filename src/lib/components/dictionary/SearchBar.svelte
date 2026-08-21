@@ -4,7 +4,7 @@
 	export let signs: Sign[];
 	export let parameters;
 	import * as Tabs from '$lib/components/ui/tabs';
-	import TagFilterButton from '@/components/tag-filter-button.svelte';
+	import DictionaryFilter from '@/components/dictionary/DictionaryFilter.svelte';
 	import SignSearch from './SignSearch.svelte';
 	import TextSearch from './TextSearch.svelte';
 	import { queryParam } from 'sveltekit-search-params';
@@ -17,6 +17,7 @@
 	import * as Card from '$lib/components/ui/card';
 
 	const theme = queryParam('theme', arrayQueryParam());
+	const district = queryParam('district', arrayQueryParam());
 	const search = queryParam('s', stringQueryParam(), {
 		debounceHistory: 250,
 	});
@@ -99,7 +100,12 @@
 						<TextSearch />
 					</div>
 				{/if}
-				<TagFilterButton tags={data.themes} />
+				<DictionaryFilter 
+					tags={data.themes} 
+					districts={data.districts}
+					bind:filterValues={$theme}
+					bind:districtFilterValues={$district}
+				/>
 			</div>
 		</div>
 	</Card.Root>

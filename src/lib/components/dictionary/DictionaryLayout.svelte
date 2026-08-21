@@ -31,6 +31,7 @@
 		debounceHistory: 250,
 	});
 	const theme = queryParam('theme', arrayQueryParam());
+	const district = queryParam('district', arrayQueryParam());
 	const annotation = queryParam('annotation', arrayQueryParam());
 	const page = queryParam('page', stringQueryParam(), {
 		debounceHistory: 250,
@@ -39,6 +40,7 @@
 	$: isFiltering =
 		($search ?? '').trim().length > 0 ||
 		($theme ?? []).length > 0 ||
+		($district ?? []).length > 0 ||
 		($annotation ?? []).length > 0;
 	$: isSearching = $navigating !== null;
 	$: $search = data.search || $search;

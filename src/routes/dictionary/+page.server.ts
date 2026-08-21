@@ -10,66 +10,80 @@ export const load = async (event) => {
 	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+	const district = arrayQueryParam().decode(event.url.searchParams.get('district')) ?? null;
 	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation')) ?? null;
-	const showSuggestions = !search && !theme?.length && !annotation?.length;
+	const showSuggestions = !search && !theme?.length && !district?.length && !annotation?.length;
 	let totalPages = 0;
 	let countSign = 0;
 	let searchArray = Array(300).fill(0);
 
 	async function getSigns(): Promise<Sign[]> {
-		if (!search && !theme?.length && !annotation?.length) return [];
+		if (!search && !theme?.length && !district?.length && !annotation?.length) return [];
 
-		let query = event.locals.supabase;
-		
-		if (search) {
-			query = query.from('signs')
-										.select('*', { count: 'exact' })
-										.eq('is_anotated', 2)
-										.not('theme_flattened', 'ilike', '%CEB%')
-										.not('theme_flattened', 'ilike', '%Filmar%')
-										.range((page - 1) * perPage, page * perPage - 1)
-										.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+		async function runQuery() {
+			if (search) {
+				let query = event.locals.supabase
+					.from('signs')
+					.select('*', { count: 'exact' })
+					.eq('is_anotated', 2)
+					.not('theme_flattened', 'ilike', '%CEB%')
+					.not('theme_flattened', 'ilike', '%Filmar%')
+					.range((page - 1) * perPage, page * perPage - 1)
+					.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 
-			if (theme && theme.length) {
-				query = query.overlaps('theme', theme);
-			}
-
-			query = query.order('name_unaccented', { ascending: true });
-		}
-
-		else if (annotation && annotation.length) {
-			annotation.forEach((id) => {
-				const numericId = Number(id);
-				if (numericId > 0 && numericId <= 300) {
-					searchArray[numericId - 1] = 1;
+				if (theme && theme.length) {
+					query = query.overlaps('theme', theme);
 				}
-			});
+				if (district && district.length) {
+					query = query.in('district', district);
+				}
 
-			query = query.rpc('get_closest_signs', 
-												{query_array: searchArray,
-												limit_count: 9,
-												offset_count: 1},
-												{ count: 'exact' })
-												.range((page - 1) * perPage, page * perPage - 1);
-
-			if (theme && theme.length) {
-				query = query.overlaps('theme', theme);
+				return query.order('name_unaccented', { ascending: true });
 			}
+
+			if (annotation && annotation.length) {
+				annotation.forEach((id) => {
+					const numericId = Number(id);
+					if (numericId > 0 && numericId <= 300) {
+						searchArray[numericId - 1] = 1;
+					}
+				});
+
+				let query = event.locals.supabase
+					.rpc(
+						'get_closest_signs',
+						{ query_array: searchArray, limit_count: 9, offset_count: 1 },
+						{ count: 'exact' }
+					)
+					.range((page - 1) * perPage, page * perPage - 1);
+
+				if (theme && theme.length) {
+					query = query.overlaps('theme', theme);
+				}
+
+				if (district && district.length) {
+					query = query.in('district', district);
+				}
+
+				return query;
+			}
+
+			let query = event.locals.supabase
+				.from('signs')
+				.select('*', { count: 'exact' })
+				.eq('is_anotated', 2)
+				.not('theme_flattened', 'ilike', '%CEB%')
+				.not('theme_flattened', 'ilike', '%Filmar%')
+				.range((page - 1) * perPage, page * perPage - 1)
+				.order('name_unaccented', { ascending: true });
+
+			if (theme && theme.length) query = query.overlaps('theme', theme);
+			if (district && district.length) query = query.in('district', district);
+
+			return query;
 		}
 
-		else if (theme && theme.length) {
-			query = query.from('signs')
-										.select('*', { count: 'exact' })
-										.eq('is_anotated', 2)
-										.not('theme_flattened', 'ilike', '%CEB%')
-										.not('theme_flattened', 'ilike', '%Filmar%')
-										.range((page - 1) * perPage, page * perPage - 1)
-										.overlaps('theme', theme)
-										.order('name_unaccented', { ascending: true });
-		}
-
-
-		const { data: signs, count, error: signsError } = await query;
+		const { data: signs, count, error: signsError } = await runQuery();
 		totalPages = count ? Math.ceil(count / perPage) : 0;
 		countSign = count || 0;
 
@@ -157,12 +171,36 @@ export const load = async (event) => {
 		return themeMap;
 	}
 
-	const [signs, dailySigns, featuredSigns, parameters, themes] = await Promise.all([
+	async function getDistricts(): Promise<Map<string, number>> {
+		const { data: districts, error: districtsError } = await event.locals.supabase
+			.from('signs_districts')
+			.select('*');
+
+		if (districtsError) {
+			const errorMessage = 'Error fetching districts, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+		const districtMap = new Map<string, number>();
+		if (districts) {
+			districts.forEach((district) => {
+				const { count, district: districtName } = district;
+				if (count !== null && districtName !== null) {
+					districtMap.set(districtName, count);
+				}
+			});
+		}
+
+		return districtMap;
+	}
+
+	const [signs, dailySigns, featuredSigns, parameters, themes, districts] = await Promise.all([
 		getSigns(),
 		showSuggestions ? getDailySigns() : Promise.resolve([]),
 		showSuggestions ? getFeaturedSigns() : Promise.resolve([]),
 		getParameters(),
 		getThemes(),
+		getDistricts()
 	]);
 
 	return {
@@ -171,6 +209,7 @@ export const load = async (event) => {
 		featuredSigns,
 		parameters,
 		themes,
+		districts,
 		page,
 		totalPages,
 		perPage,
