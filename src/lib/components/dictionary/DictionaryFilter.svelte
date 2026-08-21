@@ -89,8 +89,8 @@
 						class={cn(
 							'rounded-md px-3 py-2 text-sm font-medium transition-colors',
 							activeSection === 'themes'
-								? 'bg-brand-yellow/70 text-brand-dark shadow-sm'
-								: 'bg-background text-foreground hover:bg-brand-yellow/20'
+								? 'bg-brand-border text-foreground shadow-sm'
+								: 'bg-background text-foreground hover:bg-brand-border/20'
 						)}
 						on:click={() => selectSection('themes')}
 					>
@@ -101,7 +101,7 @@
 						class={cn(
 							'rounded-md px-3 py-2 text-sm font-medium transition-colors',
 							activeSection === 'districts'
-								? 'bg-brand-yellow/70 text-brand-dark shadow-sm'
+								? 'bg-brand-yellow/70 text-foreground shadow-sm'
 								: 'bg-background text-foreground hover:bg-brand-yellow/20'
 						)}
 						on:click={() => selectSection('districts')}

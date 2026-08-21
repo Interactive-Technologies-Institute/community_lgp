@@ -174,7 +174,7 @@
 									{/if}
 									<Badge
 										variant="outline"
-										class="text-brand-foreground rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
+										class="text-brand-foreground rounded-full border border-brand-yellow bg-brand-yellow/20 px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
 									>
 										{district}
 									</Badge>

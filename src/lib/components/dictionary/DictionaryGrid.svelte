@@ -61,6 +61,9 @@
 								<Badge class="w-fit border border-brand-border bg-brand-surface dark:bg-brand-border/60" variant="outline">{t}</Badge>
 							{/if}
 						{/each}
+						{#if sign.district}
+								<Badge class="w-fit border border-brand-yellow bg-brand-yellow/20" variant="outline">{sign.district}</Badge>
+						{/if}
 						<AnnotationGrid data={getParameters(sign.annotation)} />
 					</div>
 				</div>
