@@ -32,6 +32,7 @@ export const updateSignSchema = z.object({
 	written_anotation: z.array(z.string()).nullable().optional(),
 	frequency: z.number().nullable().optional(),
 	district: z.string().nullable().optional(),
+	dictionary: z.array(z.string()).nullable().optional()
 });
 
 export const createSignSchema = z.object({
@@ -59,6 +60,7 @@ export const createSignSchema = z.object({
 	sentence_2: z.string().nullable().optional(),
 	frequency: z.number().nullable().optional(),
 	district: z.string().nullable().optional(),
+	dictionary: z.array(z.string()).nullable().optional()
 });
 
 export const deleteSignSchema = z.object({

@@ -7,10 +7,30 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -120,7 +140,7 @@ export type Database = {
         Row: {
           date: string
           description: string
-          fts: unknown
+          fts: unknown | null
           id: number
           image: string
           inserted_at: string
@@ -133,7 +153,7 @@ export type Database = {
         Insert: {
           date: string
           description: string
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image: string
           inserted_at?: string
@@ -146,7 +166,7 @@ export type Database = {
         Update: {
           date?: string
           description?: string
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image?: string
           inserted_at?: string
@@ -299,7 +319,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["guide_difficulty"]
           duration: Database["public"]["Enums"]["guide_duration"]
-          fts: unknown
+          fts: unknown | null
           id: number
           image: string
           inserted_at: string
@@ -313,7 +333,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["guide_difficulty"]
           duration: Database["public"]["Enums"]["guide_duration"]
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image: string
           inserted_at?: string
@@ -327,7 +347,7 @@ export type Database = {
           description?: string
           difficulty?: Database["public"]["Enums"]["guide_difficulty"]
           duration?: Database["public"]["Enums"]["guide_duration"]
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image?: string
           inserted_at?: string
@@ -815,6 +835,7 @@ export type Database = {
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
+          dictionary: string[] | null
           district: string | null
           frequency: number | null
           game_video: string | null
@@ -840,6 +861,7 @@ export type Database = {
           created_at?: string | null
           created_by_user_id?: string | null
           description?: string | null
+          dictionary?: string[] | null
           district?: string | null
           frequency?: number | null
           game_video?: string | null
@@ -865,6 +887,7 @@ export type Database = {
           created_at?: string | null
           created_by_user_id?: string | null
           description?: string | null
+          dictionary?: string[] | null
           district?: string | null
           frequency?: number | null
           game_video?: string | null
@@ -912,15 +935,17 @@ export type Database = {
           },
         ]
       }
-      signs_backup_context_video_57_20260527: {
+      signs_backup_themes_20260817: {
         Row: {
           annotated_by_user_id: string | null
           annotation: Json | null
           annotation_array: number[] | null
           context_video: string | null
+          context_video_2: string | null
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
+          dictionary: string | null
           district: string | null
           frequency: number | null
           game_video: string | null
@@ -932,6 +957,7 @@ export type Database = {
           name: string | null
           name_unaccented: string | null
           sentence: string | null
+          sentence_2: string | null
           theme: string[] | null
           theme_flattened: string | null
           video: string | null
@@ -941,9 +967,11 @@ export type Database = {
           annotation?: Json | null
           annotation_array?: number[] | null
           context_video?: string | null
+          context_video_2?: string | null
           created_at?: string | null
           created_by_user_id?: string | null
           description?: string | null
+          dictionary?: string | null
           district?: string | null
           frequency?: number | null
           game_video?: string | null
@@ -955,6 +983,7 @@ export type Database = {
           name?: string | null
           name_unaccented?: string | null
           sentence?: string | null
+          sentence_2?: string | null
           theme?: string[] | null
           theme_flattened?: string | null
           video?: string | null
@@ -964,9 +993,11 @@ export type Database = {
           annotation?: Json | null
           annotation_array?: number[] | null
           context_video?: string | null
+          context_video_2?: string | null
           created_at?: string | null
           created_by_user_id?: string | null
           description?: string | null
+          dictionary?: string | null
           district?: string | null
           frequency?: number | null
           game_video?: string | null
@@ -978,40 +1009,62 @@ export type Database = {
           name?: string | null
           name_unaccented?: string | null
           sentence?: string | null
+          sentence_2?: string | null
           theme?: string[] | null
           theme_flattened?: string | null
           video?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "signs_duplicate_main_sign_id_fkey"
+            foreignKeyName: "signs_backup_themes_20260817_main_sign_id_fkey"
             columns: ["main_sign_id"]
             isOneToOne: false
             referencedRelation: "signs"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "signs_duplicate_main_sign_id_fkey"
+            foreignKeyName: "signs_backup_themes_20260817_main_sign_id_fkey"
             columns: ["main_sign_id"]
             isOneToOne: false
             referencedRelation: "signs_statistics"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "signs_duplicate_main_sign_id_fkey"
+            foreignKeyName: "signs_backup_themes_20260817_main_sign_id_fkey"
             columns: ["main_sign_id"]
             isOneToOne: false
             referencedRelation: "signs_summary"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "signs_duplicate_main_sign_id_fkey"
+            foreignKeyName: "signs_backup_themes_20260817_main_sign_id_fkey"
             columns: ["main_sign_id"]
             isOneToOne: false
             referencedRelation: "signs_view"
             referencedColumns: ["id"]
           },
         ]
+      }
+      signs_dictionary_backup_20260817: {
+        Row: {
+          backed_up_at: string | null
+          id: number
+          previous_dictionary: string | null
+          theme_at_update: string[] | null
+        }
+        Insert: {
+          backed_up_at?: string | null
+          id: number
+          previous_dictionary?: string | null
+          theme_at_update?: string[] | null
+        }
+        Update: {
+          backed_up_at?: string | null
+          id?: number
+          previous_dictionary?: string | null
+          theme_at_update?: string[] | null
+        }
+        Relationships: []
       }
       signs_favorite: {
         Row: {
@@ -1232,7 +1285,7 @@ export type Database = {
         Row: {
           date: string | null
           description: string | null
-          fts: unknown
+          fts: unknown | null
           id: number | null
           image: string | null
           inserted_at: string | null
@@ -1274,7 +1327,7 @@ export type Database = {
           description: string | null
           difficulty: Database["public"]["Enums"]["guide_difficulty"] | null
           duration: Database["public"]["Enums"]["guide_duration"] | null
-          fts: unknown
+          fts: unknown | null
           id: number | null
           image: string | null
           inserted_at: string | null
@@ -1527,6 +1580,13 @@ export type Database = {
         }
         Relationships: []
       }
+      signs_districts: {
+        Row: {
+          count: number | null
+          district: string | null
+        }
+        Relationships: []
+      }
       signs_favorite_view: {
         Row: {
           id: number | null
@@ -1666,7 +1726,10 @@ export type Database = {
         }
         Returns: boolean
       }
-      custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      custom_access_token_hook: {
+        Args: { event: Json }
+        Returns: Json
+      }
       get_closest_signs: {
         Args: {
           limit_count: number
@@ -1744,6 +1807,7 @@ export type Database = {
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
+          dictionary: string[] | null
           district: string | null
           frequency: number | null
           game_video: string | null
@@ -1760,12 +1824,6 @@ export type Database = {
           theme_flattened: string | null
           video: string | null
         }[]
-        SetofOptions: {
-          from: "*"
-          to: "signs"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
       search_unaccent_name: {
         Args: { search_term: string }
@@ -1778,6 +1836,7 @@ export type Database = {
           created_at: string | null
           created_by_user_id: string | null
           description: string | null
+          dictionary: string[] | null
           district: string | null
           frequency: number | null
           game_video: string | null
@@ -1794,20 +1853,27 @@ export type Database = {
           theme_flattened: string | null
           video: string | null
         }[]
-        SetofOptions: {
-          from: "*"
-          to: "signs"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
-      unaccent: { Args: { "": string }; Returns: string }
-      unaccent_text: { Args: { text_input: string }; Returns: string }
+      unaccent: {
+        Args: { "": string }
+        Returns: string
+      }
+      unaccent_init: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      unaccent_text: {
+        Args: { text_input: string }
+        Returns: string
+      }
       update_user_types: {
         Args: { types: Database["public"]["CompositeTypes"]["user_type"][] }
         Returns: undefined
       }
-      verify_user_password: { Args: { password: string }; Returns: boolean }
+      verify_user_password: {
+        Args: { password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       feature:
@@ -1999,6 +2065,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       feature: [
@@ -2068,3 +2137,4 @@ export const Constants = {
     },
   },
 } as const
+

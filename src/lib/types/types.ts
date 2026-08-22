@@ -178,7 +178,8 @@ export type Sign = {
 	district?: string | null;
 	image?: string | null;
 	game_video?: string | null;
-	name_unaccented: string;			
+	name_unaccented: string;
+	dictionary: string[] | null;			
 };
 
 export type SignWithModeration = Sign & { moderation: ModerationInfo[] };

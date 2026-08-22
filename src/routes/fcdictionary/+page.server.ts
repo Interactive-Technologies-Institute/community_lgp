@@ -25,7 +25,7 @@ export const load = async (event) => {
 			query = query.from('signs')
 										.select('*', { count: 'exact' })
 										.eq('is_anotated', 2)
-										.or(`theme_flattened.ilike.%CEB%,theme_flattened.ilike.%DACTILOLOGIA%`)
+										.contains('dictionary', ['1º CEB'])
 										.range((page - 1) * perPage, page * perPage - 1)
 										.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 
@@ -60,7 +60,7 @@ export const load = async (event) => {
 			query = query.from('signs')
 										.select('*', { count: 'exact' })
 										.eq('is_anotated', 2)
-										.or(`theme_flattened.ilike.%CEB%,theme_flattened.ilike.%DACTILOLOGIA%`)
+										.contains('dictionary', ['1º CEB'])
 										.range((page - 1) * perPage, page * perPage - 1)
 										.overlaps('theme', theme)
 										.order('name_unaccented', { ascending: true });
@@ -98,7 +98,7 @@ export const load = async (event) => {
 			.from('signs')
 			.select('*')
 			.eq('is_anotated', 2)
-			.or('theme_flattened.ilike.%CEB%,theme_flattened.ilike.%DACTILOLOGIA%')
+			.contains('dictionary', ['1º CEB'])
 			.order('last_changed', { ascending: false })
 			.limit(6);
 
@@ -115,7 +115,7 @@ export const load = async (event) => {
 			.from('signs')
 			.select('*')
 			.eq('is_anotated', 2)
-			.or('theme_flattened.ilike.%CEB%,theme_flattened.ilike.%DACTILOLOGIA%')
+			.contains('dictionary', ['1º CEB'])
 			.order('id', { ascending: true })
 			.limit(500);
 
