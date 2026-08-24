@@ -1580,6 +1580,13 @@ export type Database = {
         }
         Relationships: []
       }
+      signs_dictionaries: {
+        Row: {
+          count: number | null
+          dictionary: string | null
+        }
+        Relationships: []
+      }
       signs_districts: {
         Row: {
           count: number | null

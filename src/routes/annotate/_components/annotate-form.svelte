@@ -20,6 +20,69 @@
 	export let user;
 	export let parameter: Parameter[];
 	export let themes;
+	export let dictionaries: string[] = [];
+
+	let dictionarySearch = '';
+	let createdDictionaries: string[] = [];
+
+	$: selectedDictionaries = $formData.dictionary ?? [];
+	$: availableDictionaries = Array.from(
+		new Set(
+			[...dictionaries, ...createdDictionaries, ...selectedDictionaries].map((dictionary) =>
+				dictionary.trim()
+			)
+		)
+	)
+		.filter(Boolean)
+		.sort((a, b) => a.localeCompare(b, 'pt'));
+
+	function findMatchingDictionary(dictionary: string) {
+		const normalizedDictionary = dictionary.trim();
+		if (!normalizedDictionary) return undefined;
+
+		return availableDictionaries.find(
+			(option) => option.localeCompare(normalizedDictionary, 'pt', { sensitivity: 'accent' }) === 0
+		);
+	}
+
+	function addDictionaryFromSearch() {
+		const normalizedDictionary = dictionarySearch.trim();
+		if (!normalizedDictionary) return;
+
+		const existingDictionary = findMatchingDictionary(normalizedDictionary);
+		const dictionaryToAdd = existingDictionary ?? normalizedDictionary;
+
+		if (!existingDictionary) {
+			createdDictionaries = [...createdDictionaries, dictionaryToAdd];
+		}
+
+		if (!selectedDictionaries.includes(dictionaryToAdd)) {
+			$formData.dictionary = [...selectedDictionaries, dictionaryToAdd];
+		}
+
+		dictionarySearch = '';
+	}
+
+	function toggleDictionary(dictionary: string) {
+		if (selectedDictionaries.includes(dictionary)) {
+			removeDictionary(dictionary);
+			return;
+		}
+
+		$formData.dictionary = [...selectedDictionaries, dictionary];
+	}
+
+	function removeDictionary(dictionary: string) {
+		$formData.dictionary = selectedDictionaries.filter((selected) => selected !== dictionary);
+	}
+
+	const handleDictionaryKeydown = (event: Event) => {
+		const keyboardEvent = event as KeyboardEvent;
+		if (keyboardEvent.key === 'Enter') {
+			event.preventDefault();
+			addDictionaryFromSearch();
+		}
+	};
 
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
@@ -294,6 +357,78 @@
 							</Form.Control>
 						</Form.Field>
 
+							<!-- Dictionary -->
+							<Form.Field {form} name="dictionary" class="flex w-full flex-col">
+								<Form.Control>
+									<Form.Label class="text-base font-semibold text-brand-grey">Dicionário</Form.Label>
+
+									<!-- Selected dictionaries -->
+									{#if selectedDictionaries.length > 0}
+										<div class="flex flex-wrap gap-2 pb-2">
+											{#each selectedDictionaries as selectedDictionary}
+												<Badge
+													variant="outline"
+													class="text-brand-foreground flex flex-row gap-2 rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
+												>
+													{selectedDictionary}
+													<button
+														type="button"
+														class="flex h-6 w-6 items-center justify-center rounded-full border bg-red-100 p-1 text-red-500 transition hover:bg-red-200"
+														on:click={() => toggleDictionary(selectedDictionary)}
+													>
+														<X class="h-4 w-4" />
+												</button>
+											</Badge>
+										{/each}
+										</div>
+									{/if}
+
+									<!-- Dictionaries list -->
+									<Command.Root filter={customFilter} class="h-auto max-h-[200px] rounded-md border">
+										<Command.Input
+											bind:value={dictionarySearch}
+											placeholder="Pesquisar ou adicionar dicionários..."
+											class="flex w-full flex-1"
+											on:keydown={handleDictionaryKeydown()}
+										/>
+										<Command.List>
+											<Command.Empty>
+												<button
+													type="button"
+													on:click={addDictionaryFromSearch}
+													class="w-full px-2 py-1.5 text-left text-sm"
+												>
+													Adicionar "{dictionarySearch.trim()}"
+												</button>
+											</Command.Empty>
+											<Command.Group>
+												{#each availableDictionaries as dictionaryOption}
+													<Command.Item
+														value={dictionaryOption}
+														onSelect={() => {
+															toggleDictionary(dictionaryOption);
+															dictionarySearch = '';
+														}}
+													>
+														<div
+															class={cn(
+																'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+																selectedDictionaries.includes(dictionaryOption)
+																	? 'bg-primary text-primary-foreground'
+																	: 'opacity-50 [&_svg]:invisible'
+															)}
+														>
+															<Check class="h-4 w-4" />
+														</div>
+														<span>{dictionaryOption}</span>
+													</Command.Item>
+												{/each}
+											</Command.Group>
+										</Command.List>
+									</Command.Root>
+									<Form.FieldErrors />
+								</Form.Control>
+							</Form.Field>
 						<!-- Themes -->
 						<Form.Field {form} name="theme" class="flex w-full flex-col">
 							<Form.Control>

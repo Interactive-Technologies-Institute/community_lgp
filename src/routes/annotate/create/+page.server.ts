@@ -58,12 +58,30 @@ export const load = async (event) => {
 		return themes;
 	}
 
+	async function getDictionaries(): Promise<string[]> {
+		const { data: dictionaries, error: dictionariesError } = await event.locals.supabase
+			.from('signs_dictionaries')
+			.select('dictionary')
+			.order('dictionary', { ascending: true });
+
+		if (dictionariesError) {
+			const errorMessage = 'Error fetching dictionaries, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return dictionaries
+			.map((row) => row.dictionary)
+			.filter((dictionary): dictionary is string => dictionary !== null);
+	}
+
 	return {
 		createForm: await superValidate(zod(createSignSchema), {
 			id: 'create-sign',
 		}),
 		parameters: await getParameters(),
-        themes: await getThemes(),
+		themes: await getThemes(),
+		dictionaries: await getDictionaries(),
 	};
 };
 

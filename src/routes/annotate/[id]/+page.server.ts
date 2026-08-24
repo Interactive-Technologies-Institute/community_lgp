@@ -76,6 +76,23 @@ export const load = async (event) => {
 		return themes;
 	}
 
+	async function getDictionaries(): Promise<string[]> {
+		const { data: dictionaries, error: dictionariesError } = await event.locals.supabase
+			.from('signs_dictionaries')
+			.select('dictionary')
+			.order('dictionary', { ascending: true });
+
+		if (dictionariesError) {
+			const errorMessage = 'Error fetching dictionaries, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return dictionaries
+			.map((row) => row.dictionary)
+			.filter((dictionary): dictionary is string => dictionary !== null);
+	}
+
 	async function getParametersByIds(ids: number[]): Promise<Parameter[]> {
 		const { data: parametersById, error: parametersError } = await event.locals.supabase
 			.from('parameters')
@@ -127,6 +144,7 @@ export const load = async (event) => {
 		parameters: parameters,
 		parametersById: parametersById,
 		themes: await getThemes(),
+		dictionaries: await getDictionaries(),
 	};
 };
 
@@ -224,6 +242,7 @@ export const actions = {
 					sentence_2: data.sentence_2,
 					frequency: data.frequency,
 					district: data.district,
+					dictionary: data.dictionary,
 				})
 				.eq('id', parseInt(event.params.id));
 			if (supabaseError) {

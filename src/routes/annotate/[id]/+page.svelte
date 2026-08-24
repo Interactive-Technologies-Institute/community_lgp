@@ -43,7 +43,13 @@
 
 </div>
 <div class="mb-20">
-	<AnnotateForm data={data.updateForm} user={data.user} parameter={data.parameters} themes={data.themes} />
+	<AnnotateForm
+		data={data.updateForm}
+		user={data.user}
+		parameter={data.parameters}
+		themes={data.themes}
+		dictionaries={data.dictionaries}
+	/>
 	
 	<div class="flex items-center justify-center">
 		<Button variant="destructive" on:click={() => (openDeleteDialog = true)}>

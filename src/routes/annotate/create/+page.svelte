@@ -34,6 +34,11 @@
 
 </div>
 <div class="mb-20">
-	<AnnotateForm data={data.createForm} user={data.user} parameter={data.parameters} themes={data.themes} />
+	<AnnotateForm
+		data={data.createForm}
+		user={data.user}
+		parameter={data.parameters}
+		themes={data.themes}
+		dictionaries={data.dictionaries}
+	/>
 </div>
-
