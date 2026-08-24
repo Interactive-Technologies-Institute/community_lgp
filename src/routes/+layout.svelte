@@ -33,37 +33,42 @@
 	}
 
 	onMount(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
+		if (data.maintenance || !supabase) return;
+
+		const { data: authState } = supabase.auth.onAuthStateChange((_, newSession) => {
 			if (newSession?.expires_at !== session?.expires_at) {
 				invalidate('supabase:auth');
 			}
 		});
 
-		return () => data.subscription.unsubscribe();
+		return () => authState.subscription.unsubscribe();
 	});
 </script>
-
 
 <svelte:body class="theme-{branding.color_theme}" style="--radius: {branding.radius}rem" />
 
 <ModeWatcher />
 <Toaster />
 
-<div class="relative flex min-h-screen flex-col">
-	{#if $page.url.pathname === '/reset-password'}
-		<div class="flex-1">
-			<slot />
-		</div>
-		<Footer />
-	{:else}
-		<Header role={user?.role ?? null} {profile} {notifications} />
-		<div class="flex-1">
-			<slot />
-		</div>
-		<Footer />
-	{/if}
-	{#if dev}
-		<TailwindIndicator />
-		<NavigatingIndicator />
-	{/if}
-</div>
+{#if data.maintenance}
+	<slot />
+{:else}
+	<div class="relative flex min-h-screen flex-col">
+		{#if $page.url.pathname === '/reset-password'}
+			<div class="flex-1">
+				<slot />
+			</div>
+			<Footer />
+		{:else}
+			<Header role={user?.role ?? null} {profile} {notifications} />
+			<div class="flex-1">
+				<slot />
+			</div>
+			<Footer />
+		{/if}
+		{#if dev}
+			<TailwindIndicator />
+			<NavigatingIndicator />
+		{/if}
+	</div>
+{/if}
