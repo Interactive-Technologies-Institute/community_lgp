@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Parameter, Sign } from '@/types/types';
+	import type { Parameter, Sign, Theme } from '@/types/types';
 	import { queryParam } from 'sveltekit-search-params';
 	import { arrayQueryParam, stringQueryParam } from '@/utils';
 	import DictionaryView from '@/components/dictionary/DictionaryView.svelte';
@@ -18,6 +18,7 @@
 	});
 	
 	let parameters: Parameter[] = data.parameters;
+	let themes: Theme[] = data.themes;
 	let errorMessage = '';
 
 	let totalPages = data.totalPages ?? 1;
@@ -103,6 +104,7 @@
 			<DictionaryView
 				{data}
 				{signs}
+				{themes}
 				{parameters}
 				{isFiltering}
 				{isSearching}

@@ -10,7 +10,7 @@ import { fail, redirect, error } from '@sveltejs/kit';
 import { superValidate, withFiles } from 'sveltekit-superforms';
 import { v4 as uuidv4 } from 'uuid';
 import type { StorageError } from '@supabase/storage-js';
-import type { Parameter } from '@/types/types';
+import type { Parameter, Theme } from '@/types/types';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -43,11 +43,12 @@ export const load = async (event) => {
 		return parameters as Parameter[];
 	}
 
-    async function getThemes(): Promise<[]> {
+    async function getThemes(): Promise<Theme[]> {
 		const { data: themes, error: themesError } = await event.locals.supabase
-			.from('signs_themes')
-			.select('theme')
-            .order('theme', { ascending: true });
+			.from('themes')
+			.select('*')
+            .order('dictionary', { ascending: true })
+            .order('name', { ascending: true });
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';
@@ -55,7 +56,7 @@ export const load = async (event) => {
 			return error(500, errorMessage);
 		}
 
-		return themes;
+		return themes as Theme[];
 	}
 
 	async function getDictionaries(): Promise<string[]> {
@@ -88,6 +89,23 @@ export const load = async (event) => {
 export const actions = {
     update: async (event) =>
         handleFormAction(event, createSignSchema, 'create-sign', async (event, userId, form) => {
+            const themeIds = Array.from(new Set(form.data.theme));
+            const { data: selectedThemes, error: selectedThemesError } = await event.locals.supabase
+                .from('themes')
+                .select('id')
+                .in(
+                    'id',
+                    themeIds.map((id) => Number(id))
+                );
+
+            if (selectedThemesError || selectedThemes?.length !== themeIds.length) {
+                const message = selectedThemesError?.message ?? 'Um dos temas selecionados já não existe.';
+                setFlash({ type: 'error', message }, event.cookies);
+                return fail(400, withFiles({ message, form }));
+            }
+
+            form.data.theme = themeIds;
+
             async function uploadVideoToR2(
                 video: File,
                 folder: string = ''
@@ -160,6 +178,8 @@ export const actions = {
             }
 
             const { videoUrl, context_video_url, context_video_url_2, ...data } = form.data;
+            delete data.dictionary;
+            delete data.theme_flattened;
 
             const { data: insertedSign, error: supabaseError } = await event.locals.supabase
                 .from('signs')

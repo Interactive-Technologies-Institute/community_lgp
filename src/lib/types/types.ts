@@ -203,6 +203,15 @@ export type Parameter = {
 	image: string | null;
 };
 
+export type Theme = {
+	id: number;
+	dictionary: string;
+	name: string | null;
+	is_parent: boolean | null;
+	children: string[] | null;
+	parent: string | null;
+};
+
 export type CSComment = {
 	id: number;
 	user_id: string;

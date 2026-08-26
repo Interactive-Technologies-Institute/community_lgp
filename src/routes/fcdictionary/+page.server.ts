@@ -1,5 +1,5 @@
 import type { Actions } from '@sveltejs/kit';
-import type { AnnotationArray, Parameter, Sign } from '@/types/types';
+import type { AnnotationArray, Parameter, Sign, Theme } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
@@ -19,6 +19,22 @@ export const load = async (event) => {
 	async function getSigns(): Promise<Sign[]> {
 		if (!search && !theme?.length && !annotation?.length) return [];
 
+		let themeIds: number[] = [];
+
+		if (theme?.length) {
+			const { data: matchingThemes, error } = await event.locals.supabase
+				.from('themes')
+				.select('id')
+				.eq('dictionary', '1º CEB')
+				.in('name', theme);
+
+			if (error) {
+				console.error('Error fetching theme IDs:', error);
+			} else {
+				themeIds = matchingThemes?.map((t: Theme) => t.id) ?? [];
+			}
+		}
+
 		let query = event.locals.supabase;
 		
 		if (search) {
@@ -30,7 +46,7 @@ export const load = async (event) => {
 										.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 
 			if (theme && theme.length) {
-				query = query.overlaps('theme', theme);
+				query = query.overlaps('theme', themeIds);
 			}
 
 			query = query.order('name_unaccented', { ascending: true });
@@ -52,7 +68,7 @@ export const load = async (event) => {
 										.range((page - 1) * perPage, page * perPage - 1);
 
 			if (theme && theme.length) {
-				query = query.overlaps('theme', theme);
+				query = query.overlaps('theme', themeIds);
 			}
 		}
 
@@ -62,7 +78,7 @@ export const load = async (event) => {
 										.eq('is_anotated', 2)
 										.contains('dictionary', ['1º CEB'])
 										.range((page - 1) * perPage, page * perPage - 1)
-										.overlaps('theme', theme)
+										.overlaps('theme', themeIds)
 										.order('name_unaccented', { ascending: true });
 		}
 
@@ -127,23 +143,44 @@ export const load = async (event) => {
 		return selectDailySigns(dailySignCandidates as Sign[], 'first-cycle');
 	}
 
-	async function getThemes(): Promise<Map<string, number>> {
+	async function getThemes(): Promise<Theme[]> {
 		const { data: themes, error: themesError } = await event.locals.supabase
-			.from('signs_themes')
+			.from('themes')
 			.select('*')
-			.or('theme.ilike.%CEB%,theme.ilike.%DACTILOLOGIA%');
+			.eq('dictionary', '1º CEB');
+
+		if (themesError) {
+			console.error('Themes failed', themesError);
+			const errorMessage = 'Error fetching themes, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return themes as Theme[];
+	}
+
+	async function getThemesMap(): Promise<Map<string, string[]>> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('themes')
+			.select('*')
+			.eq('dictionary', '1º CEB')
+			.is('is_parent', true);
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		const themeMap = new Map<string, number>();
+		
+		const themeMap = new Map<string, string[]>();
+
 		if (themes) {
-			themes.forEach((theme) => {
-				const { count, theme: themeName } = theme;
-				if (count !== null && themeName !== null) {
-					themeMap.set(themeName, count);
+			themes.forEach((t: Theme) => {
+				const { name, children } = t;
+				if (name !== null && children !== null) {
+					themeMap.set(name, children);
+				} else if (name !== null && children === null) {
+					themeMap.set(name, []);
 				}
 			});
 		}
@@ -151,12 +188,13 @@ export const load = async (event) => {
 		return themeMap;
 	}
 
-	const [signs, dailySigns, featuredSigns, parameters, themes] = await Promise.all([
+	const [signs, dailySigns, featuredSigns, parameters, themes, themesMap] = await Promise.all([
 		getSigns(),
 		showSuggestions ? getDailySigns() : Promise.resolve([]),
 		showSuggestions ? getFeaturedSigns() : Promise.resolve([]),
 		getParameters(),
 		getThemes(),
+		getThemesMap()
 	]);
 
 	return {
@@ -165,6 +203,7 @@ export const load = async (event) => {
 		featuredSigns,
 		parameters,
 		themes,
+		themesMap,
 		page,
 		totalPages,
 		perPage,

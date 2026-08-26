@@ -3,10 +3,11 @@
 	import type { AnnotationArray, Parameter, Sign } from '@/types/types';
 	import Badge from '@/components/ui/badge/badge.svelte';
 	import AnnotationGrid from './AnnotationGrid.svelte';
+	import type { Theme } from '@/types/types';
 	import { goto } from '$app/navigation';
 	export let data;
 	export let signs: Sign[];
-	export let theme;
+	export let themes: Theme[];
 	export let parameter: Parameter[];
 	export let horizontal: boolean = false;
 
@@ -19,6 +20,21 @@
 			}
 		});
 		return parameterFilter;
+	}
+
+
+	function getThemes(sign: Sign){
+		const signThemes: Theme[] = [];
+
+		for (const t of themes) {
+			for (const signTheme of sign.theme) {
+				if (t.id === parseInt(signTheme)) {
+					signThemes.push(t);
+				}
+			}
+		}
+
+		return signThemes;
 	}
 
 	function goToDictionary(signId: number) {
@@ -56,9 +72,11 @@
 					</video>
 					<p class="pt-4 text-lg font-medium">{sign.name}</p> 
 					<div class="mt-2 flex flex-wrap gap-2">
-						{#each sign.theme as t}
-							{#if t}
-								<Badge class="w-fit border border-brand-border bg-brand-surface dark:bg-brand-border/60" variant="outline">{t}</Badge>
+						{#each getThemes(sign) as t}
+							{#if t.is_parent === true}
+								<Badge class="w-fit border border-brand-border bg-brand-surface dark:bg-brand-border/60" variant="outline">{t.dictionary} > {t.name}</Badge>
+							{:else}
+								<Badge class="w-fit border border-brand-border bg-brand-surface dark:bg-brand-border/60" variant="outline">{t.dictionary} > {t.parent} > {t.name}</Badge>
 							{/if}
 						{/each}
 						{#if sign.district}

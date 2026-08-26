@@ -1,5 +1,5 @@
 import type { Actions } from '@sveltejs/kit';
-import type { AnnotationArray, Parameter, Sign } from '@/types/types';
+import type { AnnotationArray, Parameter, Sign, Theme } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
@@ -21,6 +21,22 @@ export const load = async (event) => {
 		if (!search && !theme?.length && !district?.length && !annotation?.length) return [];
 
 		async function runQuery() {
+			let themeIds: number[] = [];
+
+			if (theme?.length) {
+				const { data: matchingThemes, error } = await event.locals.supabase
+					.from('themes')
+					.select('id')
+					.eq('dictionary', 'Geral')
+					.in('name', theme);
+
+				if (error) {
+					console.error('Error fetching theme IDs:', error);
+				} else {
+					themeIds = matchingThemes?.map((t: Theme) => t.id) ?? [];
+				}
+			}
+
 			if (search) {
 				let query = event.locals.supabase
 					.from('signs')
@@ -31,7 +47,7 @@ export const load = async (event) => {
 					.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
 
 				if (theme && theme.length) {
-					query = query.overlaps('theme', theme);
+					query = query.overlaps('theme', themeIds);
 				}
 				if (district && district.length) {
 					query = query.in('district', district);
@@ -57,7 +73,7 @@ export const load = async (event) => {
 					.range((page - 1) * perPage, page * perPage - 1);
 
 				if (theme && theme.length) {
-					query = query.overlaps('theme', theme);
+					query = query.overlaps('theme', themeIds);
 				}
 
 				if (district && district.length) {
@@ -75,7 +91,7 @@ export const load = async (event) => {
 				.range((page - 1) * perPage, page * perPage - 1)
 				.order('name_unaccented', { ascending: true });
 
-			if (theme && theme.length) query = query.overlaps('theme', theme);
+			if (theme && theme.length) query = query.overlaps('theme', themeIds);
 			if (district && district.length) query = query.in('district', district);
 
 			return query;
@@ -142,24 +158,44 @@ export const load = async (event) => {
 		return selectDailySigns(dailySignCandidates as Sign[], 'general');
 	}
 
-	async function getThemes(): Promise<Map<string, number>> {
+	async function getThemes(): Promise<Theme[]> {
 		const { data: themes, error: themesError } = await event.locals.supabase
-			.from('signs_themes')
+			.from('themes')
 			.select('*')
-			.not('theme', 'ilike', '%CEB%')
-			.not('theme', 'ilike', '%Filmar%');
+			.eq('dictionary', 'Geral');
+
+		if (themesError) {
+			console.error('Themes failed', themesError);
+			const errorMessage = 'Error fetching themes, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return themes as Theme[];
+	}
+
+	async function getThemesMap(): Promise<Map<string, string[]>> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('themes')
+			.select('*')
+			.eq('dictionary', 'Geral')
+			.is('is_parent', true);
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		const themeMap = new Map<string, number>();
+		
+		const themeMap = new Map<string, string[]>();
+
 		if (themes) {
-			themes.forEach((theme) => {
-				const { count, theme: themeName } = theme;
-				if (count !== null && themeName !== null) {
-					themeMap.set(themeName, count);
+			themes.forEach((t: Theme) => {
+				const { name, children } = t;
+				if (name !== null && children !== null) {
+					themeMap.set(name, children);
+				} else if (name !== null && children === null) {
+					themeMap.set(name, []);
 				}
 			});
 		}
@@ -190,12 +226,13 @@ export const load = async (event) => {
 		return districtMap;
 	}
 
-	const [signs, dailySigns, featuredSigns, parameters, themes, districts] = await Promise.all([
+	const [signs, dailySigns, featuredSigns, parameters, themes, themesMap, districts] = await Promise.all([
 		getSigns(),
 		showSuggestions ? getDailySigns() : Promise.resolve([]),
 		showSuggestions ? getFeaturedSigns() : Promise.resolve([]),
 		getParameters(),
 		getThemes(),
+		getThemesMap(),
 		getDistricts()
 	]);
 
@@ -205,6 +242,7 @@ export const load = async (event) => {
 		featuredSigns,
 		parameters,
 		themes,
+		themesMap,
 		districts,
 		page,
 		totalPages,

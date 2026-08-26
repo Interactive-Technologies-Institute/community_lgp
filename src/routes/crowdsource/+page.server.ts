@@ -22,7 +22,7 @@ export const load = async (event) => {
 			'Proposta - Adicionada',
 		];
 
-		query.overlaps('theme', specificThemes);
+		query.in('theme_flattened', specificThemes);
 
 		if (search) {
 			query = query.ilike('name', `%${search}`);
@@ -31,7 +31,7 @@ export const load = async (event) => {
 		if (theme && theme.length) {
 			const validSelectedThemes = theme.filter((t) => specificThemes.includes(t));
 			if (validSelectedThemes.length > 0) {
-				query = query.overlaps('theme', validSelectedThemes);
+				query = query.in('theme_flattened', validSelectedThemes);
 			}
 		}
 
@@ -42,7 +42,7 @@ export const load = async (event) => {
 		} else if (sortBy === 'positive_votes') {
 			query = query.order('positive_votes', { ascending: sortOrder === 'asc' });
 		} else {
-			query = query.order('theme', { ascending: true }).order('created_at', { ascending: false });
+			query = query.order('theme_flattened', { ascending: true }).order('created_at', { ascending: false });
 		}
 
 		query = query.range((page - 1) * perPage, page * perPage - 1);

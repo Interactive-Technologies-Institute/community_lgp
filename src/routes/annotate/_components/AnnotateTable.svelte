@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Sign } from '@/types/types';
+	import type { Sign, Theme } from '@/types/types';
 	import { createTable, Render, Subscribe } from 'svelte-headless-table';
 	import { addPagination } from 'svelte-headless-table/plugins';
 	import { writable, derived } from 'svelte/store';
@@ -14,7 +14,7 @@
 	import Badge from '@/components/ui/badge/badge.svelte';
 
 	export let signs: Sign[];
-	export let themes: Map<string, number> = new Map();
+	export let themes: Theme[] = [];
 
 	const searchQuery = writable('');
 	const selectedThemes = writable<string[]>([]);
@@ -105,6 +105,15 @@
 
 		return [1, 'ellipsis-start', currentPage, 'ellipsis-end', totalPages];
 	}
+
+	function themeLabel(themeId: string) {
+		for (const theme of themes) {
+			if (theme.id === parseInt(themeId)) {
+				return [theme.dictionary, theme?.parent, theme.name].filter(Boolean).join(' › ');
+			}
+		}
+		return [];
+	}
 </script>
 
 <!-- Local search bar -->
@@ -129,7 +138,7 @@
 		</div>
 	</div>
 
-	<AnnotateFilterButton themes={themes} bind:filterValues={$selectedThemes} />
+	<AnnotateFilterButton {themes} bind:filterValues={$selectedThemes} />
 </div>
 
 <!-- Table Container -->
@@ -206,7 +215,7 @@
 												<Badge
 													lang="pt"
 													class="h-auto max-w-full whitespace-normal break-normal hyphens-auto border border-brand-border bg-brand-surface px-3 py-1 text-left text-xs leading-tight dark:bg-brand-border/60 md:text-base"
-													variant="outline">{t}</Badge
+													variant="outline">{themeLabel(t)}</Badge
 												>
 											{/each}
 										</div>

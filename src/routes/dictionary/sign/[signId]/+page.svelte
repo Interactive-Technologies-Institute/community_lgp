@@ -139,14 +139,23 @@
 							<div class="space-y-4">
 								<p class="text-base font-semibold text-brand-grey">Temas</p>
 								<div class="flex flex-wrap gap-2">
-									{#if sign?.theme && sign.theme.length > 0}
-										{#each sign?.theme as t}
-											<Badge
-												variant="outline"
-												class="text-brand-foreground rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
-											>
-												{t}
-											</Badge>
+									{#if data?.themes && data.themes.length > 0}
+										{#each data?.themes as t}
+											{#if t.is_parent === true}
+												<Badge
+													variant="outline"
+													class="text-brand-foreground rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
+												>
+													{t.dictionary} > {t.name}
+												</Badge>
+											{:else}
+												<Badge
+													variant="outline"
+													class="text-brand-foreground rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
+												>
+													{t.dictionary} > {t.parent} > {t.name}
+												</Badge>
+											{/if}
 										{/each}
 									{:else}
 										<p class="text-sm text-brand-grey/60">Sem temas atribuídos.</p>
@@ -262,50 +271,48 @@
 						</video>
 
 						<!-- Parameters -->
-						{#if !sign?.theme_flattened?.includes('Proposta')}
-							<div class="relative mt-20 space-y-2">
-								<img
-									src="/branding/curve-yellow.svg"
-									alt="Curve Yellow"
-									class="absolute -top-10 h-12 w-12"
-								/>
-								<h2
-									class="pb-5 text-3xl font-bold leading-none text-brand-dark dark:text-foreground"
-								>
-									Parâmetros do gesto
-								</h2>
-								<div class="grid grid-cols-3 gap-3 lg:grid-cols-5">
-									{#each parameterCards as group}
-										<Card.Root class="rounded-2xl border-brand-border bg-brand-white p-3 shadow-sm">
-											<div class="flex items-center justify-center pb-4 text-center">
-												<p class="font-semibold text-brand-grey">{group.label}</p>
-											</div>
-											<div class="flex flex-wrap items-center justify-center gap-3">
-												{#if group.parameters && group.parameters.length > 0}
-													{#each group.parameters as parameter}
-														{#if parameter?.image}
-															<img
-																src={parameter?.image}
-																alt={parameter?.name ?? group.label}
-																class="aspect-square h-24 w-24"
-															/>
-														{:else}
-															<p class="text-center text-sm text-brand-grey">
-																{parameter.name ?? parameter.code}
-															</p>
-														{/if}
-													{/each}
-												{:else}
-													<p class="px-2 text-center align-middle text-sm text-brand-grey">
-														O gesto não tem este parâmetro associado.
-													</p>
-												{/if}
-											</div>
-										</Card.Root>
-									{/each}
-								</div>
+						<div class="relative mt-20 space-y-2">
+							<img
+								src="/branding/curve-yellow.svg"
+								alt="Curve Yellow"
+								class="absolute -top-10 h-12 w-12"
+							/>
+							<h2
+								class="pb-5 text-3xl font-bold leading-none text-brand-dark dark:text-foreground"
+							>
+								Parâmetros do gesto
+							</h2>
+							<div class="grid grid-cols-3 gap-3 lg:grid-cols-5">
+								{#each parameterCards as group}
+									<Card.Root class="rounded-2xl border-brand-border bg-brand-white p-3 shadow-sm">
+										<div class="flex items-center justify-center pb-4 text-center">
+											<p class="font-semibold text-brand-grey">{group.label}</p>
+										</div>
+										<div class="flex flex-wrap items-center justify-center gap-3">
+											{#if group.parameters && group.parameters.length > 0}
+												{#each group.parameters as parameter}
+													{#if parameter?.image}
+														<img
+															src={parameter?.image}
+															alt={parameter?.name ?? group.label}
+															class="aspect-square h-24 w-24"
+														/>
+													{:else}
+														<p class="text-center text-sm text-brand-grey">
+															{parameter.name ?? parameter.code}
+														</p>
+													{/if}
+												{/each}
+											{:else}
+												<p class="px-2 text-center align-middle text-sm text-brand-grey">
+													O gesto não tem este parâmetro associado.
+												</p>
+											{/if}
+										</div>
+									</Card.Root>
+								{/each}
 							</div>
-						{/if}
+						</div>
 					</div>
 				</div>
 

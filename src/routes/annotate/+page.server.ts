@@ -1,4 +1,4 @@
-import type { Sign } from '@/types/types';
+import type { Sign, Theme } from '@/types/types';
 import { handleSignInRedirect } from '@/utils';
 import { error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -20,27 +20,19 @@ export const load = async (event) => {
 		return signs as Sign[];
 	}
 
-	async function getThemes(): Promise<Map<string, number>> {
+	async function getThemes(): Promise<Theme[]> {
 		const { data: themes, error: themesError } = await event.locals.supabase
-			.from('signs_themes')
+			.from('themes')
 			.select('*');
 
 		if (themesError) {
+			console.error('Themes failed', themesError);
 			const errorMessage = 'Error fetching themes, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		const themeMap = new Map<string, number>();
-		if (themes) {
-			themes.forEach((theme) => {
-				const { count, theme: themeName } = theme;
-				if (count !== null && themeName !== null) {
-					themeMap.set(themeName, count);
-				}
-			});
-		}
 
-		return themeMap;
+		return themes as Theme[];
 	}
 
 	async function getAnnotationCount(status: Sign['is_anotated']): Promise<number> {

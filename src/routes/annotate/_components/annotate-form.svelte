@@ -1,88 +1,24 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
 	import { Button, buttonVariants } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import * as Form from '@/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
-	import * as Command from '@/components/ui/command';
 	import { Input } from '@/components/ui/input';
 	import { Textarea } from '@/components/ui/textarea';
 	import { createSignSchema, type CreateSignSchema } from '@/schemas/sign';
-	import { Check, Loader2, X, FileVideo, Upload } from 'lucide-svelte';
+	import { Loader2, X, FileVideo, Upload } from 'lucide-svelte';
 	import SuperDebug, { fileProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
 	import { goto } from '$app/navigation';
-	import type { AnnotationArray, Parameter } from '@/types/types';
-	import Badge from '@/components/ui/badge/badge.svelte';
+	import type { AnnotationArray, Parameter, Theme } from '@/types/types';
 	import AnnotateParameterSelector from './AnnotateParameterSelector.svelte';
+	import AnnotateThemeSelector from './AnnotateThemeSelector.svelte';
 
 	export let data: SuperValidated<Infer<CreateSignSchema>>;
 	export let user;
 	export let parameter: Parameter[];
-	export let themes;
+	export let themes: Theme[];
 	export let dictionaries: string[] = [];
-
-	let dictionarySearch = '';
-	let createdDictionaries: string[] = [];
-
-	$: selectedDictionaries = $formData.dictionary ?? [];
-	$: availableDictionaries = Array.from(
-		new Set(
-			[...dictionaries, ...createdDictionaries, ...selectedDictionaries].map((dictionary) =>
-				dictionary.trim()
-			)
-		)
-	)
-		.filter(Boolean)
-		.sort((a, b) => a.localeCompare(b, 'pt'));
-
-	function findMatchingDictionary(dictionary: string) {
-		const normalizedDictionary = dictionary.trim();
-		if (!normalizedDictionary) return undefined;
-
-		return availableDictionaries.find(
-			(option) => option.localeCompare(normalizedDictionary, 'pt', { sensitivity: 'accent' }) === 0
-		);
-	}
-
-	function addDictionaryFromSearch() {
-		const normalizedDictionary = dictionarySearch.trim();
-		if (!normalizedDictionary) return;
-
-		const existingDictionary = findMatchingDictionary(normalizedDictionary);
-		const dictionaryToAdd = existingDictionary ?? normalizedDictionary;
-
-		if (!existingDictionary) {
-			createdDictionaries = [...createdDictionaries, dictionaryToAdd];
-		}
-
-		if (!selectedDictionaries.includes(dictionaryToAdd)) {
-			$formData.dictionary = [...selectedDictionaries, dictionaryToAdd];
-		}
-
-		dictionarySearch = '';
-	}
-
-	function toggleDictionary(dictionary: string) {
-		if (selectedDictionaries.includes(dictionary)) {
-			removeDictionary(dictionary);
-			return;
-		}
-
-		$formData.dictionary = [...selectedDictionaries, dictionary];
-	}
-
-	function removeDictionary(dictionary: string) {
-		$formData.dictionary = selectedDictionaries.filter((selected) => selected !== dictionary);
-	}
-
-	const handleDictionaryKeydown = (event: Event) => {
-		const keyboardEvent = event as KeyboardEvent;
-		if (keyboardEvent.key === 'Enter') {
-			event.preventDefault();
-			addDictionaryFromSearch();
-		}
-	};
 
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
@@ -141,39 +77,6 @@
 			fileInputRef3.click();
 		}
 	};
-
-	$: selectedThemes = $formData.theme ?? [];
-
-	let themeSearch = '';
-	const toggleTheme = (value: string) => {
-		const selected = $formData.theme ?? [];
-		if (selected.includes(value)) {
-			$formData.theme = selected.filter((theme: string) => theme !== value);
-			return;
-		}
-
-		$formData.theme = [...selected, value];
-	};
-
-	const addThemeFromSearch = () => {
-		const newTheme = themeSearch.trim();
-		if (!newTheme) {
-			return;
-		}
-
-		$formData.theme = [...($formData.theme ?? []), newTheme];
-		themeSearch = '';
-	};
-
-	const handleThemeInputKeydown = (event: Event) => {
-		const keyboardEvent = event as KeyboardEvent;
-		if (keyboardEvent.key === 'Enter') {
-			event.preventDefault();
-			addThemeFromSearch();
-		}
-	};
-
-	$: $formData.theme_flattened = ($formData.theme ?? []).join(', ');
 
 	$: {
 		if ($video.length > 0) {
@@ -272,16 +175,6 @@
 		context_video_url_2 = $formData.context_video_url_2;
 	}
 
-	function customFilter(
-    commandValue: string,
-    search: string,
-    commandKeywords?: string[]
-  ): number {
-		commandValue = commandValue.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-		search = search.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-		return commandValue.includes(search) ? 1 : 0;
-  }
-
 	const parameterGroups: {
 		tipo: string;
 		label: string;
@@ -357,151 +250,18 @@
 							</Form.Control>
 						</Form.Field>
 
-							<!-- Dictionary -->
-							<Form.Field {form} name="dictionary" class="flex w-full flex-col">
-								<Form.Control>
-									<Form.Label class="text-base font-semibold text-brand-grey">Dicionário</Form.Label>
-
-									<!-- Selected dictionaries -->
-									{#if selectedDictionaries.length > 0}
-										<div class="flex flex-wrap gap-2 pb-2">
-											{#each selectedDictionaries as selectedDictionary}
-												<Badge
-													variant="outline"
-													class="text-brand-foreground flex flex-row gap-2 rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
-												>
-													{selectedDictionary}
-													<button
-														type="button"
-														class="flex h-6 w-6 items-center justify-center rounded-full border bg-red-100 p-1 text-red-500 transition hover:bg-red-200"
-														on:click={() => toggleDictionary(selectedDictionary)}
-													>
-														<X class="h-4 w-4" />
-												</button>
-											</Badge>
-										{/each}
-										</div>
-									{/if}
-
-									<!-- Dictionaries list -->
-									<Command.Root filter={customFilter} class="h-auto max-h-[200px] rounded-md border">
-										<Command.Input
-											bind:value={dictionarySearch}
-											placeholder="Pesquisar ou adicionar dicionários..."
-											class="flex w-full flex-1"
-											on:keydown={handleDictionaryKeydown()}
-										/>
-										<Command.List>
-											<Command.Empty>
-												<button
-													type="button"
-													on:click={addDictionaryFromSearch}
-													class="w-full px-2 py-1.5 text-left text-sm"
-												>
-													Adicionar "{dictionarySearch.trim()}"
-												</button>
-											</Command.Empty>
-											<Command.Group>
-												{#each availableDictionaries as dictionaryOption}
-													<Command.Item
-														value={dictionaryOption}
-														onSelect={() => {
-															toggleDictionary(dictionaryOption);
-															dictionarySearch = '';
-														}}
-													>
-														<div
-															class={cn(
-																'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-																selectedDictionaries.includes(dictionaryOption)
-																	? 'bg-primary text-primary-foreground'
-																	: 'opacity-50 [&_svg]:invisible'
-															)}
-														>
-															<Check class="h-4 w-4" />
-														</div>
-														<span>{dictionaryOption}</span>
-													</Command.Item>
-												{/each}
-											</Command.Group>
-										</Command.List>
-									</Command.Root>
-									<Form.FieldErrors />
-								</Form.Control>
-							</Form.Field>
-						<!-- Themes -->
+						<!-- Dictionaries and themes -->
 						<Form.Field {form} name="theme" class="flex w-full flex-col">
 							<Form.Control>
-								<Form.Label class="text-base font-semibold text-brand-grey">Temas</Form.Label>
-
-								<!-- Selected themes -->
-								{#if ($formData.theme ?? []).length > 0}
-									<div class="flex flex-wrap gap-2 pb-2">
-										{#each $formData.theme ?? [] as selectedTheme}
-											<Badge
-												variant="outline"
-												class="text-brand-foreground flex flex-row gap-2 rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-sm font-semibold dark:bg-brand-border/80"
-											>
-												{selectedTheme}
-												<button
-													type="button"
-													class="flex h-6 w-6 items-center justify-center rounded-full border bg-red-100 p-1 text-red-500 transition hover:bg-red-200"
-													on:click={() => toggleTheme(selectedTheme)}
-												>
-													<X class="h-4 w-4" />
-												</button>
-											</Badge>
-										{/each}
-									</div>
-								{/if}
-
-								<!-- Themes List -->
-								<Command.Root filter={customFilter} class="h-auto max-h-[200px] rounded-md border">
-									<Command.Input
-										bind:value={themeSearch}
-										placeholder="Pesquisar ou adicionar temas..."
-										class="flex w-full flex-1"
-										on:keydown={handleThemeInputKeydown}
-									/>
-									<Command.List>
-										<Command.Empty>
-											<button
-												type="button"
-												on:click={addThemeFromSearch}
-												class="w-full px-2 py-1.5 text-left text-sm"
-											>
-												Adicionar "{themeSearch.trim()}"
-											</button>
-										</Command.Empty>
-										<Command.Group>
-											{#each themes as themeOption}
-												<Command.Item
-													value={themeOption.theme}
-													onSelect={() => {
-														toggleTheme(themeOption.theme);
-														themeSearch = '';
-													}}
-												>
-													<div
-														class={cn(
-															'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-															selectedThemes?.includes(themeOption.theme)
-																? 'bg-primary text-primary-foreground'
-																: 'opacity-50 [&_svg]:invisible'
-														)}
-													>
-														<Check class="h-4 w-4" />
-													</div>
-													<span>{themeOption.theme}</span>
-												</Command.Item>
-											{/each}
-										</Command.Group>
-									</Command.List>
-								</Command.Root>
+								<AnnotateThemeSelector
+									{themes}
+									{dictionaries}
+									selectedThemeIds={$formData.theme ?? []}
+									on:change={(event) => ($formData.theme = event.detail.themeIds)}
+								/>
 								<Form.FieldErrors />
 							</Form.Control>
 						</Form.Field>
-						<input hidden value={$formData.theme_flattened} name="theme_flattened" />
 
 						<!-- District -->
 						<Form.Field {form} name="district" class="flex w-full flex-col">

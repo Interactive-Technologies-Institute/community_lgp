@@ -140,7 +140,7 @@ export type Database = {
         Row: {
           date: string
           description: string
-          fts: unknown | null
+          fts: unknown
           id: number
           image: string
           inserted_at: string
@@ -153,7 +153,7 @@ export type Database = {
         Insert: {
           date: string
           description: string
-          fts?: unknown | null
+          fts?: unknown
           id?: number
           image: string
           inserted_at?: string
@@ -166,7 +166,7 @@ export type Database = {
         Update: {
           date?: string
           description?: string
-          fts?: unknown | null
+          fts?: unknown
           id?: number
           image?: string
           inserted_at?: string
@@ -319,7 +319,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["guide_difficulty"]
           duration: Database["public"]["Enums"]["guide_duration"]
-          fts: unknown | null
+          fts: unknown
           id: number
           image: string
           inserted_at: string
@@ -333,7 +333,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["guide_difficulty"]
           duration: Database["public"]["Enums"]["guide_duration"]
-          fts?: unknown | null
+          fts?: unknown
           id?: number
           image: string
           inserted_at?: string
@@ -347,7 +347,7 @@ export type Database = {
           description?: string
           difficulty?: Database["public"]["Enums"]["guide_difficulty"]
           duration?: Database["public"]["Enums"]["guide_duration"]
-          fts?: unknown | null
+          fts?: unknown
           id?: number
           image?: string
           inserted_at?: string
@@ -1239,6 +1239,33 @@ export type Database = {
           },
         ]
       }
+      themes: {
+        Row: {
+          children: string[] | null
+          dictionary: string
+          id: number
+          is_parent: boolean | null
+          name: string | null
+          parent: string | null
+        }
+        Insert: {
+          children?: string[] | null
+          dictionary: string
+          id?: number
+          is_parent?: boolean | null
+          name?: string | null
+          parent?: string | null
+        }
+        Update: {
+          children?: string[] | null
+          dictionary?: string
+          id?: number
+          is_parent?: boolean | null
+          name?: string | null
+          parent?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -1285,7 +1312,7 @@ export type Database = {
         Row: {
           date: string | null
           description: string | null
-          fts: unknown | null
+          fts: unknown
           id: number | null
           image: string | null
           inserted_at: string | null
@@ -1327,7 +1354,7 @@ export type Database = {
           description: string | null
           difficulty: Database["public"]["Enums"]["guide_difficulty"] | null
           duration: Database["public"]["Enums"]["guide_duration"] | null
-          fts: unknown | null
+          fts: unknown
           id: number | null
           image: string | null
           inserted_at: string | null
@@ -1733,10 +1760,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      custom_access_token_hook: {
-        Args: { event: Json }
-        Returns: Json
-      }
+      custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       get_closest_signs: {
         Args: {
           limit_count: number
@@ -1831,6 +1855,12 @@ export type Database = {
           theme_flattened: string | null
           video: string | null
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "signs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       search_unaccent_name: {
         Args: { search_term: string }
@@ -1860,27 +1890,20 @@ export type Database = {
           theme_flattened: string | null
           video: string | null
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "signs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
-      unaccent: {
-        Args: { "": string }
-        Returns: string
-      }
-      unaccent_init: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      unaccent_text: {
-        Args: { text_input: string }
-        Returns: string
-      }
+      unaccent: { Args: { "": string }; Returns: string }
+      unaccent_text: { Args: { text_input: string }; Returns: string }
       update_user_types: {
         Args: { types: Database["public"]["CompositeTypes"]["user_type"][] }
         Returns: undefined
       }
-      verify_user_password: {
-        Args: { password: string }
-        Returns: boolean
-      }
+      verify_user_password: { Args: { password: string }; Returns: boolean }
     }
     Enums: {
       feature:

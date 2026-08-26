@@ -101,7 +101,7 @@
 					</div>
 				{/if}
 				<DictionaryFilter 
-					tags={data.themes} 
+					tags={data.themesMap} 
 					districts={data.districts}
 					bind:filterValues={$theme}
 					bind:districtFilterValues={$district}

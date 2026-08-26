@@ -6,7 +6,7 @@ import {
 } from '$env/static/private';
 import { createSignSchema, deleteSignSchema } from '@/schemas/sign';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
-import type { Parameter, Sign } from '@/types/types';
+import type { Parameter, Sign, Theme } from '@/types/types';
 import { fail, error, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { v4 as uuidv4 } from 'uuid';
@@ -61,11 +61,12 @@ export const load = async (event) => {
 		return parameters as Parameter[];
 	}
 
-	async function getThemes(): Promise<[]> {
+	async function getThemes(): Promise<Theme[]> {
 		const { data: themes, error: themesError } = await event.locals.supabase
-			.from('signs_themes')
-			.select('theme')
-      .order('theme', { ascending: true });
+			.from('themes')
+			.select('*')
+      .order('dictionary', { ascending: true })
+			.order('name', { ascending: true });
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';
@@ -73,7 +74,7 @@ export const load = async (event) => {
 			return error(500, errorMessage);
 		}
 
-		return themes;
+		return themes as Theme[];
 	}
 
 	async function getDictionaries(): Promise<string[]> {
@@ -109,6 +110,7 @@ export const load = async (event) => {
 	}
 
 	const sign = await getSign(event.params.id);
+	const themes = await getThemes();
 	let parametersById: Parameter[] = [];
 
 	if (sign) {
@@ -123,8 +125,20 @@ export const load = async (event) => {
 			}
 		}
 	}
+
+	const themeIds = (sign.theme ?? []).flatMap((value) => {
+		const idMatch = themes.find((theme) => String(theme.id) === value);
+		if (idMatch) return [String(idMatch.id)];
+
+		const nameMatches = themes.filter(
+			(theme) => theme.name === value && (!sign.dictionary || sign.dictionary.includes(theme.dictionary))
+		);
+		return nameMatches.length === 1 ? [String(nameMatches[0].id)] : [];
+	});
+
 	const safeSign = {
 		...sign,
+		theme: Array.from(new Set(themeIds)),
 		context_video: sign.context_video ?? '',
 		context_video_2: sign.context_video_2 ?? '',
 		video: sign.video ?? '',
@@ -143,7 +157,7 @@ export const load = async (event) => {
 		}),
 		parameters: parameters,
 		parametersById: parametersById,
-		themes: await getThemes(),
+		themes,
 		dictionaries: await getDictionaries(),
 	};
 };
@@ -233,7 +247,6 @@ export const actions = {
 					annotated_by_user_id: userId,
 					name: data.name,
 					theme: data.theme,
-					theme_flattened: data.theme_flattened,
 					video: `${PUBLIC_R2_PUBLIC_URL}/${videoPath}`,
 					description: data.description,
 					context_video: contextVideoPath ? `${PUBLIC_R2_PUBLIC_URL}/${contextVideoPath}` : '',
@@ -242,7 +255,6 @@ export const actions = {
 					sentence_2: data.sentence_2,
 					frequency: data.frequency,
 					district: data.district,
-					dictionary: data.dictionary,
 				})
 				.eq('id', parseInt(event.params.id));
 			if (supabaseError) {
