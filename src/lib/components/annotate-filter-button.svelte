@@ -112,6 +112,21 @@
 		return null;
 	}
 
+	function selectedChildCount(parentId: number, selections: string[]) {
+		const branch = completeBranch(parentId);
+		if (!branch) return 0;
+
+		return branch.children.filter((child) => selections.includes(String(child.id))).length;
+	}
+
+	function selectedDictionaryThemeCount(dictionary: string, selections: string[]) {
+		const group = themeHierarchy.find((candidate) => candidate.dictionary === dictionary);
+		if (!group) return 0;
+
+		const themeIds = group.branches.flatMap((branch) => [branch.parent, ...branch.children]);
+		return themeIds.filter((theme) => selections.includes(String(theme.id))).length;
+	}
+
 	function toggleParentTheme(branch: ThemeBranch) {
 		const complete = completeBranch(branch.parent.id) ?? branch;
 		const parentId = String(complete.parent.id);
@@ -171,9 +186,27 @@
 									bind:open={openDictionaries[group.dictionary]}
 								>
 									<Collapsible.Trigger
-										class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left hover:bg-accent"
+										class={cn(
+											'flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left hover:bg-accent',
+											selectedDictionaryThemeCount(group.dictionary, selectedThemes) > 0
+												? 'bg-brand-blue/5'
+												: ''
+										)}
 									>
-										<span class="flex flex-1 text-sm font-semibold">{group.dictionary}</span>
+										<span class="min-w-0 flex-1 truncate text-sm font-semibold">{group.dictionary}</span>
+										{#if selectedDictionaryThemeCount(group.dictionary, selectedThemes) > 0}
+											<span
+												class="shrink-0 rounded-full bg-brand-blue/10 px-2 py-0.5 text-xs font-medium text-brand-blue"
+												aria-label={`${selectedDictionaryThemeCount(group.dictionary, selectedThemes)} temas selecionados`}
+											>
+												{selectedDictionaryThemeCount(group.dictionary, selectedThemes)} selecionado{selectedDictionaryThemeCount(
+													group.dictionary,
+													selectedThemes
+												) === 1
+													? ''
+													: 's'}
+											</span>
+										{/if}
 										{#if openDictionaries[group.dictionary]}
 											<ChevronDown class="h-4 w-4 shrink-0 text-muted-foreground" />
 										{:else if !openDictionaries[group.dictionary]}
@@ -187,7 +220,14 @@
 												<Collapsible.Root
 													bind:open={openThemes[branch.parent.id]}
 												>
-													<div class="flex items-center rounded-sm hover:bg-accent">
+													<div
+														class={cn(
+															'flex items-center rounded-sm hover:bg-accent',
+															selectedChildCount(branch.parent.id, selectedThemes) > 0
+																? 'bg-brand-blue/5'
+																: ''
+														)}
+													>
 														<button
 															type="button"
 															role="checkbox"
@@ -212,6 +252,19 @@
 															<span class="flex-1 truncate text-sm font-semibold">
 																{branch.parent.name}
 															</span>
+															{#if selectedChildCount(branch.parent.id, selectedThemes) > 0}
+																<span
+																	class="shrink-0 rounded-full bg-brand-blue/10 px-2 py-0.5 text-xs font-medium text-brand-blue"
+																	aria-label={`${selectedChildCount(branch.parent.id, selectedThemes)} subtemas selecionados`}
+																>
+																	{selectedChildCount(branch.parent.id, selectedThemes)} selecionado{selectedChildCount(
+																		branch.parent.id,
+																		selectedThemes
+																	) === 1
+																		? ''
+																		: 's'}
+																</span>
+															{/if}
 															{#if branch.children.length > 0}
 																{#if openThemes[branch.parent.id]}
 																	<ChevronDown class="h-4 w-4 shrink-0 text-muted-foreground" />
