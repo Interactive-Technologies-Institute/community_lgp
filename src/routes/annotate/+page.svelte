@@ -10,9 +10,9 @@
 
 	export let data: PageData;
 	let signs: Sign[] = data.signs;
-	let nonAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 0);
-	let semiAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 1);
-	let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 2);
+	let nonAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 0).sort((b, a) => new Date(a.last_changed).getTime() - new Date(b.last_changed).getTime());
+	let semiAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 1).sort((b, a) => new Date(a.last_changed).getTime() - new Date(b.last_changed).getTime());
+	let fullyAnotatedSigns: Sign[] = signs.filter((sign) => sign.is_anotated === 2).sort((b, a) => new Date(a.last_changed).getTime() - new Date(b.last_changed).getTime());
 
 	const annotationSummaries = [
 		{
