@@ -522,38 +522,6 @@ export type Database = {
         }
         Relationships: []
       }
-      islr_submission_votes: {
-        Row: {
-          approved: boolean
-          id: number
-          inserted_at: string
-          reviewer_id: string
-          submission_id: number
-        }
-        Insert: {
-          approved: boolean
-          id?: never
-          inserted_at?: string
-          reviewer_id: string
-          submission_id: number
-        }
-        Update: {
-          approved?: boolean
-          id?: never
-          inserted_at?: string
-          reviewer_id?: string
-          submission_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "islr_submission_votes_submission_id_fkey"
-            columns: ["submission_id"]
-            isOneToOne: false
-            referencedRelation: "islr_submissions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       islr_submissions: {
         Row: {
           contributor_id: string
