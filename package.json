@@ -38,7 +38,7 @@
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
 		"prettier-plugin-tailwindcss": "^0.6.8",
-		"supabase": "^1.226.4",
+		"supabase": "^2.114.0",
 		"svelte": "^4.2.19",
 		"svelte-check": "^4.0.3",
 		"svelte-headless-table": "^0.18.2",

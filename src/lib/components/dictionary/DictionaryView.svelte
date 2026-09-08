@@ -1,10 +1,11 @@
 <script lang="ts">
 	import DictionaryGrid from './DictionaryGrid.svelte';
-	import type { Sign } from '@/types/types';
+	import type { Sign, Theme } from '@/types/types';
 	import { Loader2 } from 'lucide-svelte';
-
+	
 	export let data;
 	export let signs;
+	export let themes: Theme[];
 	export let parameters;
 	export let isFiltering: boolean = false;
 	export let isSearching: boolean = false;
@@ -46,7 +47,7 @@
 							Gestos do dia
 						</h2>
 					</div>
-					<DictionaryGrid {data} signs={dailySigns} theme={null} parameter={parameters} horizontal />
+					<DictionaryGrid {data} signs={dailySigns} {themes} parameter={parameters} horizontal />
 				</section>
 			{/if}
 			
@@ -61,13 +62,13 @@
 							Adicionados recentemente
 						</h2>
 					</div>
-					<DictionaryGrid {data} signs={featuredSigns} theme={null} parameter={parameters} horizontal />
+					<DictionaryGrid {data} signs={featuredSigns} {themes} parameter={parameters} horizontal />
 				</section>
 			{/if}
 		</div>
 	{:else}
 		<!-- When filtering, show all results in one grid -->
-		<DictionaryGrid {data} {signs} theme={null} parameter={parameters} />
+		<DictionaryGrid {data} {signs} {themes} parameter={parameters} />
 
 		{#if signs.length === 0}
 			<p class="py-8 text-center text-gray-500">Nenhum resultado encontrado</p>

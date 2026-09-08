@@ -188,7 +188,8 @@ export type Sign = {
 	district?: string | null;
 	image?: string | null;
 	game_video?: string | null;
-	name_unaccented: string;			
+	name_unaccented: string;
+	dictionary: string[] | null;			
 };
 
 export type SignWithModeration = Sign & { moderation: ModerationInfo[] };
@@ -210,6 +211,15 @@ export type Parameter = {
 	children: string[] | null;
 	parent: string | null;
 	image: string | null;
+};
+
+export type Theme = {
+	id: number;
+	dictionary: string;
+	name: string | null;
+	is_parent: boolean | null;
+	children: string[] | null;
+	parent: string | null;
 };
 
 export type CSComment = {

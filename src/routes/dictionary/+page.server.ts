@@ -1,5 +1,5 @@
 import type { Actions } from '@sveltejs/kit';
-import type { AnnotationArray, Parameter, Sign } from '@/types/types';
+import type { AnnotationArray, Parameter, Sign, Theme } from '@/types/types';
 import { error } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { arrayQueryParam, stringQueryParam } from '@/utils';
@@ -10,66 +10,94 @@ export const load = async (event) => {
 	const perPage = 9;
 	const search = stringQueryParam().decode(event.url.searchParams.get('s')) ?? '';
 	const theme = arrayQueryParam().decode(event.url.searchParams.get('theme')) ?? null;
+	const district = arrayQueryParam().decode(event.url.searchParams.get('district')) ?? null;
 	const annotation = arrayQueryParam().decode(event.url.searchParams.get('annotation')) ?? null;
-	const showSuggestions = !search && !theme?.length && !annotation?.length;
+	const showSuggestions = !search && !theme?.length && !district?.length && !annotation?.length;
 	let totalPages = 0;
 	let countSign = 0;
 	let searchArray = Array(300).fill(0);
 
 	async function getSigns(): Promise<Sign[]> {
-		if (!search && !theme?.length && !annotation?.length) return [];
+		if (!search && !theme?.length && !district?.length && !annotation?.length) return [];
 
-		let query = event.locals.supabase;
-		
-		if (search) {
-			query = query.from('signs')
-										.select('*', { count: 'exact' })
-										.eq('is_anotated', 2)
-										.not('theme_flattened', 'ilike', '%CEB%')
-										.not('theme_flattened', 'ilike', '%Filmar%')
-										.range((page - 1) * perPage, page * perPage - 1)
-										.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+		async function runQuery() {
+			let themeIds: number[] = [];
 
-			if (theme && theme.length) {
-				query = query.overlaps('theme', theme);
-			}
+			if (theme?.length) {
+				const { data: matchingThemes, error } = await event.locals.supabase
+					.from('themes')
+					.select('id')
+					.eq('dictionary', 'Geral')
+					.in('name', theme);
 
-			query = query.order('name_unaccented', { ascending: true });
-		}
-
-		else if (annotation && annotation.length) {
-			annotation.forEach((id) => {
-				const numericId = Number(id);
-				if (numericId > 0 && numericId <= 300) {
-					searchArray[numericId - 1] = 1;
+				if (error) {
+					console.error('Error fetching theme IDs:', error);
+				} else {
+					themeIds = matchingThemes?.map((t: Theme) => t.id) ?? [];
 				}
-			});
-
-			query = query.rpc('get_closest_signs', 
-												{query_array: searchArray,
-												limit_count: 9,
-												offset_count: 1},
-												{ count: 'exact' })
-												.range((page - 1) * perPage, page * perPage - 1);
-
-			if (theme && theme.length) {
-				query = query.overlaps('theme', theme);
 			}
+
+			if (search) {
+				let query = event.locals.supabase
+					.from('signs')
+					.select('*', { count: 'exact' })
+					.eq('is_anotated', 2)
+					.contains('dictionary', ['Geral'])
+					.range((page - 1) * perPage, page * perPage - 1)
+					.ilike('name_unaccented', `${search.normalize('NFD').replace(/\p{Diacritic}/gu, '')}%`);
+
+				if (theme && theme.length) {
+					query = query.overlaps('theme', themeIds);
+				}
+				if (district && district.length) {
+					query = query.in('district', district);
+				}
+
+				return query.order('name_unaccented', { ascending: true });
+			}
+
+			if (annotation && annotation.length) {
+				annotation.forEach((id) => {
+					const numericId = Number(id);
+					if (numericId > 0 && numericId <= 300) {
+						searchArray[numericId - 1] = 1;
+					}
+				});
+
+				let query = event.locals.supabase
+					.rpc(
+						'get_closest_signs',
+						{ query_array: searchArray, limit_count: 9, offset_count: 1 },
+						{ count: 'exact' }
+					)
+					.range((page - 1) * perPage, page * perPage - 1);
+
+				if (theme && theme.length) {
+					query = query.overlaps('theme', themeIds);
+				}
+
+				if (district && district.length) {
+					query = query.in('district', district);
+				}
+
+				return query;
+			}
+
+			let query = event.locals.supabase
+				.from('signs')
+				.select('*', { count: 'exact' })
+				.eq('is_anotated', 2)
+				.contains('dictionary', ['Geral'])
+				.range((page - 1) * perPage, page * perPage - 1)
+				.order('name_unaccented', { ascending: true });
+
+			if (theme && theme.length) query = query.overlaps('theme', themeIds);
+			if (district && district.length) query = query.in('district', district);
+
+			return query;
 		}
 
-		else if (theme && theme.length) {
-			query = query.from('signs')
-										.select('*', { count: 'exact' })
-										.eq('is_anotated', 2)
-										.not('theme_flattened', 'ilike', '%CEB%')
-										.not('theme_flattened', 'ilike', '%Filmar%')
-										.range((page - 1) * perPage, page * perPage - 1)
-										.overlaps('theme', theme)
-										.order('name_unaccented', { ascending: true });
-		}
-
-
-		const { data: signs, count, error: signsError } = await query;
+		const { data: signs, count, error: signsError } = await runQuery();
 		totalPages = count ? Math.ceil(count / perPage) : 0;
 		countSign = count || 0;
 
@@ -101,8 +129,7 @@ export const load = async (event) => {
 			.from('signs')
 			.select('*')
 			.eq('is_anotated', 2)
-			.not('theme_flattened', 'ilike', '%CEB%')
-			.not('theme_flattened', 'ilike', '%Filmar%')
+			.contains('dictionary', ['Geral'])
 			.order('last_changed', { ascending: false })
 			.limit(6);
 
@@ -119,8 +146,7 @@ export const load = async (event) => {
 			.from('signs')
 			.select('*')
 			.eq('is_anotated', 2)
-			.not('theme_flattened', 'ilike', '%CEB%')
-			.not('theme_flattened', 'ilike', '%Filmar%')
+			.contains('dictionary', ['Geral'])
 			.order('id', { ascending: true })
 			.limit(500);
 
@@ -132,24 +158,44 @@ export const load = async (event) => {
 		return selectDailySigns(dailySignCandidates as Sign[], 'general');
 	}
 
-	async function getThemes(): Promise<Map<string, number>> {
+	async function getThemes(): Promise<Theme[]> {
 		const { data: themes, error: themesError } = await event.locals.supabase
-			.from('signs_themes')
+			.from('themes')
 			.select('*')
-			.not('theme', 'ilike', '%CEB%')
-			.not('theme', 'ilike', '%Filmar%');
+			.eq('dictionary', 'Geral');
+
+		if (themesError) {
+			console.error('Themes failed', themesError);
+			const errorMessage = 'Error fetching themes, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return themes as Theme[];
+	}
+
+	async function getThemesMap(): Promise<Map<string, string[]>> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('themes')
+			.select('*')
+			.eq('dictionary', 'Geral')
+			.is('is_parent', true);
 
 		if (themesError) {
 			const errorMessage = 'Error fetching themes, please try again later.';
 			setFlash({ type: 'error', message: errorMessage }, event.cookies);
 			return error(500, errorMessage);
 		}
-		const themeMap = new Map<string, number>();
+		
+		const themeMap = new Map<string, string[]>();
+
 		if (themes) {
-			themes.forEach((theme) => {
-				const { count, theme: themeName } = theme;
-				if (count !== null && themeName !== null) {
-					themeMap.set(themeName, count);
+			themes.forEach((t: Theme) => {
+				const { name, children } = t;
+				if (name !== null && children !== null) {
+					themeMap.set(name, children);
+				} else if (name !== null && children === null) {
+					themeMap.set(name, []);
 				}
 			});
 		}
@@ -157,12 +203,37 @@ export const load = async (event) => {
 		return themeMap;
 	}
 
-	const [signs, dailySigns, featuredSigns, parameters, themes] = await Promise.all([
+	async function getDistricts(): Promise<Map<string, number>> {
+		const { data: districts, error: districtsError } = await event.locals.supabase
+			.from('signs_districts')
+			.select('*');
+
+		if (districtsError) {
+			const errorMessage = 'Error fetching districts, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+		const districtMap = new Map<string, number>();
+		if (districts) {
+			districts.forEach((district) => {
+				const { count, district: districtName } = district;
+				if (count !== null && districtName !== null) {
+					districtMap.set(districtName, count);
+				}
+			});
+		}
+
+		return districtMap;
+	}
+
+	const [signs, dailySigns, featuredSigns, parameters, themes, themesMap, districts] = await Promise.all([
 		getSigns(),
 		showSuggestions ? getDailySigns() : Promise.resolve([]),
 		showSuggestions ? getFeaturedSigns() : Promise.resolve([]),
 		getParameters(),
 		getThemes(),
+		getThemesMap(),
+		getDistricts()
 	]);
 
 	return {
@@ -171,6 +242,8 @@ export const load = async (event) => {
 		featuredSigns,
 		parameters,
 		themes,
+		themesMap,
+		districts,
 		page,
 		totalPages,
 		perPage,

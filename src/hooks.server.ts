@@ -1,4 +1,4 @@
-import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL, PUBLIC_MAINTENANCE_MODE } from '$env/static/public';
 import type { Database } from '@/types/supabase-types';
 import type { UserRole } from '@/types/types';
 import { createServerClient } from '@supabase/ssr';
@@ -6,6 +6,25 @@ import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { handle as documentHandle } from '@sveltekit-addons/document/hooks';
 import { jwtDecode } from 'jwt-decode';
+
+const maintenanceHandle: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+
+	if (PUBLIC_MAINTENANCE_MODE !== 'true' || event.route.id !== '/maintenance') {
+		return response;
+	}
+
+	const headers = new Headers(response.headers);
+	headers.set('cache-control', 'no-store, max-age=0');
+	headers.set('retry-after', '3600');
+	headers.set('x-robots-tag', 'noindex');
+
+	return new Response(event.request.method === 'HEAD' ? null : response.body, {
+		status: 503,
+		statusText: 'Service Unavailable',
+		headers,
+	});
+};
 
 const sessionHandle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createServerClient<Database>(
@@ -64,4 +83,4 @@ const sessionHandle: Handle = async ({ event, resolve }) => {
 	});
 };
 
-export const handle = sequence(sessionHandle, documentHandle);
+export const handle = sequence(maintenanceHandle, sessionHandle, documentHandle);

@@ -1,3 +1,24 @@
+-- Baseline data local dev needs (production already has these rows as live
+-- data, which is why the migration that used to insert them was commented
+-- out - but a fresh local db has nothing, and handle_new_user() needs a
+-- default user_type to exist before the first auth.users row is created).
+insert into public.feature_flags (id, enabled)
+values ('annotate'::public.feature, true),
+	('dictionary'::public.feature, true),
+	('guides'::public.feature, true),
+	('events'::public.feature, true),
+	('map'::public.feature, true),
+	('docs'::public.feature, true);
+insert into public.user_types (slug, label, is_default)
+values ('default', 'Default', true);
+insert into public.branding (name, slogan, color_theme, radius)
+values (
+		'Community',
+		'A community for everyone',
+		'neutral',
+		0.5
+	);
+
 -- User
 INSERT INTO auth.users (
 		instance_id,

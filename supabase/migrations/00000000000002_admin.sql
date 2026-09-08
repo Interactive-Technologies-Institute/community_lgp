@@ -1,6 +1,19 @@
 /* ADMIN */
 -- Features
-create type public.feature as enum ('annotate', 'dictionary', 'guides', 'events', 'map', 'docs');
+create type public.feature as enum (
+	'annotate',
+	'dictionary',
+	'fcdictionary',
+	'guides',
+	'events',
+	'map',
+	'docs',
+	'lgp4fun',
+	'crowdsource',
+	'funstudio',
+	'tutorial',
+	'islrdatasetcontribute'
+);
 create table public.feature_flags (
 	id public.feature primary key,
 	enabled boolean not null default false
@@ -98,19 +111,19 @@ create policy "Allow users to manage branding files" on storage.objects for all 
 	)
 );
 -- Seed data
-insert into public.feature_flags (id, enabled)
-values ('annotate'::public.feature, true),
-	('dictionary'::public.feature, true), 
-	('guides'::public.feature, true),
-	('events'::public.feature, true),
-	('map'::public.feature, true),
-	('docs'::public.feature, true);
-insert into public.user_types (slug, label, is_default)
-values ('default', 'Default', true);
-insert into public.branding (name, slogan, color_theme, radius)
-values (
-		'Community',
-		'A community for everyone',
-		'neutral',
-		0.5
-	);
+-- insert into public.feature_flags (id, enabled)
+-- values ('annotate'::public.feature, true),
+-- 	('dictionary'::public.feature, true), 
+-- 	('guides'::public.feature, true),
+-- 	('events'::public.feature, true),
+-- 	('map'::public.feature, true),
+-- 	('docs'::public.feature, true);
+-- insert into public.user_types (slug, label, is_default)
+-- values ('default', 'Default', true);
+-- insert into public.branding (name, slogan, color_theme, radius)
+-- values (
+-- 		'Community',
+-- 		'A community for everyone',
+-- 		'neutral',
+-- 		0.5
+-- 	);

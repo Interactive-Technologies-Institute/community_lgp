@@ -1,0 +1,1 @@
+CREATE TRIGGER handle_updated_at BEFORE UPDATE ON public.signs FOR EACH ROW EXECUTE FUNCTION extensions.moddatetime('last_changed');

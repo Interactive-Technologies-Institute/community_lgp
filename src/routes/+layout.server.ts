@@ -1,7 +1,27 @@
 import type { Branding, Feature, Notification, UserProfile } from '@/types/types';
 import { loadFlash } from 'sveltekit-flash-message/server';
 
-export const load = loadFlash(async ({ locals: { supabase, safeGetSession }, cookies }) => {
+export const load = loadFlash(async ({ locals: { supabase, safeGetSession }, cookies, route }) => {
+	// Rerouted maintenance requests should not depend on authentication or the
+	// database: those may be the very services currently being worked on.
+	if (route.id === '/maintenance') {
+		return {
+			maintenance: true,
+			features: [],
+			branding: {
+				name: 'Dicionário LGP',
+				slogan: 'O Dicionário Online de Língua Gestual Portuguesa',
+				color_theme: 'neutral',
+				radius: 0.5,
+			},
+			cookies: [],
+			session: null,
+			user: null,
+			profile: null,
+			notifications: [],
+		};
+	}
+
 	const { session, user } = await safeGetSession();
 
 	let profile: UserProfile | null = null;
@@ -46,6 +66,7 @@ export const load = loadFlash(async ({ locals: { supabase, safeGetSession }, coo
 	}
 
 	return {
+		maintenance: false,
 		features,
 		branding,
 		cookies: cookies.getAll(),

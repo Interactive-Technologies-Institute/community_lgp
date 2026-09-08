@@ -1,6 +1,6 @@
 import { createCommentSchema } from '@/schemas/cs-comment';
 import { toggleSignRatingSchema } from '@/schemas/sign';
-import type { CSComment, Parameter, Sign, UserProfile } from '@/types/types';
+import type { CSComment, Parameter, Sign, UserProfile, Theme } from '@/types/types';
 import { handleFormAction } from '@/utils.js';
 import { error, fail } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -40,6 +40,21 @@ export const load = async (event) => {
 		}
 
 		return parameters as Parameter[];
+	}
+
+	async function getThemesByIds(ids: number[]): Promise<Theme[]> {
+		const { data: themes, error: themesError } = await event.locals.supabase
+			.from('themes')
+			.select('*')
+			.in('id', ids);
+
+		if (themesError) {
+			const errorMessage = `Error fetching themes, please try again later.`;
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		return themes as Theme[];
 	}
 
 	async function getSignVariants(id: number): Promise<Sign[]> {
@@ -244,6 +259,7 @@ export const load = async (event) => {
 	let signVariants = null;
 	let created_by_user = null;
 	let annotated_by_user = null;
+	let themes: Theme[] = [];
 	let parameters: Parameter[] = [];
 	let posts = null;
 	let currentRating = null;
@@ -268,6 +284,8 @@ export const load = async (event) => {
 			}
 		}
 
+		themes = await getThemesByIds(specificSign.theme.map((id) => parseInt(id, 10)));	
+
 		created_by_user = await getUserById(specificSign.created_by_user_id);
 		if (specificSign.annotated_by_user_id != null) {
 			annotated_by_user = await getUserById(specificSign.annotated_by_user_id);
@@ -291,6 +309,7 @@ export const load = async (event) => {
 	return {
 		sign: specificSign,
 		parameters: parameters,
+		themes: themes,
 		created_by_user,
 		annotated_by_user,
 		posts,
