@@ -17,10 +17,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
-          extensions?: Json
           operationName?: string
           query?: string
           variables?: Json
+          extensions?: Json
         }
         Returns: Json
       }
@@ -92,15 +92,7 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
           used_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "contributor_invites_invited_by_fkey"
-            columns: ["invited_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       crowdsource_comments: {
         Row: {
@@ -175,7 +167,7 @@ export type Database = {
         Row: {
           date: string
           description: string
-          fts: unknown
+          fts: unknown | null
           id: number
           image: string
           inserted_at: string
@@ -188,7 +180,7 @@ export type Database = {
         Insert: {
           date: string
           description: string
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image: string
           inserted_at?: string
@@ -201,7 +193,7 @@ export type Database = {
         Update: {
           date?: string
           description?: string
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image?: string
           inserted_at?: string
@@ -354,7 +346,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["guide_difficulty"]
           duration: Database["public"]["Enums"]["guide_duration"]
-          fts: unknown
+          fts: unknown | null
           id: number
           image: string
           inserted_at: string
@@ -368,7 +360,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["guide_difficulty"]
           duration: Database["public"]["Enums"]["guide_duration"]
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image: string
           inserted_at?: string
@@ -382,7 +374,7 @@ export type Database = {
           description?: string
           difficulty?: Database["public"]["Enums"]["guide_difficulty"]
           duration?: Database["public"]["Enums"]["guide_duration"]
-          fts?: unknown
+          fts?: unknown | null
           id?: number
           image?: string
           inserted_at?: string
@@ -1347,7 +1339,7 @@ export type Database = {
         Row: {
           date: string | null
           description: string | null
-          fts: unknown
+          fts: unknown | null
           id: number | null
           image: string | null
           inserted_at: string | null
@@ -1389,7 +1381,7 @@ export type Database = {
           description: string | null
           difficulty: Database["public"]["Enums"]["guide_difficulty"] | null
           duration: Database["public"]["Enums"]["guide_duration"] | null
-          fts: unknown
+          fts: unknown | null
           id: number | null
           image: string | null
           inserted_at: string | null
@@ -1795,75 +1787,91 @@ export type Database = {
         }
         Returns: boolean
       }
-      custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      custom_access_token_hook: {
+        Args: {
+          event: Json
+        }
+        Returns: Json
+      }
       get_closest_signs: {
         Args: {
+          query_array: number[]
           limit_count: number
           offset_count: number
-          query_array: number[]
         }
         Returns: {
-          annotation: Json
-          annotation_array: number[]
-          context_video: string
-          created_at: string
-          description: string
-          district: string
-          frequency: number
           id: number
+          created_at: string
+          name: string
+          video: string
+          annotation: Json
+          theme: string[]
           is_anotated: number
           last_changed: string
-          name: string
+          description: string
+          annotation_array: number[]
+          context_video: string
           sentence: string
-          theme: string[]
+          frequency: number
           theme_flattened: string
-          video: string
+          district: string
         }[]
       }
       get_closest_signs_fc: {
         Args: {
+          query_array: number[]
           limit_count: number
           offset_count: number
-          query_array: number[]
         }
         Returns: {
-          annotation: Json
-          annotation_array: number[]
-          context_video: string
-          created_at: string
-          description: string
-          district: string
-          frequency: number
           id: number
+          created_at: string
+          name: string
+          video: string
+          annotation: Json
+          theme: string[]
           is_anotated: number
           last_changed: string
-          name: string
+          description: string
+          annotation_array: number[]
+          context_video: string
           sentence: string
-          theme: string[]
+          frequency: number
           theme_flattened: string
-          video: string
+          district: string
         }[]
       }
       get_event_interest_count: {
-        Args: { event_id: number; user_id?: string }
+        Args: {
+          event_id: number
+          user_id?: string
+        }
         Returns: {
           count: number
           has_interest: boolean
         }[]
       }
       get_guide_useful_count: {
-        Args: { guide_id: number; user_id?: string }
+        Args: {
+          guide_id: number
+          user_id?: string
+        }
         Returns: {
           count: number
           has_useful: boolean
         }[]
       }
       hamming_distance: {
-        Args: { array1: number[]; array2: number[] }
+        Args: {
+          array1: number[]
+          array2: number[]
+        }
         Returns: number
       }
       search_name: {
-        Args: { term: string }
+        Args: {
+          term: string
+        }
         Returns: {
           annotated_by_user_id: string | null
           annotation: Json | null
@@ -1890,15 +1898,11 @@ export type Database = {
           theme_flattened: string | null
           video: string | null
         }[]
-        SetofOptions: {
-          from: "*"
-          to: "signs"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
       search_unaccent_name: {
-        Args: { search_term: string }
+        Args: {
+          search_term: string
+        }
         Returns: {
           annotated_by_user_id: string | null
           annotation: Json | null
@@ -1925,20 +1929,37 @@ export type Database = {
           theme_flattened: string | null
           video: string | null
         }[]
-        SetofOptions: {
-          from: "*"
-          to: "signs"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
-      unaccent: { Args: { "": string }; Returns: string }
-      unaccent_text: { Args: { text_input: string }; Returns: string }
+      unaccent: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      unaccent_init: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      unaccent_text: {
+        Args: {
+          text_input: string
+        }
+        Returns: string
+      }
       update_user_types: {
-        Args: { types: Database["public"]["CompositeTypes"]["user_type"][] }
+        Args: {
+          types: Database["public"]["CompositeTypes"]["user_type"][]
+        }
         Returns: undefined
       }
-      verify_user_password: { Args: { password: string }; Returns: boolean }
+      verify_user_password: {
+        Args: {
+          password: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       feature:
@@ -2012,33 +2033,27 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
-
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type PublicSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -2046,24 +2061,20 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -2071,24 +2082,20 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -2096,110 +2103,30 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof Database
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-
-export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
-  public: {
-    Enums: {
-      feature: [
-        "annotate",
-        "dictionary",
-        "fcdictionary",
-        "guides",
-        "events",
-        "map",
-        "docs",
-        "lgp4fun",
-        "crowdsource",
-        "funstudio",
-        "tutorial",
-        "islrdatasetcontribute",
-      ],
-      guide_difficulty: ["easy", "medium", "hard"],
-      guide_duration: ["short", "medium", "long"],
-      moderation_status: [
-        "pending",
-        "changes_requested",
-        "approved",
-        "rejected",
-      ],
-      notification_type: [
-        "guide_pending",
-        "guide_changes_requested",
-        "guide_approved",
-        "guide_rejected",
-        "event_pending",
-        "event_changes_requested",
-        "event_approved",
-        "event_rejected",
-        "map_pin_pending",
-        "map_pin_changes_requested",
-        "map_pin_approved",
-        "map_pin_rejected",
-        "sign_pending",
-        "sign_changes_requested",
-        "sign_approved",
-        "sign_rejected",
-      ],
-      user_permission: [
-        "user_roles.update",
-        "user_types.update",
-        "features.update",
-        "branding.update",
-        "guides.create",
-        "guides.update",
-        "guides.delete",
-        "guides.moderate",
-        "events.create",
-        "events.update",
-        "events.delete",
-        "events.moderate",
-        "map.create",
-        "map.update",
-        "map.delete",
-        "map.moderate",
-        "signs.create",
-        "signs.update",
-        "signs.delete",
-        "signs.moderate",
-        "islrdataset.contribute",
-      ],
-      user_role: ["user", "moderator", "admin", "developer", "contributor"],
-    },
-  },
-} as const
 

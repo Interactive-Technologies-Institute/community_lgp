@@ -4,10 +4,11 @@
 	import PageHeader from '@/components/page-header.svelte';
 	import WebcamRecording from '@/components/WebcamRecording.svelte';
 	import { submitIslrVideoSchema, type SubmitIslrVideoSchema } from '@/schemas/islr-submission';
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { AlertTriangle, Check, SkipForward } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { fileProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data: {
@@ -26,15 +27,23 @@
 
 	const { form: formData, enhance, submitting, message } = form;
 
+	// Backs a hidden file input so the recorded/selected video rides along in the
+	// native form submission (use:enhance builds FormData from the form's real
+	// inputs, so a plain $formData.video assignment alone would not be sent).
+	const video = fileProxy(form, 'video');
+
 	$: if (currentSign && $formData.signId !== currentSign.id) {
 		$formData.signId = currentSign.id;
 	}
 
-	// TODO: The recorded/selected video is not uploaded or persisted yet because the
-	// storage destination and upload flow have not been decided. This state only enables
-	// the submit action; it does not send the video file to the server.
 	let hasRecording = false;
 	let cameraError = false;
+
+	function setVideoFile(file: File) {
+		const dataTransfer = new DataTransfer();
+		dataTransfer.items.add(file);
+		$video = dataTransfer.files;
+	}
 
 	// Reset per-sign state whenever we move to a different sign (skip or after a
 	// submit) - {#key currentSign.id} only remounts the recorder, not these variables.
@@ -43,9 +52,13 @@
 		lastSignId = currentSign.id;
 		hasRecording = false;
 		cameraError = false;
+		if (browser) {
+			$video = new DataTransfer().files;
+		}
 	}
 
-	function handleRecorded() {
+	function handleRecorded(event: CustomEvent<{ file: File }>) {
+		setVideoFile(event.detail.file);
 		hasRecording = true;
 	}
 
@@ -60,7 +73,7 @@
 	function handleFallbackFile(event: Event) {
 		const file = (event.target as HTMLInputElement).files?.[0];
 		if (!file) return;
-		// The file is intentionally not retained or uploaded until storage is decided.
+		setVideoFile(file);
 		hasRecording = true;
 	}
 
@@ -77,7 +90,13 @@
 
 <PageHeader title="Gravar Sinal" subtitle={`${queueLength} sinais por gravar.`} />
 
-<form method="POST" action="?/submit" use:enhance class="flex flex-col gap-y-6">
+<form
+	method="POST"
+	action="?/submit"
+	enctype="multipart/form-data"
+	use:enhance
+	class="flex flex-col gap-y-6"
+>
 <section class="rounded-[2rem] bg-brand-surface shadow-md">
 	<div class="container mx-auto space-y-6 p-4">
 		<h2 class="text-center text-2xl font-bold text-brand-dark dark:text-foreground">{currentSign.name}</h2>
@@ -137,6 +156,7 @@
 
 	<div class="sticky bottom-0 z-50 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 		<input type="hidden" name="signId" value={$formData.signId} />
+		<input type="file" name="video" bind:files={$video} class="hidden" />
 
 		<Button
 			type="button"

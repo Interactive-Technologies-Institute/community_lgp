@@ -1,15 +1,11 @@
 import { COUNTABLE_SUBMISSION_STATUSES, getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
+import { uploadIslrVideo } from '@/server/islr-video-storage';
 import { submitIslrVideoSchema } from '@/schemas/islr-submission';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
-import { superValidate } from 'sveltekit-superforms';
+import { superValidate, withFiles } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-
-// TODO: The client video is not uploaded or persisted yet because the storage
-// destination and upload flow have not been decided. Keep this placeholder until
-// the real storage integration is implemented.
-const PLACEHOLDER_VIDEO = 'pending-upload';
 
 export const load = async (event) => {
 	const { session, user } = await event.locals.safeGetSession();
@@ -83,12 +79,21 @@ export const actions = {
 			submitIslrVideoSchema,
 			'submit-islr-video',
 			async (event, userId, form) => {
+				let videoUrl: string;
+				try {
+					videoUrl = await uploadIslrVideo(form.data.video, userId);
+				} catch (err) {
+					const message = err instanceof Error ? err.message : 'Falha ao enviar o vídeo.';
+					setFlash({ type: 'error', message }, event.cookies);
+					return fail(500, withFiles({ message, form }));
+				}
+
 				const { error: supabaseError } = await event.locals.supabase
 					.from('islr_submissions')
 					.insert({
 						sign_id: form.data.signId,
 						contributor_id: userId,
-						video: PLACEHOLDER_VIDEO,
+						video: videoUrl,
 					});
 
 				if (supabaseError?.code === '23505') {
@@ -96,12 +101,12 @@ export const actions = {
 						{ type: 'error', message: 'Já existe uma submissão ativa para este sinal.' },
 						event.cookies
 					);
-					return fail(409, { message: 'An active submission already exists.', form });
+					return fail(409, withFiles({ message: 'An active submission already exists.', form }));
 				}
 
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
-					return fail(500, { message: supabaseError.message, form });
+					return fail(500, withFiles({ message: supabaseError.message, form }));
 				}
 
 				setFlash(
