@@ -13,10 +13,10 @@ insert into public.user_types (slug, label, is_default)
 values ('default', 'Default', true);
 insert into public.branding (name, slogan, color_theme, radius)
 values (
-		'Community',
+		'Dicionário de LGP',
 		'A community for everyone',
-		'neutral',
-		0.5
+		'dclgp',
+		0.75
 	);
 
 -- User

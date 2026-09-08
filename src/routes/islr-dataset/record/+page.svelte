@@ -38,10 +38,15 @@
 
 	let hasRecording = false;
 	let cameraError = false;
+	let videoInput: HTMLInputElement;
 
 	function setVideoFile(file: File) {
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(file);
+		// bind:files only reflects the native input -> store direction; Svelte
+		// does not write the store back onto the DOM element, so the real input
+		// (what use:enhance actually reads into FormData) has to be set directly.
+		videoInput.files = dataTransfer.files;
 		$video = dataTransfer.files;
 	}
 
@@ -53,6 +58,7 @@
 		hasRecording = false;
 		cameraError = false;
 		if (browser) {
+			if (videoInput) videoInput.files = new DataTransfer().files;
 			$video = new DataTransfer().files;
 		}
 	}
@@ -156,7 +162,7 @@
 
 	<div class="sticky bottom-0 z-50 flex w-full flex-row items-center justify-center gap-x-10 border-t bg-background/95 py-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 		<input type="hidden" name="signId" value={$formData.signId} />
-		<input type="file" name="video" bind:files={$video} class="hidden" />
+		<input type="file" name="video" bind:files={$video} bind:this={videoInput} class="hidden" />
 
 		<Button
 			type="button"

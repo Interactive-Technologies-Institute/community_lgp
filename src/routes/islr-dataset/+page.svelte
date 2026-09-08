@@ -13,7 +13,7 @@
 		taintedMessage: null,
 	});
 
-	const { enhance, submitting } = form;
+	const { form: formData, enhance, submitting } = form;
 </script>
 
 <MetaTags
@@ -55,7 +55,14 @@
 
 	<form method="POST" action="?/consent" use:enhance class="flex flex-wrap gap-4">
 		<label class="flex w-full items-center gap-2 text-sm text-foreground">
-			<input type="checkbox" name="consent" value="true" required />
+			<input
+				type="checkbox"
+				name="consent"
+				value="true"
+				required
+				checked={$formData.consent === 'true'}
+				on:change={(e) => ($formData.consent = e.currentTarget.checked ? 'true' : '')}
+			/>
 			<span>Confirmo que li e concordo com os termos acima.</span>
 		</label>
 		<Button type="submit" disabled={$submitting} class="bg-brand-blue hover:bg-brand-blue/90">

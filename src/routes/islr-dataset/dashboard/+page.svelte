@@ -84,13 +84,6 @@
 				</p>
 			{/if}
 
-			<Button
-				href="/islr-dataset/review"
-				class="h-14 w-full gap-3 border border-brand-border bg-brand-surface text-brand-blue font-semibold  shadow-sm hover:bg-brand-surface/70"
-			>
-				<ClipboardCheck class="h-5 w-5" />
-				Rever vídeos de outros contribuidores
-			</Button>
 		</div>
 	</div>
 </div>
