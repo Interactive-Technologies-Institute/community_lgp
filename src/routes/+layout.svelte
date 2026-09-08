@@ -50,7 +50,7 @@
 <Toaster />
 
 <div class="relative flex min-h-screen flex-col">
-	{#if $page.url.pathname === '/reset-password'}
+	{#if $page.url.pathname === '/reset-password' || $page.url.pathname === '/accept-invite'}
 		<div class="flex-1">
 			<slot />
 		</div>

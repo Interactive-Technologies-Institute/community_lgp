@@ -35,6 +35,15 @@ export type UserProfile = {
 	sign_name?: string | null;
 };
 
+export type ContributorInvite = {
+	id: number;
+	email: string;
+	role: UserRole;
+	invited_by: string | null;
+	created_at: string;
+	used_at: string | null;
+};
+
 export type UserType = {
 	slug: string;
 	label: string;

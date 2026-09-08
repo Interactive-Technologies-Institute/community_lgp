@@ -47,6 +47,41 @@ export type Database = {
         }
         Relationships: []
       }
+      contributor_invites: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          invited_by: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: number
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: number
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contributor_invites_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crowdsource_comments: {
         Row: {
           content_text: string | null

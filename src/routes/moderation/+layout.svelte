@@ -18,6 +18,9 @@
 			<Tabs.TriggerLink href="/moderation/guides" value="guides">Guias</Tabs.TriggerLink>
 			<Tabs.TriggerLink href="/moderation/events" value="events">Eventos</Tabs.TriggerLink>
 			<Tabs.TriggerLink href="/moderation/map" value="map">Mapa</Tabs.TriggerLink>
+			<Tabs.TriggerLink href="/moderation/islr-dataset" value="islr-dataset">
+				ISLR Dataset
+			</Tabs.TriggerLink>
 		</Tabs.List>
 		<slot />
 	</Tabs.Root>

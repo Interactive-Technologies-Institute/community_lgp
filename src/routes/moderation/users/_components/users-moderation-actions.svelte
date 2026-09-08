@@ -49,6 +49,7 @@
 			<DropdownMenu.RadioItem value="user">User</DropdownMenu.RadioItem>
 			<DropdownMenu.RadioItem value="moderator">Moderator</DropdownMenu.RadioItem>
 			<DropdownMenu.RadioItem value="admin">Admin</DropdownMenu.RadioItem>
+			<DropdownMenu.RadioItem value="contributor">Contributor</DropdownMenu.RadioItem>
 		</DropdownMenu.RadioGroup>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
