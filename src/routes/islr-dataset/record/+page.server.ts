@@ -98,7 +98,7 @@ export const actions = {
 
 				if (supabaseError?.code === '23505') {
 					setFlash(
-						{ type: 'error', message: 'Já existe uma submissão ativa para este sinal.' },
+						{ type: 'error', message: 'Já existe uma submissão ativa para este gesto.' },
 						event.cookies
 					);
 					return fail(409, withFiles({ message: 'An active submission already exists.', form }));

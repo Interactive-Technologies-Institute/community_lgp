@@ -98,11 +98,11 @@
 </script>
 
 <MetaTags
-	title="Gravar sinal - Dataset ISLR"
-	description={`Grave um vídeo de referência para o sinal "${currentSign.name}".`}
+	title="Gravar gesto - Dataset ISLR"
+	description={`Grave um vídeo de referência para o gesto "${currentSign.name}".`}
 />
 
-<PageHeader title="Gravar Sinal" subtitle={`${queueLength} sinais por gravar.`} />
+<PageHeader title="Gravar Gesto '{currentSign.name}'" subtitle="Grave uma contribuição para o gesto de acordo com a referência." />
 
 {#if confettiTrigger > 0}
 	{#key confettiTrigger}
@@ -121,14 +121,12 @@
 >
 <section class="rounded-[2rem] bg-brand-surface shadow-md">
 	<div class="container mx-auto space-y-6 p-4">
-		<h2 class="text-center text-2xl font-bold text-brand-dark dark:text-foreground">{currentSign.name}</h2>
-
 		<div class="grid items-stretch gap-5 lg:grid-cols-2 lg:gap-10">
 			<Card.Root
 				class="h-full w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
 			>
 				<div class="flex h-full w-full flex-col items-start gap-4">
-					<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Vídeo de referência</h2>
+					<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Vídeo de referência de {currentSign.name}</h2>
 					<!-- svelte-ignore a11y-media-has-caption -->
 					<video class="aspect-video w-full rounded-lg bg-black object-contain" controls playsinline>
 						<source src={currentSign.video} type="video/mp4" />
@@ -141,13 +139,13 @@
 				class="h-full w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
 			>
 				<div class="flex h-full w-full flex-col items-start gap-4">
-					<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Gravar sinal</h2>
+					<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl"> Grave o gesto {currentSign.name}</h2>
 					{#key currentSign.id}
 						{#if cameraError}
 							<div class="w-full rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center">
 								<p class="flex items-center justify-center gap-2 text-sm text-destructive">
 									<AlertTriangle class="h-4 w-4" />
-									Não foi possível aceder à câmara. Pode enviar um vídeo já gravado.
+									Não foi possível aceder à câmara.
 								</p>
 								<input
 									type="file"
