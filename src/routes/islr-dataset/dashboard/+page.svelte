@@ -32,12 +32,7 @@
 />
 
 <div class="container mx-auto max-w-3xl space-y-4 pb-10">
-	<!-- svelte-ignore a11y-media-has-caption -->
-	<!-- TODO: placeholder video, replace with the real explainer for the record/review steps -->
-	<video class="h-auto w-full rounded-2xl" controls playsinline>
-		<source src="/videos/dashboard-intro.mp4" type="video/mp4" />
-		O seu navegador não suporta a reprodução deste vídeo.
-	</video>
+
 
 	<div class="rounded-2xl bg-brand-surface p-6">
 		<div
@@ -47,7 +42,7 @@
 				<p class="text-4xl font-black text-brand-dark sm:text-5xl">
 					{formatNumber(signsCovered)} / {formatNumber(targetSignCount)}
 				</p>
-				<p class="mt-2 text-sm font-semibold text-base sm:text-base">sinais já têm vídeo</p>
+				<p class="mt-2 text-sm font-semibold text-base sm:text-base">gestos já têm vídeo</p>
 			</div>
 			<div class="px-2 py-4 text-center sm:py-0">
 				<p class="text-4xl font-black text-brand-dark sm:text-5xl">
@@ -66,7 +61,7 @@
 
 	<div class="rounded-2xl border bg-card p-6">
 		<p class="text-center text-base text-foreground">
-			Contribuíste com <strong>{myContributedCount}</strong> sinais até agora. Obrigado!
+			Contribuíste com <strong>{myContributedCount}</strong> gestos até agora. Obrigado!
 		</p>
 
 		<div class="mt-5 flex flex-col gap-3">
@@ -76,11 +71,11 @@
 					class="h-16 w-full gap-3 bg-brand-blue text-lg font-bold text-brand-white shadow-md hover:bg-brand-blue/90"
 				>
 					<Video class="h-6 w-6" />
-					Gravar o próximo sinal
+					Gravar o próximo gesto
 				</Button>
 			{:else}
 				<p class="text-center text-lg font-semibold text-brand-dark">
-					Já contribuíste com um vídeo para todos os sinais do dataset. Obrigado pelo teu esforço!
+					Já contribuíste com um vídeo para todos os gestos do dataset. Obrigado pelo teu esforço!
 				</p>
 			{/if}
 

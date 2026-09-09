@@ -2,12 +2,13 @@
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import PageHeader from '@/components/page-header.svelte';
-	import WebcamRecording from '@/components/WebcamRecording.svelte';
+	import WebcamRecording from '@/components/WebcamAutoRecording.svelte';
 	import { submitIslrVideoSchema, type SubmitIslrVideoSchema } from '@/schemas/islr-submission';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { AlertTriangle, Check, SkipForward } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
+	import { Confetti } from 'svelte-confetti';
 	import { fileProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
@@ -20,9 +21,16 @@
 
 	$: ({ currentSign, nextSignId, queueLength } = data);
 
+	let confettiTrigger = 0;
+
 	const form = superForm(data.submitForm, {
 		validators: zodClient(submitIslrVideoSchema),
 		taintedMessage: null,
+		// Fires as soon as the user submits, before the upload/server round-trip,
+		// so the celebration feels instant rather than lagging behind the request.
+		onSubmit() {
+			confettiTrigger += 1;
+		},
 	});
 
 	const { form: formData, enhance, submitting, message } = form;
@@ -95,6 +103,14 @@
 />
 
 <PageHeader title="Gravar Sinal" subtitle={`${queueLength} sinais por gravar.`} />
+
+{#if confettiTrigger > 0}
+	{#key confettiTrigger}
+	<div style="position: fixed; top: -50px; left: 0; height: 100vh; width: 100vw; display: flex; justify-content: center; overflow: hidden;">
+		<Confetti x={[-5, 5]} y={[0, 0.1]} delay={[500, 2000]} duration={1200} amount={200} fallDistance="100vh" />
+	</div>
+	{/key}
+{/if}
 
 <form
 	method="POST"
