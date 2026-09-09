@@ -1,4 +1,5 @@
 import { COUNTABLE_SUBMISSION_STATUSES, getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
+import { getMilestoneProgress, getMyVideoCount } from '@/server/islr-milestones';
 import { handleSignInRedirect } from '@/utils';
 import { redirect } from '@sveltejs/kit';
 
@@ -56,6 +57,9 @@ export const load = async (event) => {
 			.map((s) => s.sign_id)
 	);
 
+	const myVideoCount = await getMyVideoCount(event.locals.supabase, user.id);
+	const milestoneProgress = getMilestoneProgress(myVideoCount);
+
 	return {
 		targetSignCount: targetIds.length,
 		signsCovered: coveredSignIds.size,
@@ -63,5 +67,9 @@ export const load = async (event) => {
 		totalContributors,
 		myContributedCount: mySubmittedSignIds.size,
 		queueLength: targetIds.length - mySubmittedSignIds.size,
+		myVideoCount,
+		nextMilestoneIndex: milestoneProgress.nextIndex,
+		milestoneFloor: milestoneProgress.floor,
+		milestoneCeiling: milestoneProgress.ceiling,
 	};
 };
