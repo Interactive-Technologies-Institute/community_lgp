@@ -10,9 +10,19 @@ export const COUNTABLE_SUBMISSION_STATUSES = ['pending', 'approved'];
 // Arbitrary/temporary selection (first signs by id) - swap the .order('id') below
 // for .order('frequency', { ascending: false }) once a curated list is ready. No migration needed.
 export async function getTargetSigns(supabase: SupabaseClient<Database>) {
+	const { data: trainingVocabulary, error: trainingVocabularyError } = await supabase
+		.from('training_vocabulary')
+		.select('sign_id')
+		.is('removed_at', null);
+
+	if (trainingVocabularyError) throw trainingVocabularyError;
+
+	const trainingSignIds = trainingVocabulary.map((row) => row.sign_id);
+
 	const { data, error } = await supabase
 		.from('signs')
 		.select('id, name, video')
+		.in('id', trainingSignIds)
 		.order('id', { ascending: true })
 		.limit(TARGET_SIGN_COUNT);
 
