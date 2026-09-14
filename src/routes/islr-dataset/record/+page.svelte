@@ -186,15 +186,17 @@
 			>
 				<div class="flex h-full w-full flex-col items-start gap-4">
 					<h3 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Vídeo de referência</h3>
-					<!-- svelte-ignore a11y-media-has-caption -->
-					<video
-						class="w-full min-h-0 flex-1 rounded-lg bg-black object-contain"
-						controls
-						playsinline
-					>
-						<source src={currentSign.video} type="video/mp4" />
-						O seu navegador não suporta a reprodução deste vídeo.
-					</video>
+					{#key currentSign.id}
+						<!-- svelte-ignore a11y-media-has-caption -->
+						<video
+							class="w-full min-h-0 flex-1 rounded-lg bg-black object-contain"
+							controls
+							playsinline
+						>
+							<source src={currentSign.video} type="video/mp4" />
+							O seu navegador não suporta a reprodução deste vídeo.
+						</video>
+					{/key}
 				</div>
 			</Card.Root>
 
