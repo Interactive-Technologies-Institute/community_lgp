@@ -6,6 +6,8 @@
 	import Header from '@/components/header.svelte';
 	import NavigatingIndicator from '@/components/navigating-indicator.svelte';
 	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
+	import { Button } from '@/components/ui/button';
+	import * as Dialog from '@/components/ui/dialog';
 	import { Toaster } from '@/components/ui/sonner';
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
@@ -22,11 +24,15 @@
 	$: ({ supabase, session, user, profile, notifications, branding } = data);
 
 	const flash = getFlash(page);
+	let unlockedMilestone: { label: string; value: number } | null = null;
 	$: if ($flash) {
 		if ($flash.type === 'error') {
 			toast.error($flash.message);
 		} else {
 			toast.success($flash.message);
+		}
+		if ($flash.milestone) {
+			unlockedMilestone = $flash.milestone;
 		}
 		// Clear the flash message to avoid double-toasting.
 		$flash = undefined;
@@ -72,3 +78,27 @@
 		{/if}
 	</div>
 {/if}
+
+<Dialog.Root
+	open={unlockedMilestone !== null}
+	onOpenChange={(open) => !open && (unlockedMilestone = null)}
+>
+	<Dialog.Content class="text-center sm:max-w-sm">
+		<Dialog.Header class="items-center">
+			{#if unlockedMilestone}
+				<img
+					src="/img/badges/{unlockedMilestone.value}.png"
+					alt={unlockedMilestone.label}
+					class="h-48 w-48 object-contain"
+				/>
+			{/if}
+			<Dialog.Title class="text-2xl">Marco Desbloqueado!</Dialog.Title>
+			<Dialog.Description class="text-lg font-semibold text-foreground">
+				"{unlockedMilestone?.label}"
+			</Dialog.Description>
+		</Dialog.Header>
+		<Dialog.Footer class="sm:justify-center">
+			<Button on:click={() => (unlockedMilestone = null)}>Continuar</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>

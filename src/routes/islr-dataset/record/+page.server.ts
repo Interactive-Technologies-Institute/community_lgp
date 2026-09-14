@@ -1,4 +1,9 @@
 import { COUNTABLE_SUBMISSION_STATUSES, getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
+import {
+	getCrossedMilestone,
+	getMilestoneProgress,
+	getMyVideoCount,
+} from '@/server/islr-milestones';
 import { uploadIslrVideo } from '@/server/islr-video-storage';
 import { submitIslrVideoSchema } from '@/schemas/islr-submission';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
@@ -60,12 +65,20 @@ export const load = async (event) => {
 		queue.findIndex((sign) => sign.id === requestedId)
 	);
 	const currentSign = queue[currentIndex];
-	const nextSignId = queue.length > 1 ? queue[(currentIndex + 1) % queue.length].id : null;
+	const nextSign = queue.length > 1 ? queue[(currentIndex + 1) % queue.length] : null;
+
+	const myVideoCount = await getMyVideoCount(event.locals.supabase, user.id);
+	const milestoneProgress = getMilestoneProgress(myVideoCount);
 
 	return {
 		currentSign,
-		nextSignId,
+		nextSignId: nextSign?.id ?? null,
+		nextSignName: nextSign?.name ?? null,
 		queueLength: queue.length,
+		myVideoCount,
+		nextMilestoneIndex: milestoneProgress.nextIndex,
+		milestoneFloor: milestoneProgress.floor,
+		milestoneCeiling: milestoneProgress.ceiling,
 		submitForm: await superValidate({ signId: currentSign.id }, zod(submitIslrVideoSchema), {
 			id: 'submit-islr-video',
 		}),
@@ -88,6 +101,8 @@ export const actions = {
 					return fail(500, withFiles({ message, form }));
 				}
 
+				const previousVideoCount = await getMyVideoCount(event.locals.supabase, userId);
+
 				const { error: supabaseError } = await event.locals.supabase
 					.from('islr_submissions')
 					.insert({
@@ -109,8 +124,18 @@ export const actions = {
 					return fail(500, withFiles({ message: supabaseError.message, form }));
 				}
 
+				// The insert above always adds exactly one row for this contributor, so
+				// the new count is just previousVideoCount + 1 - no need to re-query it.
+				const crossedMilestone = getCrossedMilestone(previousVideoCount, previousVideoCount + 1);
+
 				setFlash(
-					{ type: 'success', message: 'Vídeo submetido com sucesso! Obrigado.' },
+					{
+						type: 'success',
+						message: 'Vídeo submetido com sucesso! Obrigado.',
+						...(crossedMilestone && {
+							milestone: { label: crossedMilestone.label, value: crossedMilestone.milestone },
+						}),
+					},
 					event.cookies
 				);
 				return redirect(303, '/islr-dataset/record');

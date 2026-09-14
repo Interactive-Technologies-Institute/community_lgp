@@ -2,7 +2,7 @@
 	import { Button } from '@/components/ui/button';
 	import PageHeader from '@/components/page-header.svelte';
 	import { PERSONAL_MILESTONES, PERSONAL_MILESTONE_LABELS } from '@/islr-milestones';
-	import { Award, ClipboardCheck, Video } from 'lucide-svelte';
+	import { ClipboardCheck, Video } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 
 	export let data;
@@ -112,9 +112,13 @@
 				<div
 					class="flex flex-col items-center gap-2 rounded-xl border p-3 text-center {unlocked
 						? 'border-brand-blue bg-brand-blue/5'
-						: 'border-brand-border/50 bg-muted/30 opacity-50'}"
+						: 'border-brand-border/50 bg-muted/30'}"
 				>
-					<Award class="h-6 w-6 {unlocked ? 'text-brand-blue' : 'text-muted-foreground'}" />
+					<img
+						src="/img/badges/{milestone}.png"
+						alt={PERSONAL_MILESTONE_LABELS[milestone]}
+						class="h-36 w-36 object-contain {unlocked ? '' : 'grayscale'}"
+					/>
 					<p
 						class="text-xs font-semibold {unlocked ? 'text-brand-dark' : 'text-muted-foreground'}"
 					>

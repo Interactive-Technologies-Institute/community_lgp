@@ -1,4 +1,4 @@
-import { PERSONAL_MILESTONES } from '@/islr-milestones';
+import { PERSONAL_MILESTONE_LABELS, PERSONAL_MILESTONES } from '@/islr-milestones';
 import type { Database } from '@/types/supabase-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -28,4 +28,13 @@ export function getMilestoneProgress(videoCount: number) {
 	const floor = nextIndex === 0 ? 0 : PERSONAL_MILESTONES[nextIndex - 1];
 	const ceiling = PERSONAL_MILESTONES[nextIndex];
 	return { nextIndex, floor, ceiling };
+}
+
+// A single submission only ever increments the count by one, so at most one
+// milestone can sit in (previousCount, newCount] - returns it (with its label)
+// or null when the submission didn't cross one.
+export function getCrossedMilestone(previousCount: number, newCount: number) {
+	const milestone = PERSONAL_MILESTONES.find((m) => previousCount < m && newCount >= m);
+	if (milestone === undefined) return null;
+	return { milestone, label: PERSONAL_MILESTONE_LABELS[milestone] };
 }

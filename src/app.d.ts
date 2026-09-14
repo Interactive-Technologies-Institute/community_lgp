@@ -19,7 +19,11 @@ declare global {
 			notifications: Notification[];
 			features: Feature[];
 			branding: Branding;
-			flash?: { type: 'success' | 'error'; message: string };
+			flash?: {
+				type: 'success' | 'error';
+				message: string;
+				milestone?: { label: string; value: number };
+			};
 		}
 		// interface Error {}
 		// interface Platform {}

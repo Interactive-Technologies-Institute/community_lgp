@@ -154,7 +154,12 @@
 			{/if}
 		</Button>
 
-		<Button on:click={stopRecording} disabled={!isRecording} variant="destructive" class="h-8">
+		<Button
+			on:click={stopRecording}
+			disabled={!isRecording}
+			variant="destructive"
+			class="h-8 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
+		>
 			Parar Gravação
 		</Button>
 
