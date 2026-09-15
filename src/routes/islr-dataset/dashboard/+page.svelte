@@ -1,9 +1,13 @@
 <script lang="ts">
+	import AchievementsDialog from '@/components/AchievementsDialog.svelte';
 	import { Button } from '@/components/ui/button';
+	import * as Dialog from '@/components/ui/dialog';
 	import PageHeader from '@/components/page-header.svelte';
 	import { PERSONAL_MILESTONES, PERSONAL_MILESTONE_LABELS } from '@/islr-milestones';
-	import { ClipboardCheck, Video } from 'lucide-svelte';
+	import { ClipboardCheck, HelpCircle, Video } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
+
+	let helpOpen = false;
 
 	export let data;
 	$: ({
@@ -17,15 +21,17 @@
 		nextMilestoneIndex,
 		milestoneFloor,
 		milestoneCeiling,
+		weeklyVideoCounts,
+		videosThisWeek,
 	} = data);
-
-	const VIDEO_TARGET = 6000;
 
 	$: milestonesMaxed = nextMilestoneIndex >= PERSONAL_MILESTONES.length;
 	$: segmentSpan = milestoneCeiling - milestoneFloor;
 	$: segmentProgressPercent = milestonesMaxed
 		? 100
 		: Math.min(100, Math.max(0, ((myVideoCount - milestoneFloor) / segmentSpan) * 100));
+
+	$: maxWeeklyCount = Math.max(1, ...weeklyVideoCounts);
 
 	function formatNumber(value: number) {
 		return value.toLocaleString('pt-PT');
@@ -37,97 +43,103 @@
 	description="Acompanhe o progresso coletivo da contribuição para o dataset ISLR de Língua Gestual Portuguesa."
 />
 
-<PageHeader
-	title="Contribuição para o Dataset ISLR"
-	subtitle="Obrigado por fazer parte deste esforço coletivo, feito de forma voluntária pela comunidade para a comunidade."
-/>
+<div class="relative">
+	<PageHeader
+		title="Contribuição para o Dataset ISLR"
+		subtitle="Obrigado por fazer parte deste esforço coletivo, feito de forma voluntária pela comunidade para a comunidade."
+	/>
 
-<div class="container mx-auto max-w-3xl space-y-4 pb-10">
-		<div class="mt-5 flex flex-col gap-3">
-			{#if queueLength > 0}
-				<Button
-					href="/islr-dataset/record"
-					class="h-16 w-full gap-3 bg-brand-blue text-lg font-bold text-brand-white shadow-md hover:bg-brand-blue/90"
-				>
-					<Video class="h-6 w-6" />
-					Gravar o próximo gesto
-				</Button>
-			{:else}
-				<p class="text-center text-lg font-semibold text-brand-dark">
-					Já contribuíste com um vídeo para todos os gestos do dataset. Obrigado pelo teu esforço!
-				</p>
-			{/if}
+	<Button
+		variant="outline"
+		size="icon"
+		class="absolute right-4 top-4 rounded-full shadow-md"
+		aria-label="Ajuda"
+		on:click={() => (helpOpen = true)}
+	>
+		<HelpCircle class="h-5 w-5" />
+	</Button>
+</div>
 
-		</div>
+<Dialog.Root bind:open={helpOpen}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Precisas de ajuda?</Dialog.Title>
+			<Dialog.Description>
+				Em caso de dúvida contactar <strong>joana.peixinho@tecnico.ulisboa.pt</strong>
+			</Dialog.Description>
+		</Dialog.Header>
+	</Dialog.Content>
+</Dialog.Root>
 
-
-	<div class="rounded-2xl bg-brand-surface p-6">
-		<div
-			class="grid grid-cols-1 divide-y divide-brand-blue/15 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
-		>
-
-			<div class="px-2 py-4 text-center sm:py-0">
-				<p class="text-4xl font-black text-brand-dark sm:text-5xl">
-					{formatNumber(videosCollected)} / {formatNumber(VIDEO_TARGET)}
-				</p>
-				<p class="mt-2 text-sm font-semibold text-base sm:text-base">vídeos recolhidos</p>
-			</div>
-			<div class="px-2 py-4 text-center sm:py-0">
-				<p class="text-4xl font-black text-brand-dark sm:text-5xl">
-					{formatNumber(totalContributors)}
-				</p>
-				<p class="mt-2 text-sm font-semibold text-base sm:text-base">pessoas contribuíram</p>
-			</div>
-		</div>
+<div class="container mx-auto max-w-3xl space-y-3 pb-10">
+	<div
+		class="flex flex-col rounded-2xl border-2 border-brand-blue bg-brand-blue/5 p-4 shadow-md"
+	>
+		{#if queueLength > 0}
+			<Button
+				href="/islr-dataset/record"
+				class="h-16 w-full gap-3 bg-brand-blue text-lg font-bold text-brand-white shadow-lg hover:bg-brand-blue/90"
+			>
+				<Video class="h-6 w-6" />
+				Gravar o próximo gesto
+			</Button>
+		{:else}
+			<p class="text-center text-lg font-semibold text-brand-dark">
+				Já contribuiu com um vídeo para todos os gestos do dataset. Obrigado pelo seu esforço!
+			</p>
+		{/if}
 	</div>
 
-	<div class="rounded-2xl bg-brand-surface p-6">
+	<div class="rounded-2xl bg-brand-surface p-5">
 		<div class="flex items-center justify-between gap-2">
-			<p class="text-sm font-semibold text-brand-dark">O teu progresso pessoal</p>
-			<p class="text-sm font-semibold text-brand-dark">
-				{formatNumber(myVideoCount)} / {formatNumber(milestoneCeiling)} vídeos
+			<p class="text-base font-semibold text-brand-dark">O seu progresso pessoal</p>
+			<p class="text-base font-bold text-brand-blue">
+				{#if milestonesMaxed}
+					Conquistou tudo!
+				{:else}
+					Faltam {formatNumber(milestoneCeiling - myVideoCount)} vídeos
+				{/if}
 			</p>
 		</div>
-		<div class="mt-3 h-3 w-full overflow-hidden rounded-full bg-brand-border/40">
+		<div class="mt-3 h-6 w-full overflow-hidden rounded-full bg-brand-blue/15">
 			<div
 				class="h-full rounded-full bg-brand-yellow transition-all"
 				style="width: {segmentProgressPercent}%"
 			></div>
 		</div>
-		<p class="mt-2 text-center text-sm text-muted-foreground">
-			{#if milestonesMaxed}
-				Atingiste todos os marcos pessoais. Obrigado pelo teu esforço!
-			{:else}
-				Faltam <strong>{formatNumber(milestoneCeiling - myVideoCount)}</strong> vídeos para o marco
-				"{PERSONAL_MILESTONE_LABELS[milestoneCeiling]}"
-			{/if}
-		</p>
-	</div>
-
-	<div class="rounded-2xl border bg-card p-6">
-		<p class="mb-4 text-center text-base font-semibold text-foreground">Marcos pessoais</p>
-		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-			{#each PERSONAL_MILESTONES as milestone (milestone)}
-				{@const unlocked = myVideoCount >= milestone}
-				<div
-					class="flex flex-col items-center gap-2 rounded-xl border p-3 text-center {unlocked
-						? 'border-brand-blue bg-brand-blue/5'
-						: 'border-brand-border/50 bg-muted/30'}"
-				>
-					<img
-						src="/img/badges/{milestone}.png"
-						alt={PERSONAL_MILESTONE_LABELS[milestone]}
-						class="h-36 w-36 object-contain {unlocked ? '' : 'grayscale'}"
-					/>
-					<p
-						class="text-xs font-semibold {unlocked ? 'text-brand-dark' : 'text-muted-foreground'}"
-					>
-						{PERSONAL_MILESTONE_LABELS[milestone]}
-					</p>
-					<p class="text-[11px] text-muted-foreground">{formatNumber(milestone)} vídeos</p>
-				</div>
-			{/each}
+		<div class="mt-2 flex items-center justify-between gap-2">
+			<p class="text-xs text-muted-foreground">
+				{formatNumber(myVideoCount)} / {formatNumber(milestoneCeiling)} vídeos
+				{#if !milestonesMaxed}
+					· conquista "{PERSONAL_MILESTONE_LABELS[milestoneCeiling]}"
+				{/if}
+			</p>
+			<AchievementsDialog {myVideoCount} />
 		</div>
 	</div>
 
+	<div class="rounded-2xl border bg-card p-5">
+		<div class="flex items-baseline justify-between gap-2">
+			<p class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+				A comunidade
+			</p>
+			<p class="text-2xl font-black text-brand-dark">
+				{formatNumber(videosCollected)}
+			</p>
+		</div>
+
+		<div class="mt-3 flex h-12 items-end gap-1.5">
+			{#each weeklyVideoCounts as count}
+				<div
+					class="flex-1 rounded-t-sm bg-brand-blue/40"
+					style="height: {Math.max(4, (count / maxWeeklyCount) * 100)}%"
+				></div>
+			{/each}
+		</div>
+
+		<p class="mt-2 text-xs text-muted-foreground">
+			+{formatNumber(videosThisWeek)} gestos esta semana · {formatNumber(totalContributors)} pessoas
+			contribuíram
+		</p>
+	</div>
 </div>

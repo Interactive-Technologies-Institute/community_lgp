@@ -34,7 +34,7 @@ export const load = async (event) => {
 
 	const { data: submissions, error } = await event.locals.supabase
 		.from('islr_submissions')
-		.select('sign_id, contributor_id, status')
+		.select('sign_id, contributor_id, status, inserted_at')
 		.in('sign_id', targetIds);
 
 	if (error) throw error;
@@ -60,6 +60,36 @@ export const load = async (event) => {
 	const myVideoCount = await getMyVideoCount(event.locals.supabase, user.id);
 	const milestoneProgress = getMilestoneProgress(myVideoCount);
 
+	const WEEKS_TO_SHOW = 8;
+
+	// Weeks start on Monday, in UTC, so the bucketing doesn't depend on the server's local timezone.
+	function startOfWeek(date: Date): Date {
+		const start = new Date(date);
+		const day = start.getUTCDay();
+		const diffToMonday = (day === 0 ? -6 : 1) - day;
+		start.setUTCDate(start.getUTCDate() + diffToMonday);
+		start.setUTCHours(0, 0, 0, 0);
+		return start;
+	}
+
+	const currentWeekStart = startOfWeek(new Date());
+	const oldestWeekStart = new Date(currentWeekStart);
+	oldestWeekStart.setUTCDate(oldestWeekStart.getUTCDate() - (WEEKS_TO_SHOW - 1) * 7);
+
+	const weeklyVideoCounts = new Array(WEEKS_TO_SHOW).fill(0);
+	for (const submission of submissions) {
+		const weekStart = startOfWeek(new Date(submission.inserted_at));
+		if (weekStart < oldestWeekStart) continue;
+		const weeksAgo = Math.round(
+			(currentWeekStart.getTime() - weekStart.getTime()) / (7 * 24 * 60 * 60 * 1000)
+		);
+		const index = WEEKS_TO_SHOW - 1 - weeksAgo;
+		if (index >= 0 && index < WEEKS_TO_SHOW) {
+			weeklyVideoCounts[index] += 1;
+		}
+	}
+	const videosThisWeek = weeklyVideoCounts[WEEKS_TO_SHOW - 1];
+
 	return {
 		targetSignCount: targetIds.length,
 		signsCovered: coveredSignIds.size,
@@ -71,5 +101,7 @@ export const load = async (event) => {
 		nextMilestoneIndex: milestoneProgress.nextIndex,
 		milestoneFloor: milestoneProgress.floor,
 		milestoneCeiling: milestoneProgress.ceiling,
+		weeklyVideoCounts,
+		videosThisWeek,
 	};
 };

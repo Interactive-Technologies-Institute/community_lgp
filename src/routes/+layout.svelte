@@ -92,7 +92,7 @@
 					class="h-48 w-48 object-contain"
 				/>
 			{/if}
-			<Dialog.Title class="text-2xl">Marco Desbloqueado!</Dialog.Title>
+			<Dialog.Title class="text-2xl">Conquista Desbloqueada!</Dialog.Title>
 			<Dialog.Description class="text-lg font-semibold text-foreground">
 				"{unlockedMilestone?.label}"
 			</Dialog.Description>

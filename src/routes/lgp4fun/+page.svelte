@@ -31,7 +31,7 @@
 			<div>
 				<h3 class="mb-2 font-semibold">Nível 0 – Alfabeto Pré-Escolar</h3>
 				<p class="text-muted-foreground">
-					Treinar o reconhecimento de uma letra alvo escolhida. Para concluir cada ronda deves
+					Treinar o reconhecimento de uma letra alvo escolhida. Para concluir cada ronda deve
 					recolher: a imagem do gesto em LGP e a letra maiúscula em imprensa.
 				</p>
 			</div>
@@ -42,7 +42,7 @@
 			<div>
 				<h3 class="mb-2 font-semibold">Nível 1 – Alfabeto</h3>
 				<p class="text-muted-foreground">
-					Treinar o reconhecimento de uma letra alvo escolhida. Para concluir cada ronda deves
+					Treinar o reconhecimento de uma letra alvo escolhida. Para concluir cada ronda deve
 					recolher: a imagem do gesto em LGP, a letra maiúscula manuscrita e a letra minúscula
 					manuscrita.
 				</p>
@@ -55,7 +55,7 @@
 				<h3 class="mb-2 font-semibold">Nível 2 – Vocabulário Temático</h3>
 				<p class="text-muted-foreground">
 					Treinar o vocabulário sobre um tema escolhido. Cada ronda apresenta um puzzle de três
-					painéis com: vídeo do gesto em LGP, imagem ilustrativa e palavra escrita. Tens de encontrar 
+					painéis com: vídeo do gesto em LGP, imagem ilustrativa e palavra escrita. Deve encontrar
 					e recolher os painéis em falta para completar o puzzle.
 				</p>
 			</div>
@@ -67,7 +67,7 @@
 				<h3 class="mb-2 font-semibold">Nível 3 – Letras em Falta</h3>
 				<p class="text-muted-foreground">
 					Treinar a escrita sobre um tema escolhido. Cada ronda apresenta um puzzle de três
-					painéis com um elemento em falta: umas letras. Tens de encontrar e recolher as letras em falta para completar o puzzle.
+					painéis com um elemento em falta: umas letras. Deve encontrar e recolher as letras em falta para completar o puzzle.
 				</p>
 			</div>
 		</div>

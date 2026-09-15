@@ -1,6 +1,9 @@
 <script lang="ts">
 	import Button from './ui/button/button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { Check, Circle, RotateCcw, Square } from 'lucide-svelte';
+
+	export let submitting = false;
 
 	let videoElement: HTMLVideoElement | null = null;
 	let mediaRecorder: MediaRecorder | null = null;
@@ -11,11 +14,20 @@
 	let recordedBlobUrl: string | null = null;
 	let isPreview = false;
 
+	let elapsedSeconds = 0;
+	let timerInterval: ReturnType<typeof setInterval> | null = null;
+
+	function formatElapsed(totalSeconds: number) {
+		const minutes = Math.floor(totalSeconds / 60);
+		const seconds = totalSeconds % 60;
+		return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+	}
+
 	const dispatch = createEventDispatcher();
 
 	const startCamera = async () => {
 		try {
-			stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+			stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
 			if (videoElement) {
 				videoElement.srcObject = stream;
 				videoElement.muted = true;
@@ -52,6 +64,11 @@
 		};
 
 		mediaRecorder.onstop = () => {
+			if (timerInterval) {
+				clearInterval(timerInterval);
+				timerInterval = null;
+			}
+
 			// Create blob with proper MIME type
 			const mimeType = mediaRecorder?.mimeType || 'video/webm';
 			const blob = new Blob(chunks, { type: mimeType });
@@ -88,6 +105,10 @@
 
 		mediaRecorder.start();
 		isRecording = true;
+		elapsedSeconds = 0;
+		timerInterval = setInterval(() => {
+			elapsedSeconds += 1;
+		}, 1000);
 	};
 
 	const stopRecording = () => {
@@ -116,11 +137,22 @@
 		}
 	};
 
+	const handleMainButtonClick = () => {
+		if (isRecording) {
+			stopRecording();
+		} else {
+			startRecording();
+		}
+	};
+
 	onMount(() => {
 		startCamera();
 	});
 
 	onDestroy(() => {
+		if (timerInterval) {
+			clearInterval(timerInterval);
+		}
 		if (stream) {
 			stream.getTracks().forEach((track) => track.stop());
 		}
@@ -130,45 +162,46 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y-media-has-caption -->
-<div>
-	<video
-		class="w-full rounded-2xl bg-black"
-		bind:this={videoElement}
-		width="640"
-		height="480"
-		style="max-width: 100%; height: auto;"
-	/>
+<div class="flex w-full flex-col">
+	<!-- svelte-ignore a11y-media-has-caption -->
+	<video class="aspect-video w-full rounded-2xl bg-black object-cover" bind:this={videoElement} />
 
-	<div class="flex flex-wrap justify-start gap-4 pb-4 pt-4">
+	{#if isPreview}
+		<div class="mt-4 flex gap-3">
+			<Button
+				type="button"
+				on:click={reRecord}
+				variant="outline"
+				class="h-14 flex-1 gap-2 text-base font-bold"
+			>
+				<RotateCcw class="h-5 w-5" />
+				Repetir
+			</Button>
+			<Button
+				type="submit"
+				disabled={submitting}
+				class="h-14 flex-[2] gap-2 bg-brand-blue text-base font-bold text-brand-white hover:bg-brand-blue/90"
+			>
+				<Check class="h-5 w-5" />
+				Guardar e seguinte
+			</Button>
+		</div>
+	{:else}
 		<Button
-			on:click={startRecording}
-			disabled={isRecording || isPreview || !cameraReady}
-			variant="default"
-			class="h-8 bg-brand-blue"
+			on:click={handleMainButtonClick}
+			disabled={!cameraReady}
+			variant={isRecording ? 'destructive' : 'default'}
+			class="mt-4 h-14 w-full gap-2 text-base font-bold {isRecording
+				? ''
+				: 'bg-brand-blue text-brand-white hover:bg-brand-blue/90'}"
 		>
 			{#if isRecording}
-				Gravando...
+				<Square class="h-4 w-4 fill-current" />
+				A gravar {formatElapsed(elapsedSeconds)}
 			{:else}
+				<Circle class="h-4 w-4 fill-current" />
 				Gravar
 			{/if}
 		</Button>
-
-		<Button
-			on:click={stopRecording}
-			disabled={!isRecording}
-			variant="destructive"
-			class="h-8 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
-		>
-			Parar Gravação
-		</Button>
-
-		<Button on:click={reRecord} disabled={!isPreview} variant="outline" class="h-8">Voltar A Gravar</Button>
-	</div>
-
-	{#if isPreview}
-		<p class="mt-2 text-sm text-green-600">
-			✓ Gravação concluída. O vídeo será enviado quando submeter o formulário.
-		</p>
 	{/if}
 </div>

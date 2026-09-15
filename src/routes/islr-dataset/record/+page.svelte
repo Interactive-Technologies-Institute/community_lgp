@@ -151,14 +151,6 @@
 	description={`Grave um vídeo de referência para o gesto "${currentSign.name}".`}
 />
 
-<div class="container mx-auto max-w-3xl pb-2 pt-8">
-	{#if nextSignName}
-		<p class="text-center text-sm text-muted-foreground">
-			A seguir: <strong class="text-brand-dark">{nextSignName}</strong>
-		</p>
-	{/if}
-</div>
-
 {#if confettiTrigger > 0}
 	{#key confettiTrigger}
 	<div
@@ -175,63 +167,74 @@
 	action="?/submit"
 	enctype="multipart/form-data"
 	use:enhance
-	class="flex flex-col gap-y-6"
+	class="flex flex-col gap-y-4"
 >
-<section class="rounded-[2rem] bg-brand-surface shadow-md">
-	<div class="container mx-auto space-y-6 p-4">
-		<h2 class="text-center text-2xl font-black text-brand-dark sm:text-3xl">{currentSign.name}</h2>
-		<div class="grid items-stretch gap-5 lg:grid-cols-2 lg:gap-10">
-			<Card.Root
-				class="h-full w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
-			>
-				<div class="flex h-full w-full flex-col items-start gap-4">
-					<h3 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Vídeo de referência</h3>
-					{#key currentSign.id}
-						<!-- svelte-ignore a11y-media-has-caption -->
-						<video
-							class="w-full min-h-0 flex-1 rounded-lg bg-black object-contain"
-							controls
-							playsinline
-						>
-							<source src={currentSign.video} type="video/mp4" />
-							O seu navegador não suporta a reprodução deste vídeo.
-						</video>
-					{/key}
-				</div>
-			</Card.Root>
+	<input type="hidden" name="signId" value={$formData.signId} />
+	<input type="file" name="video" bind:files={$video} bind:this={videoInput} class="hidden" />
 
-			<Card.Root
-				class="h-full w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
-			>
-				<div class="flex h-full w-full flex-col items-start gap-4">
-					<h3 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Grave o gesto</h3>
-					{#key currentSign.id}
-						{#if cameraError}
-							<div class="w-full rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center">
-								<p class="flex items-center justify-center gap-2 text-sm text-destructive">
-									<AlertTriangle class="h-4 w-4" />
-									Não foi possível aceder à câmara.
-								</p>
-								<input
-									type="file"
-									accept="video/*"
-									class="mt-3 w-full text-sm text-brand-dark"
-									on:change={handleFallbackFile}
+	<section class="rounded-[2rem] bg-brand-surface shadow-md">
+		<div class="container mx-auto space-y-6 p-4">
+			<h2 class="text-center text-2xl font-black text-brand-dark sm:text-3xl">{currentSign.name}</h2>
+			<div class="grid items-stretch gap-5 lg:grid-cols-2 lg:gap-10">
+				<Card.Root
+					class="h-full w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
+				>
+					<div class="flex h-full w-full flex-col items-start gap-4">
+						<h3 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Vídeo de referência</h3>
+						{#key currentSign.id}
+							<!-- svelte-ignore a11y-media-has-caption -->
+							<video
+								class="aspect-video w-full rounded-2xl bg-black object-cover"
+								controls
+								playsinline
+							>
+								<source src={currentSign.video} type="video/mp4" />
+								O seu navegador não suporta a reprodução deste vídeo.
+							</video>
+						{/key}
+						<div class="flex-1"></div>
+					</div>
+				</Card.Root>
+
+				<Card.Root
+					class="h-full w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
+				>
+					<div class="flex h-full w-full flex-col items-start gap-4">
+						<h3 class="text-xl font-extrabold text-brand-dark sm:text-2xl">Repita o gesto</h3>
+						{#key currentSign.id}
+							{#if cameraError}
+								<div class="w-full rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center">
+									<p class="flex items-center justify-center gap-2 text-sm text-destructive">
+										<AlertTriangle class="h-4 w-4" />
+										Não foi possível aceder à câmara.
+									</p>
+									<input
+										type="file"
+										accept="video/*"
+										class="mt-3 w-full text-sm text-brand-dark"
+										on:change={handleFallbackFile}
+									/>
+									{#if hasRecording}
+										<Button type="submit" disabled={$submitting} class="mt-3 h-12 w-full gap-2 font-bold">
+											<Check class="h-4 w-4" />
+											Guardar e seguinte
+										</Button>
+									{/if}
+								</div>
+							{:else}
+								<WebcamRecording
+									submitting={$submitting}
+									on:recorded={handleRecorded}
+									on:recording-started={handleRecordingStarted}
+									on:error={handleCameraError}
 								/>
-							</div>
-						{:else}
-							<WebcamRecording
-								on:recorded={handleRecorded}
-								on:recording-started={handleRecordingStarted}
-								on:error={handleCameraError}
-							/>
-						{/if}
-					{/key}
-				</div>
-			</Card.Root>
+							{/if}
+						{/key}
+					</div>
+				</Card.Root>
+			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
 	{#if $message}
 		<div class="container mx-auto pb-4">
@@ -239,10 +242,12 @@
 		</div>
 	{/if}
 
-	<div class="sticky bottom-0 z-50 w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+	<div
+		class="sticky bottom-0 z-50 w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+	>
 		<div class="container mx-auto max-w-3xl px-4 py-3">
 			<div class="flex items-center justify-between gap-2">
-				<p class="text-sm font-semibold text-brand-dark">O teu progresso pessoal</p>
+				<p class="text-sm font-semibold text-brand-dark">O seu progresso pessoal</p>
 				<p class="text-sm font-semibold text-brand-dark">
 					{formatNumber(myVideoCount)} / {formatNumber(milestoneCeiling)} vídeos
 				</p>
@@ -253,31 +258,27 @@
 					style="width: {segmentProgressPercent}%"
 				></div>
 			</div>
-			<p class="mt-1 text-center text-xs text-muted-foreground">
+			<p class="mt-1 text-center text-xs font-medium text-foreground">
 				{#if milestonesMaxed}
-					Atingiste todos os marcos pessoais. Obrigado pelo teu esforço!
+					Atingiu todas as conquistas pessoais. Obrigado pelo seu esforço!
 				{:else}
-					Faltam <strong>{formatNumber(videosUntilNextMilestone)}</strong> vídeos para o marco "{PERSONAL_MILESTONE_LABELS[
+					Faltam <strong>{formatNumber(videosUntilNextMilestone)}</strong> vídeos para a conquista "{PERSONAL_MILESTONE_LABELS[
 						milestoneCeiling
 					]}"
 				{/if}
 			</p>
 
-			<div class="mt-4 flex w-full flex-row items-center justify-center gap-x-10">
-				<input type="hidden" name="signId" value={$formData.signId} />
-				<input type="file" name="video" bind:files={$video} bind:this={videoInput} class="hidden" />
+			{#if nextSignName}
+				<p class="mt-2 text-center text-sm font-medium text-foreground">
+					Próximo gesto: <strong class="text-brand-dark">{nextSignName}</strong>
+				</p>
+			{/if}
 
+			<div class="mt-4 flex w-full items-center justify-center">
 				<Button type="button" on:click={skip} disabled={nextSignId === null} variant="outline">
 					<SkipForward class="h-4 w-4" />
 					Saltar
 				</Button>
-
-				{#if hasRecording}
-					<Button type="submit" disabled={$submitting}>
-						<Check class="h-4 w-4" />
-						Submeter
-					</Button>
-				{/if}
 			</div>
 		</div>
 	</div>
@@ -286,12 +287,12 @@
 <AlertDialog.Root bind:open={showLeaveConfirm}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>Tens a certeza que queres sair?</AlertDialog.Title>
+			<AlertDialog.Title>Tem a certeza que quer sair?</AlertDialog.Title>
 			<AlertDialog.Description>
 				{#if milestonesMaxed}
-					Já gravaste {formatNumber(myVideoCount)} vídeos. Atingiste todos os marcos pessoais!
+					Já gravou {formatNumber(myVideoCount)} vídeos. Atingiu todas as conquistas pessoais!
 				{:else}
-					Já gravaste {formatNumber(myVideoCount)} vídeos, faltam {formatNumber(
+					Já gravou {formatNumber(myVideoCount)} vídeos, faltam {formatNumber(
 						videosUntilNextMilestone
 					)} para "{PERSONAL_MILESTONE_LABELS[milestoneCeiling]}".
 				{/if}
