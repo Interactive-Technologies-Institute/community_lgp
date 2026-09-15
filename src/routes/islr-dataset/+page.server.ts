@@ -1,4 +1,5 @@
 import { consentSchema } from '@/schemas/consent';
+import { CONSENT_TEXT_PLAIN } from '@/consent-text';
 import { isIslrFeatureEnabled } from '@/server/islr';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import { fail, redirect } from '@sveltejs/kit';
@@ -54,6 +55,25 @@ export const actions = {
 
 			if (supabaseError && supabaseError.code !== '23505') {
 				return fail(500, { message: supabaseError.message, form });
+			}
+
+			if (user.email) {
+				const { error: mailError } = await event.locals.supabase.functions.invoke(
+					'send-consent-email',
+					{
+						body: {
+							email: user.email,
+							name: user.user_metadata?.display_name ?? user.email,
+							consentText: CONSENT_TEXT_PLAIN,
+							signedAt: new Date().toISOString(),
+							choice: 'accept',
+						},
+					}
+				);
+
+				if (mailError) {
+					console.error('Failed to send consent copy email:', mailError);
+				}
 			}
 
 			return redirect(303, '/islr-dataset/dashboard');

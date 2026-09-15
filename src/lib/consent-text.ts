@@ -1,0 +1,16 @@
+export const CONSENT_TEXT_PARAGRAPHS = [
+	`Olá. Obrigado por estar a considerar participar neste estudo. Este estudo é realizado pelo Instituto Superior Técnico, em Lisboa, em parceria com a Associação Portuguesa de Surdos e a Universidade Católica Portuguesa. O investigador responsável é o Professor Hugo Nicolau, e a equipa inclui também a Joana Peixinho, estudante de mestrado, que está a conduzir esta investigação.`,
+	`O objetivo principal deste estudo é acrescentar ao Dicionário Online de LGP, que já existe e está disponível gratuitamente para toda a comunidade, uma nova forma de procurar gestos: por gestos, em vez de texto. Vai conseguir fazer o gesto à frente da câmara e o dicionário vai mostrar-lhe os gestos mais semelhantes.`,
+	`Para tal, precisamos de recolher um grande conjunto de vídeos de gestos isolados de Língua Gestual Portuguesa, para treinar o sistema informático que vai reconhecer os gestos automaticamente.`,
+	`Se decidir participar, vai usar esta plataforma online para gravar vídeos de si próprio(a) a fazer gestos em LGP, usando o seu computador ou telemóvel, no sítio que preferir, ao longo do tempo. Cada vídeo deve estar enquadrado da cintura para cima, com as mãos e face sempre visíveis. Não precisa de equipamento especial.`,
+	`O objetivo é gravar, no mínimo, 100 gestos. Pode fazê-lo ao seu ritmo, durante as próximas semanas. Quantos mais vídeos contribuir, melhor será o reconhecedor de gestos que vamos criar para o dicionário.`,
+	`Os vídeos ficam guardados em repositórios privados protegidos por palavra-passe numa conta institucional da Universidade de Lisboa, aos quais só a equipa de investigação tem acesso. As suas contribuições não serão publicadas publicamente. Vão ser usadas apenas internamente pela equipa de investigação para fins de investigação científica.`,
+	`A sua participação neste estudo é completamente voluntária. Pode decidir não participar. Pode também desistir a qualquer momento, mesmo depois de já ter começado, sem ter de dar nenhuma explicação, e sem que isso lhe traga qualquer problema ou prejuízo.`,
+	`Participar neste estudo não implica riscos físicos. O principal risco tem a ver com a sua privacidade porque os vídeos onde aparece a fazer gestos são dados biométricos.`,
+	`Ao participar, está também a contribuir para benefícios concretos para a comunidade Surda: uma ferramenta gratuita e acessível que até hoje não existe e que ajuda a preservar e documentar a Língua Gestual Portuguesa para as gerações futuras.`,
+	`Tem vários direitos sobre os seus dados. Pode pedir para ver os dados que temos sobre si. Pode pedir para os corrigir. Pode pedir para os apagar. Pode retirar o seu consentimento a qualquer momento.`,
+	`Se tiver dúvidas ou quiser exercer estes direitos, pode contactar o investigador responsável, Hugo Nicolau, através do email hugo.nicolau@tecnico.ulisboa.pt. Pode também contactar o Encarregado de Proteção de Dados em dpo@ist-id.pt, ou apresentar uma reclamação à Comissão Nacional de Proteção de Dados (CNPD), através do site www.cnpd.pt.`,
+	`Chegámos ao fim. Se compreendeu tudo o que expliquei, e quiser participar, marque as caixas abaixo do vídeo. Obrigado por ajudar a construir este recurso para a comunidade Surda em Portugal.`,
+];
+
+export const CONSENT_TEXT_PLAIN = CONSENT_TEXT_PARAGRAPHS.join('\n\n');
