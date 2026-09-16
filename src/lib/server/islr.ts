@@ -7,8 +7,6 @@ const TARGET_SIGN_COUNT = 500;
 // progress numbers and a contributor's own recording queue.
 export const COUNTABLE_SUBMISSION_STATUSES = ['pending', 'approved'];
 
-// Arbitrary/temporary selection (first signs by id) - swap the .order('id') below
-// for .order('frequency', { ascending: false }) once a curated list is ready. No migration needed.
 export async function getTargetSigns(supabase: SupabaseClient<Database>) {
 	const { data: trainingVocabulary, error: trainingVocabularyError } = await supabase
 		.from('training_vocabulary')
