@@ -12,6 +12,7 @@
 	import SearchBar from './SearchBar.svelte';
 	export let data;
 	let signs: Sign[] = [];
+	let selectedTab = 'gesto';
 
 	afterNavigate(() => {
 		signs = data?.signs ?? [];
@@ -94,6 +95,7 @@
 			{data}
 			{signs}
 			{parameters}
+			bind:selectedTab
 		/>
 	</div>
 	<div>
@@ -108,6 +110,7 @@
 				{parameters}
 				{isFiltering}
 				{isSearching}
+				{selectedTab}
 			/>
 		</div>
 		{#if isFiltering && !isSearching && countSign > 0}

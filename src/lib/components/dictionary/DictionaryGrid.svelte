@@ -10,6 +10,9 @@
 	export let themes: Theme[];
 	export let parameter: Parameter[];
 	export let horizontal: boolean = false;
+	// MOCK/SCRIPTED FOR PROMO VIDEO: only ever passed true from the video search results view, see VideoSearch.svelte
+	export let highlightFirst: boolean = false;
+	export let staggerAnimation: boolean = false;
 
 	function getParameters(annotation: AnnotationArray) {
 		const parameterFilter: Parameter[] = [];
@@ -56,21 +59,36 @@
 		? 'flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3'
 		: 'grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'}
 >
-	{#each signs as sign (sign.id)}
+	{#each signs as sign, index (sign.id)}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<Card.Root
-			class={`rounded-2xl border border-brand-border ${
-				horizontal ? 'w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]' : ''
-			}`}
+			class={`rounded-2xl border ${
+				highlightFirst && index === 0
+					? 'border-[#3b96f5] shadow-[0_0_0_1px_#3b96f5]'
+					: 'border-brand-border'
+			} ${horizontal ? 'w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]' : ''}`}
+			style={staggerAnimation
+				? `animation: -global-vsFadeInUp .3s ease both; animation-delay: ${index * 60}ms;`
+				: undefined}
 		>
 			<Card.Content class="flex items-center justify-center p-3" on:click={() => goToDictionary(sign.id)}>
 				<div class="flex w-full flex-col" on:click={() => goToDictionary(sign.id)}>
-					<video class="aspect-video w-full rounded-b-none rounded-t-xl" controls muted>
-						<source src={sign.video} type="video/mp4" />
-						Your browser does not support the video tag.
-					</video>
-					<p class="pt-4 text-lg font-medium">{sign.name}</p> 
+					<div class="relative">
+						<video class="aspect-video w-full rounded-b-none rounded-t-xl" controls muted>
+							<source src={sign.video} type="video/mp4" />
+							Your browser does not support the video tag.
+						</video>
+						{#if highlightFirst && index === 0}
+							<!-- MOCK/SCRIPTED FOR PROMO VIDEO: see VideoSearch.svelte header comment -->
+							<span
+								class="absolute left-2 top-2 rounded-full bg-[#3b96f5] px-2 py-1 text-xs font-semibold text-white"
+							>
+								Melhor correspondência
+							</span>
+						{/if}
+					</div>
+					<p class="pt-4 text-lg font-medium">{sign.name}</p>
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each getThemes(sign) as t}
 							{#if t.is_parent === true}
@@ -89,3 +107,17 @@
 		</Card.Root>
 	{/each}
 </div>
+
+<style>
+	/* MOCK/SCRIPTED FOR PROMO VIDEO: only triggered via the staggerAnimation prop from the video search results view */
+	@keyframes -global-vsFadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
