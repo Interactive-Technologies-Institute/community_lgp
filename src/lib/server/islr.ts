@@ -28,6 +28,24 @@ export async function getTargetSigns(supabase: SupabaseClient<Database>) {
 	return data;
 }
 
+// Counts countable submissions per sign, across all contributors, so the
+// recording queue can be ordered towards whichever signs have the least
+// coverage so far. 
+export async function getSignSubmissionCounts(supabase: SupabaseClient<Database>) {
+	const { data, error } = await supabase
+		.from('islr_submissions')
+		.select('sign_id')
+		.in('status', COUNTABLE_SUBMISSION_STATUSES);
+
+	if (error) throw error;
+
+	const counts = new Map<number, number>();
+	for (const { sign_id } of data) {
+		counts.set(sign_id, (counts.get(sign_id) ?? 0) + 1);
+	}
+	return counts;
+}
+
 export async function isIslrFeatureEnabled(supabase: SupabaseClient<Database>) {
 	const { data, error } = await supabase
 		.from('feature_flags')

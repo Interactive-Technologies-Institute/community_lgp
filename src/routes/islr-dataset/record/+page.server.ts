@@ -1,4 +1,9 @@
-import { COUNTABLE_SUBMISSION_STATUSES, getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
+import {
+	COUNTABLE_SUBMISSION_STATUSES,
+	getSignSubmissionCounts,
+	getTargetSigns,
+	isIslrFeatureEnabled,
+} from '@/server/islr';
 import {
 	getCrossedMilestone,
 	getMilestoneProgress,
@@ -53,7 +58,40 @@ export const load = async (event) => {
 			.map((s) => s.sign_id)
 	);
 
-	const queue = targetSigns.filter((sign) => !excludedIds.has(sign.id));
+	const submissionCounts = await getSignSubmissionCounts(event.locals.supabase);
+
+	// Deterministic per-contributor "shuffle" used as a tiebreaker: same
+	// contributor + sign always hashes to the same value, so the queue order
+	// is stable across page loads (the "next sign" shown now still matches
+	// the "current sign" once they navigate there). Different contributors
+	// get a different tiebreak order, so they aren't all steered towards the
+	// exact same "least covered" sign at the same time.
+	function tiebreakHash(signId: number): number {
+		let hash = 0;
+		const str = `${user.id}:${signId}`;
+		for (let i = 0; i < str.length; i++) {
+			hash = (hash * 31 + str.charCodeAt(i)) | 0;
+		}
+		// Finalizer mix (à la MurmurHash3) so ids that differ by only their
+		// last character - e.g. neighbouring sign ids - don't produce nearly
+		// identical hashes, which would defeat the point of the tiebreak.
+		hash ^= hash >>> 16;
+		hash = Math.imul(hash, 0x85ebca6b);
+		hash ^= hash >>> 13;
+		hash = Math.imul(hash, 0xc2b2ae35);
+		hash ^= hash >>> 16;
+		return hash;
+	}
+
+	// Sort by coverage ascending, then by the per-contributor tiebreak, so
+	// under-covered signs come first without everyone getting the same order.
+	const queue = targetSigns
+		.filter((sign) => !excludedIds.has(sign.id))
+		.sort((a, b) => {
+			const countDiff = (submissionCounts.get(a.id) ?? 0) - (submissionCounts.get(b.id) ?? 0);
+			if (countDiff !== 0) return countDiff;
+			return tiebreakHash(a.id) - tiebreakHash(b.id);
+		});
 
 	if (queue.length === 0) {
 		return redirect(302, '/islr-dataset/dashboard');
