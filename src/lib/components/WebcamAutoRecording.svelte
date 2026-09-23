@@ -164,7 +164,10 @@
 
 <div class="flex w-full flex-col">
 	<!-- svelte-ignore a11y-media-has-caption -->
-	<video class="aspect-video w-full rounded-2xl bg-black object-cover" bind:this={videoElement} />
+	<video
+		class="aspect-video w-full rounded-2xl bg-black object-cover {isPreview ? '' : '-scale-x-100'}"
+		bind:this={videoElement}
+	/>
 
 	{#if isPreview}
 		<div class="mt-4 flex gap-3">
