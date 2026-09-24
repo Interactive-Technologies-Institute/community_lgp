@@ -5,7 +5,7 @@
 	import * as Dialog from '@/components/ui/dialog';
 	import InviteShareCard from '@/components/InviteShareCard.svelte';
 	import { PERSONAL_MILESTONES, PERSONAL_MILESTONE_LABELS } from '@/islr-milestones';
-	import { ClipboardCheck, HelpCircle } from 'lucide-svelte';
+	import { Camera, ClipboardCheck, HelpCircle } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 
 	let helpOpen = false;
@@ -165,7 +165,8 @@
 						href="/islr-dataset/record"
 						class="h-14 w-auto whitespace-nowrap bg-brand-blue px-10 py-0 text-lg font-bold text-brand-white shadow-lg hover:bg-brand-blue/90"
 					>
-						Começar a gravar →
+						<Camera class="mr-2 size-5" />
+						Começar a gravar
 					</Button>
 
 					<p class="text-[14px] text-[#6b6b6b]">
