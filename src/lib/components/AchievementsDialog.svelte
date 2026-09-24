@@ -42,7 +42,7 @@
 	on:click={() => (open = true)}
 >
 	<Trophy class="h-3.5 w-3.5" />
-	Ver as minhas conquistas
+	Ver conquistas
 </Button>
 
 <Dialog.Root bind:open>

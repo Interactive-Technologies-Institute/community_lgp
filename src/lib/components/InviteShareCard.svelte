@@ -58,7 +58,7 @@
 		<div>
 			<p class="font-semibold text-brand-dark">Conhece alguém que possa ajudar?</p>
 			<p class="mt-1 text-sm text-muted-foreground">
-				Partilhe o formulário de inscrição para mais pessoas se juntarem a este esforço.
+				Partilhe o formulário de inscrição.
 			</p>
 		</div>
 	</div>

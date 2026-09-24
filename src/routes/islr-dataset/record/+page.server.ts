@@ -66,9 +66,10 @@ export const load = async (event) => {
 	// the "current sign" once they navigate there). Different contributors
 	// get a different tiebreak order, so they aren't all steered towards the
 	// exact same "least covered" sign at the same time.
+	const userId = user.id;
 	function tiebreakHash(signId: number): number {
 		let hash = 0;
-		const str = `${user.id}:${signId}`;
+		const str = `${userId}:${signId}`;
 		for (let i = 0; i < str.length; i++) {
 			hash = (hash * 31 + str.charCodeAt(i)) | 0;
 		}

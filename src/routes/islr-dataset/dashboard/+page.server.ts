@@ -59,6 +59,7 @@ export const load = async (event) => {
 
 	const myVideoCount = await getMyVideoCount(event.locals.supabase, user.id);
 	const milestoneProgress = getMilestoneProgress(myVideoCount);
+	const firstName = user.user_metadata?.display_name?.trim().split(' ')[0] || null;
 
 	const WEEKS_TO_SHOW = 8;
 
@@ -98,6 +99,7 @@ export const load = async (event) => {
 		myContributedCount: mySubmittedSignIds.size,
 		queueLength: targetIds.length - mySubmittedSignIds.size,
 		myVideoCount,
+		firstName,
 		nextMilestoneIndex: milestoneProgress.nextIndex,
 		milestoneFloor: milestoneProgress.floor,
 		milestoneCeiling: milestoneProgress.ceiling,
