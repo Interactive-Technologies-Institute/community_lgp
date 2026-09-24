@@ -33,8 +33,8 @@
 />
 
 <PageHeader
-	title="Contribuição para o Dataset ISLR"
-	subtitle="Veja o vídeo e leia o resumo abaixo antes de continuar."
+	title="Contribua com os seus gestos"
+	subtitle="Ajude a criar o dataset ISLR (reconhecimento de gestos isolados). Veja o vídeo e leia o resumo abaixo antes de continuar."
 />
 
 <div class="container mx-auto max-w-3xl space-y-8 pb-16">

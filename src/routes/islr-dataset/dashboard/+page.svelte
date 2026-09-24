@@ -45,8 +45,8 @@
 
 <div class="relative">
 	<PageHeader
-		title="Contribuição para o Dataset ISLR"
-		subtitle="Obrigado por fazer parte deste esforço coletivo, feito de forma voluntária pela comunidade para a comunidade."
+		title="Grave gestos para o dataset"
+		subtitle="Obrigado por fazer parte deste esforço coletivo, para melhorar o dicionário."
 	/>
 
 	<Button
