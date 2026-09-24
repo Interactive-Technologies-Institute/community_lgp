@@ -1,13 +1,52 @@
 <script lang="ts">
 	import AchievementsDialog from '@/components/AchievementsDialog.svelte';
+	import * as Accordion from '@/components/ui/accordion';
 	import { Button } from '@/components/ui/button';
 	import * as Dialog from '@/components/ui/dialog';
+	import InviteShareCard from '@/components/InviteShareCard.svelte';
 	import PageHeader from '@/components/page-header.svelte';
 	import { PERSONAL_MILESTONES, PERSONAL_MILESTONE_LABELS } from '@/islr-milestones';
 	import { ClipboardCheck, HelpCircle, Video } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 
 	let helpOpen = false;
+
+	const faqs = [
+		{
+			question: 'Para que servem os vídeos que grava?',
+			answer:
+				'Os vídeos servirão, no futuro, para permitir pesquisar no dicionário gesticulando o gesto, em vez de ter de o escrever ou de selecionar parâmetros. Para construirmos esta funcionalidade, precisamos da ajuda de muitas pessoas a contribuir com vídeos de LGP, como a sua.',
+			link: {
+				href: 'https://www.youtube.com/watch?v=tUTgAK1tGBw',
+				label: 'Veja aqui uma demonstração',
+			},
+		},
+		{
+			question: 'Onde ficam guardados os vídeos que grava?',
+			answer:
+				'Os vídeos ficam guardados num local seguro, com acesso restrito ao IST, à UCP e à APS.',
+		},
+		{
+			question: 'Os vídeos que grava serão partilhados?',
+			answer:
+				'Não. Os vídeos nunca serão partilhados nem publicados. São utilizados apenas para investigação científica em LGP e para melhorar o dicionário.',
+		},
+		{
+			question: 'Há um limite para quantos vídeos pode filmar, ou até quando?',
+			answer:
+				'Não há limite: pode filmar sempre que quiser e, quantos mais vídeos contribuir, melhor. Esta primeira recolha decorre até ao final de 2026, por isso aproveite para contribuir o máximo possível até lá.',
+		},
+		{
+			question: 'O vídeo precisa de ter alguma qualidade específica?',
+			answer:
+				'Não há requisitos rígidos, mas ajuda muito se o vídeo tiver boa iluminação, se as mãos e o rosto estiverem visíveis e se o fundo for simples, sem outras pessoas ou objetos em movimento.',
+		},
+		{
+			question: 'Pode pedir para apagar um vídeo que já enviou?',
+			answer:
+				'Sim. Pode pedir para ver, corrigir ou apagar os seus dados a qualquer momento, através do contacto indicado acima.',
+		},
+	];
 
 	export let data;
 	$: ({
@@ -61,13 +100,36 @@
 </div>
 
 <Dialog.Root bind:open={helpOpen}>
-	<Dialog.Content>
+	<Dialog.Content class="max-h-[85vh] overflow-y-auto">
 		<Dialog.Header>
-			<Dialog.Title>Precisas de ajuda?</Dialog.Title>
+			<Dialog.Title>Precisa de ajuda?</Dialog.Title>
 			<Dialog.Description>
 				Em caso de dúvida contactar <strong>joana.peixinho@tecnico.ulisboa.pt</strong>
 			</Dialog.Description>
 		</Dialog.Header>
+
+		<Accordion.Root class="px-1">
+			{#each faqs as faq, i (i)}
+				<Accordion.Item value={`faq-${i}`}>
+					<Accordion.Trigger class="text-left font-semibold">
+						{faq.question}
+					</Accordion.Trigger>
+					<Accordion.Content>
+						{faq.answer}
+						{#if faq.link}
+							<a
+								href={faq.link.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="mt-1 block font-medium text-brand-blue underline"
+							>
+								{faq.link.label}
+							</a>
+						{/if}
+					</Accordion.Content>
+				</Accordion.Item>
+			{/each}
+		</Accordion.Root>
 	</Dialog.Content>
 </Dialog.Root>
 
@@ -142,4 +204,6 @@
 			contribuíram
 		</p>
 	</div>
+
+	<InviteShareCard />
 </div>
