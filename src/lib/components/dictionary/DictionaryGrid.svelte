@@ -53,14 +53,14 @@
 
 <div
 	class={horizontal
-		? 'flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3'
+		? 'flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth p-1 pb-3'
 		: 'grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'}
 >
 	{#each signs as sign (sign.id)}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<Card.Root
-			class={`rounded-2xl border border-brand-border ${
+			class={`cursor-pointer rounded-2xl border border-brand-border ring-2 ring-transparent transition duration-200 hover:ring-brand-blue ${
 				horizontal ? 'w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]' : ''
 			}`}
 		>
