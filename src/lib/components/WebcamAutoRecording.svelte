@@ -186,7 +186,7 @@
 				class="h-14 flex-[2] gap-2 bg-brand-blue text-base font-bold text-brand-white hover:bg-brand-blue/90"
 			>
 				<Check class="h-5 w-5" />
-				Guardar e seguinte
+				Submeter
 			</Button>
 		</div>
 	{:else}

@@ -50,7 +50,7 @@
 	];
 </script>
 
-<div class="rounded-2xl border bg-card p-5">
+<div class="rounded-2xl border border-brand-blue/70 bg-brand-blue/30 p-5">
 	<div class="flex items-start gap-3">
 		<div class="rounded-full bg-brand-blue/10 p-2 text-brand-blue">
 			<UserPlus class="h-5 w-5" />

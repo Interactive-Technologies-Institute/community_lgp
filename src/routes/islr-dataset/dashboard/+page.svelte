@@ -149,15 +149,15 @@
 <div class="container mx-auto space-y-8 pb-10">
 	{#if queueLength > 0}
 		<div
-			class="grid grid-cols-[minmax(0,1fr)_520px] items-center gap-[48px] rounded-[18px] border border-[#f0dc7a] bg-[#f7f1c9] p-[28px] max-[900px]:grid-cols-1"
+			class="grid grid-cols-[minmax(0,1fr)_520px] items-center gap-[48px] rounded-[18px] border border-brand-yellow/70 bg-brand-yellow/30 p-[28px] max-[900px]:grid-cols-1"
 		>
 			<div class="flex flex-col items-start">
-				<h2 class="text-[30px] font-extrabold leading-[1.1] text-[#2b2b9c]">
+				<h2 class="text-[30px] font-extrabold leading-[1.1] text-brand-dark dark:text-foreground">
 					Pronto para começar?
 				</h2>
 
-				<p class="mt-2 text-[16px] font-medium text-[#333]">
-					Veja o gesto <span class="text-[#3a96f7]">→</span> Repita-o <span class="text-[#3a96f7]">→</span> Passe ao seguinte
+				<p class="mt-2 text-[16px] font-medium text-foreground">
+					Veja o gesto <span class="text-brand-blue">→</span> Repita-o <span class="text-brand-blue">→</span> Passe ao seguinte
 				</p>
 
 				<div class="mt-6 flex items-center gap-4">
@@ -169,7 +169,7 @@
 						Começar a gravar
 					</Button>
 
-					<p class="text-[14px] text-[#6b6b6b]">
+					<p class="text-[14px] text-muted-foreground">
 						Cada gesto leva ~10 segundos
 					</p>
 				</div>
@@ -195,7 +195,7 @@
 	{/if}
 
 	<div class="flex flex-col gap-5 md:flex-row md:gap-10">
-		<div class="flex-1 rounded-2xl bg-brand-surface p-5">
+		<div class="flex-1 rounded-2xl border border-brand-blue/70 bg-brand-blue/30 p-5">
 			<div class="flex items-center justify-between gap-2">
 				<p class="text-base font-semibold text-brand-dark">O seu progresso pessoal</p>
 				<p class="text-base font-bold text-brand-blue">
@@ -220,7 +220,7 @@
 			</div>
 		</div>
 
-		<div class="flex-1 rounded-2xl border bg-card p-5">
+		<div class="flex-1 rounded-2xl border border-brand-blue/70 bg-brand-blue/30 p-5">
 			<div class="flex items-baseline justify-between gap-2">
 				<p class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
 					A comunidade

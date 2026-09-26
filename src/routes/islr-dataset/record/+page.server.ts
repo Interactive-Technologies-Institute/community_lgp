@@ -177,7 +177,13 @@ export const actions = {
 					},
 					event.cookies
 				);
-				return redirect(303, '/islr-dataset/record');
+				// A redirect here would leave `submitting` stuck true until SvelteKit's
+				// `navigating` store resolves the follow-up navigation - fine on
+				// localhost, but slow/hanging on production network latency, which
+				// left the next recording's submit button permanently disabled.
+				// Returning normally (paired with invalidateAll on the client) resets
+				// `submitting` as soon as this response and the reload land.
+				return withFiles({ form });
 			}
 		),
 };

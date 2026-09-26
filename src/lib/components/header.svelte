@@ -32,7 +32,7 @@
 				<FeatureWrapper feature="islrdatasetcontribute">
 					<Button
 						class={cn(
-							'gap-2 bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
+							'gap-2 bg-brand-yellow text-black hover:bg-brand-yellow/90',
 							isIslrDatasetPage && 'bg-brand-yellow/80 ring-2 ring-brand-yellow ring-offset-2 ring-offset-brand-dark hover:bg-brand-yellow/80'
 						)}
 						size="sm"

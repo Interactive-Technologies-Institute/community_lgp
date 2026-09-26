@@ -75,6 +75,9 @@
 	const form = superForm(data.submitForm, {
 		validators: zodClient(submitIslrVideoSchema),
 		taintedMessage: null,
+		// The submit action returns normally instead of redirecting (see
+		// +page.server.ts), so this reloads `load` to advance to the next sign.
+		invalidateAll: 'force',
 		// Fires as soon as the user submits, before the upload/server round-trip,
 		// so the celebration feels instant rather than lagging behind the request.
 		onSubmit() {
@@ -217,7 +220,7 @@
 									{#if hasRecording}
 										<Button type="submit" disabled={$submitting} class="mt-3 h-12 w-full gap-2 font-bold">
 											<Check class="h-4 w-4" />
-											Guardar e seguinte
+											Submeter
 										</Button>
 									{/if}
 								</div>
