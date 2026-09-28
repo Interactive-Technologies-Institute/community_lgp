@@ -56,7 +56,7 @@
 			<UserPlus class="h-5 w-5" />
 		</div>
 		<div>
-			<p class="font-semibold text-brand-dark">Conhece alguém que possa ajudar?</p>
+			<p class="font-semibold text-brand-dark dark:text-foreground">Conhece alguém que possa ajudar?</p>
 			<p class="mt-1 text-sm text-muted-foreground">
 				Partilhe o formulário de inscrição.
 			</p>

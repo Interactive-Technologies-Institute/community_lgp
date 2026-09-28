@@ -60,7 +60,9 @@
 					alt={PERSONAL_MILESTONE_LABELS[nextMilestone]}
 					class="h-28 w-28 object-contain"
 				/>
-				<p class="text-sm font-bold text-brand-dark">{PERSONAL_MILESTONE_LABELS[nextMilestone]}</p>
+				<p class="text-sm font-bold text-brand-dark dark:text-foreground">
+					{PERSONAL_MILESTONE_LABELS[nextMilestone]}
+				</p>
 				<p class="text-sm font-semibold text-brand-blue">
 					Faltam {formatNumber(nextMilestone - myVideoCount)} vídeos
 				</p>
@@ -72,7 +74,7 @@
 				</div>
 			</div>
 		{:else}
-			<p class="text-center text-sm font-semibold text-brand-dark">
+			<p class="text-center text-sm font-semibold text-brand-dark dark:text-foreground">
 				Conquistou tudo! Obrigado pelo seu esforço.
 			</p>
 		{/if}
@@ -93,7 +95,7 @@
 						/>
 						<p
 							class="text-[10px] font-medium leading-tight {unlocked
-								? 'text-brand-dark'
+								? 'text-brand-dark dark:text-foreground'
 								: 'text-muted-foreground'}"
 						>
 							{PERSONAL_MILESTONE_LABELS[milestone]}

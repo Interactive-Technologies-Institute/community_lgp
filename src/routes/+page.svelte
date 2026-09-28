@@ -2,8 +2,22 @@
 	import { ArrowRight } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { mode } from 'mode-watcher';
+	import { onMount } from 'svelte';
+	import { PUBLIC_R2_PUBLIC_URL } from '$env/static/public';
 	export let data;
 	$: ({ branding } = data);
+
+	const VIDEO_SEARCH_TEASER_URL = `${PUBLIC_R2_PUBLIC_URL}/untitled.mp4`;
+
+	let teaserVideoEl: HTMLVideoElement;
+	let reducedMotion = false;
+
+	onMount(() => {
+		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (!reducedMotion) {
+			teaserVideoEl?.play().catch(() => {});
+		}
+	});
 </script>
 
 <MetaTags title={branding.name} description={branding.slogan} />
@@ -168,6 +182,53 @@
 				class="aspect-auto h-auto w-full"
 				loading="lazy"
 			/>
+		</div>
+	</section>
+
+	<section class="px-3 pb-20 sm:px-5 lg:pb-28">
+		<div
+			class="mx-auto flex max-w-[1920px] flex-wrap items-center gap-x-14 gap-y-10 rounded-[32px] bg-brand-dark px-10 py-14"
+		>
+			<div class="flex flex-[1_1_360px] flex-col gap-5">
+				<span
+					class="w-fit rounded-full bg-brand-yellow px-3 py-1 text-[13px] font-bold text-brand-dark"
+				>
+					Em desenvolvimento
+				</span>
+				<h2 class="text-2xl font-black text-white md:text-3xl">Pesquisa por Vídeo</h2>
+				<p class="text-[18px] leading-[1.6] text-[#e4e6ff]">
+					Faça o gesto à frente da câmara e o dicionário mostra-lhe os gestos mais parecidos.
+					<span class="font-bold text-white"
+						>Para o ensinar a reconhecer LGP, precisamos de vídeos de quem usa a língua.</span
+					>
+				</p>
+				<div class="flex flex-wrap items-center gap-4">
+					<a
+						href="https://forms.gle/Tpyqk671SSid5Dpm7"
+						target="_blank"
+						rel="noopener"
+						class="group inline-flex h-11 w-50 items-center justify-center rounded-2xl bg-brand-yellow px-7 text-base font-bold text-brand-dark shadow-sm transition-all hover:-translate-y-0.5 hover:bg-brand-yellow/90 hover:shadow-md"
+					>
+						Quero contribuir →
+					</a>
+					<p class="text-[15px] text-[#c8ccff]">Grave ao seu ritmo, no computador ou telemóvel.</p>
+				</div>
+			</div>
+
+			<div class="flex-[1_1_420px]">
+				<video
+					bind:this={teaserVideoEl}
+					class="aspect-video w-full rounded-2xl object-cover"
+					muted
+					loop
+					playsinline
+					controls={reducedMotion}
+					poster="/poster.png"
+					preload="metadata"
+				>
+					<source src={VIDEO_SEARCH_TEASER_URL} type="video/mp4" />
+				</video>
+			</div>
 		</div>
 	</section>
 </main>

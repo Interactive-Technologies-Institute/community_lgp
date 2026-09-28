@@ -95,7 +95,7 @@
 			Cada gesto que grava ensina a pesquisa por vídeo a reconhecer LGP.
 		{:else}
 			{myVideoCount === 1 ? 'O seu' : 'Os seus'}
-			<span class="font-bold text-[#2b2b9c]">{formatNumber(myVideoCount)}</span>
+			<span class="font-bold text-brand-dark dark:text-foreground">{formatNumber(myVideoCount)}</span>
 			{myVideoCount === 1 ? 'gesto já está' : 'gestos já estão'} a ensinar a pesquisa por vídeo a reconhecer
 			LGP.
 		{/if}
@@ -125,7 +125,7 @@
 			href="/islr-dataset/tutorial"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex items-center gap-3 rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-dark transition-colors hover:bg-brand-border/40"
+			class="flex items-center gap-3 rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-dark transition-colors hover:bg-brand-border/40 dark:text-foreground"
 		>
 			<BookOpen class="h-5 w-5 shrink-0" />
 			<span class="flex-1">Tutorial: como gravar os seus primeiros gestos</span>
@@ -187,7 +187,7 @@
 			</div>
 
 			<div
-				class="relative aspect-[520/250] w-[520px] max-w-full justify-self-center overflow-hidden rounded-xl border border-[#e3d78e] shadow-[0_8px_24px_rgba(0,0,0,0.08)] md:justify-self-end"
+				class="relative aspect-[520/250] w-[520px] max-w-full justify-self-center overflow-hidden rounded-xl border border-brand-yellow/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:border-brand-yellow md:justify-self-end"
 			>
 				<img
 					src="/img/preview-gravar-panels.png"
@@ -199,7 +199,7 @@
 		</div>
 	{:else}
 		<div class="rounded-2xl border-2 border-brand-blue bg-brand-blue/5 p-4 shadow-md">
-			<p class="text-center text-lg font-semibold text-brand-dark">
+			<p class="text-center text-lg font-semibold text-brand-dark dark:text-foreground">
 				Já contribuiu com um vídeo para todos os gestos do dataset. Obrigado pelo seu esforço!
 			</p>
 		</div>
@@ -208,7 +208,7 @@
 	<div class="flex flex-col gap-5 md:flex-row md:gap-10">
 		<div class="flex-1 rounded-2xl border border-brand-blue/70 bg-brand-blue/30 p-5">
 			<div class="flex items-center justify-between gap-2">
-				<p class="text-base font-semibold text-brand-dark">O seu progresso pessoal</p>
+				<p class="text-base font-semibold text-brand-dark dark:text-foreground">O seu progresso pessoal</p>
 				<p class="text-base font-bold text-brand-blue">
 					{formatNumber(myVideoCount)} / {formatNumber(milestoneCeiling)}
 				</p>
@@ -236,7 +236,7 @@
 				<p class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
 					A comunidade
 				</p>
-				<p class="text-2xl font-black text-brand-dark">
+				<p class="text-2xl font-black text-brand-dark dark:text-foreground">
 					{formatNumber(videosCollected)}
 				</p>
 			</div>
