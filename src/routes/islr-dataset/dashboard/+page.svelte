@@ -5,7 +5,7 @@
 	import * as Dialog from '@/components/ui/dialog';
 	import InviteShareCard from '@/components/InviteShareCard.svelte';
 	import { PERSONAL_MILESTONES, PERSONAL_MILESTONE_LABELS } from '@/islr-milestones';
-	import { Camera, ClipboardCheck, HelpCircle } from 'lucide-svelte';
+	import { ArrowRight, BookOpen, Camera, ClipboardCheck, HelpCircle } from 'lucide-svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 
 	let helpOpen = false;
@@ -120,6 +120,17 @@
 				Em caso de dúvida contactar <strong>joana.peixinho@tecnico.ulisboa.pt</strong>
 			</Dialog.Description>
 		</Dialog.Header>
+
+		<a
+			href="/islr-dataset/tutorial"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="flex items-center gap-3 rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-dark transition-colors hover:bg-brand-border/40"
+		>
+			<BookOpen class="h-5 w-5 shrink-0" />
+			<span class="flex-1">Tutorial: como gravar os seus primeiros gestos</span>
+			<ArrowRight class="h-4 w-4 shrink-0" />
+		</a>
 
 		<Accordion.Root class="px-1">
 			{#each faqs as faq, i (i)}
