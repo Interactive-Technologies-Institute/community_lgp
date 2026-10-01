@@ -69,7 +69,7 @@
 	</div>
 
 	<ol class="steps-list">
-		{#each steps as step (step.number)}
+		{#each steps as step, i (step.number)}
 			<li class="step-row">
 				<div class="step-text">
 					<div class="step-number font-heading bg-brand-dark text-brand-white">{step.number}</div>
@@ -83,7 +83,13 @@
 				</div>
 				<div class="step-image">
 					<div class="step-image-frame border border-brand-border">
-						<img src={step.image} alt={step.alt} width="1899" height="958" loading="lazy" />
+						<img
+							src={step.image}
+							alt={step.alt}
+							width="1899"
+							height="958"
+							loading={i === 0 ? 'eager' : 'lazy'}
+						/>
 					</div>
 				</div>
 			</li>

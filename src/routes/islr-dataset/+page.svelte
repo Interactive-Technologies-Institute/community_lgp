@@ -76,6 +76,7 @@
 			<video
 				class="aspect-video w-full rounded-[14px] object-cover"
 				class:hidden={videoAvailable === false}
+				poster="/img/consent-poster.jpg"
 				controls
 				playsinline
 				on:loadedmetadata={() => (videoAvailable = true)}

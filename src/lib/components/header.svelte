@@ -37,6 +37,7 @@
 						)}
 						size="sm"
 						href="/islr-dataset"
+						data-sveltekit-preload-code="viewport"
 						aria-current={isIslrDatasetPage ? 'page' : undefined}
 					>
 						<Camera class="h-4 w-4 shrink-0" />
