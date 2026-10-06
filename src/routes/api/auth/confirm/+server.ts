@@ -29,5 +29,8 @@ export const GET = async (event) => {
 	}
 
 	redirectTo.pathname = '/auth/error';
+	if (type) {
+		redirectTo.searchParams.set('type', type);
+	}
 	return redirect(303, redirectTo);
 };

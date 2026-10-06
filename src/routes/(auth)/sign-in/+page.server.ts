@@ -36,6 +36,14 @@ export const actions = {
 				if (event.url.searchParams.has('redirectTo')) {
 					return redirect(303, event.url.searchParams.get('redirectTo')!);
 				}
+
+				// Contributors land straight in their dashboard instead of the
+				// homepage - that's where their work actually happens.
+				const { user } = await event.locals.safeGetSession();
+				if (user?.role === 'contributor') {
+					return redirect(303, '/islr-dataset/dashboard');
+				}
+
 				return redirect(303, '/');
 			},
 			{ requireAuth: false }

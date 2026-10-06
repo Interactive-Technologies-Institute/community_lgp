@@ -1,3 +1,4 @@
+import { clearStaleInviteUser } from '@/server/pending-invite';
 import { createSupabaseAdminClient } from '@/server/supabase-admin';
 import { inviteContributorSchema } from '@/schemas/invite-contributor';
 import type { ContributorInvite } from '@/types/types';
@@ -45,20 +46,49 @@ export const actions = {
 			async (event, userId, form) => {
 				const email = form.data.email.toLowerCase();
 
+				// A still-open invite (sent but never accepted) means Supabase already
+				// created an unconfirmed auth user for this email that never completed
+				// signup - e.g. the link expired before they opened it. That's a
+				// resend, not a conflict, so it skips the "already registered" guard
+				// below and instead gets its stale auth user cleared out further down.
+				const { data: existingInvite } = await event.locals.supabase
+					.from('contributor_invites')
+					.select('used_at')
+					.eq('email', email)
+					.maybeSingle();
+
+				const isResend = !!existingInvite && existingInvite.used_at === null;
+
 				// Guard against re-inviting an email that's already a registered user
 				// (possibly already an accepted contributor) - otherwise the upsert
 				// below would reset used_at to null and the admin table would wrongly
 				// show them as "Pendente" again once Supabase rejects the invite.
-				const { data: existingProfile } = await event.locals.supabase
-					.from('profiles')
-					.select('id')
-					.eq('email', email)
-					.maybeSingle();
+				if (!isResend) {
+					const { data: existingProfile } = await event.locals.supabase
+						.from('profiles')
+						.select('id')
+						.eq('email', email)
+						.maybeSingle();
 
-				if (existingProfile) {
-					const errorMessage = `Já existe uma conta registada com o email ${email}. Use o separador Utilizadores para lhe atribuir o papel de Contributor.`;
-					setFlash({ type: 'error', message: errorMessage }, event.cookies);
-					return fail(400, { message: errorMessage, form });
+					if (existingProfile) {
+						const errorMessage = `Já existe uma conta registada com o email ${email}. Use o separador Utilizadores para lhe atribuir o papel de Contributor.`;
+						setFlash({ type: 'error', message: errorMessage }, event.cookies);
+						return fail(400, { message: errorMessage, form });
+					}
+				}
+
+				const adminClient = createSupabaseAdminClient();
+
+				if (isResend) {
+					// Supabase refuses to invite an email that already has a user, even
+					// an unconfirmed one - so clear the leftover out first to get a
+					// fresh link with a new expiry. Refuses (rather than deletes) if the
+					// account looks like it's actually been used.
+					const result = await clearStaleInviteUser(adminClient, email);
+					if (!result.ok) {
+						setFlash({ type: 'error', message: result.reason }, event.cookies);
+						return fail(400, { message: result.reason, form });
+					}
 				}
 
 				const { error: upsertError } = await event.locals.supabase
@@ -73,7 +103,6 @@ export const actions = {
 					return fail(500, { message: upsertError.message, form });
 				}
 
-				const adminClient = createSupabaseAdminClient();
 				const { error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
 					redirectTo: `${event.url.origin}/accept-invite`,
 				});
