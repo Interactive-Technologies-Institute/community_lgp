@@ -12,7 +12,7 @@ export const load = async (event) => {
 		return redirect(302, handleSignInRedirect(event));
 	}
 
-	if (user.role !== 'admin' && user.role !== 'contributor') {
+	if (user.role !== 'admin' && user.role !== 'moderator' && user.role !== 'contributor') {
 		return redirect(302, '/');
 	}
 
@@ -41,7 +41,10 @@ export const actions = {
 	consent: async (event) =>
 		handleFormAction(event, consentSchema, 'consent', async (event, userId, form) => {
 			const { user } = await event.locals.safeGetSession();
-			if (!user || (user.role !== 'admin' && user.role !== 'contributor')) {
+			if (
+				!user ||
+				(user.role !== 'admin' && user.role !== 'moderator' && user.role !== 'contributor')
+			) {
 				return fail(403, { message: 'Forbidden.', form });
 			}
 

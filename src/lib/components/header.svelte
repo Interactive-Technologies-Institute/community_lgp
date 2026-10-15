@@ -28,7 +28,7 @@
 			<MobileNav role={'user'} />
 		{/if}
 		<div class="ml-auto flex items-center gap-x-2 sm:gap-x-4 md:justify-end">
-			{#if role === 'admin' || role === 'contributor'}
+			{#if role === 'admin' || role === 'moderator' || role === 'contributor'}
 				<FeatureWrapper feature="islrdatasetcontribute">
 					<Button
 						class={cn(
