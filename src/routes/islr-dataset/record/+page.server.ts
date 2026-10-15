@@ -1,9 +1,4 @@
-import {
-	COUNTABLE_SUBMISSION_STATUSES,
-	getSignSubmissionCounts,
-	getTargetSigns,
-	isIslrFeatureEnabled,
-} from '@/server/islr';
+import { getSignSubmissionCounts, getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
 import {
 	getCrossedMilestone,
 	getMilestoneProgress,
@@ -47,16 +42,12 @@ export const load = async (event) => {
 
 	const { data: mySubmissions, error: submissionsError } = await event.locals.supabase
 		.from('islr_submissions')
-		.select('sign_id, status')
+		.select('sign_id')
 		.eq('contributor_id', user.id);
 
 	if (submissionsError) throw submissionsError;
 
-	const excludedIds = new Set(
-		mySubmissions
-			.filter((s) => COUNTABLE_SUBMISSION_STATUSES.includes(s.status))
-			.map((s) => s.sign_id)
-	);
+	const excludedIds = new Set(mySubmissions.map((s) => s.sign_id));
 
 	const submissionCounts = await getSignSubmissionCounts(event.locals.supabase);
 
@@ -152,10 +143,10 @@ export const actions = {
 
 				if (supabaseError?.code === '23505') {
 					setFlash(
-						{ type: 'error', message: 'Já existe uma submissão ativa para este gesto.' },
+						{ type: 'error', message: 'Já existe uma submissão para este gesto.' },
 						event.cookies
 					);
-					return fail(409, withFiles({ message: 'An active submission already exists.', form }));
+					return fail(409, withFiles({ message: 'A submission already exists.', form }));
 				}
 
 				if (supabaseError) {

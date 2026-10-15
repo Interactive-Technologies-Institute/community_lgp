@@ -2,9 +2,7 @@ import { PERSONAL_MILESTONE_LABELS, PERSONAL_MILESTONES } from '@/islr-milestone
 import type { Database } from '@/types/supabase-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-// Total videos submitted by this contributor, regardless of status - personal
-// milestones celebrate effort, unlike the dataset coverage numbers which only
-// count statuses in COUNTABLE_SUBMISSION_STATUSES.
+// Total videos submitted by this contributor.
 export async function getMyVideoCount(supabase: SupabaseClient<Database>, contributorId: string) {
 	const { count, error } = await supabase
 		.from('islr_submissions')

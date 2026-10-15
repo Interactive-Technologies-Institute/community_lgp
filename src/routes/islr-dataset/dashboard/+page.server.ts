@@ -1,4 +1,4 @@
-import { COUNTABLE_SUBMISSION_STATUSES, getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
+import { getTargetSigns, isIslrFeatureEnabled } from '@/server/islr';
 import { getMilestoneProgress, getMyVideoCount } from '@/server/islr-milestones';
 import { handleSignInRedirect } from '@/utils';
 import { redirect } from '@sveltejs/kit';
@@ -34,27 +34,18 @@ export const load = async (event) => {
 
 	const { data: submissions, error } = await event.locals.supabase
 		.from('islr_submissions')
-		.select('sign_id, contributor_id, status, inserted_at')
+		.select('sign_id, contributor_id, inserted_at')
 		.in('sign_id', targetIds);
 
 	if (error) throw error;
 
-	const coveredSignIds = new Set(
-		submissions
-			.filter((s) => COUNTABLE_SUBMISSION_STATUSES.includes(s.status))
-			.map((s) => s.sign_id)
-	);
-	// These dashboard metrics intentionally count every submitted video and contributor,
-	// including submissions with non-countable statuses. Coverage and personal progress
-	// below only use statuses that count toward the dataset.
+	// Status is deliberately ignored: there is no peer review, so every
+	// submitted video counts towards coverage and progress.
+	const coveredSignIds = new Set(submissions.map((s) => s.sign_id));
 	const totalContributors = new Set(submissions.map((s) => s.contributor_id)).size;
 
 	const mySubmittedSignIds = new Set(
-		submissions
-			.filter(
-				(s) => s.contributor_id === user.id && COUNTABLE_SUBMISSION_STATUSES.includes(s.status)
-			)
-			.map((s) => s.sign_id)
+		submissions.filter((s) => s.contributor_id === user.id).map((s) => s.sign_id)
 	);
 
 	const myVideoCount = await getMyVideoCount(event.locals.supabase, user.id);

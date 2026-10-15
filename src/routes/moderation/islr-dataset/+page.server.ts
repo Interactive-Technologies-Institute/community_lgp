@@ -29,8 +29,57 @@ export const load = async (event) => {
 		return data as ContributorInvite[];
 	}
 
+	const invites = await getInvites();
+
+	// Status is deliberately ignored: there is no peer review, so every
+	// submitted video counts.
+	const { data: submissions, error: submissionsError } = await event.locals.supabase
+		.from('islr_submissions')
+		.select('sign_id, contributor_id');
+
+	if (submissionsError) {
+		const errorMessage = 'Error fetching dataset submissions, please try again later.';
+		setFlash({ type: 'error', message: errorMessage }, event.cookies);
+		return error(500, errorMessage);
+	}
+
+	const videoCountByContributor = new Map<string, number>();
+	for (const { contributor_id } of submissions) {
+		videoCountByContributor.set(
+			contributor_id,
+			(videoCountByContributor.get(contributor_id) ?? 0) + 1
+		);
+	}
+
+	// Invites are keyed by email, submissions by user id - bridge them through profiles.
+	const { data: invitedProfiles, error: profilesError } = await event.locals.supabase
+		.from('profiles')
+		.select('id, email')
+		.in(
+			'email',
+			invites.map((invite) => invite.email)
+		);
+
+	if (profilesError) {
+		const errorMessage = 'Error fetching contributor profiles, please try again later.';
+		setFlash({ type: 'error', message: errorMessage }, event.cookies);
+		return error(500, errorMessage);
+	}
+
+	const videoCountByEmail: Record<string, number> = {};
+	for (const profile of invitedProfiles) {
+		videoCountByEmail[profile.email.toLowerCase()] = videoCountByContributor.get(profile.id) ?? 0;
+	}
+
 	return {
-		invites: await getInvites(),
+		invites,
+		videoCountByEmail,
+		datasetSummary: {
+			signsRecorded: new Set(submissions.map((s) => s.sign_id)).size,
+			videosRecorded: submissions.length,
+			contributorsWhoRecorded: videoCountByContributor.size,
+			contributorsInvited: invites.length,
+		},
 		inviteContributorForm: await superValidate(zod(inviteContributorSchema), {
 			id: 'invite-contributor',
 		}),

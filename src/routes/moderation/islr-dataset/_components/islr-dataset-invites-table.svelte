@@ -5,6 +5,7 @@
 	import { format } from 'date-fns';
 
 	export let invites: ContributorInvite[];
+	export let videoCountByEmail: Record<string, number>;
 
 	function formatTimestamp(dateString: string) {
 		return format(new Date(dateString), 'dd-MM-yyyy HH:mm');
@@ -18,6 +19,7 @@
 				<Table.Head>Email</Table.Head>
 				<Table.Head>Estado</Table.Head>
 				<Table.Head>Convidado em</Table.Head>
+				<Table.Head class="text-right">Vídeos</Table.Head>
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
@@ -32,10 +34,13 @@
 						{/if}
 					</Table.Cell>
 					<Table.Cell>{formatTimestamp(invite.created_at)}</Table.Cell>
+					<Table.Cell class="text-right tabular-nums">
+						{videoCountByEmail[invite.email.toLowerCase()] ?? 0}
+					</Table.Cell>
 				</Table.Row>
 			{:else}
 				<Table.Row>
-					<Table.Cell colspan={3} class="text-center text-muted-foreground">
+					<Table.Cell colspan={4} class="text-center text-muted-foreground">
 						Ainda não foram enviados convites.
 					</Table.Cell>
 				</Table.Row>

@@ -3,10 +3,6 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 const TARGET_SIGN_COUNT = 500;
 
-// Statuses that count as "this sign already has a video" for both the collective
-// progress numbers and a contributor's own recording queue.
-export const COUNTABLE_SUBMISSION_STATUSES = ['pending', 'approved'];
-
 export async function getTargetSigns(supabase: SupabaseClient<Database>) {
 	const { data: trainingVocabulary, error: trainingVocabularyError } = await supabase
 		.from('training_vocabulary')
@@ -28,14 +24,14 @@ export async function getTargetSigns(supabase: SupabaseClient<Database>) {
 	return data;
 }
 
-// Counts countable submissions per sign, across all contributors, so the
-// recording queue can be ordered towards whichever signs have the least
-// coverage so far. 
+// Counts submissions per sign, across all contributors, so the recording queue
+// can be ordered towards whichever signs have the least coverage so far.
+// Status is deliberately ignored: there is no peer review, so every submitted
+// video counts.
 export async function getSignSubmissionCounts(supabase: SupabaseClient<Database>) {
 	const { data, error } = await supabase
 		.from('islr_submissions')
-		.select('sign_id')
-		.in('status', COUNTABLE_SUBMISSION_STATUSES);
+		.select('sign_id');
 
 	if (error) throw error;
 
