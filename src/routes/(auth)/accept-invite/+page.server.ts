@@ -47,15 +47,19 @@ export const actions = {
 
 				const { user } = await event.locals.safeGetSession();
 				if (user?.email) {
-					// Only now is the invite actually "accepted" - mark it used so the
-					// admin table reflects real completion, not just that it was sent.
-					// Regular clients can't write here (RLS restricts contributor_invites
-					// to admins), so this needs the service-role client.
-					await createSupabaseAdminClient()
+					// Normally already marked used by /api/auth/confirm when the invite
+					// link was opened - this is just a fallback. Regular clients can't
+					// write here (RLS restricts contributor_invites to admins), so this
+					// needs the service-role client.
+					const { error: inviteError } = await createSupabaseAdminClient()
 						.from('contributor_invites')
 						.update({ used_at: new Date().toISOString() })
 						.eq('email', user.email.toLowerCase())
 						.is('used_at', null);
+
+					if (inviteError) {
+						console.error('Failed to mark contributor invite as used:', inviteError);
+					}
 				}
 
 				setFlash({ type: 'success', message: 'Bem-vindo! A sua conta está pronta.' }, event.cookies);
