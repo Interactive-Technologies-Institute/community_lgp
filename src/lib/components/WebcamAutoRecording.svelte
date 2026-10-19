@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from './ui/button/button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { Check, Circle, RotateCcw, Square } from 'lucide-svelte';
+	import { Camera, Check, Circle, RotateCcw, Square } from 'lucide-svelte';
 
 	export let submitting = false;
 
@@ -13,6 +13,9 @@
 	let isRecording = false;
 	let recordedBlobUrl: string | null = null;
 	let isPreview = false;
+	// Set when the browser refuses to start the live preview without a user
+	// gesture (common on mobile, notably iOS Safari).
+	let needsTap = false;
 
 	let elapsedSeconds = 0;
 	let timerInterval: ReturnType<typeof setInterval> | null = null;
@@ -25,13 +28,29 @@
 
 	const dispatch = createEventDispatcher();
 
+	const playLivePreview = async () => {
+		if (!videoElement) return;
+		try {
+			await videoElement.play();
+			needsTap = false;
+		} catch (error) {
+			// AbortError only means a newer srcObject/src interrupted this play()
+			if ((error as DOMException).name === 'NotAllowedError') {
+				needsTap = true;
+			}
+		}
+	};
+
 	const startCamera = async () => {
 		try {
-			stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+			stream = await navigator.mediaDevices.getUserMedia({
+				video: { facingMode: 'user' },
+				audio: false,
+			});
 			if (videoElement) {
 				videoElement.srcObject = stream;
 				videoElement.muted = true;
-				videoElement.play();
+				await playLivePreview();
 			}
 			isPreview = false;
 			cameraReady = true;
@@ -90,7 +109,8 @@
 				videoElement.src = recordedBlobUrl;
 				videoElement.muted = false;
 				videoElement.controls = true;
-				videoElement.play();
+				// May be blocked on mobile; the controls let the user start it
+				videoElement.play().catch(() => {});
 			}
 
 			isPreview = true;
@@ -133,7 +153,7 @@
 			videoElement.srcObject = stream;
 			videoElement.muted = true;
 			videoElement.controls = false;
-			videoElement.play();
+			playLivePreview();
 		}
 	};
 
@@ -163,11 +183,28 @@
 </script>
 
 <div class="flex w-full flex-col">
-	<!-- svelte-ignore a11y-media-has-caption -->
-	<video
-		class="aspect-video w-full rounded-2xl bg-black object-cover {isPreview ? '' : '-scale-x-100'}"
-		bind:this={videoElement}
-	/>
+	<div class="relative">
+		<!-- svelte-ignore a11y-media-has-caption -->
+		<video
+			class="aspect-video w-full rounded-2xl bg-black object-cover {isPreview ? '' : '-scale-x-100'}"
+			bind:this={videoElement}
+			autoplay
+			playsinline
+			muted
+		/>
+		{#if needsTap && !isPreview}
+			<div class="absolute inset-0 flex items-center justify-center">
+				<Button
+					type="button"
+					on:click={playLivePreview}
+					class="h-12 gap-2 bg-brand-blue font-bold text-brand-white hover:bg-brand-blue/90"
+				>
+					<Camera class="h-5 w-5" />
+					Ativar câmara
+				</Button>
+			</div>
+		{/if}
+	</div>
 
 	{#if isPreview}
 		<div class="mt-4 flex gap-3">
@@ -192,7 +229,7 @@
 	{:else}
 		<Button
 			on:click={handleMainButtonClick}
-			disabled={!cameraReady}
+			disabled={!cameraReady || needsTap}
 			variant={isRecording ? 'destructive' : 'default'}
 			class="mt-4 h-14 w-full gap-2 text-base font-bold {isRecording
 				? ''

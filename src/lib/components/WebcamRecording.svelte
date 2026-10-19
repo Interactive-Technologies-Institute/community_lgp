@@ -21,7 +21,7 @@
 			if (videoElement) {
 				videoElement.srcObject = stream;
 				videoElement.muted = true;
-				videoElement.play();
+				videoElement.play().catch((error) => console.error('Error playing camera preview:', error));
 			}
 			isPreview = false;
 			activateCamera = true;
@@ -74,7 +74,8 @@
 				videoElement.src = recordedBlobUrl;
 				videoElement.muted = false;
 				videoElement.controls = true;
-				videoElement.play();
+				// May be blocked on mobile; the controls let the user start it
+				videoElement.play().catch(() => {});
 			}
 
 			isPreview = true;
@@ -163,6 +164,9 @@
 	<video
 		class="rounded-2xl"
 		bind:this={videoElement}
+		autoplay
+		playsinline
+		muted
 		width="640"
 		height="480"
 		style="max-width: 100%; height: auto;"
