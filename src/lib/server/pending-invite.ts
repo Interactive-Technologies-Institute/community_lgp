@@ -39,6 +39,45 @@ async function findAuthUserIdByEmail(
 	}
 }
 
+export interface AuthUserSummary {
+	id: string;
+	invitedAt: string | null;
+}
+
+/**
+ * Builds an email → auth user map of every auth user in one pass, so a bulk
+ * resend doesn't have to page through listUsers once per pending invite.
+ */
+export async function listAuthUsersByEmail(
+	adminClient: AdminClient
+): Promise<{ ok: true; users: Map<string, AuthUserSummary> } | { ok: false; reason: string }> {
+	const users = new Map<string, AuthUserSummary>();
+
+	for (let page = 1; ; page++) {
+		const { data, error } = await adminClient.auth.admin.listUsers({
+			page,
+			perPage: LIST_USERS_PER_PAGE,
+		});
+
+		if (error) {
+			return {
+				ok: false,
+				reason: `Não foi possível consultar os utilizadores existentes (${error.message}). Nenhum convite foi reenviado - tente novamente.`,
+			};
+		}
+
+		for (const user of data.users) {
+			if (user.email) {
+				users.set(user.email.toLowerCase(), { id: user.id, invitedAt: user.invited_at ?? null });
+			}
+		}
+
+		if (data.users.length < LIST_USERS_PER_PAGE) {
+			return { ok: true, users };
+		}
+	}
+}
+
 /**
  * Clears the leftover auth user from a contributor invite that was sent but
  * never completed via /accept-invite, so the email can be invited again.
@@ -61,13 +100,24 @@ export async function clearStaleInviteUser(
 		return lookup;
 	}
 
-	if (!lookup.id) {
+	return clearStaleInviteUserById(adminClient, email, lookup.id);
+}
+
+/**
+ * Same as clearStaleInviteUser, for when the auth id has already been looked
+ * up (null meaning there is no auth user for this email).
+ */
+export async function clearStaleInviteUserById(
+	adminClient: AdminClient,
+	email: string,
+	userId: string | null
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+	if (!userId) {
 		return { ok: true };
 	}
 
-	const { data: staleUser, error: getUserError } = await adminClient.auth.admin.getUserById(
-		lookup.id
-	);
+	const { data: staleUser, error: getUserError } =
+		await adminClient.auth.admin.getUserById(userId);
 
 	if (getUserError) {
 		return {
@@ -85,7 +135,7 @@ export async function clearStaleInviteUser(
 		};
 	}
 
-	const { error: deleteError } = await adminClient.auth.admin.deleteUser(lookup.id);
+	const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
 	if (deleteError) {
 		return {
 			ok: false,

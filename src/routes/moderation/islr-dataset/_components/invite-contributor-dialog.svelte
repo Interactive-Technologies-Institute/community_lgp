@@ -39,7 +39,7 @@
 				automaticamente com o papel de Contribuidor.
 			</Dialog.Description>
 		</Dialog.Header>
-		<form method="POST" use:enhance>
+		<form method="POST" action="?/invite" use:enhance>
 			<Form.Field {form} name="email">
 				<Form.Control let:attrs>
 					<Form.Label>Email</Form.Label>

@@ -1,6 +1,11 @@
-import { clearStaleInviteUser } from '@/server/pending-invite';
+import {
+	clearStaleInviteUser,
+	clearStaleInviteUserById,
+	listAuthUsersByEmail,
+} from '@/server/pending-invite';
 import { createSupabaseAdminClient } from '@/server/supabase-admin';
 import { inviteContributorSchema } from '@/schemas/invite-contributor';
+import { resendPendingInvitesSchema } from '@/schemas/resend-pending-invites';
 import type { ContributorInvite } from '@/types/types';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import { error, redirect } from '@sveltejs/kit';
@@ -83,11 +88,101 @@ export const load = async (event) => {
 		inviteContributorForm: await superValidate(zod(inviteContributorSchema), {
 			id: 'invite-contributor',
 		}),
+		resendPendingInvitesForm: await superValidate(zod(resendPendingInvitesSchema), {
+			id: 'resend-pending-invites',
+		}),
+		bulkResendLimit: BULK_RESEND_LIMIT,
 	};
 };
 
+// Invite emails go out through Gmail SMTP, capped at 80 per hour. Keeping
+// one batch well under that leaves room for other auth emails (single
+// invites, password resets) in the same hour, and keeps the request short
+// enough not to hit the host's function timeout.
+const BULK_RESEND_LIMIT = 50;
+
 export const actions = {
-	default: async (event) =>
+	resendPending: async (event) =>
+		handleFormAction(
+			event,
+			resendPendingInvitesSchema,
+			'resend-pending-invites',
+			async (event, _userId, form) => {
+				// Read through the user's own client so RLS decides who can do this:
+				// anyone without access to contributor_invites just gets an empty list.
+				const { data: pendingInvites, error: pendingError } = await event.locals.supabase
+					.from('contributor_invites')
+					.select('email')
+					.is('used_at', null);
+
+				if (pendingError) {
+					setFlash({ type: 'error', message: pendingError.message }, event.cookies);
+					return fail(500, { message: pendingError.message, form });
+				}
+
+				if (pendingInvites.length === 0) {
+					const message = 'Não há convites pendentes para reenviar.';
+					setFlash({ type: 'success', message }, event.cookies);
+					return { form };
+				}
+
+				const adminClient = createSupabaseAdminClient();
+
+				const lookup = await listAuthUsersByEmail(adminClient);
+				if (!lookup.ok) {
+					setFlash({ type: 'error', message: lookup.reason }, event.cookies);
+					return fail(500, { message: lookup.reason, form });
+				}
+
+				// Every resend replaces the auth user, so its invited_at is when this
+				// email last got an invite. Oldest first means repeated clicks work
+				// through the whole list instead of re-sending the same batch.
+				const batch = pendingInvites
+					.map(({ email }) => ({ email, authUser: lookup.users.get(email.toLowerCase()) }))
+					.sort((a, b) => (a.authUser?.invitedAt ?? '').localeCompare(b.authUser?.invitedAt ?? ''))
+					.slice(0, BULK_RESEND_LIMIT);
+
+				let sent = 0;
+				const failures: string[] = [];
+
+				for (const { email, authUser } of batch) {
+					const cleared = await clearStaleInviteUserById(adminClient, email, authUser?.id ?? null);
+					if (!cleared.ok) {
+						failures.push(`${email}: ${cleared.reason}`);
+						continue;
+					}
+
+					const { error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
+						redirectTo: `${event.url.origin}/accept-invite`,
+					});
+					if (inviteError) {
+						failures.push(`${email}: ${inviteError.message}`);
+						continue;
+					}
+
+					sent++;
+				}
+
+				const summary = [`Convites reenviados: ${sent}.`];
+				if (failures.length > 0) {
+					summary.push(`Falharam ${failures.length}: ${failures.join(' | ')}`);
+				}
+				const leftOver = pendingInvites.length - batch.length;
+				if (leftOver > 0) {
+					summary.push(
+						`Ficaram ${leftOver} por reenviar - aguarde cerca de uma hora antes de repetir, por causa do limite de envio do Gmail.`
+					);
+				}
+
+				setFlash(
+					{ type: failures.length > 0 ? 'error' : 'success', message: summary.join(' ') },
+					event.cookies
+				);
+
+				return { form };
+			}
+		),
+	invite: async (event) =>
 		handleFormAction(
 			event,
 			inviteContributorSchema,
