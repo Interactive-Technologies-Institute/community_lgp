@@ -171,6 +171,10 @@ otp_expiry = 86400
 subject = "Convite para Contribuidor"
 content_path = "./supabase/templates/invite.html"
 
+[auth.email.template.magic_link]
+subject = "Conclua a sua inscrição como contribuidor"
+content_path = "./supabase/templates/magic_link.html"
+
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.
 enable_signup = false

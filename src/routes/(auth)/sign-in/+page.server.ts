@@ -29,8 +29,15 @@ export const actions = {
 				});
 
 				if (error) {
-					setFlash({ type: 'error', message: error.message }, event.cookies);
-					return fail(500, { message: error.message, form });
+					// Invited contributors who never finished /accept-invite have no
+					// password at all, so this is the error they hit. Shown for every
+					// bad login, so it doesn't reveal whether the account exists.
+					const message =
+						error.code === 'invalid_credentials'
+							? 'Email ou palavra-passe incorretos. Se foi convidado como contribuidor e nunca chegou a definir uma palavra-passe, use "Esqueci-me da minha palavra-passe" para criar uma.'
+							: error.message;
+					setFlash({ type: 'error', message }, event.cookies);
+					return fail(500, { message, form });
 				}
 
 				if (event.url.searchParams.has('redirectTo')) {

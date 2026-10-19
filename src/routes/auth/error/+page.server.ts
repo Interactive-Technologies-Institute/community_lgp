@@ -18,7 +18,8 @@ export const load = async (event) => {
 export const actions = {
 	// For an expired/used invite link (type=invite). Creates a brand new
 	// invite, clearing out the unconfirmed auth user the original invite left
-	// behind (see clearStaleInviteUser for why that's needed).
+	// behind (see clearStaleInviteUser for why that's needed) - or, if the
+	// invite was opened but signup never finished, emails a link back to it.
 	requestInvite: async (event) =>
 		handleFormAction(
 			event,
@@ -47,13 +48,36 @@ export const actions = {
 							redirectTo: `${event.url.origin}/accept-invite`,
 						});
 					}
+				} else if (invite) {
+					// The invite link was opened (that's what marks it used) but the
+					// person never finished /accept-invite, so the account has no name
+					// or password and its link is spent. Deleting and re-inviting
+					// would also delete any videos already recorded, so send a
+					// one-off sign-in link instead - its email template
+					// (supabase/templates/magic_link.html) reads as "finish your
+					// signup" and lands on /accept-invite.
+					const { data: profile } = await adminClient
+						.from('profiles')
+						.select('display_name')
+						.eq('email', email)
+						.maybeSingle();
+
+					if (profile && !profile.display_name.trim()) {
+						const { error: otpError } = await adminClient.auth.signInWithOtp({
+							email,
+							options: { shouldCreateUser: false },
+						});
+						if (otpError) {
+							console.error('Failed to send finish-signup link:', otpError);
+						}
+					}
 				}
 
 				setFlash(
 					{
 						type: 'success',
 						message:
-							'Se existir um convite pendente para este email, foi enviado um novo. Verifique a caixa de entrada (e o spam).',
+							'Se existir um convite por concluir para este email, foi enviado um novo link. Verifique a caixa de entrada (e o spam).',
 					},
 					event.cookies
 				);

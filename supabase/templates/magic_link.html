@@ -1,0 +1,80 @@
+<!--
+	Only used to resume an unfinished contributor signup (see the
+	requestInvite action in src/routes/auth/error). Nothing else in the app
+	sends magic links - if that changes, this copy needs to become generic.
+-->
+<div style="background-color:#f3f4f6;padding:40px 20px;">
+	<div
+		style="max-width:480px;margin:0 auto;background-color:#ffffff;border-radius:8px;padding:40px;font-family:Helvetica,Arial,sans-serif;"
+	>
+		<h1 style="margin:0 0 20px;font-size:22px;line-height:1.3;color:#111827;">
+			Conclua a sua inscrição no Dicionário de LGP
+		</h1>
+		<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#374151;">Olá,</p>
+		<p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#374151;">
+			Começou a criar a sua conta para contribuir com vídeos para a
+			<strong>pesquisa por vídeo do Dicionário de LGP</strong>, mas ainda não terminou. Clique no
+			botão abaixo para continuar onde ficou.
+		</p>
+		<p style="margin:0 0 24px;">
+			<a
+				href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/accept-invite"
+				style="display:inline-block;background-color:#2563eb;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 28px;border-radius:6px;"
+				>Concluir inscrição</a
+			>
+		</p>
+		<div style="margin:0 0 24px;background-color:#f1f5f9;border-radius:8px;padding:20px 24px;">
+			<p style="margin:0 0 12px;font-size:15px;font-weight:bold;color:#111827;">
+				O que acontece a seguir
+			</p>
+			<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+				<tr>
+					<td style="padding:4px 12px 4px 0;vertical-align:middle;">
+						<span
+							style="display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border:1px solid #bfdbfe;border-radius:12px;background-color:#ffffff;font-size:12px;font-weight:bold;color:#2563eb;"
+							>1</span
+						>
+					</td>
+					<td style="padding:4px 0;font-size:15px;color:#374151;">
+						Escolha um nome e uma palavra-passe
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:4px 12px 4px 0;vertical-align:middle;">
+						<span
+							style="display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border:1px solid #bfdbfe;border-radius:12px;background-color:#ffffff;font-size:12px;font-weight:bold;color:#2563eb;"
+							>2</span
+						>
+					</td>
+					<td style="padding:4px 0;font-size:15px;color:#374151;">
+						Veja o vídeo de consentimento e aceite
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:4px 12px 4px 0;vertical-align:middle;">
+						<span
+							style="display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border:1px solid #bfdbfe;border-radius:12px;background-color:#ffffff;font-size:12px;font-weight:bold;color:#2563eb;"
+							>3</span
+						>
+					</td>
+					<td style="padding:4px 0;font-size:15px;color:#374151;">Comece a gravar gestos</td>
+				</tr>
+			</table>
+			<p style="margin:12px 0 0;">
+				<a
+					href="{{ .SiteURL }}/islr-dataset/tutorial"
+					style="font-size:14px;font-weight:bold;color:#2563eb;text-decoration:none;"
+					>Dúvidas? Ver o guia detalhado &rarr;</a
+				>
+			</p>
+		</div>
+		<hr style="margin:0 0 16px;border:none;border-top:1px solid #e5e7eb;" />
+		<p style="margin:0;font-size:13px;line-height:1.6;color:#6b7280;">
+			Algum problema:
+			<a href="mailto:joana.peixinho@tecnico.ulisboa.pt" style="color:#2563eb;"
+				>joana.peixinho@tecnico.ulisboa.pt</a
+			>.<br />
+			Se não pediu este email, pode ignorá-lo.
+		</p>
+	</div>
+</div>

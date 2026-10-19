@@ -1,4 +1,5 @@
 import type { Branding, Feature, Notification, UserProfile } from '@/types/types';
+import { redirect } from '@sveltejs/kit';
 import { loadFlash } from 'sveltekit-flash-message/server';
 
 export const load = loadFlash(async ({ locals: { supabase, safeGetSession }, cookies, route }) => {
@@ -33,6 +34,16 @@ export const load = loadFlash(async ({ locals: { supabase, safeGetSession }, coo
 				profile.avatar = supabase.storage.from('users').getPublicUrl(profile.avatar).data.publicUrl;
 			}
 		}
+	}
+
+	// An invited contributor who opened the invite link but never submitted
+	// /accept-invite is signed in with no name and no password - they'd be
+	// locked out as soon as this session ends. Keep them on that form until
+	// it's done - including when they reopen the (now spent) invite link and
+	// land on /auth/error. Regular sign-ups always set a name, so only those
+	// get caught.
+	if (profile && !profile.display_name?.trim() && route.id !== '/(auth)/accept-invite') {
+		redirect(303, '/accept-invite');
 	}
 
 	let notifications: Notification[] = [];
