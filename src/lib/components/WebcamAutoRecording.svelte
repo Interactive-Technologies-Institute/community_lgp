@@ -4,6 +4,10 @@
 	import { Camera, Check, Circle, RotateCcw, Square } from 'lucide-svelte';
 
 	export let submitting = false;
+	// Width / height of the live camera feed, so the preview box can match the
+	// recorded frame instead of cropping it. Bindable so the page can size other
+	// boxes (e.g. the reference video) to match.
+	export let aspectRatio: number | null = null;
 
 	let videoElement: HTMLVideoElement | null = null;
 	let mediaRecorder: MediaRecorder | null = null;
@@ -39,6 +43,13 @@
 				needsTap = true;
 			}
 		}
+	};
+
+	// Fires on loadedmetadata and resize (e.g. a phone being rotated)
+	const updateAspectRatio = () => {
+		if (!videoElement?.srcObject) return;
+		const { videoWidth, videoHeight } = videoElement;
+		if (videoWidth && videoHeight) aspectRatio = videoWidth / videoHeight;
 	};
 
 	const startCamera = async () => {
@@ -186,8 +197,11 @@
 	<div class="relative">
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
-			class="aspect-video w-full rounded-2xl bg-black object-cover {isPreview ? '' : '-scale-x-100'}"
+			class="w-full rounded-2xl bg-black object-contain {isPreview ? '' : '-scale-x-100'}"
+			style="aspect-ratio: {aspectRatio ?? 16 / 9}"
 			bind:this={videoElement}
+			on:loadedmetadata={updateAspectRatio}
+			on:resize={updateAspectRatio}
 			autoplay
 			playsinline
 			muted

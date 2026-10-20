@@ -97,6 +97,9 @@
 	}
 
 	let hasRecording = false;
+	// Shared by the reference video and the recorder so both boxes match the
+	// camera's real frame. Not reset per sign, so the layout doesn't jump.
+	let cameraAspectRatio: number | null = null;
 	let cameraError = false;
 	let videoInput: HTMLInputElement;
 
@@ -187,7 +190,8 @@
 						{#key currentSign.id}
 							<!-- svelte-ignore a11y-media-has-caption -->
 							<video
-								class="aspect-video w-full rounded-2xl bg-black object-cover"
+								class="w-full rounded-2xl bg-black object-contain"
+								style="aspect-ratio: {cameraAspectRatio ?? 16 / 9}"
 								controls
 								playsinline
 							>
@@ -227,6 +231,7 @@
 							{:else}
 								<WebcamRecording
 									submitting={$submitting}
+									bind:aspectRatio={cameraAspectRatio}
 									on:recorded={handleRecorded}
 									on:recording-started={handleRecordingStarted}
 									on:error={handleCameraError}
