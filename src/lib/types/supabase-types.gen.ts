@@ -491,14 +491,20 @@ export type Database = {
         Row: {
           consented_at: string
           id: string
+          weekly_digest_enabled: boolean
+          weekly_digest_last_sent_week: string | null
         }
         Insert: {
           consented_at?: string
           id: string
+          weekly_digest_enabled?: boolean
+          weekly_digest_last_sent_week?: string | null
         }
         Update: {
           consented_at?: string
           id?: string
+          weekly_digest_enabled?: boolean
+          weekly_digest_last_sent_week?: string | null
         }
         Relationships: []
       }

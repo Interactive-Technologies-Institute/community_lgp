@@ -285,6 +285,11 @@ inspector_port = 8083
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/MY_FUNCTION_NAME/*.html" ]
 
+# Called by pg_cron (see the islr_weekly_digest migration), which can't send
+# a user JWT. The function checks the x-digest-secret header itself.
+[functions.send-islr-weekly-digest]
+verify_jwt = false
+
 [analytics]
 enabled = false
 port = 54327
