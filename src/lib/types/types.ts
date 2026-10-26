@@ -42,7 +42,11 @@ export type ContributorInvite = {
 	invited_by: string | null;
 	created_at: string;
 	used_at: string | null;
+	consent_reminded_at: string | null;
 };
+
+// How far an invited ISLR contributor has got, from invite to recording.
+export type ContributorStage = 'pending' | 'accepted' | 'consented' | 'recording';
 
 export type UserType = {
 	slug: string;

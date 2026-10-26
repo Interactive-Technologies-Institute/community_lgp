@@ -1,7 +1,10 @@
 import type { Database } from '@/types/supabase-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-const TARGET_SIGN_COUNT = 500;
+export const TARGET_SIGN_COUNT = 500;
+export const TARGET_VIDEO_COUNT = 6000;
+// A sign counts as complete once it holds its even share of the video target.
+export const VIDEOS_PER_SIGN_TARGET = TARGET_VIDEO_COUNT / TARGET_SIGN_COUNT;
 
 export async function getTargetSigns(supabase: SupabaseClient<Database>) {
 	const { data: trainingVocabulary, error: trainingVocabularyError } = await supabase

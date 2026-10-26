@@ -49,6 +49,7 @@ export type Database = {
       }
       contributor_invites: {
         Row: {
+          consent_reminded_at: string | null
           created_at: string
           email: string
           id: number
@@ -57,6 +58,7 @@ export type Database = {
           used_at: string | null
         }
         Insert: {
+          consent_reminded_at?: string | null
           created_at?: string
           email: string
           id?: number
@@ -65,6 +67,7 @@ export type Database = {
           used_at?: string | null
         }
         Update: {
+          consent_reminded_at?: string | null
           created_at?: string
           email?: string
           id?: number

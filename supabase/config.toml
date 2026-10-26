@@ -294,6 +294,10 @@ verify_jwt = false
 [functions.send-contributor-access-email]
 verify_jwt = false
 
+# Called from the app's server only; checks the x-islr-secret header itself.
+[functions.send-consent-reminder-email]
+verify_jwt = false
+
 [analytics]
 enabled = false
 port = 54327

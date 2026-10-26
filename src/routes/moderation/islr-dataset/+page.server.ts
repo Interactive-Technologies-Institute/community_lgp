@@ -3,14 +3,22 @@ import {
 	clearStaleInviteUserById,
 	listAuthUsersByEmail,
 } from '@/server/pending-invite';
+import { env } from '$env/dynamic/private';
 import { announceContributorAccess } from '@/server/contributor-access';
+import {
+	getTargetSigns,
+	TARGET_SIGN_COUNT,
+	TARGET_VIDEO_COUNT,
+	VIDEOS_PER_SIGN_TARGET,
+} from '@/server/islr';
 import { createSupabaseAdminClient } from '@/server/supabase-admin';
 import {
 	inviteContributorSchema,
 	type InviteContributorSchema,
 } from '@/schemas/invite-contributor';
+import { remindConsentSchema } from '@/schemas/remind-consent';
 import { resendPendingInvitesSchema } from '@/schemas/resend-pending-invites';
-import type { ContributorInvite } from '@/types/types';
+import type { ContributorInvite, ContributorStage } from '@/types/types';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import { error, redirect, type RequestEvent } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -41,15 +49,24 @@ export const load = async (event) => {
 	const invites = await getInvites();
 
 	// Status is deliberately ignored: there is no peer review, so every
-	// submitted video counts.
-	const { data: submissions, error: submissionsError } = await event.locals.supabase
-		.from('islr_submissions')
-		.select('sign_id, contributor_id');
+	// submitted video counts. Read in pages because PostgREST caps each
+	// response at max_rows, well below the video target.
+	const submissions: { sign_id: number; contributor_id: string }[] = [];
+	for (let from = 0; ; from += SUBMISSIONS_PAGE_SIZE) {
+		const { data: page, error: submissionsError } = await event.locals.supabase
+			.from('islr_submissions')
+			.select('sign_id, contributor_id')
+			.order('id', { ascending: true })
+			.range(from, from + SUBMISSIONS_PAGE_SIZE - 1);
 
-	if (submissionsError) {
-		const errorMessage = 'Error fetching dataset submissions, please try again later.';
-		setFlash({ type: 'error', message: errorMessage }, event.cookies);
-		return error(500, errorMessage);
+		if (submissionsError) {
+			const errorMessage = 'Error fetching dataset submissions, please try again later.';
+			setFlash({ type: 'error', message: errorMessage }, event.cookies);
+			return error(500, errorMessage);
+		}
+
+		submissions.push(...page);
+		if (page.length < SUBMISSIONS_PAGE_SIZE) break;
 	}
 
 	const videoCountByContributor = new Map<string, number>();
@@ -80,20 +97,79 @@ export const load = async (event) => {
 		videoCountByEmail[profile.email.toLowerCase()] = videoCountByContributor.get(profile.id) ?? 0;
 	}
 
+	// Progress only counts the target vocabulary, so videos of signs that were
+	// dropped from it don't make the dataset look further along than it is.
+	const targetSigns = await getTargetSigns(event.locals.supabase);
+	const videoCountBySign = new Map<number, number>(targetSigns.map((sign) => [sign.id, 0]));
+	for (const { sign_id } of submissions) {
+		const count = videoCountBySign.get(sign_id);
+		if (count !== undefined) videoCountBySign.set(sign_id, count + 1);
+	}
+	const signCounts = [...videoCountBySign.values()];
+
+	const { data: consentedContributors, error: consentedError } = await event.locals.supabase
+		.from('islr_contributors')
+		.select('id');
+
+	if (consentedError) {
+		const errorMessage = 'Error fetching dataset contributors, please try again later.';
+		setFlash({ type: 'error', message: errorMessage }, event.cookies);
+		return error(500, errorMessage);
+	}
+
+	// Where each invited contributor got to: invite accepted, consent given,
+	// or recording started. Videos are checked first because
+	// recording requires consent, so they prove it on their own - the consent
+	// list only matters for telling apart those who haven't recorded yet.
+	const consentedIds = new Set(consentedContributors.map((c) => c.id));
+	const profileIdByEmail = new Map(
+		invitedProfiles.map((profile) => [profile.email.toLowerCase(), profile.id])
+	);
+	const contributorStageByEmail: Record<string, ContributorStage> = {};
+	for (const invite of invites) {
+		const email = invite.email.toLowerCase();
+		const profileId = profileIdByEmail.get(email);
+		const videoCount = profileId ? (videoCountByContributor.get(profileId) ?? 0) : 0;
+		contributorStageByEmail[email] =
+			videoCount > 0
+				? 'recording'
+				: !invite.used_at
+					? 'pending'
+					: profileId && consentedIds.has(profileId)
+						? 'consented'
+						: 'accepted';
+	}
+
+	const now = new Date();
+	const awaitingConsent = invites.filter(
+		(invite) => contributorStageByEmail[invite.email.toLowerCase()] === 'accepted'
+	);
+	const consentReminderDueCount = awaitingConsent.filter((invite) =>
+		isConsentReminderDue(invite.consent_reminded_at, now)
+	).length;
+
 	return {
 		invites,
 		videoCountByEmail,
-		datasetSummary: {
-			signsRecorded: new Set(submissions.map((s) => s.sign_id)).size,
-			videosRecorded: submissions.length,
-			contributorsWhoRecorded: videoCountByContributor.size,
-			contributorsInvited: invites.length,
+		contributorStageByEmail,
+		consentReminderDueCount,
+		consentReminderRecentCount: awaitingConsent.length - consentReminderDueCount,
+		consentReminderCooldownDays: CONSENT_REMINDER_COOLDOWN_DAYS,
+		datasetProgress: {
+			videosRecorded: signCounts.reduce((sum, count) => sum + count, 0),
+			signsComplete: signCounts.filter((count) => count >= VIDEOS_PER_SIGN_TARGET).length,
+			targetVideoCount: TARGET_VIDEO_COUNT,
+			targetSignCount: TARGET_SIGN_COUNT,
+			videosPerSignTarget: VIDEOS_PER_SIGN_TARGET,
 		},
 		inviteContributorForm: await superValidate(zod(inviteContributorSchema), {
 			id: 'invite-contributor',
 		}),
 		resendPendingInvitesForm: await superValidate(zod(resendPendingInvitesSchema), {
 			id: 'resend-pending-invites',
+		}),
+		remindConsentForm: await superValidate(zod(remindConsentSchema), {
+			id: 'remind-consent',
 		}),
 		bulkResendLimit: BULK_RESEND_LIMIT,
 	};
@@ -159,13 +235,150 @@ async function promoteExistingUser(
 	return { form };
 }
 
+// At or under PostgREST's default max_rows, so a short page really is the last one.
+const SUBMISSIONS_PAGE_SIZE = 1000;
+
 // Invite emails go out through Gmail SMTP, capped at 80 per hour. Keeping
 // one batch well under that leaves room for other auth emails (single
 // invites, password resets) in the same hour, and keeps the request short
 // enough not to hit the host's function timeout.
 const BULK_RESEND_LIMIT = 50;
 
+// Someone reminded to give consent isn't reminded again for this long.
+const CONSENT_REMINDER_COOLDOWN_DAYS = 7;
+
+function isConsentReminderDue(remindedAt: string | null, now: Date) {
+	if (!remindedAt) return true;
+	const dueAt = new Date(remindedAt);
+	dueAt.setUTCDate(dueAt.getUTCDate() + CONSENT_REMINDER_COOLDOWN_DAYS);
+	return dueAt <= now;
+}
+
 export const actions = {
+	remindConsent: async (event) =>
+		handleFormAction(event, remindConsentSchema, 'remind-consent', async (event, _userId, form) => {
+			const adminClient = createSupabaseAdminClient();
+
+			// Who still owes consent is only knowable if this user can read every
+			// islr_contributors row (the islr_contributors_moderator_read
+			// migration). If they can't, everyone would look like they owe it and
+			// people who already consented would get the reminder too - so refuse.
+			const [visible, total] = await Promise.all([
+				event.locals.supabase
+					.from('islr_contributors')
+					.select('id', { count: 'exact', head: true }),
+				adminClient.from('islr_contributors').select('id', { count: 'exact', head: true }),
+			]);
+			if (visible.error || total.error || visible.count !== total.count) {
+				const message =
+					'Não foi possível confirmar quem já deu consentimento, por isso não foi enviado nenhum lembrete. Confirme que a migração islr_contributors_moderator_read está aplicada.';
+				setFlash({ type: 'error', message }, event.cookies);
+				return fail(500, { message, form });
+			}
+
+			// Read through the user's own client so RLS decides who can do this:
+			// anyone without access to contributor_invites just gets an empty list.
+			const { data: acceptedInvites, error: invitesError } = await event.locals.supabase
+				.from('contributor_invites')
+				.select('email, used_at, consent_reminded_at')
+				.not('used_at', 'is', null);
+
+			if (invitesError) {
+				setFlash({ type: 'error', message: invitesError.message }, event.cookies);
+				return fail(500, { message: invitesError.message, form });
+			}
+
+			const [{ data: profiles, error: profilesError }, { data: consented, error: consentedError }] =
+				await Promise.all([
+					event.locals.supabase
+						.from('profiles')
+						.select('id, email')
+						.in(
+							'email',
+							acceptedInvites.map((invite) => invite.email)
+						),
+					event.locals.supabase.from('islr_contributors').select('id'),
+				]);
+
+			if (profilesError || consentedError) {
+				const message = (profilesError ?? consentedError)!.message;
+				setFlash({ type: 'error', message }, event.cookies);
+				return fail(500, { message, form });
+			}
+
+			const consentedIds = new Set(consented.map((c) => c.id));
+			const profileIdByEmail = new Map(
+				profiles.map((profile) => [profile.email.toLowerCase(), profile.id])
+			);
+			const now = new Date();
+
+			// Never-reminded first, then whoever was reminded longest ago, so
+			// repeated clicks work through the whole list.
+			const due = acceptedInvites
+				.filter((invite) => {
+					const profileId = profileIdByEmail.get(invite.email.toLowerCase());
+					return (
+						profileId &&
+						!consentedIds.has(profileId) &&
+						isConsentReminderDue(invite.consent_reminded_at, now)
+					);
+				})
+				.sort((a, b) => (a.consent_reminded_at ?? '').localeCompare(b.consent_reminded_at ?? ''));
+
+			if (due.length === 0) {
+				const message = 'Não há ninguém a quem enviar lembrete de consentimento.';
+				setFlash({ type: 'success', message }, event.cookies);
+				return { form };
+			}
+
+			const batch = due.slice(0, BULK_RESEND_LIMIT);
+
+			let sent = 0;
+			const failures: string[] = [];
+
+			for (const { email } of batch) {
+				const { error: mailError } = await adminClient.functions.invoke(
+					'send-consent-reminder-email',
+					{
+						headers: { 'x-islr-secret': env.ISLR_DIGEST_SECRET ?? '' },
+						body: { email },
+					}
+				);
+				if (mailError) {
+					failures.push(`${email}: ${mailError.message}`);
+					continue;
+				}
+
+				const { error: markError } = await event.locals.supabase
+					.from('contributor_invites')
+					.update({ consent_reminded_at: new Date().toISOString() })
+					.eq('email', email);
+				if (markError) {
+					failures.push(`${email}: email enviado, mas não ficou registado (${markError.message})`);
+					continue;
+				}
+
+				sent++;
+			}
+
+			const summary = [`Lembretes enviados: ${sent}.`];
+			if (failures.length > 0) {
+				summary.push(`Falharam ${failures.length}: ${failures.join(' | ')}`);
+			}
+			const leftOver = due.length - batch.length;
+			if (leftOver > 0) {
+				summary.push(
+					`Ficaram ${leftOver} por enviar - aguarde cerca de uma hora antes de repetir, por causa do limite de envio do Gmail.`
+				);
+			}
+
+			setFlash(
+				{ type: failures.length > 0 ? 'error' : 'success', message: summary.join(' ') },
+				event.cookies
+			);
+
+			return { form };
+		}),
 	resendPending: async (event) =>
 		handleFormAction(
 			event,
