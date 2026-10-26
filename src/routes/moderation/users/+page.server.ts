@@ -1,4 +1,6 @@
 import { updateUserRoleSchema } from '@/schemas/user-role';
+import { announceContributorAccess } from '@/server/contributor-access';
+import { createSupabaseAdminClient } from '@/server/supabase-admin';
 import type { UserProfile } from '@/types/types';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import { error, fail, redirect } from '@sveltejs/kit';
@@ -39,8 +41,14 @@ export const actions = {
 			event,
 			updateUserRoleSchema,
 			'update-user-role',
-			async (event, _loggedInUserId, form) => {
+			async (event, loggedInUserId, form) => {
 				const userId = form.data.userId;
+
+				const { data: previous } = await event.locals.supabase
+					.from('user_roles')
+					.select('role')
+					.eq('id', userId)
+					.maybeSingle();
 
 				const { error: supabaseError } = await event.locals.supabase
 					.from('user_roles')
@@ -50,6 +58,38 @@ export const actions = {
 				if (supabaseError) {
 					setFlash({ type: 'error', message: supabaseError.message }, event.cookies);
 					return fail(500, { message: supabaseError.message, form });
+				}
+
+				// Same follow-up as "Convidar Contribuidor" for an existing account.
+				// Other roles already had access to the dataset, so only user ->
+				// contributor gets the email.
+				if (previous?.role === 'user' && form.data.role === 'contributor') {
+					const { data: profile } = await event.locals.supabase
+						.from('profiles')
+						.select('email')
+						.eq('id', userId)
+						.maybeSingle();
+
+					const problems = profile?.email
+						? await announceContributorAccess(
+								createSupabaseAdminClient(),
+								profile.email,
+								loggedInUserId
+							)
+						: ['Utilizador sem email no perfil.'];
+
+					setFlash(
+						problems.length > 0
+							? {
+									type: 'error',
+									message: `Passou a Contribuidor, mas: ${problems.join(' | ')}`,
+								}
+							: {
+									type: 'success',
+									message: `${profile!.email} passou a Contribuidor e recebeu um email a avisar.`,
+								},
+						event.cookies
+					);
 				}
 
 				return { form };

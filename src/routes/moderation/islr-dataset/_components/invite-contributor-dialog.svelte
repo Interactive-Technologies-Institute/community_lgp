@@ -36,7 +36,8 @@
 			<Dialog.Title>Convidar Contribuidor</Dialog.Title>
 			<Dialog.Description>
 				A pessoa recebe um e-mail da Supabase com um link para criar a conta e, ao aceitar, fica
-				automaticamente com o papel de Contribuidor.
+				automaticamente com o papel de Contribuidor. Se já tiver conta, passa logo a Contribuidor e
+				recebe um e-mail a avisar.
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/invite" use:enhance>

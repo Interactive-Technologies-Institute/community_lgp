@@ -3,14 +3,18 @@ import {
 	clearStaleInviteUserById,
 	listAuthUsersByEmail,
 } from '@/server/pending-invite';
+import { announceContributorAccess } from '@/server/contributor-access';
 import { createSupabaseAdminClient } from '@/server/supabase-admin';
-import { inviteContributorSchema } from '@/schemas/invite-contributor';
+import {
+	inviteContributorSchema,
+	type InviteContributorSchema,
+} from '@/schemas/invite-contributor';
 import { resendPendingInvitesSchema } from '@/schemas/resend-pending-invites';
 import type { ContributorInvite } from '@/types/types';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
-import { error, redirect } from '@sveltejs/kit';
+import { error, redirect, type RequestEvent } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
-import { fail, superValidate } from 'sveltekit-superforms';
+import { fail, superValidate, type Infer, type SuperValidated } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
@@ -94,6 +98,66 @@ export const load = async (event) => {
 		bulkResendLimit: BULK_RESEND_LIMIT,
 	};
 };
+
+async function promoteExistingUser(
+	event: RequestEvent,
+	adminClient: ReturnType<typeof createSupabaseAdminClient>,
+	form: SuperValidated<Infer<InviteContributorSchema>>,
+	profileId: string,
+	email: string,
+	invitedBy: string
+) {
+	const { data: existingRole, error: roleError } = await event.locals.supabase
+		.from('user_roles')
+		.select('role')
+		.eq('id', profileId)
+		.maybeSingle();
+
+	if (roleError) {
+		setFlash({ type: 'error', message: roleError.message }, event.cookies);
+		return fail(500, { message: roleError.message, form });
+	}
+
+	// Only plain users are promoted: contributors already have access, and any
+	// other role either has it too or outranks contributor.
+	if (existingRole?.role !== 'user') {
+		const errorMessage = `A conta ${email} já tem o papel ${existingRole?.role ?? 'desconhecido'} e não precisa de convite.`;
+		setFlash({ type: 'error', message: errorMessage }, event.cookies);
+		return fail(400, { message: errorMessage, form });
+	}
+
+	// Moderators can't update user_roles through RLS (see the
+	// contributor_invites_moderator_access migration), so this goes through
+	// the service role - but only for user -> contributor, the same thing an
+	// accepted invite does.
+	const { error: updateError } = await adminClient
+		.from('user_roles')
+		.update({ role: 'contributor' })
+		.eq('id', profileId)
+		.eq('role', 'user');
+
+	if (updateError) {
+		setFlash({ type: 'error', message: updateError.message }, event.cookies);
+		return fail(500, { message: updateError.message, form });
+	}
+
+	const problems = await announceContributorAccess(adminClient, email, invitedBy);
+
+	setFlash(
+		problems.length > 0
+			? {
+					type: 'error',
+					message: `${email} já tinha conta e passou a Contribuidor, mas: ${problems.join(' | ')}`,
+				}
+			: {
+					type: 'success',
+					message: `${email} já tinha conta: passou a Contribuidor e recebeu um email a avisar.`,
+				},
+		event.cookies
+	);
+
+	return { form };
+}
 
 // Invite emails go out through Gmail SMTP, capped at 80 per hour. Keeping
 // one batch well under that leaves room for other auth emails (single
@@ -203,10 +267,11 @@ export const actions = {
 
 				const isResend = !!existingInvite && existingInvite.used_at === null;
 
-				// Guard against re-inviting an email that's already a registered user
-				// (possibly already an accepted contributor) - otherwise the upsert
-				// below would reset used_at to null and the admin table would wrongly
-				// show them as "Pendente" again once Supabase rejects the invite.
+				const adminClient = createSupabaseAdminClient();
+
+				// An email that's already a registered user can't get a Supabase
+				// invite (and the upsert below would wrongly show them as "Pendente"
+				// again), so give them the role directly and email them instead.
 				if (!isResend) {
 					const { data: existingProfile } = await event.locals.supabase
 						.from('profiles')
@@ -215,13 +280,9 @@ export const actions = {
 						.maybeSingle();
 
 					if (existingProfile) {
-						const errorMessage = `Já existe uma conta registada com o email ${email}. Use o separador Utilizadores para lhe atribuir o papel de Contributor.`;
-						setFlash({ type: 'error', message: errorMessage }, event.cookies);
-						return fail(400, { message: errorMessage, form });
+						return promoteExistingUser(event, adminClient, form, existingProfile.id, email, userId);
 					}
 				}
-
-				const adminClient = createSupabaseAdminClient();
 
 				if (isResend) {
 					// Supabase refuses to invite an email that already has a user, even
@@ -263,10 +324,7 @@ export const actions = {
 					return fail(500, { message: inviteError.message, form });
 				}
 
-				setFlash(
-					{ type: 'success', message: `Convite enviado para ${email}.` },
-					event.cookies
-				);
+				setFlash({ type: 'success', message: `Convite enviado para ${email}.` }, event.cookies);
 
 				return { form };
 			}
