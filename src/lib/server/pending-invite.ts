@@ -41,7 +41,6 @@ async function findAuthUserIdByEmail(
 
 export interface AuthUserSummary {
 	id: string;
-	invitedAt: string | null;
 }
 
 /**
@@ -68,7 +67,7 @@ export async function listAuthUsersByEmail(
 
 		for (const user of data.users) {
 			if (user.email) {
-				users.set(user.email.toLowerCase(), { id: user.id, invitedAt: user.invited_at ?? null });
+				users.set(user.email.toLowerCase(), { id: user.id });
 			}
 		}
 
@@ -116,8 +115,7 @@ export async function clearStaleInviteUserById(
 		return { ok: true };
 	}
 
-	const { data: staleUser, error: getUserError } =
-		await adminClient.auth.admin.getUserById(userId);
+	const { data: staleUser, error: getUserError } = await adminClient.auth.admin.getUserById(userId);
 
 	if (getUserError) {
 		return {

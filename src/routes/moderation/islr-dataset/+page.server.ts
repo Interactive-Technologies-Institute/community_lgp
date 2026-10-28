@@ -6,10 +6,13 @@ import {
 import { env } from '$env/dynamic/private';
 import { announceContributorAccess } from '@/server/contributor-access';
 import {
+	COLLECTION_START,
+	countByWeek,
+	getAllSubmissions,
 	getTargetSigns,
-	TARGET_SIGN_COUNT,
+	startOfWeek,
 	TARGET_VIDEO_COUNT,
-	VIDEOS_PER_SIGN_TARGET,
+	weeksSince,
 } from '@/server/islr';
 import { createSupabaseAdminClient } from '@/server/supabase-admin';
 import {
@@ -18,7 +21,7 @@ import {
 } from '@/schemas/invite-contributor';
 import { remindConsentSchema } from '@/schemas/remind-consent';
 import { resendPendingInvitesSchema } from '@/schemas/resend-pending-invites';
-import type { ContributorInvite, ContributorStage } from '@/types/types';
+import type { ContributorActivity, ContributorInvite, ContributorStage } from '@/types/types';
 import { handleFormAction, handleSignInRedirect } from '@/utils';
 import { error, redirect, type RequestEvent } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
@@ -48,39 +51,33 @@ export const load = async (event) => {
 
 	const invites = await getInvites();
 
-	// Status is deliberately ignored: there is no peer review, so every
-	// submitted video counts. Read in pages because PostgREST caps each
-	// response at max_rows, well below the video target.
-	const submissions: { sign_id: number; contributor_id: string }[] = [];
-	for (let from = 0; ; from += SUBMISSIONS_PAGE_SIZE) {
-		const { data: page, error: submissionsError } = await event.locals.supabase
-			.from('islr_submissions')
-			.select('sign_id, contributor_id')
-			.order('id', { ascending: true })
-			.range(from, from + SUBMISSIONS_PAGE_SIZE - 1);
+	const submissions = await getAllSubmissions(event.locals.supabase);
 
-		if (submissionsError) {
-			const errorMessage = 'Error fetching dataset submissions, please try again later.';
-			setFlash({ type: 'error', message: errorMessage }, event.cookies);
-			return error(500, errorMessage);
-		}
-
-		submissions.push(...page);
-		if (page.length < SUBMISSIONS_PAGE_SIZE) break;
-	}
-
+	const currentWeekStart = startOfWeek(new Date());
 	const videoCountByContributor = new Map<string, number>();
-	for (const { contributor_id } of submissions) {
+	const videosThisWeekByContributor = new Map<string, number>();
+	const lastRecordedAtByContributor = new Map<string, string>();
+	for (const { contributor_id, inserted_at } of submissions) {
 		videoCountByContributor.set(
 			contributor_id,
 			(videoCountByContributor.get(contributor_id) ?? 0) + 1
 		);
+		if (new Date(inserted_at) >= currentWeekStart) {
+			videosThisWeekByContributor.set(
+				contributor_id,
+				(videosThisWeekByContributor.get(contributor_id) ?? 0) + 1
+			);
+		}
+		const lastRecordedAt = lastRecordedAtByContributor.get(contributor_id);
+		if (!lastRecordedAt || inserted_at > lastRecordedAt) {
+			lastRecordedAtByContributor.set(contributor_id, inserted_at);
+		}
 	}
 
 	// Invites are keyed by email, submissions by user id - bridge them through profiles.
 	const { data: invitedProfiles, error: profilesError } = await event.locals.supabase
 		.from('profiles')
-		.select('id, email')
+		.select('id, email, display_name')
 		.in(
 			'email',
 			invites.map((invite) => invite.email)
@@ -92,9 +89,14 @@ export const load = async (event) => {
 		return error(500, errorMessage);
 	}
 
-	const videoCountByEmail: Record<string, number> = {};
+	const contributorActivityByEmail: Record<string, ContributorActivity> = {};
 	for (const profile of invitedProfiles) {
-		videoCountByEmail[profile.email.toLowerCase()] = videoCountByContributor.get(profile.id) ?? 0;
+		contributorActivityByEmail[profile.email.toLowerCase()] = {
+			name: profile.display_name?.trim() || null,
+			videoCount: videoCountByContributor.get(profile.id) ?? 0,
+			videosThisWeek: videosThisWeekByContributor.get(profile.id) ?? 0,
+			lastRecordedAt: lastRecordedAtByContributor.get(profile.id) ?? null,
+		};
 	}
 
 	// Progress only counts the target vocabulary, so videos of signs that were
@@ -106,6 +108,15 @@ export const load = async (event) => {
 		if (count !== undefined) videoCountBySign.set(sign_id, count + 1);
 	}
 	const signCounts = [...videoCountBySign.values()];
+	const videosRecorded = signCounts.reduce((sum, count) => sum + count, 0);
+
+	// Same target-vocabulary filter as the total, so the two numbers agree.
+	const weeklyVideoCounts = countByWeek(
+		submissions
+			.filter(({ sign_id }) => videoCountBySign.has(sign_id))
+			.map(({ inserted_at }) => inserted_at),
+		Math.max(1, Math.min(MAX_WEEKS_TO_SHOW, weeksSince(COLLECTION_START)))
+	);
 
 	const { data: consentedContributors, error: consentedError } = await event.locals.supabase
 		.from('islr_contributors')
@@ -141,27 +152,32 @@ export const load = async (event) => {
 	}
 
 	const now = new Date();
+	const pendingInvites = invites.filter((invite) => !invite.used_at);
+	const inviteResendDueCount = pendingInvites.filter((invite) =>
+		isResendDue(invite.invite_sent_at, now)
+	).length;
 	const awaitingConsent = invites.filter(
 		(invite) => contributorStageByEmail[invite.email.toLowerCase()] === 'accepted'
 	);
 	const consentReminderDueCount = awaitingConsent.filter((invite) =>
-		isConsentReminderDue(invite.consent_reminded_at, now)
+		isResendDue(invite.consent_reminded_at, now)
 	).length;
 
 	return {
 		invites,
-		videoCountByEmail,
+		contributorActivityByEmail,
 		contributorStageByEmail,
+		inviteResendDueCount,
+		inviteResendRecentCount: pendingInvites.length - inviteResendDueCount,
 		consentReminderDueCount,
 		consentReminderRecentCount: awaitingConsent.length - consentReminderDueCount,
-		consentReminderCooldownDays: CONSENT_REMINDER_COOLDOWN_DAYS,
 		datasetProgress: {
-			videosRecorded: signCounts.reduce((sum, count) => sum + count, 0),
-			signsComplete: signCounts.filter((count) => count >= VIDEOS_PER_SIGN_TARGET).length,
+			videosRecorded,
 			targetVideoCount: TARGET_VIDEO_COUNT,
-			targetSignCount: TARGET_SIGN_COUNT,
-			videosPerSignTarget: VIDEOS_PER_SIGN_TARGET,
 		},
+		weeklyVideoCounts,
+		collectionStart: COLLECTION_START,
+		maxWeeksToShow: MAX_WEEKS_TO_SHOW,
 		inviteContributorForm: await superValidate(zod(inviteContributorSchema), {
 			id: 'invite-contributor',
 		}),
@@ -235,8 +251,9 @@ async function promoteExistingUser(
 	return { form };
 }
 
-// At or under PostgREST's default max_rows, so a short page really is the last one.
-const SUBMISSIONS_PAGE_SIZE = 1000;
+// The weekly videos chart starts at the collection's first week, and once
+// that's further back than this only shows the most recent weeks.
+const MAX_WEEKS_TO_SHOW = 12;
 
 // Invite emails go out through Gmail SMTP, capped at 80 per hour. Keeping
 // one batch well under that leaves room for other auth emails (single
@@ -244,14 +261,14 @@ const SUBMISSIONS_PAGE_SIZE = 1000;
 // enough not to hit the host's function timeout.
 const BULK_RESEND_LIMIT = 50;
 
-// Someone reminded to give consent isn't reminded again for this long.
-const CONSENT_REMINDER_COOLDOWN_DAYS = 7;
+// Bulk resends and consent reminders skip anyone emailed less than this long
+// ago, so nobody gets the same email more than once a day however often the
+// buttons are clicked.
+const RESEND_COOLDOWN_HOURS = 24;
 
-function isConsentReminderDue(remindedAt: string | null, now: Date) {
-	if (!remindedAt) return true;
-	const dueAt = new Date(remindedAt);
-	dueAt.setUTCDate(dueAt.getUTCDate() + CONSENT_REMINDER_COOLDOWN_DAYS);
-	return dueAt <= now;
+function isResendDue(lastSentAt: string | null, now: Date) {
+	if (!lastSentAt) return true;
+	return now.getTime() - new Date(lastSentAt).getTime() >= RESEND_COOLDOWN_HOURS * 60 * 60 * 1000;
 }
 
 export const actions = {
@@ -320,13 +337,14 @@ export const actions = {
 					return (
 						profileId &&
 						!consentedIds.has(profileId) &&
-						isConsentReminderDue(invite.consent_reminded_at, now)
+						isResendDue(invite.consent_reminded_at, now)
 					);
 				})
 				.sort((a, b) => (a.consent_reminded_at ?? '').localeCompare(b.consent_reminded_at ?? ''));
 
 			if (due.length === 0) {
-				const message = 'Não há ninguém a quem enviar lembrete de consentimento.';
+				const message =
+					'Não há ninguém a quem enviar lembrete de consentimento - quem falta já recebeu um nas últimas 24 horas.';
 				setFlash({ type: 'success', message }, event.cookies);
 				return { form };
 			}
@@ -389,7 +407,7 @@ export const actions = {
 				// anyone without access to contributor_invites just gets an empty list.
 				const { data: pendingInvites, error: pendingError } = await event.locals.supabase
 					.from('contributor_invites')
-					.select('email')
+					.select('email, invite_sent_at')
 					.is('used_at', null);
 
 				if (pendingError) {
@@ -397,8 +415,19 @@ export const actions = {
 					return fail(500, { message: pendingError.message, form });
 				}
 
-				if (pendingInvites.length === 0) {
-					const message = 'Não há convites pendentes para reenviar.';
+				const now = new Date();
+
+				// Never-sent first, then whoever was sent one longest ago, so
+				// repeated clicks work through the whole list.
+				const due = pendingInvites
+					.filter((invite) => isResendDue(invite.invite_sent_at, now))
+					.sort((a, b) => (a.invite_sent_at ?? '').localeCompare(b.invite_sent_at ?? ''));
+
+				if (due.length === 0) {
+					const message =
+						pendingInvites.length === 0
+							? 'Não há convites pendentes para reenviar.'
+							: 'Não há convites para reenviar - os pendentes já receberam um nas últimas 24 horas.';
 					setFlash({ type: 'success', message }, event.cookies);
 					return { form };
 				}
@@ -411,13 +440,9 @@ export const actions = {
 					return fail(500, { message: lookup.reason, form });
 				}
 
-				// Every resend replaces the auth user, so its invited_at is when this
-				// email last got an invite. Oldest first means repeated clicks work
-				// through the whole list instead of re-sending the same batch.
-				const batch = pendingInvites
-					.map(({ email }) => ({ email, authUser: lookup.users.get(email.toLowerCase()) }))
-					.sort((a, b) => (a.authUser?.invitedAt ?? '').localeCompare(b.authUser?.invitedAt ?? ''))
-					.slice(0, BULK_RESEND_LIMIT);
+				const batch = due
+					.slice(0, BULK_RESEND_LIMIT)
+					.map(({ email }) => ({ email, authUser: lookup.users.get(email.toLowerCase()) }));
 
 				let sent = 0;
 				const failures: string[] = [];
@@ -437,6 +462,17 @@ export const actions = {
 						continue;
 					}
 
+					const { error: markError } = await event.locals.supabase
+						.from('contributor_invites')
+						.update({ invite_sent_at: new Date().toISOString() })
+						.eq('email', email);
+					if (markError) {
+						failures.push(
+							`${email}: convite enviado, mas não ficou registado (${markError.message})`
+						);
+						continue;
+					}
+
 					sent++;
 				}
 
@@ -444,7 +480,7 @@ export const actions = {
 				if (failures.length > 0) {
 					summary.push(`Falharam ${failures.length}: ${failures.join(' | ')}`);
 				}
-				const leftOver = pendingInvites.length - batch.length;
+				const leftOver = due.length - batch.length;
 				if (leftOver > 0) {
 					summary.push(
 						`Ficaram ${leftOver} por reenviar - aguarde cerca de uma hora antes de repetir, por causa do limite de envio do Gmail.`
@@ -512,7 +548,13 @@ export const actions = {
 				const { error: upsertError } = await event.locals.supabase
 					.from('contributor_invites')
 					.upsert(
-						{ email, role: 'contributor', invited_by: userId, used_at: null },
+						{
+							email,
+							role: 'contributor',
+							invited_by: userId,
+							used_at: null,
+							invite_sent_at: new Date().toISOString(),
+						},
 						{ onConflict: 'email' }
 					);
 

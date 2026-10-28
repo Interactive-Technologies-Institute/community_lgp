@@ -9,7 +9,6 @@
 	export let data: SuperValidated<Infer<RemindConsentSchema>>;
 	export let dueCount: number;
 	export let recentCount: number;
-	export let cooldownDays: number;
 	export let batchLimit: number;
 
 	let open = false;
@@ -41,8 +40,8 @@
 				esse passo para começar a gravar.
 				{#if recentCount > 0}
 					{recentCount}
-					{recentCount === 1 ? 'pessoa recebeu' : 'pessoas receberam'} um lembrete nos últimos
-					{cooldownDays} dias e {recentCount === 1 ? 'fica' : 'ficam'} de fora desta vez.
+					{recentCount === 1 ? 'pessoa recebeu' : 'pessoas receberam'} um lembrete nas últimas 24 horas
+					e {recentCount === 1 ? 'fica' : 'ficam'} de fora desta vez.
 				{/if}
 				{#if dueCount > batchLimit}
 					Por causa do limite de envio do Gmail, só são enviados {batchLimit} de cada vez. Para os restantes,

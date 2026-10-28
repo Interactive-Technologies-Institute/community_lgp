@@ -4,7 +4,8 @@
 	import * as Tabs from '@/components/ui/tabs';
 	import { MetaTags } from 'svelte-meta-tags';
 
-	$: path = $page.url.pathname.split('/').pop();
+	// The tab is the segment right after /moderation, so sub-pages keep their tab selected.
+	$: path = $page.url.pathname.split('/')[2];
 </script>
 
 <MetaTags title="Moderação" description="Modere utilizadores e conteúdo" />

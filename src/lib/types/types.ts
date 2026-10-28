@@ -43,10 +43,19 @@ export type ContributorInvite = {
 	created_at: string;
 	used_at: string | null;
 	consent_reminded_at: string | null;
+	invite_sent_at: string | null;
 };
 
 // How far an invited ISLR contributor has got, from invite to recording.
 export type ContributorStage = 'pending' | 'accepted' | 'consented' | 'recording';
+
+// What an invited ISLR contributor has recorded, for the moderation invites table.
+export type ContributorActivity = {
+	name: string | null;
+	videoCount: number;
+	videosThisWeek: number;
+	lastRecordedAt: string | null;
+};
 
 export type UserType = {
 	slug: string;
