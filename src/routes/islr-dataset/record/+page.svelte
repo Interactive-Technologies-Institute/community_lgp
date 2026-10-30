@@ -146,9 +146,11 @@
 		hasRecording = true;
 	}
 
+	// The server remembers the skipped sign and won't show it again (see
+	// +page.server.ts), then redirects to the next one in the queue.
 	function skip() {
 		if (nextSignId === null) return;
-		goto(`/islr-dataset/record?sign=${nextSignId}`);
+		goto(`/islr-dataset/record?skip=${currentSign.id}`);
 	}
 </script>
 

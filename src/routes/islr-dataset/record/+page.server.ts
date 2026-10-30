@@ -49,6 +49,28 @@ export const load = async (event) => {
 
 	const excludedIds = new Set(mySubmissions.map((s) => s.sign_id));
 
+	// Signs the contributor skipped (e.g. because they don't know them) are
+	// remembered in a per-user cookie so they don't keep coming back. Skip
+	// navigates here with ?skip=<id>; we record it and redirect to a clean URL.
+	const skippedCookieName = `islr_skipped_${user.id}`;
+	const skippedIds = new Set(
+		(event.cookies.get(skippedCookieName) ?? '')
+			.split(',')
+			.map(Number)
+			.filter((id) => Number.isInteger(id) && id > 0)
+	);
+	const skipParam = Number(event.url.searchParams.get('skip'));
+	if (Number.isInteger(skipParam) && skipParam > 0) {
+		skippedIds.add(skipParam);
+		event.cookies.set(skippedCookieName, [...skippedIds].join(','), {
+			path: '/islr-dataset/record',
+			maxAge: 60 * 60 * 24 * 365,
+			httpOnly: true,
+			sameSite: 'lax',
+		});
+		return redirect(302, '/islr-dataset/record');
+	}
+
 	const submissionCounts = await getSignSubmissionCounts(event.locals.supabase);
 
 	// Deterministic per-contributor "shuffle" used as a tiebreaker: same
@@ -77,8 +99,15 @@ export const load = async (event) => {
 
 	// Sort by coverage ascending, then by the per-contributor tiebreak, so
 	// under-covered signs come first without everyone getting the same order.
-	const queue = targetSigns
-		.filter((sign) => !excludedIds.has(sign.id))
+	const unrecorded = targetSigns.filter((sign) => !excludedIds.has(sign.id));
+	let pending = unrecorded.filter((sign) => !skippedIds.has(sign.id));
+	// Only skipped signs left: forget the skips and offer them again rather
+	// than telling the contributor they're done.
+	if (pending.length === 0 && unrecorded.length > 0) {
+		event.cookies.delete(skippedCookieName, { path: '/islr-dataset/record' });
+		pending = unrecorded;
+	}
+	const queue = pending
 		.sort((a, b) => {
 			const countDiff = (submissionCounts.get(a.id) ?? 0) - (submissionCounts.get(b.id) ?? 0);
 			if (countDiff !== 0) return countDiff;
