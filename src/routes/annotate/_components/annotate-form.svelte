@@ -233,7 +233,7 @@
 			<div class="mt-2 flex flex-col gap-5 lg:mt-6 lg:flex-row-reverse lg:gap-10">
 				<!-- Sign Card -->
 				<Card.Root
-					class="w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
+					class="w-full min-w-0 rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
 				>
 					<div class="flex h-full w-full flex-col items-start gap-5">
 						<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">2. Informação Geral</h2>
@@ -337,7 +337,7 @@
 
 				<!-- Video -->
 				<Card.Root
-					class="w-full rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
+					class="w-full min-w-0 rounded-2xl border-brand-border bg-brand-white p-4 shadow-none dark:bg-muted-foreground"
 				>
 					<div class="flex h-full w-full flex-col items-start gap-2">
 						<h2 class="text-xl font-extrabold text-brand-dark sm:text-2xl">1. Vídeo do gesto</h2>
@@ -346,13 +346,13 @@
 								<Form.Label class="mb-10 mt-1 leading-7 text-brand-grey text-base font-normal"
 									>Carregar vídeo em LGP do gesto.</Form.Label
 								>
-								<Card.Root class="aspect-video bg-brand-surface">
-									<div class="flex h-full w-full flex-col items-center justify-center gap-5">
+								<Card.Root class="relative aspect-video overflow-hidden bg-brand-surface">
+									<div class="absolute inset-0 flex flex-col items-center justify-center gap-5">
 										{#if videoUrl}
 											<!-- svelte-ignore a11y-media-has-caption -->
 											<video
 												src={videoUrl}
-												class="aspect-video w-full rounded-2xl bg-brand-border object-contain shadow-sm"
+												class="absolute inset-0 h-full w-full rounded-2xl bg-brand-border object-contain shadow-sm"
 												controls
 												playsinline
 											/>
@@ -500,13 +500,13 @@
 							>Vídeo de Utilização em Contexto (1)</Form.Label
 						>
 						<p class="mt-1 pb-5 leading-7 text-foreground">Carregar vídeo de contexto em LGP do gesto.</p>
-						<Card.Root class="aspect-video bg-brand-surface">
-							<div class="flex h-full w-full flex-col items-center justify-center gap-5">
+						<Card.Root class="relative aspect-video overflow-hidden bg-brand-surface">
+							<div class="absolute inset-0 flex flex-col items-center justify-center gap-5">
 								{#if context_video_url}
 									<!-- svelte-ignore a11y-media-has-caption -->
 									<video
 										src={context_video_url}
-										class="aspect-video w-full rounded-2xl bg-brand-border object-contain shadow-sm"
+										class="absolute inset-0 h-full w-full rounded-2xl bg-brand-border object-contain shadow-sm"
 										controls
 										playsinline
 									/>
@@ -561,13 +561,13 @@
 							>Vídeo de Utilização em Contexto (2)</Form.Label
 						>
 						<p class="mt-1 pb-5 leading-7 text-foreground">Carregar vídeo de contexto em LGP do gesto.</p>
-						<Card.Root class="aspect-video bg-brand-surface">
-							<div class="flex h-full w-full flex-col items-center justify-center gap-5">
+						<Card.Root class="relative aspect-video overflow-hidden bg-brand-surface">
+							<div class="absolute inset-0 flex flex-col items-center justify-center gap-5">
 								{#if context_video_url_2}
 									<!-- svelte-ignore a11y-media-has-caption -->
 									<video
 										src={context_video_url_2}
-										class="aspect-video w-full rounded-2xl bg-brand-border object-contain shadow-sm"
+										class="absolute inset-0 h-full w-full rounded-2xl bg-brand-border object-contain shadow-sm"
 										controls
 										playsinline
 									/>
