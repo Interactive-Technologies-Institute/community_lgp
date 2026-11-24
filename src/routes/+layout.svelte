@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import Footer from '@/components/footer.svelte';
 	import Header from '@/components/header.svelte';
+	import InstallPrompt from '@/components/install-prompt.svelte';
 	import NavigatingIndicator from '@/components/navigating-indicator.svelte';
 	import TailwindIndicator from '@/components/tailwind-indicator.svelte';
 	import { Button } from '@/components/ui/button';
@@ -22,6 +23,9 @@
 	export let data;
 
 	$: ({ supabase, session, user, profile, notifications, branding } = data);
+
+	// Only suggest installing on the public dictionary pages, not over recording/moderation flows.
+	$: isDictionaryPage = /^\/(dictionary|fcdictionary)?(\/|$)/.test($page.url.pathname);
 
 	const flash = getFlash(page);
 	let unlockedMilestone: { label: string; value: number } | null = null;
@@ -71,6 +75,9 @@
 				<slot />
 			</div>
 			<Footer />
+		{/if}
+		{#if isDictionaryPage}
+			<InstallPrompt />
 		{/if}
 		{#if dev}
 			<TailwindIndicator />
