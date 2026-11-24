@@ -1,6 +1,7 @@
 <script lang="ts">
 	import DictionaryLayout from '@/components/dictionary/DictionaryLayout.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
+	import { OG_IMAGE, SITE_TITLE, SITE_URL } from '@/seo';
 
 	export let data;
 </script>
@@ -8,13 +9,20 @@
 		title="Dicionário Geral"
 		description="Página príncipal do dicionário geral"
 		openGraph={{
+			type: 'website',
+			url: `${SITE_URL}/dictionary`,
 			title: "Dicionário Geral",
 			description: "Página príncipal do dicionário geral",
+			siteName: SITE_TITLE,
+			locale: 'pt_PT',
+			images: [OG_IMAGE],
 		}}
 		twitter={{
 			cardType: 'summary_large_image',
 			title: "Dicionário Geral",
 			description: "Página príncipal do dicionário geral",
+			image: OG_IMAGE.url,
+			imageAlt: OG_IMAGE.alt,
 		}}
 	/>
 <div>

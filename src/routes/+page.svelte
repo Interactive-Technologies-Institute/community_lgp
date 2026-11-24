@@ -4,6 +4,7 @@
 	import { mode } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { PUBLIC_R2_PUBLIC_URL } from '$env/static/public';
+	import { OG_IMAGE, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '@/seo';
 	export let data;
 	$: ({ branding } = data);
 
@@ -20,7 +21,27 @@
 	});
 </script>
 
-<MetaTags title={branding.name} description={branding.slogan} />
+<MetaTags
+	title={branding.name}
+	description={branding.slogan}
+	canonical={`${SITE_URL}/`}
+	openGraph={{
+		type: 'website',
+		url: `${SITE_URL}/`,
+		title: SITE_TITLE,
+		description: SITE_DESCRIPTION,
+		siteName: SITE_TITLE,
+		locale: 'pt_PT',
+		images: [OG_IMAGE],
+	}}
+	twitter={{
+		cardType: 'summary_large_image',
+		title: SITE_TITLE,
+		description: SITE_DESCRIPTION,
+		image: OG_IMAGE.url,
+		imageAlt: OG_IMAGE.alt,
+	}}
+/>
 
 <main class="bg-background text-foreground">
 	<section class="px-3 pt-3 sm:px-5 sm:pt-5">
