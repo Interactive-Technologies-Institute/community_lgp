@@ -51,7 +51,9 @@
 		if (!deferredPrompt) return;
 		await deferredPrompt.prompt();
 		const { outcome } = await deferredPrompt.userChoice;
+		// A prompt can only be shown once; Chrome fires a new event if it's still installable.
 		deferredPrompt = null;
+		(window as Window & { __installPromptEvent?: unknown }).__installPromptEvent = undefined;
 		if (outcome === 'accepted') visible = false;
 		else dismiss();
 	}
@@ -67,13 +69,19 @@
 		const isAndroid = /Android/.test(ua);
 		if (!isIOS && !isAndroid) return;
 
-		const onBeforeInstall = (e: Event) => {
-			e.preventDefault();
-			deferredPrompt = e as BeforeInstallPromptEvent;
+		// The event is captured early by an inline script in app.html (see there for why).
+		const win = window as Window & { __installPromptEvent?: BeforeInstallPromptEvent };
+		const onPromptReady = () => {
+			if (!win.__installPromptEvent) return;
+			deferredPrompt = win.__installPromptEvent;
 			platform = 'android-native';
 		};
-		const onInstalled = () => (visible = false);
-		window.addEventListener('beforeinstallprompt', onBeforeInstall);
+		const onInstalled = () => {
+			visible = false;
+			win.__installPromptEvent = undefined;
+		};
+		onPromptReady();
+		window.addEventListener('installpromptready', onPromptReady);
 		window.addEventListener('appinstalled', onInstalled);
 
 		// Delay so it doesn't cover the page on first paint, and so Android has
@@ -89,7 +97,7 @@
 
 		return () => {
 			clearTimeout(timer);
-			window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+			window.removeEventListener('installpromptready', onPromptReady);
 			window.removeEventListener('appinstalled', onInstalled);
 		};
 	});

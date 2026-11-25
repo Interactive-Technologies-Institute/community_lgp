@@ -13,6 +13,15 @@
 		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
 		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
 		<meta name="apple-mobile-web-app-title" content="Dicionário LGP" />
+		<script>
+			// Chrome fires this once per page load, possibly before the app hydrates or while the
+			// user is on a page without the install prompt. Keep it so InstallPrompt can use it later.
+			window.addEventListener('beforeinstallprompt', function (e) {
+				e.preventDefault();
+				window.__installPromptEvent = e;
+				window.dispatchEvent(new Event('installpromptready'));
+			});
+		</script>
 		<link
 			rel="preload"
 			href="%sveltekit.assets%/fonts/InterVariable.woff2"
