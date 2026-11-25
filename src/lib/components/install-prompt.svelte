@@ -115,44 +115,44 @@
 		>
 			<img src="/apple-touch-icon.png" alt="" class="size-12 shrink-0 rounded-xl border" />
 			<div class="min-w-0 flex-1 text-sm">
-				<p id="install-prompt-title" class="font-semibold">Instala o Dicionário LGP</p>
+				<p id="install-prompt-title" class="font-semibold">Instale o Dicionário LGP</p>
 				{#if platform === 'android-native'}
 					<p class="mt-1 text-muted-foreground">
-						Acede ao dicionário diretamente a partir do ecrã principal, em ecrã inteiro.
+						Tenha o dicionário sempre à mão no seu telemóvel.
 					</p>
 					<Button size="sm" class="mt-3" on:click={install}>Instalar</Button>
 				{:else if platform === 'ios'}
-					<p class="mt-1 text-muted-foreground">Adiciona-o ao ecrã principal:</p>
+					<p class="mt-1 text-muted-foreground">Adicione-o ao ecrã principal:</p>
 					<ol class="mt-2 space-y-1.5">
 						<li class="flex items-center gap-1.5">
-							1. Toca em
+							1. Toque em
 							<Share class="size-4 shrink-0 text-[#007AFF]" aria-label="Partilhar" />
 							<span class="font-medium">Partilhar</span>
 						</li>
 						<li class="text-xs text-muted-foreground">
-							(se não o vires, está no menu <span class="font-medium">⋯</span>)
+							(se não o vir, está no menu <span class="font-medium">⋯</span>)
 						</li>
 						<li class="flex items-center gap-1.5">
-							2. Escolhe
+							2. Escolha
 							<SquarePlus class="size-4 shrink-0" aria-hidden="true" />
 							<span class="font-medium">Adicionar ao ecrã principal</span>
 						</li>
 					</ol>
 				{:else if platform === 'ios-inapp'}
 					<p class="mt-1 text-muted-foreground">
-						Para o adicionar ao ecrã principal, abre esta página no
+						Para o adicionar ao ecrã principal, abra esta página no
 						<span class="font-medium text-foreground">Safari</span> (menu
 						<span class="font-medium">⋯</span> → “Abrir no browser”).
 					</p>
 				{:else}
-					<p class="mt-1 text-muted-foreground">Adiciona-o ao ecrã principal:</p>
+					<p class="mt-1 text-muted-foreground">Adicione-o ao ecrã principal:</p>
 					<ol class="mt-2 space-y-1.5">
 						<li class="flex items-center gap-1.5">
-							1. Toca no menu
+							1. Toque no menu
 							<EllipsisVertical class="size-4 shrink-0" aria-label="menu" />
 						</li>
 						<li>
-							2. Escolhe <span class="font-medium">Instalar app</span> ou
+							2. Escolha <span class="font-medium">Instalar app</span> ou
 							<span class="font-medium">Adicionar ao ecrã principal</span>
 						</li>
 					</ol>
